@@ -8,6 +8,8 @@ import { useNavigate } from "react-router";
 
 import { DayTasks } from "@/components/DayTasks";
 import { PouleCard } from "@/components/PouleCard";
+import { LateForfaits } from "@/dj/LateForfaits";
+import { preqStarted } from "@/lib/forfaits";
 import { PouleDrawer } from "@/components/PouleDrawer";
 import { PrintCenter } from "@/components/PrintCenter";
 import { ScoreEditor, draftOf, scoreOf, type ScoreDraft } from "@/components/ScoreEditor";
@@ -126,6 +128,8 @@ function Saisie() {
           />
         </span>
       </PageHead>
+
+      {!preqStarted(state) ? <LateForfaits /> : null}
 
       {forfaits.length > 0 ? (
         <div className="bg-alert-soft text-alert-ink mb-3.5 flex flex-wrap items-center gap-2 rounded-[12px] px-4 py-2.5 text-[13px] font-semibold">

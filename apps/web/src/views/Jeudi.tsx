@@ -1,5 +1,5 @@
 /** Jeudi : structure des billards, tirages, création des poules du vendredi, documents. */
-import type { Billard, Poule } from "@pilot5q/domain";
+import type { Billard } from "@pilot5q/domain";
 import {
   ArrowRight,
   Check,
@@ -22,7 +22,8 @@ import { useToast } from "@/components/Toast";
 import { Avatar, Banner, Button, Card, Chip, PageHead, Select, Tile, cx } from "@/components/ui";
 import { BillardAssignment } from "@/dj/BillardAssignment";
 import { planToAssignments, proposePlan } from "@/lib/assign";
-import { pouleMatches, pouleSizes, resolveClubConflicts, serpentin } from "@/lib/engine";
+import { drawFridayPoules } from "@/lib/forfaits";
+import { pouleSizes } from "@/lib/engine";
 import { longDate, nice, plural } from "@/lib/format";
 import { drawLaterPhaseEvents, preqPouleCount } from "@/lib/setup";
 import {
@@ -57,19 +58,12 @@ export function Jeudi() {
   const nb4 = sizes.filter((s) => s === 4).length;
   const nb3 = sizes.length - nb4;
   const pouleCount = preqPouleCount(state);
-  const preqAssign = state.billardAssignments.PREQ ?? {};
   const d = phaseDistance(state, "PREQ");
   const capacity = state.billards.length * 8 + 8;
 
   const draw = () => {
-    const raw = serpentin(field, state.rules.maxPoulesOf3);
-    const res = resolveClubConflicts(raw, clubOf(state));
-    const poules: Poule[] = res.poules.map((names, i) => ({
-      num: i + 1,
-      players: names,
-      billards: preqAssign[String(i + 1)] ?? [],
-      matches: pouleMatches(i + 1, names),
-    }));
+    const res = drawFridayPoules(state);
+    const poules = res.poules;
     setUnresolved(res.unresolved);
     setDrawSeq((n) => n + 1);
     setSerpDone(false);
