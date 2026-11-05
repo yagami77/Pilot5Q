@@ -5,6 +5,8 @@
 import type { BracketMatch, Match, Poule, TournamentState } from "@pilot5q/domain";
 import type { ReactNode } from "react";
 
+import { FlowDiagram } from "@/components/FlowDiagram";
+
 import { isValidScore, matchLabels, matchWinner } from "@/lib/engine";
 import { clubShort, euros, longDate, nice, shortName } from "@/lib/format";
 import { computePrizes } from "@/lib/prizes";
@@ -26,6 +28,7 @@ import {
 } from "@/lib/tournament";
 
 export type DocId =
+  | "schema"
   | "pointage"
   | "joueurs-poules"
   | "tableau-poules"
@@ -48,6 +51,8 @@ export type DocId =
 export interface DocDef {
   id: DocId;
   label: string;
+  /** Page A4 en paysage. */
+  landscape?: boolean;
   pages: (state: TournamentState) => number;
   available: (state: TournamentState) => boolean;
   render: (state: TournamentState) => ReactNode;
@@ -968,6 +973,31 @@ const satReady = (s: TournamentState) => s.poules.QM.length > 0 || s.poules.QN.l
 
 export const DOCS: DocDef[] = [
   {
+    id: "schema",
+    label: "Schéma du TN (A4 paysage)",
+    landscape: true,
+    pages: () => 1,
+    available: (s) => s.players.length > 0,
+    render: (s) => (
+      <section className="print-page print-doc print-landscape">
+        <DocHeader
+          state={s}
+          title="SCHÉMA DU TOURNOI"
+          subtitle={`${longDate(dayDate(s, "jeudi"), true)} → ${longDate(dayDate(s, "dimanche"), true)}`}
+          right={`${s.players.length} inscrits`}
+        />
+        <div className="mt-2">
+          <FlowDiagram print />
+        </div>
+        <Foot>
+          Chaque ruban est un groupe de joueurs qui passe d'une étape à la suivante, sa largeur est
+          proportionnelle au nombre. Or : Masters · vert : National · bleu : qualifications du
+          vendredi · gris : consolante. Étapes à venir en pointillé.
+        </Foot>
+      </section>
+    ),
+  },
+  {
     id: "pointage",
     label: "Liste alphabétique · pointage des droits d'inscription",
     pages: (s) => Math.max(1, Math.ceil(s.players.length / 40)),
@@ -1192,5 +1222,6 @@ export function docsFor(day: Day, state: TournamentState): DocDef[] {
               "primes",
             ]
           : ["tableaux-finaux", "feuilles-finales", "primes"];
+  ids.push("schema");
   return ids.map(docById).filter((d): d is DocDef => Boolean(d) && d!.available(state));
 }

@@ -6,6 +6,7 @@ import { PrintView } from "@/print/PrintView";
 import { TournamentProvider } from "@/store/tournament";
 import { Cockpit } from "@/views/Cockpit";
 import { Home } from "@/views/Home";
+import { Schema } from "@/views/Schema";
 
 export default function App() {
   return (
@@ -18,6 +19,7 @@ export default function App() {
               <Route path="/" element={<Home />} />
               <Route path="/tournoi" element={<Navigate to="/tournoi/jeudi" replace />} />
               <Route path="/tournoi/imprimer/:doc" element={<PrintView />} />
+              <Route path="/tournoi/schema" element={<Schema />} />
               <Route path="/tournoi/:day" element={<Cockpit />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>

@@ -42,7 +42,9 @@ export function PrintView() {
           </Button>
         </div>
       </div>
-      <div className="mx-auto max-w-[210mm] px-2 py-6 print:p-0">
+      <div
+        className={`mx-auto px-2 py-6 print:p-0 ${docs.some((d) => d.landscape) ? "max-w-[297mm]" : "max-w-[210mm]"}`}
+      >
         {docs.length === 0 ? (
           <p className="text-ink-muted text-center">Aucun document à afficher.</p>
         ) : (

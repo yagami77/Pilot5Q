@@ -251,6 +251,17 @@
   break-after: page;
 }
 
+@page landscape {
+  size: A4 landscape;
+  margin: 10mm;
+}
+.print-landscape {
+  page: landscape;
+}
+.print-landscape {
+  max-width: 277mm;
+}
+
 @media print {
   .tricolore,
   .no-print {

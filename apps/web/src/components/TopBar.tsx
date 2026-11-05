@@ -1,6 +1,6 @@
 /** Barre haute : marque, tournoi, état d'enregistrement, annulation, utilisateur. */
-import { Home, Undo2 } from "lucide-react";
-import { Link } from "react-router";
+import { Home, Undo2, Waypoints } from "lucide-react";
+import { Link, useLocation } from "react-router";
 
 import { clock, dateRange, initials, plural } from "@/lib/format";
 import { useTournament } from "@/store/tournament";
@@ -34,6 +34,8 @@ export function BrandMark({ className }: { className?: string }) {
 
 export function TopBar() {
   const { state, savedAt, saving, undo, canUndo, events } = useTournament();
+  const location = useLocation();
+  const onSchema = location.pathname.endsWith("/tournoi/schema");
   const info = state.info;
   const lastEvent = events[events.length - 1];
   // Après rechargement, l'heure affichée est celle du dernier événement enregistré.
@@ -76,6 +78,21 @@ export function TopBar() {
           <div className="flex-1" />
         )}
         <div className="ml-auto flex items-center gap-2.5">
+          {info ? (
+            <Link
+              to="/tournoi/schema"
+              aria-current={onSchema ? "page" : undefined}
+              className={cx(
+                "inline-flex items-center gap-1.5 rounded-[10px] border px-2.5 py-1.5 text-[12.5px] font-semibold transition-colors",
+                onSchema
+                  ? "bg-brand-soft text-brand-ink border-transparent"
+                  : "border-line-2 bg-surface hover:bg-brand-soft hover:text-brand-ink",
+              )}
+            >
+              <Waypoints className="size-3.5" aria-hidden="true" />
+              <span className="hidden sm:inline">Schéma</span>
+            </Link>
+          ) : null}
           <span
             className="bg-surface-2 border-line text-ink-muted flex items-center gap-[7px] rounded-full border px-2.5 py-1.5 text-[12px]"
             title={lastEvent ? `Dernier événement : ${lastEvent.type}` : undefined}

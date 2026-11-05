@@ -305,6 +305,7 @@ export function Jeudi() {
             </div>
           ) : null}
           <Card
+            id="serpentin"
             className="mb-3.5"
             title="Le serpentin du tirage"
             aside={<Chip tone="gold">TS = tête de poule</Chip>}
