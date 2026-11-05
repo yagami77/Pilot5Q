@@ -9,38 +9,123 @@
   /* Fond, surfaces, texte, traits */
   --color-page: #f4f6fb;
   --color-surface: #ffffff;
+  --color-surface-2: #f9fafd;
   --color-ink: #0f1b33;
   --color-ink-secondary: #3c4a66;
   --color-ink-muted: #6b7a99;
   --color-line: #e4e9f3;
+  --color-line-2: #d4dbe8;
 
   /* Bleu signature */
   --color-brand: #0e37a8;
   --color-brand-light: #1e4fd8;
   --color-brand-soft: #e9effc;
+  --color-brand-ink: #0a2a80;
 
   /* Alertes / moments forts */
   --color-alert: #dc3f5a;
   --color-alert-soft: #fde9ed;
+  --color-alert-ink: #a82540;
 
   /* Vainqueurs / têtes de série */
   --color-gold: #e89f1f;
   --color-gold-soft: #fff4df;
+  --color-gold-ink: #8a5a08;
 
   /* Validé */
   --color-ok: #1e9e62;
   --color-ok-soft: #e5f6ec;
+  --color-ok-ink: #166b45;
 
   /* Rayons */
   --radius-card: 14px;
   --radius-small: 10px;
 
   /* Ombres très légères teintées de bleu */
-  --shadow-card: 0 1px 2px rgb(14 55 168 / 0.04), 0 4px 16px rgb(14 55 168 / 0.06);
-  --shadow-raised: 0 2px 4px rgb(14 55 168 / 0.06), 0 12px 32px rgb(14 55 168 / 0.1);
+  --shadow-card: 0 1px 2px rgb(15 27 51 / 0.04), 0 8px 24px -12px rgb(14 55 168 / 0.14);
+  --shadow-raised: 0 2px 6px rgb(15 27 51 / 0.06), 0 24px 60px -24px rgb(14 55 168 / 0.28);
 
   /* Bandeaux d'action : dégradé du bleu signature */
   --background-image-brand: linear-gradient(135deg, #0e37a8 0%, #1e4fd8 100%);
+  --background-image-brand-cta: linear-gradient(135deg, #0b2d8f 0%, #1e4fd8 70%, #3b6cf0 100%);
+
+  /* Animations qui expliquent (docs/DESIGN.md) */
+  --animate-fade-up: fade-up 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  --animate-pop: pop 0.5s both;
+  --animate-slide-in: slide-in 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  --animate-shake: shake 0.4s;
+  --animate-glow: glow 1.4s ease-out 2;
+  --animate-pulse-dot: pulse-dot 2.2s infinite;
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes pop {
+    0% {
+      opacity: 0;
+      transform: scale(0.85) translateY(6px);
+    }
+    60% {
+      transform: scale(1.03);
+    }
+    100% {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes slide-in {
+    from {
+      opacity: 0;
+      transform: translateX(18px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes shake {
+    10%,
+    90% {
+      transform: translateX(-1px);
+    }
+    20%,
+    80% {
+      transform: translateX(2px);
+    }
+    30%,
+    50%,
+    70% {
+      transform: translateX(-4px);
+    }
+    40%,
+    60% {
+      transform: translateX(4px);
+    }
+  }
+  @keyframes glow {
+    0% {
+      box-shadow: 0 0 0 0 rgb(30 158 98 / 0.5);
+    }
+    100% {
+      box-shadow: 0 0 0 12px rgb(30 158 98 / 0);
+    }
+  }
+  @keyframes pulse-dot {
+    0%,
+    100% {
+      box-shadow: 0 0 0 3px rgb(30 158 98 / 0.18);
+    }
+    50% {
+      box-shadow: 0 0 0 6px rgb(30 158 98 / 0.06);
+    }
+  }
 }
 
 @layer base {
@@ -49,14 +134,41 @@
   }
 
   body {
-    @apply bg-page text-ink font-sans antialiased;
+    @apply bg-page text-ink font-sans text-[14px] leading-[1.45] antialiased;
     font-feature-settings: "tnum" 1;
+    overflow-x: hidden;
   }
 
   h1,
   h2,
   h3 {
     @apply font-extrabold tracking-tight;
+    text-wrap: balance;
+  }
+
+  button {
+    cursor: pointer;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-brand-light);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+
+  /* Champs numériques sans flèches : la saisie se fait au clavier. */
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
   }
 }
 
@@ -71,6 +183,35 @@
       var(--color-alert) 66.666% 100%
     );
   }
+
+  .card {
+    @apply bg-surface border-line rounded-card shadow-card min-w-0 border;
+  }
+
+  .eyebrow {
+    @apply text-brand text-[11.5px] font-bold tracking-[0.08em] uppercase;
+  }
+
+  .kbd {
+    @apply border-line-2 bg-surface text-ink-secondary rounded-[5px] border px-1.5 py-px font-mono text-[10.5px];
+  }
+
+  .score-input {
+    @apply border-line-2 bg-surface h-[38px] w-[72px] rounded-[9px] border-[1.5px] text-center font-mono text-[16px] font-semibold transition-[border-color,box-shadow,background-color] duration-200;
+  }
+  .score-input:focus {
+    @apply border-brand-light ring-brand-soft ring-[3px] outline-none;
+  }
+  .score-input.win {
+    @apply bg-ok-soft text-ok-ink border-[#9fddba];
+  }
+  .score-input.err {
+    @apply bg-alert-soft text-alert-ink border-alert;
+  }
+
+  .zone-row {
+    @apply bg-surface-2 border-line flex items-center gap-2 border-y px-3.5 py-2 text-[11px] font-extrabold tracking-[0.08em] uppercase;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -79,13 +220,62 @@
   *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
+    animation-delay: 0ms !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
 }
 
+/* ---------- Impression A4, noir sur blanc, sans animation ---------- */
+@page {
+  size: A4;
+  margin: 12mm 12mm 14mm;
+}
+
+.print-doc {
+  @apply mx-auto max-w-[190mm] bg-white text-[11px] leading-[1.35] text-black;
+  font-feature-settings: "tnum" 1;
+}
+.print-doc table {
+  @apply w-full border-collapse;
+}
+.print-doc th,
+.print-doc td {
+  @apply border border-[#333] px-1.5 py-1 text-left align-middle;
+}
+.print-doc th {
+  @apply bg-[#f1f1f1] text-[10px] font-bold uppercase;
+}
+.print-page {
+  @apply mb-8 bg-white p-[12mm] shadow-raised;
+  break-after: page;
+}
+
 @media print {
-  .tricolore {
-    display: none;
+  .tricolore,
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+  .print-page {
+    box-shadow: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+@layer components {
+  .field {
+    @apply border-line-2 bg-surface w-full rounded-[8px] border px-2.5 py-1.5 text-[13px] font-medium;
+  }
+  .field:focus {
+    @apply border-brand-light ring-brand-soft ring-[3px] outline-none;
   }
 }
