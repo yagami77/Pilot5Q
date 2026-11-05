@@ -16,6 +16,7 @@ import { useMemo, useState } from "react";
 import { useNavigate } from "react-router";
 
 import { PouleCard } from "@/components/PouleCard";
+import { Serpentin } from "@/components/Serpentin";
 import { PrintCenter } from "@/components/PrintCenter";
 import { useToast } from "@/components/Toast";
 import { Avatar, Banner, Button, Card, Chip, PageHead, Select, Tile, cx } from "@/components/ui";
@@ -39,7 +40,8 @@ export function Jeudi() {
   const toast = useToast();
   const navigate = useNavigate();
   const [printOpen, setPrintOpen] = useState(false);
-  const [animateDraw, setAnimateDraw] = useState(false);
+  const [drawSeq, setDrawSeq] = useState(0);
+  const [serpDone, setSerpDone] = useState(true);
   const [swapMode, setSwapMode] = useState(false);
   const [selected, setSelected] = useState<string | null>(null);
   const [unresolved, setUnresolved] = useState<number[]>([]);
@@ -70,8 +72,16 @@ export function Jeudi() {
       matches: pouleMatches(i + 1, names),
     }));
     setUnresolved(res.unresolved);
-    setAnimateDraw(true);
+    setDrawSeq((n) => n + 1);
+    setSerpDone(false);
     dispatch({ type: "poules.drawn", payload: { phase: "PREQ", poules } });
+    window.setTimeout(
+      () =>
+        document
+          .getElementById("serpentin")
+          ?.scrollIntoView({ behavior: "smooth", block: "start" }),
+      80,
+    );
     toast(
       res.unresolved.length
         ? `Tirage effectué · ${plural(res.unresolved.length, "poule")} à corriger à la main`
@@ -102,7 +112,6 @@ export function Jeudi() {
     });
     dispatch({ type: "poules.drawn", payload: { phase: "PREQ", poules } });
     setSelected(null);
-    setAnimateDraw(false);
     const res = resolveClubConflicts(
       poules.map((p) => p.players),
       clubOf(state),
@@ -110,24 +119,6 @@ export function Jeudi() {
     setUnresolved(res.unresolved);
     toast(`${nice(selected)} et ${nice(name)} échangés`);
   };
-
-  // Ordre d'apparition en serpentin pour l'animation (40 ms d'écart)
-  const delays = useMemo(() => {
-    if (!animateDraw) return undefined;
-    const out: Record<string, number> = {};
-    const n = state.poules.PREQ.length;
-    let k = 0;
-    for (let row = 0; row < 4; row++) {
-      const idx = state.poules.PREQ.map((_, i) => i);
-      if (row % 2) idx.reverse();
-      for (const i of idx) {
-        const name = state.poules.PREQ[i]?.players[row];
-        if (name) out[name] = k++ * 40;
-      }
-    }
-    void n;
-    return out;
-  }, [animateDraw, state.poules.PREQ]);
 
   const conflicts = useMemo(() => {
     const clubs = clubOf(state);
@@ -139,7 +130,6 @@ export function Jeudi() {
   }, [state]);
   const conflictSet = new Set([...conflicts, ...unresolved]);
   const totalMatches = state.poules.PREQ.reduce((n, p) => n + p.matches.length, 0);
-  const lastDelay = delays ? Math.max(0, ...Object.values(delays)) : 0;
 
   return (
     <section>
@@ -314,6 +304,50 @@ export function Jeudi() {
                 : "Cliquez sur un joueur, puis sur un second pour les échanger de poule."}
             </div>
           ) : null}
+          <Card
+            className="mb-3.5"
+            title="Le serpentin du tirage"
+            aside={<Chip tone="gold">TS = tête de poule</Chip>}
+          >
+            <Serpentin
+              poules={state.poules.PREQ}
+              animate={drawSeq}
+              conflicts={conflictSet}
+              onDone={() => setSerpDone(true)}
+            />
+          </Card>
+          {serpDone ? (
+            conflictSet.size > 0 ? (
+              <Banner tone="red" icon={TriangleAlert} className="mt-0 mb-3.5">
+                {plural(conflictSet.size, "poule")} avec trois joueurs du même club (
+                {[...conflictSet].map((n) => `P${n}`).join(", ")}) : corrigez à la main en
+                échangeant un joueur.
+              </Banner>
+            ) : (
+              <Banner
+                icon={Check}
+                className="mt-0 mb-3.5"
+                actions={
+                  <>
+                    <Button icon={Printer} onClick={() => setPrintOpen(true)}>
+                      Imprimer listes et feuilles de match
+                    </Button>
+                    <Button
+                      variant="primary"
+                      iconRight={ArrowRight}
+                      onClick={() => navigate("/tournoi/vendredi")}
+                    >
+                      Passer au vendredi
+                    </Button>
+                  </>
+                }
+              >
+                {plural(state.poules.PREQ.length, "poule créée", "poules créées")} · aucune poule
+                avec trois joueurs du même club · têtes de poule en première ligne ·{" "}
+                {plural(totalMatches, "match")} à jouer
+              </Banner>
+            )
+          ) : null}
           <div className="grid grid-cols-[repeat(auto-fill,minmax(230px,1fr))] gap-3">
             {state.poules.PREQ.map((p) => (
               <PouleCard
@@ -322,7 +356,6 @@ export function Jeudi() {
                 phase="PREQ"
                 poule={p}
                 distance={d}
-                delays={delays}
                 conflict={conflictSet.has(p.num)}
                 selected={selected}
                 onSelectPlayer={swapMode ? swap : undefined}
@@ -330,37 +363,6 @@ export function Jeudi() {
               />
             ))}
           </div>
-          {conflictSet.size > 0 ? (
-            <Banner tone="red" icon={TriangleAlert}>
-              {plural(conflictSet.size, "poule")} avec trois joueurs du même club (
-              {[...conflictSet].map((n) => `P${n}`).join(", ")}) : corrigez à la main en échangeant
-              un joueur.
-            </Banner>
-          ) : (
-            <Banner
-              icon={Check}
-              className={cx(animateDraw && "opacity-0 [animation-fill-mode:forwards]")}
-              actions={
-                <>
-                  <Button icon={Printer} onClick={() => setPrintOpen(true)}>
-                    Imprimer listes et feuilles de match
-                  </Button>
-                  <Button
-                    variant="primary"
-                    iconRight={ArrowRight}
-                    onClick={() => navigate("/tournoi/vendredi")}
-                  >
-                    Passer au vendredi
-                  </Button>
-                </>
-              }
-            >
-              <span style={animateDraw ? { animationDelay: `${lastDelay + 200}ms` } : undefined}>
-                {plural(state.poules.PREQ.length, "poule créée", "poules créées")} · aucune poule
-                avec trois joueurs du même club · {plural(totalMatches, "match")} à jouer
-              </span>
-            </Banner>
-          )}
         </div>
       )}
 

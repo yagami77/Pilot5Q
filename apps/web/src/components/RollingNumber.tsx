@@ -73,7 +73,9 @@ export function RollingNumber({
 export function useCountUp(target: number, duration = 1100): number {
   const [v, setV] = useState(0);
   useEffect(() => {
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduced =
+      typeof window.matchMedia === "function" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduced) {
       setV(target);
       return;

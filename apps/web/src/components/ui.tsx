@@ -105,6 +105,7 @@ export function Chip({
 /* ---------- Carte ---------- */
 
 export function Card({
+  id,
   title,
   aside,
   children,
@@ -112,6 +113,7 @@ export function Card({
   bodyClassName,
   headerClassName,
 }: {
+  id?: string;
   title?: ReactNode;
   aside?: ReactNode;
   children?: ReactNode;
@@ -120,7 +122,7 @@ export function Card({
   headerClassName?: string;
 }) {
   return (
-    <section className={cx("card", className)}>
+    <section id={id} className={cx("card scroll-mt-4", className)}>
       {title !== undefined ? (
         <header
           className={cx(

@@ -322,7 +322,10 @@ function Traveler({ travel, onDone }: { travel: Travel; onDone: () => void }) {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const el = ref.current;
-    if (!el) return;
+    if (!el || typeof el.animate !== "function") {
+      onDone();
+      return;
+    }
     const anim = el.animate([{ offsetDistance: "0%" }, { offsetDistance: "100%" }], {
       duration: 900,
       easing: "cubic-bezier(.4,0,.2,1)",
