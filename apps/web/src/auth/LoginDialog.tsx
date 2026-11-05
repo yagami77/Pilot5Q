@@ -18,27 +18,39 @@ import {
   X,
 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
+import type { TournamentState } from "@pilot5q/domain";
 import { useEffect, useId, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
 import { useNavigate } from "react-router";
 
 import { Button, cx } from "@/components/ui";
 import { nice } from "@/lib/format";
+import { replay } from "@/lib/engine";
+import { dayStatuses } from "@/lib/tournament";
 import { saveCurrentId, loadEvents } from "@/store/persistence";
 import { useTournament } from "@/store/tournament";
+import { currentDay } from "@/views/Cockpit";
 
 import { useAuth } from "./context";
 import { DEMO_ACCOUNT, type DjAccess, type DjSession } from "./provider";
 
 export type LoginKind = "responsable" | "dj";
 
-/** Après connexion, charge le tournoi du DJ dans le cockpit (rechargement si besoin). */
+/** Journée sur laquelle le DJ doit travailler (dernière journée ouverte). */
+function dayPath(state: TournamentState): string {
+  return `tournoi/${currentDay(dayStatuses(state))}`;
+}
+
+/**
+ * Après connexion, ouvre le tournoi du DJ dans le cockpit, sur la journée en cours (rechargement
+ * de la page si le cockpit affichait un autre tournoi). Rend un message si c'est impossible.
+ */
 export async function enterDjTournament(
   session: DjSession,
-  currentId: string | null,
+  cockpit: { id: string | null; state: TournamentState },
   go: (path: string) => void,
 ): Promise<string | null> {
-  if (currentId === session.tournamentId) {
-    go("/tournoi");
+  if (cockpit.id === session.tournamentId) {
+    go(`/${dayPath(cockpit.state)}`);
     return null;
   }
   const events = await loadEvents(session.tournamentId);
@@ -46,7 +58,7 @@ export async function enterDjTournament(
     return "Votre tournoi n'est pas enregistré dans ce navigateur : il a été ouvert sur un autre ordinateur. Le partage entre ordinateurs arrivera avec le serveur.";
   }
   await saveCurrentId(session.tournamentId);
-  window.location.assign(`${import.meta.env.BASE_URL}tournoi`);
+  window.location.assign(`${import.meta.env.BASE_URL}${dayPath(replay(events))}`);
   return null;
 }
 
@@ -455,7 +467,7 @@ function CodeInput({
 
 function DjForm({ onDone, initialEmail }: { onDone: () => void; initialEmail: string }) {
   const { loginDj, logout, provider } = useAuth();
-  const { id: currentId } = useTournament();
+  const cockpit = useTournament();
   const navigate = useNavigate();
   const [email, setEmail] = useState(initialEmail);
   const [code, setCode] = useState("");
@@ -482,7 +494,7 @@ function DjForm({ onDone, initialEmail }: { onDone: () => void; initialEmail: st
       if (r.error === "code") setCode("");
       return;
     }
-    const problem = await enterDjTournament(r.session, currentId, (p) => {
+    const problem = await enterDjTournament(r.session, cockpit, (p) => {
       onDone();
       void navigate(p);
     });

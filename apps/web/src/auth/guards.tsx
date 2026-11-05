@@ -5,9 +5,10 @@
  */
 import { LockKeyhole, LogOut, RefreshCw } from "lucide-react";
 import { useState, type ReactNode } from "react";
-import { Navigate, useLocation, useNavigate } from "react-router";
+import { Link, Navigate, useLocation, useNavigate } from "react-router";
 
-import { Banner, Button } from "@/components/ui";
+import { Banner, Button, cx } from "@/components/ui";
+import { DAYS, dayStatuses } from "@/lib/tournament";
 import { useTournament } from "@/store/tournament";
 
 import { useAuth } from "./context";
@@ -34,6 +35,7 @@ export function RequireCockpit({ children }: { children: ReactNode }) {
   const { ready, session, logout } = useAuth();
   const cockpit = useTournament();
   const navigate = useNavigate();
+  const location = useLocation();
   const [problem, setProblem] = useState("");
   if (!ready || !cockpit.ready) return <Loading label="Chargement du tournoi…" />;
   if (!session) return <Navigate to="/?acces=dj" replace />;
@@ -64,7 +66,7 @@ export function RequireCockpit({ children }: { children: ReactNode }) {
               variant="primary"
               icon={RefreshCw}
               onClick={() =>
-                void enterDjTournament(session, cockpit.id, (p) => void navigate(p)).then((m) =>
+                void enterDjTournament(session, cockpit, (p) => void navigate(p)).then((m) =>
                   setProblem(m ?? ""),
                 )
               }
@@ -82,19 +84,15 @@ export function RequireCockpit({ children }: { children: ReactNode }) {
       </main>
     );
   }
-  if (session.readOnly) {
+  // Impression : consultation pure, laissée active même après la clôture.
+  if (session.readOnly && !location.pathname.startsWith("/tournoi/imprimer")) {
     return (
       <>
         {/* Tournoi clôturé : toutes les commandes du cockpit sont désactivées. */}
         <fieldset disabled className="contents" aria-label="Tournoi clôturé, consultation seule">
           {children}
         </fieldset>
-        <div className="no-print pointer-events-none fixed inset-x-0 bottom-4 z-40 flex justify-center px-4">
-          <div className="bg-gold-soft text-gold-ink animate-pop pointer-events-auto flex items-center gap-2 rounded-full px-4 py-2 text-[12.5px] font-semibold shadow-[var(--shadow-raised)]">
-            <LockKeyhole className="size-4" aria-hidden="true" />
-            Tournoi clôturé par le responsable national : consultation seule.
-          </div>
-        </div>
+        <ReadOnlyBar />
         <SessionDock />
       </>
     );
@@ -104,5 +102,49 @@ export function RequireCockpit({ children }: { children: ReactNode }) {
       {children}
       <SessionDock />
     </>
+  );
+}
+
+/**
+ * Bandeau de consultation seule : le cockpit est désactivé (fieldset), on garde ici la
+ * navigation entre les journées ouvertes et le schéma.
+ */
+function ReadOnlyBar() {
+  const { state } = useTournament();
+  const location = useLocation();
+  const statuses = dayStatuses(state);
+  const links = [
+    ...DAYS.filter((d) => statuses[d].unlocked).map((d) => ({
+      to: `/tournoi/${d}`,
+      label: d.charAt(0).toUpperCase() + d.slice(1),
+    })),
+    { to: "/tournoi/schema", label: "Schéma" },
+  ];
+  return (
+    <div className="no-print pointer-events-none fixed inset-x-0 bottom-4 z-40 flex justify-center px-4">
+      <div className="bg-surface/95 border-line animate-pop pointer-events-auto flex flex-wrap items-center gap-2 rounded-full border py-1.5 pr-1.5 pl-4 text-[12.5px] font-semibold shadow-[var(--shadow-raised)] backdrop-blur-[10px]">
+        <span className="text-gold-ink flex items-center gap-1.5">
+          <LockKeyhole className="size-4" aria-hidden="true" />
+          Tournoi clôturé : consultation seule
+        </span>
+        <nav aria-label="Journées" className="bg-surface-2 flex gap-0.5 rounded-full p-0.5">
+          {links.map((l) => (
+            <Link
+              key={l.to}
+              to={l.to}
+              aria-current={location.pathname === l.to ? "page" : undefined}
+              className={cx(
+                "rounded-full px-2.5 py-1 transition-colors",
+                location.pathname === l.to
+                  ? "bg-brand text-white"
+                  : "text-ink-secondary hover:bg-brand-soft",
+              )}
+            >
+              {l.label}
+            </Link>
+          ))}
+        </nav>
+      </div>
+    </div>
   );
 }
