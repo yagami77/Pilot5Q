@@ -30,6 +30,7 @@ export {
   normalizeName,
   updatePlayerBase,
   lastKnownPlaces,
+  currentPlaces,
   searchPlayers,
 } from "./players.js";
 export { capacityFor, toPlayer, acceptRegistrations, acceptedListCsv } from "./registration.js";

@@ -74,8 +74,26 @@ function demoStage(season: string, c: SeasonFixture["calendar"][number]): Stage 
   };
 }
 
-/** Base joueurs « avant TN 2 » : classement en cours = fenêtre reconstituée. */
-function demoPlayers(season: string, ranking: RankingEntry[]): PlayerRecord[] {
+/** Classement connu à l'inscription au TN 2 (classeur de référence). */
+export interface DemoInscription {
+  name: string;
+  order: number;
+  currentPlace: number | null;
+  lastPlace: number | null;
+  lastSeason: string | null;
+}
+
+/**
+ * Base joueurs « avant TN 2 » : pour les 76 inscrits, classement en cours et dernier classement
+ * tels que connus à l'inscription (classeur de référence) ; pour les autres, place dans la
+ * fenêtre reconstituée (le TN 2 2025-2026, sorti de la fenêtre, n'est pas dans le classeur).
+ */
+function demoPlayers(
+  season: string,
+  ranking: RankingEntry[],
+  inscriptions: DemoInscription[],
+): PlayerRecord[] {
+  const official = new Map(inscriptions.map((i) => [i.name, i]));
   const rows = rankingRows(ranking);
   const position = new Map(rows.map((r) => [r.licence || r.name, r.position]));
   const playedThisSeason = new Set(
@@ -86,6 +104,17 @@ function demoPlayers(season: string, ranking: RankingEntry[]): PlayerRecord[] {
   const previous = `${seasonStartYear(season) - 1}-${seasonStartYear(season)}`;
   return SEASON_FIXTURE.players.map((p) => {
     const key = p.licence || p.name;
+    const known = official.get(p.name);
+    if (known) {
+      return {
+        licence: p.licence,
+        name: p.name,
+        club: p.club,
+        lastSeason: known.lastSeason,
+        currentPlace: known.currentPlace,
+        lastPlace: known.lastPlace,
+      };
+    }
     const current = position.get(key) ?? null;
     const lastSeason =
       p.lastSeason === season && !playedThisSeason.has(key) ? previous : p.lastSeason;
@@ -101,7 +130,7 @@ function demoPlayers(season: string, ranking: RankingEntry[]): PlayerRecord[] {
 }
 
 /** Inscrits du tournoi d'exemple, dans l'ordre d'inscription du site fédéral. */
-export function demoRegistrations(order: { name: string; order: number }[]): Registration[] {
+export function demoRegistrations(order: DemoInscription[]): Registration[] {
   const byName = new Map(DEMO.players.map((p) => [p.name, p]));
   const start = DEMO.tournament.dates[0];
   const out: Registration[] = [];
@@ -126,7 +155,7 @@ export function demoRegistrations(order: { name: string; order: number }[]): Reg
 }
 
 /** Document de démonstration complet. */
-export function demoSeason(registrationOrder: { name: string; order: number }[]): SeasonDocument {
+export function demoSeason(registrationOrder: DemoInscription[]): SeasonDocument {
   const season = SEASON_FIXTURE.season;
   const ranking = SEASON_FIXTURE.windowBefore.map((e) => ({ ...e, results: [...e.results] }));
   const stages = SEASON_FIXTURE.calendar.map((c) => demoStage(season, c));
@@ -141,7 +170,7 @@ export function demoSeason(registrationOrder: { name: string; order: number }[])
     settings: { ...DEFAULT_SEASON_SETTINGS },
     clubs: SEASON_FIXTURE.clubs.map((c) => ({ ...c })),
     stages,
-    players: demoPlayers(season, ranking),
+    players: demoPlayers(season, ranking, registrationOrder),
     ranking,
     registrations: tn2
       ? {
@@ -154,7 +183,7 @@ export function demoSeason(registrationOrder: { name: string; order: number }[])
         }
       : {},
     closures: {},
-    juniors: [],
+    juniors: DEMO.players.filter((p) => p.junior).map((p) => p.licence),
     updatedAt: now,
   };
 }

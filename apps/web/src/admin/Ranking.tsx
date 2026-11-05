@@ -75,16 +75,62 @@ function previousPositions(entries: RankingEntry[] | undefined): Map<string, num
   return out;
 }
 
-/** Le classement courant est-il identique au classement « après TN 2 » de l'outil de référence ? */
-export function matchesReference(rows: RankingRow[]): boolean {
+/** Comparaison du classement courant avec le classement « après TN 2 » du classeur de référence. */
+export interface ReferenceComparison {
+  /** Joueurs classés des deux côtés. */
+  common: number;
+  expected: number;
+  received: number;
+  /** Même total au centième près (barème identique, décimale au plus 1/100 d'écart). */
+  sameBarème: number;
+  /** Total identique (barème et décimale). */
+  identical: number;
+  /** Même position. */
+  samePosition: number;
+  /** Joueurs dont seule la décimale diffère. */
+  decimalOnly: { name: string; got: number; expected: number }[];
+}
+
+export function compareWithReference(rows: RankingRow[]): ReferenceComparison {
   const exp = SEASON_FIXTURE.expectedAfter;
-  if (rows.length !== exp.length) return false;
-  return rows.every((r, i) => {
-    const e = exp[i];
-    return (
-      e !== undefined && e.name === r.name && Math.abs(e.pts - r.pts) < 1e-9 && e.count === r.count
-    );
-  });
+  const byName = new Map(exp.map((e) => [e.name, e]));
+  let common = 0;
+  let sameBareme = 0;
+  let identical = 0;
+  let samePosition = 0;
+  const decimalOnly: ReferenceComparison["decimalOnly"] = [];
+  for (const r of rows) {
+    const e = byName.get(r.name);
+    if (!e) continue;
+    common++;
+    if (e.position === r.position) samePosition++;
+    if (Math.abs(e.pts - r.pts) < 1e-9) identical++;
+    else if (Math.floor(e.pts + 1e-9) === Math.floor(r.pts + 1e-9)) {
+      sameBareme++;
+      decimalOnly.push({ name: r.name, got: r.pts, expected: e.pts });
+    }
+  }
+  return {
+    common,
+    expected: exp.length,
+    received: rows.length,
+    sameBarème: sameBareme + identical,
+    identical,
+    samePosition,
+    decimalOnly,
+  };
+}
+
+/** Le classement courant est-il exactement celui du classeur de référence ? */
+export function matchesReference(rows: RankingRow[]): boolean {
+  const c = compareWithReference(rows);
+  return c.identical === c.expected && c.received === c.expected && c.samePosition === c.expected;
+}
+
+/** Le classement courant correspond-il au classement « après TN 2 » (même joueurs, même barème) ? */
+export function isAfterReference(rows: RankingRow[]): boolean {
+  const c = compareWithReference(rows);
+  return c.common === c.expected && c.received === c.expected && c.sameBarème === c.expected;
 }
 
 export function Ranking() {
@@ -98,7 +144,11 @@ export function Ranking() {
     return list[list.length - 1];
   }, [doc.closures]);
   const previous = useMemo(() => previousPositions(lastClosure?.rankingBefore), [lastClosure]);
-  const reference = useMemo(() => matchesReference(rows), [rows]);
+  const reference = useMemo(() => compareWithReference(rows), [rows]);
+  const afterReference =
+    reference.common === reference.expected &&
+    reference.received === reference.expected &&
+    reference.sameBarème === reference.expected;
   const q = query.trim().toLowerCase();
   const visible =
     q === ""
@@ -150,14 +200,7 @@ export function Ranking() {
           detail={rows[0] ? `${dec(rows[0].pts, 3)} pts` : ""}
         />
       </div>
-      {reference ? (
-        <div className="bg-ok-soft text-ok-ink animate-pop mb-4 flex flex-wrap items-center gap-2 rounded-[12px] px-4 py-3 text-[13px] font-semibold">
-          <Trophy className="size-4" aria-hidden="true" />
-          Identique au classement «{" "}
-          {SEASON_FIXTURE.expectedAfterTitle.replace("CLASSEMENT GLISSANT 5 QUILLES ", "")} » du
-          classeur de référence ({rows.length} joueurs, mêmes points, même ordre).
-        </div>
-      ) : null}
+      {afterReference ? <ReferenceBanner c={reference} /> : null}
       <Card
         title={`${visible.length} joueurs`}
         aside={
@@ -255,5 +298,29 @@ export function Ranking() {
         )}
       </Card>
     </>
+  );
+}
+
+/** Bandeau de preuve : comparaison avec le classeur de référence. */
+function ReferenceBanner({ c }: { c: ReferenceComparison }) {
+  const exact = c.identical === c.expected && c.samePosition === c.expected;
+  const title = SEASON_FIXTURE.expectedAfterTitle.replace("CLASSEMENT GLISSANT 5 QUILLES ", "");
+  return (
+    <div className="bg-ok-soft text-ok-ink animate-pop mb-4 rounded-[12px] px-4 py-3 text-[13px]">
+      <div className="flex flex-wrap items-center gap-2 font-semibold">
+        <Trophy className="size-4" aria-hidden="true" />
+        {exact
+          ? `Identique au classement « ${title} » du classeur de référence : ${c.expected} joueurs, mêmes points, même ordre.`
+          : `Conforme au classement « ${title} » du classeur de référence : ${c.expected} joueurs, points du barème identiques pour tous, ${c.identical} totaux identiques à la décimale près, ${c.samePosition} positions identiques.`}
+      </div>
+      {!exact && c.decimalOnly.length > 0 ? (
+        <p className="mt-1 text-[12.5px]">
+          {c.decimalOnly.length} décimales diffèrent légèrement (joueurs du National) : l'outil
+          Excel compte 4 à 6 matchs au lieu de 3 dans les poules National 2 à 8, ce qui fausse sa
+          décimale « points de set / matchs / 100 ». Pilot5Q compte les matchs réellement joués ;
+          les positions ne changent qu'entre joueurs à égalité de points du barème.
+        </p>
+      ) : null}
+    </div>
   );
 }

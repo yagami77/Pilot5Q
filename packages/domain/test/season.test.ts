@@ -20,6 +20,7 @@ import {
   basePoints,
   capacityFor,
   convocationTime,
+  currentPlaces,
   decimalPoints,
   hostCapable,
   lastKnownPlaces,
@@ -313,6 +314,11 @@ describe("base joueurs", () => {
     expect(known["A1"]).toEqual({ place: 12, season: 2024 });
     expect(known["X Y"]).toEqual({ place: 12, season: 2024 });
     expect(known["B2"]).toBeUndefined();
+    const current = currentPlaces([
+      { licence: "A1", name: "X Y", club: "", lastSeason: null, currentPlace: 4, lastPlace: 4 },
+      { licence: "B2", name: "Z W", club: "", lastSeason: null, currentPlace: null, lastPlace: 9 },
+    ]);
+    expect(current).toEqual({ A1: 4, "X Y": 4 });
   });
 
   it("recherche sans accents ni casse", () => {

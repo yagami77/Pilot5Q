@@ -2,6 +2,7 @@
 import { Navigate, Route } from "react-router";
 
 import { AdminLayout } from "./AdminLayout";
+import { AdminPrint } from "./AdminPrint";
 import { Calendar } from "./Calendar";
 import { Clubs } from "./Clubs";
 import { Dashboard } from "./Dashboard";
@@ -11,8 +12,9 @@ import { Settings } from "./Settings";
 import { StagePage } from "./StagePage";
 
 export function adminRoutes() {
-  return (
-    <Route path="/responsable" element={<AdminLayout />}>
+  return [
+    <Route key="print" path="/responsable/imprimer/:doc/:stageId?" element={<AdminPrint />} />,
+    <Route key="admin" path="/responsable" element={<AdminLayout />}>
       <Route index element={<Dashboard />} />
       <Route path="calendrier" element={<Calendar />} />
       <Route path="clubs" element={<Clubs />} />
@@ -21,6 +23,6 @@ export function adminRoutes() {
       <Route path="parametres" element={<Settings />} />
       <Route path="tn/:stageId" element={<StagePage />} />
       <Route path="*" element={<Navigate to="/responsable" replace />} />
-    </Route>
-  );
+    </Route>,
+  ];
 }

@@ -6,7 +6,7 @@ import { useToast } from "@/components/Toast";
 import { Button, Card, Chip, PageHead } from "@/components/ui";
 import inscriptions from "@/data/tn-exemple-inscriptions.json";
 
-import { SEASON_FIXTURE, demoSeason, emptySeason } from "./demo";
+import { SEASON_FIXTURE, demoSeason, emptySeason, type DemoInscription } from "./demo";
 import { useSeason } from "./store";
 import { Field, Input } from "./ui";
 
@@ -14,8 +14,7 @@ export function Welcome() {
   const { open } = useSeason();
   const toast = useToast();
   const [season, setSeason] = useState("2026-2027");
-  const order = (inscriptions as { registrations: { name: string; order: number }[] })
-    .registrations;
+  const order = (inscriptions as { registrations: DemoInscription[] }).registrations;
   return (
     <>
       <PageHead

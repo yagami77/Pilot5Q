@@ -1,385 +1,537 @@
 {
- "_note": "Ordre d'inscription (site fédéral) des 76 inscrits du tournoi d'exemple, noms fictifs.",
+ "_note": "Ordre d'inscription (site fédéral) des 76 inscrits du tournoi d'exemple, noms fictifs, avec le classement en cours et le dernier classement connus à l'inscription (classeur de référence, onglet TOURNOI).",
  "registrations": [
   {
    "order": 1,
    "name": "DAVID SARAH",
-   "licence": "108494K"
+   "currentPlace": 90,
+   "lastPlace": 90,
+   "lastSeason": "2026-2027"
   },
   {
    "order": 2,
    "name": "COLLIN RONAN",
-   "licence": "110138W"
+   "currentPlace": null,
+   "lastPlace": null,
+   "lastSeason": null
   },
   {
    "order": 3,
    "name": "FLEURY SARAH",
-   "licence": "107398C"
+   "currentPlace": 75,
+   "lastPlace": 75,
+   "lastSeason": "2026-2027"
   },
   {
    "order": 4,
    "name": "CHEVALLIER QUENTIN",
-   "licence": "100274C"
+   "currentPlace": 2,
+   "lastPlace": 2,
+   "lastSeason": "2026-2027"
   },
   {
    "order": 5,
    "name": "PETIT LUCAS",
-   "licence": "100959H"
+   "currentPlace": 7,
+   "lastPlace": 7,
+   "lastSeason": "2026-2027"
   },
   {
    "order": 6,
    "name": "JACQUET ÉRIC",
-   "licence": "100411D"
+   "currentPlace": 3,
+   "lastPlace": 3,
+   "lastSeason": "2026-2027"
   },
   {
    "order": 7,
    "name": "HUBERT MICHEL",
-   "licence": "101096I"
+   "currentPlace": 8,
+   "lastPlace": 8,
+   "lastSeason": "2026-2027"
   },
   {
    "order": 8,
    "name": "GRONDIN HUGO",
-   "licence": "102329R"
+   "currentPlace": 22,
+   "lastPlace": 22,
+   "lastSeason": "2025-2026"
   },
   {
    "order": 9,
    "name": "SANCHEZ SOPHIE",
-   "licence": "104384G"
+   "currentPlace": null,
+   "lastPlace": 41.0,
+   "lastSeason": "2025-2026"
   },
   {
    "order": 10,
    "name": "CARON THIERRY",
-   "licence": "106165T"
+   "currentPlace": 56,
+   "lastPlace": 56,
+   "lastSeason": "2025-2026"
   },
   {
    "order": 11,
    "name": "AUBRY THIERRY",
-   "licence": "108905N"
+   "currentPlace": 99,
+   "lastPlace": 99,
+   "lastSeason": "2026-2027"
   },
   {
    "order": 12,
    "name": "ARNAUD CLÉMENT",
-   "licence": "109864U"
+   "currentPlace": 127,
+   "lastPlace": 127,
+   "lastSeason": "2026-2027"
   },
   {
    "order": 13,
    "name": "PAYET DAVID",
-   "licence": "108357J"
+   "currentPlace": null,
+   "lastPlace": 89.0,
+   "lastSeason": "2025-2026"
   },
   {
    "order": 14,
    "name": "MALLET MAXIME",
-   "licence": "107672E"
+   "currentPlace": 77,
+   "lastPlace": 77,
+   "lastSeason": "2025-2026"
   },
   {
    "order": 15,
    "name": "DUMONT LUCAS",
-   "licence": "101918O"
+   "currentPlace": 19,
+   "lastPlace": 19,
+   "lastSeason": "2026-2027"
   },
   {
    "order": 16,
    "name": "MICHEL DAMIEN",
-   "licence": "104658I"
+   "currentPlace": 42,
+   "lastPlace": 42,
+   "lastSeason": "2025-2026"
   },
   {
    "order": 17,
    "name": "PERRIN CHRISTOPHE",
-   "licence": "100548E"
+   "currentPlace": 4,
+   "lastPlace": 4,
+   "lastSeason": "2026-2027"
   },
   {
    "order": 18,
    "name": "MAILLARD CAMILLE",
-   "licence": "105069L"
+   "currentPlace": 45,
+   "lastPlace": 45,
+   "lastSeason": "2025-2026"
   },
   {
    "order": 19,
    "name": "BERTRAND DIDIER",
-   "licence": "103288Y"
+   "currentPlace": 30,
+   "lastPlace": 30,
+   "lastSeason": "2026-2027"
   },
   {
    "order": 20,
    "name": "GAILLARD SÉBASTIEN",
-   "licence": "102877V"
+   "currentPlace": 27,
+   "lastPlace": 27,
+   "lastSeason": "2026-2027"
   },
   {
    "order": 21,
    "name": "BOYER NOÉ",
-   "licence": "107946G"
+   "currentPlace": 86,
+   "lastPlace": 86,
+   "lastSeason": "2025-2026"
   },
   {
    "order": 22,
    "name": "MARTINEZ JORDAN",
-   "licence": "106028S"
+   "currentPlace": 55,
+   "lastPlace": 55,
+   "lastSeason": "2026-2027"
   },
   {
    "order": 23,
    "name": "LEGRAND ARNAUD",
-   "licence": "105891R"
+   "currentPlace": 54,
+   "lastPlace": 54,
+   "lastSeason": "2026-2027"
   },
   {
    "order": 24,
    "name": "BOYER JULIEN",
-   "licence": "101781N"
+   "currentPlace": 17,
+   "lastPlace": 17,
+   "lastSeason": "2026-2027"
   },
   {
    "order": 25,
    "name": "LAMBERT RACHID",
-   "licence": "109727T"
+   "currentPlace": 119,
+   "lastPlace": 119,
+   "lastSeason": "2025-2026"
   },
   {
    "order": 26,
    "name": "ROBERT KEVIN",
-   "licence": "104247F"
+   "currentPlace": 41,
+   "lastPlace": 41,
+   "lastSeason": "2026-2027"
   },
   {
    "order": 27,
    "name": "BOYER MANON",
-   "licence": "108083H"
+   "currentPlace": 87,
+   "lastPlace": 87,
+   "lastSeason": "2026-2027"
   },
   {
    "order": 28,
    "name": "VASSEUR LAURENT",
-   "licence": "101644M"
+   "currentPlace": 16,
+   "lastPlace": 16,
+   "lastSeason": "2026-2027"
   },
   {
    "order": 29,
    "name": "BOURGEOIS DIDIER",
-   "licence": "103425Z"
+   "currentPlace": 31,
+   "lastPlace": 31,
+   "lastSeason": "2025-2026"
   },
   {
    "order": 30,
    "name": "BAILLY PATRICK",
-   "licence": "105206M"
+   "currentPlace": 47,
+   "lastPlace": 47,
+   "lastSeason": "2026-2027"
   },
   {
    "order": 31,
    "name": "DUMONT ARNAUD",
-   "licence": "105754Q"
+   "currentPlace": 52,
+   "lastPlace": 52,
+   "lastSeason": "2026-2027"
   },
   {
    "order": 32,
    "name": "CORDIER CAMILLE",
-   "licence": "104110E"
+   "currentPlace": 39,
+   "lastPlace": 39,
+   "lastSeason": "2026-2027"
   },
   {
    "order": 33,
    "name": "CHEVALLIER LOÏC",
-   "licence": "102466S"
+   "currentPlace": 24,
+   "lastPlace": 24,
+   "lastSeason": "2025-2026"
   },
   {
    "order": 34,
    "name": "LUCAS NICOLAS",
-   "licence": "103973D"
+   "currentPlace": 38,
+   "lastPlace": 38,
+   "lastSeason": "2025-2026"
   },
   {
    "order": 35,
    "name": "CHAUVIN THIERRY",
-   "licence": "103562A"
+   "currentPlace": 32,
+   "lastPlace": 32,
+   "lastSeason": "2026-2027"
   },
   {
    "order": 36,
    "name": "CARPENTIER BENOÎT",
-   "licence": "102740U"
+   "currentPlace": 26,
+   "lastPlace": 26,
+   "lastSeason": "2026-2027"
   },
   {
    "order": 37,
    "name": "MERCIER ÉRIC",
-   "licence": "104795J"
+   "currentPlace": 43,
+   "lastPlace": 43,
+   "lastSeason": "2025-2026"
   },
   {
    "order": 38,
    "name": "ROUSSEL JULIE",
-   "licence": "101233J"
+   "currentPlace": 12,
+   "lastPlace": 12,
+   "lastSeason": "2026-2027"
   },
   {
    "order": 39,
    "name": "BRUN ERWAN",
-   "licence": "107124A"
+   "currentPlace": 72,
+   "lastPlace": 72,
+   "lastSeason": "2026-2027"
   },
   {
    "order": 40,
    "name": "COLIN GWENDAL",
-   "licence": "103014W"
+   "currentPlace": 28,
+   "lastPlace": 28,
+   "lastSeason": "2026-2027"
   },
   {
    "order": 41,
    "name": "OLIVIER PATRICK",
-   "licence": "107261B"
+   "currentPlace": 73,
+   "lastPlace": 73,
+   "lastSeason": "2026-2027"
   },
   {
    "order": 42,
    "name": "FRANCOIS NADIA",
-   "licence": "108631L"
+   "currentPlace": 95,
+   "lastPlace": 95,
+   "lastSeason": "2026-2027"
   },
   {
    "order": 43,
    "name": "HENRY GUILLAUME",
-   "licence": "106302U"
+   "currentPlace": 58,
+   "lastPlace": 58,
+   "lastSeason": "2026-2027"
   },
   {
    "order": 44,
    "name": "LANGLOIS ARNAUD",
-   "licence": "103151X"
+   "currentPlace": 29,
+   "lastPlace": 29,
+   "lastSeason": "2026-2027"
   },
   {
    "order": 45,
    "name": "LEBLANC MICKAËL",
-   "licence": "101507L"
+   "currentPlace": 14,
+   "lastPlace": 14,
+   "lastSeason": "2026-2027"
   },
   {
    "order": 46,
    "name": "BONNET ERWAN",
-   "licence": "106850Y"
+   "currentPlace": 68,
+   "lastPlace": 68,
+   "lastSeason": "2026-2027"
   },
   {
    "order": 47,
    "name": "LAURENT PAULINE",
-   "licence": "105617P"
+   "currentPlace": 51,
+   "lastPlace": 51,
+   "lastSeason": "2026-2027"
   },
   {
    "order": 48,
    "name": "MARTINEZ GILLES",
-   "licence": "109042O"
+   "currentPlace": null,
+   "lastPlace": 100.0,
+   "lastSeason": "2024-2025"
   },
   {
    "order": 49,
    "name": "RENAUD HUGO",
-   "licence": "107809F"
+   "currentPlace": 78,
+   "lastPlace": 78,
+   "lastSeason": "2025-2026"
   },
   {
    "order": 50,
    "name": "DUMAS DAMIEN",
-   "licence": "109590S"
+   "currentPlace": 110,
+   "lastPlace": 110,
+   "lastSeason": "2026-2027"
   },
   {
    "order": 51,
    "name": "MARCHAND JORDAN",
-   "licence": "102192Q"
+   "currentPlace": 21,
+   "lastPlace": 21,
+   "lastSeason": "2026-2027"
   },
   {
    "order": 52,
    "name": "MARTY FABIEN",
-   "licence": "106576W"
+   "currentPlace": 63,
+   "lastPlace": 63,
+   "lastSeason": "2026-2027"
   },
   {
    "order": 53,
    "name": "BOUCHET CÉDRIC",
-   "licence": "103836C"
+   "currentPlace": 36,
+   "lastPlace": 36,
+   "lastSeason": "2026-2027"
   },
   {
    "order": 54,
    "name": "LEGRAND PIERRE",
-   "licence": "107535D"
+   "currentPlace": 76,
+   "lastPlace": 76,
+   "lastSeason": "2026-2027"
   },
   {
    "order": 55,
    "name": "MARECHAL DIDIER",
-   "licence": "106439V"
+   "currentPlace": 59,
+   "lastPlace": 59,
+   "lastSeason": "2026-2027"
   },
   {
    "order": 56,
    "name": "BERTIN NADIA",
-   "licence": "108768M"
+   "currentPlace": 96,
+   "lastPlace": 96,
+   "lastSeason": "2025-2026"
   },
   {
    "order": 57,
    "name": "BRETON CLAIRE",
-   "licence": "105480O"
+   "currentPlace": 50,
+   "lastPlace": 50,
+   "lastSeason": "2025-2026"
   },
   {
    "order": 58,
    "name": "MARECHAL ROMAIN",
-   "licence": "106713X"
+   "currentPlace": 66,
+   "lastPlace": 66,
+   "lastSeason": "2025-2026"
   },
   {
    "order": 59,
    "name": "COLLET OLIVIER",
-   "licence": "100822G"
+   "currentPlace": 6,
+   "lastPlace": 6,
+   "lastSeason": "2026-2027"
   },
   {
    "order": 60,
    "name": "LEROUX NICOLAS",
-   "licence": "102603T"
+   "currentPlace": null,
+   "lastPlace": 24.0,
+   "lastSeason": "2022-2023"
   },
   {
    "order": 61,
    "name": "ADAM ÉRIC",
-   "licence": "100685F"
+   "currentPlace": 5,
+   "lastPlace": 5,
+   "lastSeason": "2026-2027"
   },
   {
    "order": 62,
    "name": "COUSIN THOMAS",
-   "licence": "104521H"
+   "currentPlace": null,
+   "lastPlace": 41.0,
+   "lastSeason": "2024-2025"
   },
   {
    "order": 63,
    "name": "MATHIEU MEHDI",
-   "licence": "103699B"
+   "currentPlace": 34,
+   "lastPlace": 34,
+   "lastSeason": "2025-2026"
   },
   {
    "order": 64,
    "name": "LEFEVRE BENOÎT",
-   "licence": "108220I"
+   "currentPlace": 88,
+   "lastPlace": 88,
+   "lastSeason": "2025-2026"
   },
   {
    "order": 65,
    "name": "CARLIER SAMIR",
-   "licence": "105343N"
+   "currentPlace": 49,
+   "lastPlace": 49,
+   "lastSeason": "2026-2027"
   },
   {
    "order": 66,
    "name": "CLEMENT GILLES",
-   "licence": "102055P"
+   "currentPlace": 20,
+   "lastPlace": 20,
+   "lastSeason": "2026-2027"
   },
   {
    "order": 67,
    "name": "LAMY VINCENT",
-   "licence": "101370K"
+   "currentPlace": 13,
+   "lastPlace": 13,
+   "lastSeason": "2026-2027"
   },
   {
    "order": 68,
    "name": "FAURE MARIE",
-   "licence": "109316Q"
+   "currentPlace": 108,
+   "lastPlace": 108,
+   "lastSeason": "2026-2027"
   },
   {
    "order": 69,
    "name": "SCHNEIDER CÉDRIC",
-   "licence": "109453R"
+   "currentPlace": 109,
+   "lastPlace": 109,
+   "lastSeason": "2025-2026"
   },
   {
    "order": 70,
    "name": "RODRIGUEZ MAXIME",
-   "licence": "110275X"
+   "currentPlace": null,
+   "lastPlace": null,
+   "lastSeason": null
   },
   {
    "order": 71,
    "name": "BARRE PATRICK",
-   "licence": "100137B"
+   "currentPlace": 1,
+   "lastPlace": 1,
+   "lastSeason": "2026-2027"
   },
   {
    "order": 72,
    "name": "ADAM CHLOÉ",
-   "licence": "109179P"
+   "currentPlace": 107,
+   "lastPlace": 107,
+   "lastSeason": "2025-2026"
   },
   {
    "order": 73,
    "name": "REY DYLAN",
-   "licence": "110412Y"
+   "currentPlace": null,
+   "lastPlace": null,
+   "lastSeason": null
   },
   {
    "order": 74,
    "name": "KLEIN ÉMILIE",
-   "licence": "104932K"
+   "currentPlace": 44,
+   "lastPlace": 44,
+   "lastSeason": "2025-2026"
   },
   {
    "order": 75,
    "name": "BERTRAND CAMILLE",
-   "licence": "110001V"
+   "currentPlace": 129,
+   "lastPlace": 129,
+   "lastSeason": "2025-2026"
   },
   {
    "order": 76,
    "name": "SCHNEIDER CHLOÉ",
-   "licence": "106987Z"
+   "currentPlace": 71,
+   "lastPlace": 71,
+   "lastSeason": "2025-2026"
   }
  ]
 }

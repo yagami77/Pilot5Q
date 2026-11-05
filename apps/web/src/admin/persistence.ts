@@ -23,6 +23,8 @@ export interface StageClosure {
   closedAt: string;
   awards: TournamentAward[];
   rankingBefore: RankingEntry[];
+  /** Base joueurs avant intégration (pour annuler la clôture). */
+  playersBefore?: PlayerRecord[];
   /** Nombre de joueurs classés après intégration. */
   rankedAfter: number;
 }

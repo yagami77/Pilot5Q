@@ -76,6 +76,21 @@ export function updatePlayerBase(
   return out;
 }
 
+/**
+ * Classement en cours par licence (et nom en secours), tel que la base le porte : c'est la
+ * place utilisée pour la liste ordonnée d'un TN (colonne « classement en cours » de l'onglet
+ * INSCRITS de l'outil de référence), mise à jour à chaque clôture.
+ */
+export function currentPlaces(base: PlayerRecord[]): Record<string, number> {
+  const out: Record<string, number> = {};
+  for (const p of base) {
+    if (p.currentPlace === null) continue;
+    out[p.licence] = p.currentPlace;
+    out[p.name] = p.currentPlace;
+  }
+  return out;
+}
+
 /** Derniers classements connus par licence (et nom en secours), pour `orderParticipants`. */
 export function lastKnownPlaces(
   base: PlayerRecord[],

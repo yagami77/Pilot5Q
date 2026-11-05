@@ -1,11 +1,13 @@
 /** Gabarit de l'espace du responsable : barre haute, navigation des sections, contenu. */
 import { CalendarDays, LayoutDashboard, MapPin, Settings, Trophy, Users } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
+import { useEffect } from "react";
 import { NavLink, Outlet, useLocation } from "react-router";
 
-import { TopBar } from "@/components/TopBar";
 import { cx } from "@/components/ui";
 
+import { AdminTopBar } from "./AdminTopBar";
+import { setRole } from "./role";
 import { SeasonProvider, useSeason } from "./store";
 import { Welcome } from "./Welcome";
 
@@ -58,7 +60,7 @@ function Shell() {
   }
   return (
     <>
-      <TopBar />
+      <AdminTopBar />
       {doc ? <AdminNav /> : null}
       <main className="mx-auto max-w-[1440px] px-4 pt-3 pb-20">
         {doc ? (
@@ -82,6 +84,8 @@ function Shell() {
 }
 
 export function AdminLayout() {
+  // Entrer dans l'espace vaut choix du rôle (sans mot de passe tant qu'il n'y a pas de serveur).
+  useEffect(() => setRole("responsable"), []);
   return (
     <SeasonProvider>
       <Shell />
