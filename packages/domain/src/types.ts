@@ -81,9 +81,12 @@ export interface PhaseRankRow extends PouleRankRow {
 /** Identifiants de phases : préqualifications, barrages, qualifs National/Masters, finales, consolante. */
 export type PhaseId = "PREQ" | "B" | "QN" | "QM" | "N" | "M" | "CLS";
 
-/** Match d'un tableau à élimination directe. */
+/** Tours d'un tableau à élimination directe (R64/R32 : consolante à plus de 16 joueurs). */
+export type BracketRound = "R64" | "R32" | "R16" | "QF" | "SF" | "F";
+
+/** Match d'un tableau à élimination directe. `a`/`b` vides tant que le joueur n'est pas connu. */
 export interface BracketMatch extends Match {
-  round: "R16" | "QF" | "SF" | "F";
+  round: BracketRound;
   slot: number;
   labelA?: string;
   labelB?: string;
