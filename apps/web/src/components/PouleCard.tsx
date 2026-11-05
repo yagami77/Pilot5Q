@@ -40,20 +40,24 @@ export function PouleCard({
   const r = pouleState(state, phase, poule);
   const rec = new Map(r.rows.map((x) => [x.name, x]));
   const done = poule.matches.filter((m) => isValidScore(m, distance)).length;
-  const dots = poule.matches.map((m) =>
-    isValidScore(m, distance)
-      ? ("ok" as const)
-      : matchTouched(m)
-        ? ("ko" as const)
-        : ("none" as const),
-  );
+  const dots = poule.matches.map((m) => {
+    if (isValidScore(m, distance)) return "ok" as const;
+    if (!matchTouched(m)) return "none" as const;
+    // Un set : les deux scores saisis mais incohérents → rouge ; sinon en cours → bleu
+    const bothSet = m.sa !== null && m.sb !== null;
+    if (distance.setsGagnants === 1 && bothSet) return "ko" as const;
+    return "half" as const;
+  });
   const bills = pouleBillards(state, phase, poule);
   const type = billardType(state, bills[0]);
+  const live = !r.complete && dots.some((x) => x !== "none");
   const status = r.complete
     ? "Terminée"
     : done
       ? `${done}/${poule.matches.length} matchs`
-      : "À jouer";
+      : live
+        ? "En cours"
+        : "À jouer";
   const names = r.complete ? r.rows.map((x) => x.name) : poule.players;
   const byName = new Map(state.players.map((p) => [p.name, p]));
   const clubCounts = new Map<string, number>();
@@ -71,12 +75,21 @@ export function PouleCard({
         "card flex min-w-0 flex-col overflow-hidden p-0 text-left transition-[transform,box-shadow,border-color] duration-200",
         onOpen && "hover:shadow-raised hover:-translate-y-0.5",
         r.complete && "border-[#bfe6d2]",
+        live && "live-card border-brand-light shadow-[0_0_0_3px_var(--color-brand-soft)]",
         active && "border-brand shadow-[0_0_0_3px_var(--color-brand-soft),var(--shadow-raised)]",
         conflict && "border-alert",
       )}
     >
       <div className="border-line flex items-center justify-between gap-2 border-b px-[13px] pt-[11px] pb-2">
-        <b className="text-[14px]">Poule {poule.num}</b>
+        <b className="flex items-center gap-2 text-[14px]">
+          {live ? (
+            <span
+              className="bg-brand-light animate-live-pulse size-2 rounded-full"
+              aria-hidden="true"
+            />
+          ) : null}
+          Poule {poule.num}
+        </b>
         <Chip tone={type === "3m10" ? "blue" : "grey"} className="px-2 py-[3px] text-[11px]">
           B{bills.join("·")} · {type}
         </Chip>
@@ -149,9 +162,10 @@ export function PouleCard({
           <span
             className={cx(
               "ml-auto text-[11px] font-bold",
-              r.complete ? "text-ok" : "text-ink-muted",
+              r.complete ? "text-ok" : live ? "text-brand-light" : "text-ink-muted",
             )}
           >
+            {live ? "En direct · " : ""}
             {status}
           </span>
         </div>

@@ -132,7 +132,7 @@ export function Jeudi() {
   const totalMatches = state.poules.PREQ.reduce((n, p) => n + p.matches.length, 0);
 
   return (
-    <section>
+    <section className="cascade">
       <PageHead
         eyebrow={`${longDate(dayDate(state, "jeudi"))} · Préparation`}
         title="Tirage des billards et création des poules"

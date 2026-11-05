@@ -29,6 +29,7 @@ import {
   scoreOf,
   type ScoreDraft,
 } from "./ScoreEditor";
+import { RollingNumber } from "./RollingNumber";
 import { useToast } from "./Toast";
 import { Avatar, Button, PlayerLine, cx } from "./ui";
 
@@ -327,10 +328,18 @@ function DrawerBody({
                       <td className="px-2.5 py-[7px]">
                         <PlayerLine name={r.name} size="sm" muted={forfaits.has(r.name)} />
                       </td>
-                      <td className="px-2.5 py-[7px] text-right font-mono">{r.ptm}</td>
-                      <td className="px-2.5 py-[7px] text-right font-mono">{r.pts}</td>
-                      <td className="px-2.5 py-[7px] text-right font-mono">{r.faits}</td>
-                      <td className="px-2.5 py-[7px] text-right font-mono">{r.subis}</td>
+                      <td className="px-2.5 py-[7px] text-right font-mono">
+                        <RollingNumber value={r.ptm} />
+                      </td>
+                      <td className="px-2.5 py-[7px] text-right font-mono">
+                        <RollingNumber value={r.pts} />
+                      </td>
+                      <td className="px-2.5 py-[7px] text-right font-mono">
+                        <RollingNumber value={r.faits} />
+                      </td>
+                      <td className="px-2.5 py-[7px] text-right font-mono">
+                        <RollingNumber value={r.subis} />
+                      </td>
                       <td className="px-2.5 py-[7px] text-right font-mono">{moy(r.moy)}</td>
                     </motion.tr>
                   ))}

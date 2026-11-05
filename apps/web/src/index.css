@@ -347,6 +347,31 @@
     stroke: var(--color-gold);
     filter: drop-shadow(0 0 6px rgb(232 159 31 / 0.45));
   }
+  /* Cascade d'apparition des blocs d'une vue (tiroir, modales et scrims exclus). */
+  .cascade > :not(aside, [role="presentation"], [role="dialog"]) {
+    animation: fade-up 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+  .cascade > :nth-child(2) {
+    animation-delay: 60ms;
+  }
+  .cascade > :nth-child(3) {
+    animation-delay: 120ms;
+  }
+  .cascade > :nth-child(4) {
+    animation-delay: 180ms;
+  }
+  .cascade > :nth-child(5) {
+    animation-delay: 240ms;
+  }
+  .cascade > :nth-child(6) {
+    animation-delay: 300ms;
+  }
+  .cascade > :nth-child(7) {
+    animation-delay: 360ms;
+  }
+  .cascade > :nth-child(n + 8) {
+    animation-delay: 420ms;
+  }
   .live-card {
     position: relative;
     overflow: hidden;

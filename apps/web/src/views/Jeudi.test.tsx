@@ -25,7 +25,9 @@ describe("vue Jeudi", () => {
   it("affiche les tuiles, les têtes de série et lance le tirage des poules", () => {
     renderJeudi();
     expect(screen.getByRole("heading", { name: /Tirage des billards/ })).toBeInTheDocument();
-    expect(screen.getByText("Inscrits").nextElementSibling).toHaveTextContent("76");
+    expect(
+      screen.getByText("Inscrits").nextElementSibling?.querySelector("[aria-label]"),
+    ).toHaveAttribute("aria-label", "76");
     expect(screen.getByText("Barre Patrick")).toBeInTheDocument();
     expect(screen.getByText("Hubert Michel")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Lancer le tirage" }));

@@ -108,7 +108,7 @@ export function Samedi() {
     );
 
   return (
-    <section>
+    <section className="cascade">
       <PageHead
         eyebrow={`${longDate(dayDate(state, "samedi"))} · convocation ${convocation}`}
         title="Trois tournois en parallèle"

@@ -4,6 +4,8 @@ import type { ButtonHTMLAttributes, ReactNode } from "react";
 
 import { clubShort, hue, initials, nice } from "@/lib/format";
 
+import { RollingNumber } from "./RollingNumber";
+
 export function cx(...parts: (string | false | null | undefined)[]): string {
   return parts.filter(Boolean).join(" ");
 }
@@ -164,7 +166,7 @@ export function Tile({
           tone === "blue" && "text-brand",
         )}
       >
-        {value}
+        {typeof value === "number" ? <RollingNumber value={value} /> : value}
       </div>
       {detail ? <div className="text-ink-muted text-[12.5px]">{detail}</div> : null}
     </div>
@@ -369,7 +371,7 @@ export function GaugeButton({
       <span className="relative">
         {label} ·{" "}
         <span className="font-mono tabular-nums">
-          {done}/{total}
+          <RollingNumber value={done} />/{total}
         </span>
       </span>
     </button>
@@ -378,7 +380,7 @@ export function GaugeButton({
 
 /* ---------- Points de progression d'une poule ---------- */
 
-export function Dots({ states }: { states: ("ok" | "ko" | "none")[] }) {
+export function Dots({ states }: { states: ("ok" | "ko" | "half" | "none")[] }) {
   return (
     <span className="flex items-center gap-[5px]">
       {states.map((s, i) => (
@@ -386,7 +388,13 @@ export function Dots({ states }: { states: ("ok" | "ko" | "none")[] }) {
           key={i}
           className={cx(
             "size-[9px] rounded-full transition-colors duration-300",
-            s === "ok" ? "bg-ok" : s === "ko" ? "bg-alert" : "bg-line-2",
+            s === "ok"
+              ? "bg-ok"
+              : s === "ko"
+                ? "bg-alert"
+                : s === "half"
+                  ? "bg-brand-light"
+                  : "bg-line-2",
           )}
         />
       ))}

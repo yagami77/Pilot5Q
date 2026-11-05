@@ -38,7 +38,7 @@ export function RollingNumber({
         if (idx < 0)
           return (
             <span key={`${i}-${ch}`} aria-hidden="true">
-              {ch}
+              {ch === " " ? "\u00A0" : ch}
             </span>
           );
         const shown = mounted ? idx : 0;

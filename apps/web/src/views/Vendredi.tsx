@@ -84,7 +84,7 @@ function Saisie() {
   };
 
   return (
-    <section>
+    <section className="cascade">
       <PageHead
         eyebrow={`${longDate(dayDate(state, "vendredi"))} · 11h00`}
         title="Préqualifications"
@@ -201,7 +201,7 @@ function Resultats() {
   };
 
   return (
-    <section>
+    <section className="cascade">
       <PageHead
         eyebrow={`${longDate(dayDate(state, "vendredi"))} · fin des poules`}
         title="Classement des préqualifications"

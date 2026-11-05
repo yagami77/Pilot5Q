@@ -38,7 +38,7 @@ export function Schema() {
       <TopBar />
       <PhaseRail current={day} />
       <main className="mx-auto max-w-[1440px] px-4 pt-3 pb-20">
-        <section className="animate-fade-up">
+        <section className="cascade">
           <PageHead
             eyebrow={`${state.info.name} · ${dateRange(state.info.dates[0], state.info.dates[1])}`}
             title="Le schéma du tournoi, du jeudi au dimanche"

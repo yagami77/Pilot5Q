@@ -1,14 +1,16 @@
 /** Dimanche : tableaux finaux Masters et National, primes, clôture et podium. */
 import { Check, Download, Flag, Printer, Trophy, WandSparkles } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { Bracket } from "@/components/Bracket";
 import { PrintCenter } from "@/components/PrintCenter";
+import { RollingNumber } from "@/components/RollingNumber";
 import { useToast } from "@/components/Toast";
 import { Avatar, Banner, Button, Card, Chip, GaugeButton, PageHead, cx } from "@/components/ui";
 import { phaseComplete, toLiveJson } from "@/lib/engine";
 import { pendingOf, useAutoFill } from "@/lib/fill";
 import { clubShort, euros, longDate, nice, plural } from "@/lib/format";
+import { celebrate } from "@/lib/motion";
 import { computePrizes } from "@/lib/prizes";
 import {
   bracketPlacement,
@@ -30,6 +32,17 @@ export function Dimanche() {
   const closedN = Boolean(state.closed.N);
   const finished = closedM && closedN;
   const d = phaseDistance(state, "M", "F");
+  // Clôture : confettis quand les deux tableaux viennent d'être classés
+  const wasFinished = useRef(finished);
+  useEffect(() => {
+    if (finished && !wasFinished.current) {
+      const t = window.setTimeout(() => void celebrate(null, 220), 350);
+      wasFinished.current = true;
+      return () => window.clearTimeout(t);
+    }
+    wasFinished.current = finished;
+    return undefined;
+  }, [finished]);
 
   const progress = (phase: "N" | "M") => {
     const ms = state.brackets[phase].filter((m) => m.round !== "R16");
@@ -80,14 +93,14 @@ export function Dimanche() {
   };
 
   return (
-    <section>
+    <section className="cascade">
       <PageHead
         eyebrow={longDate(dayDate(state, "dimanche"))}
         title={finished && !showTables ? "Tournoi terminé" : "Phases finales"}
         help="Arbitrage fourni par le club : l'arbitre de chaque match est renseigné avec son numéro de licence. Trente minutes de pause minimum entre deux paliers pour un même joueur."
       >
         <Chip tone="gold" icon={Trophy}>
-          Primes : {euros(prizes.cagnotte)}
+          Primes : <RollingNumber value={euros(prizes.cagnotte)} />
         </Chip>
         {!finished ? (
           <Button
@@ -210,7 +223,9 @@ function PrizesCard() {
     <div className="min-w-0">
       <div className="flex items-center justify-between px-4 pt-3 pb-1.5">
         <h4 className="text-[13.5px] font-bold">{title}</h4>
-        <Chip tone={tone}>{euros(total)}</Chip>
+        <Chip tone={tone}>
+          <RollingNumber value={euros(total)} />
+        </Chip>
       </div>
       <table className="w-full text-[12.5px]">
         <tbody>
@@ -218,7 +233,7 @@ function PrizesCard() {
             <tr key={l.label} className="border-line border-t">
               <td className="px-4 py-1.5 font-semibold">{l.label}</td>
               <td className="text-ink-muted px-2 py-1.5 text-right font-mono whitespace-nowrap">
-                {l.count} × {euros(l.amount)}
+                {l.count} × <RollingNumber value={euros(l.amount)} />
               </td>
               <td className="text-ink-muted max-w-0 truncate px-4 py-1.5 text-[11.5px]">
                 {l.players.length ? l.players.map(nice).join(", ") : "à venir"}
