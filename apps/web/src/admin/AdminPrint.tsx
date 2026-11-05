@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 import { useNavigate, useParams } from "react-router";
 
 import { Button } from "@/components/ui";
-import { dateRange } from "@/lib/format";
+import { clubShort, dateRange } from "@/lib/format";
 
 import { SeasonProvider, useSeason } from "./store";
 import { stageAcceptance } from "./stage";
@@ -112,7 +112,7 @@ export function RankingDoc({ doc }: { doc: SeasonDocument }) {
   const rows = rankingRows(doc.ranking);
   const last = latestStage(doc.ranking);
   const stages = last ? windowStages(last.season, last.tn) : [];
-  const pages = chunk(rows, 50);
+  const pages = chunk(rows, 46);
   const title = last
     ? `CLASSEMENT GLISSANT 5 QUILLES APRÈS TN${last.tn} ${last.season}`
     : "CLASSEMENT GLISSANT 5 QUILLES";
@@ -125,7 +125,7 @@ export function RankingDoc({ doc }: { doc: SeasonDocument }) {
             sub="4 meilleurs résultats sur les 5 derniers TN (somme simple sinon) · départage : moyenne"
             right={`page ${k + 1}/${pages.length}`}
           />
-          <table className="text-[10px]">
+          <table className="text-[9.5px] [&_td]:whitespace-nowrap">
             <thead>
               <tr>
                 <th>Pos.</th>
@@ -147,7 +147,7 @@ export function RankingDoc({ doc }: { doc: SeasonDocument }) {
                 <tr key={r.licence || r.name}>
                   <td className="font-mono">{r.position}</td>
                   <td>{r.name}</td>
-                  <td>{r.club}</td>
+                  <td>{clubShort(r.club)}</td>
                   <td className="font-mono">{r.licence}</td>
                   <td className="font-mono font-bold">{dec(r.pts, 3)}</td>
                   <td className="font-mono">{dec(r.moy, 3)}</td>

@@ -201,6 +201,15 @@ export function Ranking() {
         />
       </div>
       {afterReference ? <ReferenceBanner c={reference} /> : null}
+      {!lastClosure && doc.id === SEASON_FIXTURE.season && last?.tn === 1 ? (
+        <div className="bg-brand-soft text-brand-ink mb-4 rounded-[12px] px-4 py-3 text-[12.5px]">
+          Démonstration : fenêtre reconstituée à partir du classeur de référence (TN 3 à 5 2025-2026
+          et TN 1 2026-2027). Le TN 2 2025-2026, sorti de la fenêtre au TN 2 2026-2027, n'y figure
+          pas : l'ordre peut différer du classement officiel publié avant le TN 2, dont les places
+          servent à la liste ordonnée. Clôturez le TN 2 pour obtenir le classement « après TN 2 » du
+          classeur.
+        </div>
+      ) : null}
       <Card
         title={`${visible.length} joueurs`}
         aside={
