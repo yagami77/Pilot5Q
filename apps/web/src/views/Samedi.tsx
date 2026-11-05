@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { useNavigate } from "react-router";
 
 import { Bracket } from "@/components/Bracket";
+import { DayTasks } from "@/components/DayTasks";
 import { PouleCard } from "@/components/PouleCard";
 import { PouleDrawer } from "@/components/PouleDrawer";
 import { PrintCenter } from "@/components/PrintCenter";
@@ -116,6 +117,7 @@ export function Samedi() {
 
   return (
     <section className="cascade">
+      <DayTasks day="samedi" actions={{ primes: () => void navigate("/tournoi/primes") }} />
       <PageHead
         eyebrow={`${longDate(dayDate(state, "samedi"))} · convocation ${convocation}`}
         title="Trois tournois en parallèle"
@@ -141,6 +143,7 @@ export function Samedi() {
 
       <div className="flex flex-col gap-3.5">
         <Card
+          id="masters"
           title={`Qualification Masters · ${plural(state.poules.QM.length, "poule")} de 4`}
           aside={
             <>
@@ -183,6 +186,7 @@ export function Samedi() {
         </Card>
 
         <Card
+          id="national"
           title={`Qualification National · ${plural(state.poules.QN.length, "poule")} de 4`}
           aside={
             <>
@@ -216,7 +220,7 @@ export function Samedi() {
               />
             ))}
           </div>
-          <div className="border-line border-t">
+          <div id="huitiemes" className="border-line scroll-mt-4 border-t">
             <div className="flex flex-wrap items-center gap-2 px-4 pt-3">
               <h4 className="text-[13.5px] font-bold">Huitièmes de finale</h4>
               <Chip tone="grey">
@@ -263,6 +267,7 @@ export function Samedi() {
         </Card>
 
         <Card
+          id="consolante"
           title="Consolante · tableau à élimination directe"
           aside={
             <>

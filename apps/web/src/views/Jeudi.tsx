@@ -14,6 +14,7 @@ import {
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router";
 
+import { DayTasks } from "@/components/DayTasks";
 import { PouleCard } from "@/components/PouleCard";
 import { Serpentin } from "@/components/Serpentin";
 import { PrintCenter } from "@/components/PrintCenter";
@@ -107,6 +108,7 @@ export function Jeudi() {
 
   return (
     <section className="cascade">
+      <DayTasks day="jeudi" actions={{ documents: () => setPrintOpen(true) }} />
       <PageHead
         eyebrow={`${longDate(dayDate(state, "jeudi"))} · Préparation`}
         title="Tirage des billards et création des poules"
@@ -211,7 +213,10 @@ export function Jeudi() {
       <LaterPhases />
 
       {!drawn ? (
-        <div className="bg-brand-cta relative mt-3.5 flex flex-wrap items-center justify-between gap-5 overflow-hidden rounded-[18px] px-6 py-[22px] text-white shadow-[0_24px_50px_-24px_rgb(14_55_168/0.7)]">
+        <div
+          id="tirage"
+          className="bg-brand-cta relative mt-3.5 flex scroll-mt-4 flex-wrap items-center justify-between gap-5 overflow-hidden rounded-[18px] px-6 py-[22px] text-white shadow-[0_24px_50px_-24px_rgb(14_55_168/0.7)]"
+        >
           <span
             className="pointer-events-none absolute -top-20 -right-20 size-[260px] rounded-full bg-[radial-gradient(circle,rgb(255_255_255/0.22),transparent_70%)]"
             aria-hidden="true"
@@ -231,7 +236,7 @@ export function Jeudi() {
           </Button>
         </div>
       ) : (
-        <div className="mt-4">
+        <div id="tirage" className="mt-4 scroll-mt-4">
           <div className="mb-3 flex flex-wrap items-end justify-between gap-3">
             <div>
               <div className="eyebrow">Serpentin</div>
@@ -330,6 +335,7 @@ function BillardStructure({
     draft.length >= 8 && big >= 3 && new Set(draft.map((b) => b.num)).size === draft.length;
   return (
     <Card
+      id="billards"
       className="mt-3.5"
       title="Structure des billards"
       aside={
@@ -509,6 +515,7 @@ function PreqBillards({
   }));
   return (
     <Card
+      id="affectation"
       className="mt-3.5"
       title="Billards et poules affectées"
       aside={

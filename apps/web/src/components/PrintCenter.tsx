@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router";
 
+import { markPrinted } from "@/lib/djMeta";
 import { docsFor } from "@/print/docs";
 import type { Day } from "@/lib/tournament";
 import { useTournament } from "@/store/tournament";
@@ -20,7 +21,7 @@ export function PrintCenter({
   open: boolean;
   onClose: () => void;
 }) {
-  const { state } = useTournament();
+  const { state, id } = useTournament();
   const navigate = useNavigate();
   const toast = useToast();
   const docs = useMemo(() => docsFor(day, state), [day, state]);
@@ -52,6 +53,11 @@ export function PrintCenter({
       toast("Cochez au moins un document");
       return;
     }
+    if (id)
+      void markPrinted(
+        id,
+        selected.map((d) => d.id),
+      );
     const path = `/tournoi/imprimer/${selected.map((d) => d.id).join("+")}`;
     const url = `${import.meta.env.BASE_URL.replace(/\/$/, "")}${path}`;
     const win = window.open(url, "_blank", "noopener");

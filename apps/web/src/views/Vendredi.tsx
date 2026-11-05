@@ -6,6 +6,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useProgressiveFill } from "@/lib/fill";
 import { useNavigate } from "react-router";
 
+import { DayTasks } from "@/components/DayTasks";
 import { PouleCard } from "@/components/PouleCard";
 import { PouleDrawer } from "@/components/PouleDrawer";
 import { PrintCenter } from "@/components/PrintCenter";
@@ -39,7 +40,12 @@ import { useTournament, type EventInput } from "@/store/tournament";
 
 export function Vendredi() {
   const { state } = useTournament();
-  return state.closed.PREQ ? <Resultats /> : <Saisie />;
+  return (
+    <>
+      <DayTasks day="vendredi" />
+      {state.closed.PREQ ? <Resultats /> : <Saisie />}
+    </>
+  );
 }
 
 /* ---------- Saisie des poules ---------- */
@@ -110,13 +116,15 @@ function Saisie() {
         <Button icon={Printer} onClick={() => setPrintOpen(true)}>
           Imprimer
         </Button>
-        <GaugeButton
-          done={pr.valid}
-          total={pr.total}
-          label="Classer la phase"
-          onClick={classer}
-          disabled={!complete}
-        />
+        <span id="classement" className="rounded-[12px]">
+          <GaugeButton
+            done={pr.valid}
+            total={pr.total}
+            label="Classer la phase"
+            onClick={classer}
+            disabled={!complete}
+          />
+        </span>
       </PageHead>
 
       {forfaits.length > 0 ? (
@@ -127,7 +135,10 @@ function Saisie() {
         </div>
       ) : null}
 
-      <div className="grid grid-cols-[repeat(auto-fill,minmax(230px,1fr))] gap-3">
+      <div
+        id="poules"
+        className="grid scroll-mt-4 grid-cols-[repeat(auto-fill,minmax(230px,1fr))] gap-3"
+      >
         {state.poules.PREQ.map((p) => (
           <PouleCard
             key={p.num}
@@ -226,6 +237,7 @@ function Resultats() {
 
       <div className="grid items-start gap-4 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
         <Card
+          id="classement"
           title={`${ranking.length} joueurs classés`}
           aside={<Chip tone="grey">Poule · rang</Chip>}
           bodyClassName="pb-1"
@@ -276,6 +288,7 @@ function Resultats() {
 
         <div className="flex flex-col gap-3.5">
           <Card
+            id="barrages"
             title={`Barrages · ${plural(state.barrages.length, "match")}`}
             aside={
               <>

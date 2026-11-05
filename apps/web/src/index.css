@@ -585,6 +585,27 @@
   color: #6b7480;
 }
 
+/* Zone mise en évidence par un clic sur une tâche du jour */
+.zone-flash {
+  animation: zone-flash 1.5s ease-out;
+}
+@keyframes zone-flash {
+  0% {
+    box-shadow: 0 0 0 0 rgb(30 79 216 / 0);
+  }
+  20% {
+    box-shadow: 0 0 0 4px rgb(30 79 216 / 0.35);
+  }
+  100% {
+    box-shadow: 0 0 0 14px rgb(30 79 216 / 0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .zone-flash {
+    animation: none;
+  }
+}
+
 @media print {
   .tricolore,
   .no-print {

@@ -1,8 +1,10 @@
 /** Vue d'impression plein écran : un ou plusieurs documents, bouton « Imprimer ». */
 import { ArrowLeft, Printer } from "lucide-react";
+import { useEffect } from "react";
 import { Navigate, useNavigate, useParams } from "react-router";
 
 import { Button } from "@/components/ui";
+import { markPrinted } from "@/lib/djMeta";
 import { useTournament } from "@/store/tournament";
 
 import { docById } from "./docs";
@@ -11,6 +13,10 @@ export function PrintView() {
   const { ready, id, state } = useTournament();
   const { doc } = useParams();
   const navigate = useNavigate();
+  // Suivi « documents imprimés » des tâches du jour
+  useEffect(() => {
+    if (ready && id && doc) void markPrinted(id, doc.split("+"));
+  }, [ready, id, doc]);
   if (!ready) {
     return <div className="text-ink-muted grid min-h-[60vh] place-items-center">Chargement…</div>;
   }

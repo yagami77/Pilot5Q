@@ -3,6 +3,7 @@ import { Check, Download, Flag, Printer, Trophy, WandSparkles } from "lucide-rea
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { Bracket } from "@/components/Bracket";
+import { DayTasks } from "@/components/DayTasks";
 import { PrintCenter } from "@/components/PrintCenter";
 import { RollingNumber } from "@/components/RollingNumber";
 import { useToast } from "@/components/Toast";
@@ -93,6 +94,7 @@ export function Dimanche() {
 
   return (
     <section className="cascade">
+      <DayTasks day="dimanche" />
       <PageHead
         eyebrow={longDate(dayDate(state, "dimanche"))}
         title={finished && !showTables ? "Tournoi terminé" : "Phases finales"}
@@ -121,6 +123,7 @@ export function Dimanche() {
       ) : (
         <div className="flex flex-col gap-3.5">
           <Card
+            id="masters"
             title="Masters"
             aside={
               <>
@@ -186,6 +189,7 @@ export function Dimanche() {
           <PrizesCard />
           {finished ? (
             <Banner
+              className="scroll-mt-4"
               icon={Flag}
               tone="gold"
               actions={
