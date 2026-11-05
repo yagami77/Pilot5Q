@@ -21,7 +21,14 @@ import {
 } from "@/lib/tournament";
 import { useTournament } from "@/store/tournament";
 
-import { ScoreEditor, draftMatch, draftOf, scoreOf, type ScoreDraft } from "./ScoreEditor";
+import {
+  ScoreCell,
+  ScoreEditor,
+  draftMatch,
+  draftOf,
+  scoreOf,
+  type ScoreDraft,
+} from "./ScoreEditor";
 import { useToast } from "./Toast";
 import { Avatar, Button, PlayerLine, cx } from "./ui";
 
@@ -231,7 +238,7 @@ function DrawerBody({
                   </div>
                 </div>
                 {!multi ? (
-                  <ScoreEditorSlot
+                  <ScoreCell
                     who={who}
                     match={base}
                     draft={draft}
@@ -383,87 +390,6 @@ function DrawerBody({
           Valider
         </Button>
       </div>
-    </div>
-  );
-}
-
-/** Une seule case (joueur A ou B) d'un match à un set, dans la grille du tiroir. */
-function ScoreEditorSlot({
-  who,
-  match,
-  draft,
-  onDraft,
-  onCommit,
-  disabled,
-  idBase,
-  d,
-}: {
-  who: "a" | "b";
-  match: Match;
-  draft: ScoreDraft;
-  onDraft: (n: ScoreDraft) => void;
-  onCommit: (n: ScoreDraft) => void;
-  disabled?: boolean;
-  idBase: string;
-  d: { pointsParSet: number; setsGagnants: number };
-}) {
-  // Les deux cases d'un match partagent le même brouillon ; on rend celle du joueur demandé.
-  const current = draftMatch(match, draft, d);
-  const valid = isValidScore(current, d);
-  const value = who === "a" ? draft.sa : draft.sb;
-  const bad = current.sa !== null && current.sb !== null && !valid;
-  return (
-    <div data-match={match.id} className="contents">
-      <input
-        id={`${idBase}-${who}`}
-        type="number"
-        inputMode="numeric"
-        min={0}
-        max={d.pointsParSet}
-        data-score="true"
-        aria-label={`Score de ${nice(who === "a" ? match.a : match.b)}`}
-        disabled={disabled}
-        placeholder="–"
-        value={value ?? ""}
-        className={cx(
-          "score-input",
-          value === d.pointsParSet && valid && "win",
-          (value !== null && (value < 0 || value > d.pointsParSet)) || bad ? "err" : "",
-          bad && "animate-shake",
-        )}
-        onFocus={(e) => e.currentTarget.select()}
-        onChange={(e) => {
-          const v = e.target.value.trim() === "" ? null : Number(e.target.value);
-          onDraft(who === "a" ? { ...draft, sa: v } : { ...draft, sb: v });
-        }}
-        onBlur={() => onCommit(draft)}
-        onKeyDown={(e) => {
-          if (e.key !== " " && e.key !== "Enter") return;
-          e.preventDefault();
-          const next =
-            e.key === " "
-              ? who === "a"
-                ? { ...draft, sa: d.pointsParSet }
-                : { ...draft, sb: d.pointsParSet }
-              : draft;
-          onDraft(next);
-          onCommit(next);
-          const root = e.currentTarget.closest("[data-score-root]") ?? document;
-          const all = [...root.querySelectorAll<HTMLInputElement>("input[data-score]")].filter(
-            (i) => !i.disabled,
-          );
-          const idx = all.indexOf(e.currentTarget);
-          const sibling = all[who === "a" ? idx + 1 : idx - 1];
-          const target =
-            sibling &&
-            sibling.value === "" &&
-            sibling.closest("[data-match]") === e.currentTarget.closest("[data-match]")
-              ? sibling
-              : (all.slice(idx + 1).find((i) => i.value === "") ?? all[idx + 1]);
-          target?.focus();
-          target?.select();
-        }}
-      />
     </div>
   );
 }

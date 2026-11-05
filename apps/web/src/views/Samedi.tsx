@@ -9,7 +9,14 @@ import { PouleDrawer } from "@/components/PouleDrawer";
 import { PrintCenter } from "@/components/PrintCenter";
 import { useToast } from "@/components/Toast";
 import { Banner, Button, Card, Chip, GaugeButton, PageHead, PlayerLine, cx } from "@/components/ui";
-import { clubOf, forfaitsOf, mastersClubConflicts, nationalR16, phaseComplete } from "@/lib/engine";
+import {
+  clubOf,
+  forfaitsOf,
+  isValidScore,
+  mastersClubConflicts,
+  nationalR16,
+  phaseComplete,
+} from "@/lib/engine";
 import { pendingOf, useAutoFill } from "@/lib/fill";
 import { longDate, nice, plural } from "@/lib/format";
 import {
@@ -48,24 +55,36 @@ export function Samedi() {
   const convocation = big <= 3 ? "8h00" : "8h30";
   const by = playerByName(state);
 
-  const fill = useAutoFill(() => {
-    const out = [];
-    for (const phase of ["QM", "QN"] as const) {
-      if (state.closed[phase]) continue;
-      const ff = new Set(forfaitsOf(state, phase));
-      const d = phaseDistance(state, phase);
-      for (const p of state.poules[phase])
+  const fill = useAutoFill(
+    () => {
+      const out = [];
+      for (const phase of ["QM", "QN"] as const) {
+        if (state.closed[phase]) continue;
+        const ff = new Set(forfaitsOf(state, phase));
+        const d = phaseDistance(state, phase);
+        for (const p of state.poules[phase])
+          out.push(
+            ...pendingOf(
+              phase,
+              p.matches.filter((m) => !ff.has(m.a) && !ff.has(m.b)),
+              d,
+            ),
+          );
+      }
+      if (hasCls && !closedCLS) out.push(...pendingOf("CLS", cls, phaseDistance(state, "CLS")));
+      // Huitièmes National : dès que les poules sont classées
+      if (closedN && !state.closed.N)
         out.push(
           ...pendingOf(
-            phase,
-            p.matches.filter((m) => !ff.has(m.a) && !ff.has(m.b)),
-            d,
+            "N",
+            state.brackets.N.filter((m) => m.round === "R16"),
+            phaseDistance(state, "N", "R16"),
           ),
         );
-    }
-    if (hasCls && !closedCLS) out.push(...pendingOf("CLS", cls, phaseDistance(state, "CLS")));
-    return out;
-  });
+      return out;
+    },
+    { batch: 2, every: 140 },
+  );
 
   const close = (phase: "QM" | "QN" | "CLS", label: string) => {
     if (!phaseComplete(state, phase)) {
@@ -82,6 +101,11 @@ export function Samedi() {
     [state, closedN, dN],
   );
   const liveReady = liveR16.filter((m) => m.a && m.b).length;
+  const r16Pending =
+    closedN &&
+    state.brackets.N.some(
+      (m) => m.round === "R16" && m.a && m.b && !isValidScore(m, phaseDistance(state, "N", "R16")),
+    );
 
   return (
     <section>
@@ -93,7 +117,7 @@ export function Samedi() {
         <Chip>
           Convocations : {state.poules.QM.length * 4} + {state.poules.QN.length * 4} joueurs
         </Chip>
-        {!(closedM && closedN) ? (
+        {!(closedM && closedN && !r16Pending) ? (
           <Button
             icon={WandSparkles}
             onClick={fill.start}
@@ -195,7 +219,7 @@ export function Samedi() {
               </Chip>
             </div>
             {closedN ? (
-              <Bracket phase="N" rounds={["R16"]} delays={false} />
+              <Bracket phase="N" rounds={["R16"]} layout="grid" />
             ) : (
               <div className="grid grid-cols-2 gap-2 px-4 pt-3 pb-4 md:grid-cols-4">
                 {liveR16.map((m, i) => (
@@ -264,7 +288,7 @@ export function Samedi() {
           }
         >
           {hasCls ? (
-            <Bracket phase="CLS" />
+            <Bracket phase="CLS" zoomable championNote="vainqueur de la consolante" />
           ) : (
             <div className="text-ink-muted flex flex-wrap items-center gap-3 px-4 pb-4 text-[13px]">
               {consolanteAllowed(state)

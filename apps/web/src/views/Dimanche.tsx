@@ -42,15 +42,18 @@ export function Dimanche() {
   const pM = progress("M");
   const pN = progress("N");
 
-  const fill = useAutoFill(() => {
-    const out = [];
-    for (const phase of ["M", "N"] as const) {
-      if (state.closed[phase]) continue;
-      for (const m of state.brackets[phase])
-        out.push(...pendingOf(phase, [m], phaseDistance(state, phase, m.round)));
-    }
-    return out;
-  });
+  const fill = useAutoFill(
+    () => {
+      const out = [];
+      for (const phase of ["M", "N"] as const) {
+        if (state.closed[phase]) continue;
+        for (const m of state.brackets[phase])
+          out.push(...pendingOf(phase, [m], phaseDistance(state, phase, m.round)));
+      }
+      return out;
+    },
+    { batch: 1, every: 380 },
+  );
 
   const close = (phase: "N" | "M") => {
     if (!phaseComplete(state, phase)) {
@@ -131,7 +134,12 @@ export function Dimanche() {
               </>
             }
           >
-            <Bracket phase="M" rounds={["QF", "SF", "F"]} withArbitre />
+            <Bracket
+              phase="M"
+              rounds={["QF", "SF", "F"]}
+              withArbitre
+              championNote={`vainqueur Masters · ${euros(prizes.masters.lines[0]?.amount ?? 0)}`}
+            />
           </Card>
           <Card
             title="National"
@@ -159,6 +167,8 @@ export function Dimanche() {
               rounds={["R16", "QF", "SF", "F"]}
               editableRounds={["QF", "SF", "F"]}
               withArbitre
+              zoomable
+              championNote={`vainqueur National · ${euros(prizes.national.lines[0]?.amount ?? 0)}`}
             />
           </Card>
           <PrizesCard />

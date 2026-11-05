@@ -279,3 +279,74 @@
     @apply border-brand-light ring-brand-soft ring-[3px] outline-none;
   }
 }
+
+/* ---------- Schémas vivants : tableaux, serpentin, flux ---------- */
+@theme {
+  --animate-live-pulse: live-pulse 1.6s infinite;
+  --animate-glow-gold: glow-gold 1.6s ease-out 2;
+  --animate-shimmer: shimmer 2.4s linear infinite;
+  --animate-draw-path: draw-path 2.6s cubic-bezier(0.3, 0.7, 0.2, 1) forwards;
+
+  @keyframes live-pulse {
+    0%,
+    100% {
+      box-shadow: 0 0 0 0 rgb(30 79 216 / 0.45);
+    }
+    50% {
+      box-shadow: 0 0 0 7px rgb(30 79 216 / 0);
+    }
+  }
+  @keyframes glow-gold {
+    0% {
+      box-shadow: 0 0 0 0 rgb(232 159 31 / 0.55);
+    }
+    100% {
+      box-shadow: 0 0 0 18px rgb(232 159 31 / 0);
+    }
+  }
+  @keyframes shimmer {
+    0% {
+      background-position: 0% 50%;
+    }
+    100% {
+      background-position: 200% 50%;
+    }
+  }
+  @keyframes draw-path {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+}
+
+@layer components {
+  .conn {
+    fill: none;
+    stroke: var(--color-line-2);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    transition: stroke 0.4s;
+  }
+  .conn.lit {
+    stroke: var(--color-brand-light);
+    stroke-width: 3;
+    filter: drop-shadow(0 0 6px rgb(30 79 216 / 0.35));
+  }
+  .conn.gold {
+    stroke: var(--color-gold);
+    filter: drop-shadow(0 0 6px rgb(232 159 31 / 0.45));
+  }
+  .live-card {
+    position: relative;
+    overflow: hidden;
+  }
+  .live-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(90deg, transparent, rgb(30 79 216 / 0.06), transparent);
+    background-size: 200% 100%;
+    animation: var(--animate-shimmer);
+  }
+}
