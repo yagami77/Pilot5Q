@@ -19,15 +19,21 @@ import {
   Mail,
   Printer,
   RotateCcw,
+  BellRing,
+  Lock,
+  Radio,
   Upload,
+  UserPlus,
   UserX,
 } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import { useMemo, useRef, useState, type DragEvent, type ReactNode } from "react";
 import { Link, Navigate, useParams } from "react-router";
 
 import { useToast } from "@/components/Toast";
 import { Avatar, Banner, Button, Card, Chip, PageHead, Tile, cx } from "@/components/ui";
 import { clubShort, dateRange, nice, plural } from "@/lib/format";
+import { useNotifications } from "@/lib/notifications";
 
 import { ClosureSection } from "./Closure";
 import {
@@ -42,7 +48,10 @@ import {
 import { StageStatusChip } from "./Dashboard";
 import { DjSection, DjStatusChip } from "./DjAccess";
 import { useSeason, useSeasonDoc } from "./store";
-import { stageAcceptance, stageCapacity } from "./stage";
+import type { SeasonDocument } from "./persistence";
+import { deadlineLabel, preqDrawn, syncRoster, wednesdayBefore } from "./roster";
+import { stageAcceptance, stageCapacity, withStageDerived } from "./stage";
+import { useStageTournament } from "./stageTournament";
 import { Empty, Field, Input, Num, Row, Table, copyText, downloadText, frDateTime } from "./ui";
 
 /** Numéro d'étape et titre d'une section. */
@@ -150,8 +159,49 @@ function StageView({
   const capacity = stageCapacity(doc, stage);
   const opened = Boolean(stage.openedAt);
 
-  const setRegs = (fn: (r: Registration[]) => Registration[]) =>
-    update((d) => {
+  const closed = Boolean(stage.closedAt);
+  const toast = useToast();
+  const linked = useStageTournament(stage);
+  const drawn = linked.state ? preqDrawn(linked.state) : false;
+  // Inscrits modifiables : avant l'ouverture, puis jusqu'au tirage des poules du vendredi.
+  const lock: string | null = !opened
+    ? null
+    : closed
+      ? "Tournoi clôturé : les inscrits ne se modifient plus."
+      : !linked.known
+        ? "Le tournoi du DJ n'est pas enregistré dans ce navigateur : les modifications ne pourraient pas lui être répercutées (synchronisation avec le serveur)."
+        : drawn
+          ? "Poules du vendredi tirées par le DJ : les forfaits de dernière minute se gèrent désormais dans son cockpit (SPEC §4)."
+          : null;
+
+  /** Applique une modification des inscrits ; après ouverture, la répercute chez le DJ. */
+  const change = (fn: (d: SeasonDocument) => SeasonDocument, reinstated: string[] = []) => {
+    if (lock) {
+      toast(lock);
+      return;
+    }
+    const next = withStageDerived(fn(doc), stage.id);
+    update((d) => withStageDerived(fn(d), stage.id));
+    if (!opened || !stage.tournamentId || !linked.io) return;
+    const nextStage = next.stages.find((s) => s.id === stage.id) ?? stage;
+    const accepted = stageAcceptance(next, nextStage).accepted;
+    const forfaits = new Set(
+      (next.registrations[stage.id]?.registrations ?? [])
+        .filter((r) => r.forfait)
+        .map((r) => r.licence),
+    );
+    void syncRoster(stage.tournamentId, accepted, linked.io, forfaits, new Set(reinstated)).then(
+      (res) => {
+        linked.reload();
+        if (res.status === "synced") toast("Répercuté dans le tournoi du DJ et notifié");
+        else if (res.status === "drawn") toast("Poules déjà tirées : modification non répercutée");
+        else if (res.status === "missing") toast("Tournoi du DJ introuvable dans ce navigateur");
+      },
+    );
+  };
+
+  const setRegs = (fn: (r: Registration[]) => Registration[], reinstated: string[] = []) =>
+    change((d) => {
       const cur = d.registrations[stage.id] ?? {
         stageId: stage.id,
         importedAt: null,
@@ -165,16 +215,19 @@ function StageView({
           [stage.id]: { ...cur, registrations: fn(cur.registrations) },
         },
       };
-    });
+    }, reinstated);
   const toggleJunior = (licence: string) =>
-    update((d) => ({
+    change((d) => ({
       ...d,
       juniors: d.juniors.includes(licence)
         ? d.juniors.filter((l) => l !== licence)
         : [...d.juniors, licence],
     }));
   const setForfait = (licence: string, forfait: boolean) =>
-    setRegs((rs) => rs.map((r) => (r.licence === licence ? { ...r, forfait } : r)));
+    setRegs(
+      (rs) => rs.map((r) => (r.licence === licence ? { ...r, forfait } : r)),
+      forfait ? [] : [licence],
+    );
 
   return (
     <>
@@ -224,14 +277,22 @@ function StageView({
         />
       </div>
       <div className="grid gap-4">
-        <ImportStep stage={stage} regs={regs} fileName={regsDoc?.fileName ?? ""} locked={opened} />
+        <ImportStep
+          stage={stage}
+          regs={regs}
+          fileName={regsDoc?.fileName ?? ""}
+          lock={lock}
+          opened={opened}
+          apply={change}
+        />
         <OrderedStep
           stage={stage}
           accepted={acceptance.accepted}
           waiting={acceptance.waiting}
           forfaits={acceptance.forfaits}
           juniors={juniors}
-          locked={opened}
+          lock={lock}
+          opened={opened}
           onJunior={toggleJunior}
           onForfait={setForfait}
         />
@@ -255,14 +316,17 @@ function ImportStep({
   stage,
   regs,
   fileName,
-  locked,
+  lock,
+  opened,
+  apply,
 }: {
   stage: Stage;
   regs: Registration[];
   fileName: string;
-  locked: boolean;
+  lock: string | null;
+  opened: boolean;
+  apply: (fn: (d: SeasonDocument) => SeasonDocument) => void;
 }) {
-  const { update } = useSeason();
   const toast = useToast();
   const input = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
@@ -273,7 +337,7 @@ function ImportStep({
         toast("Aucun inscrit trouvé dans ce fichier");
         return;
       }
-      update((d) => {
+      apply((d) => {
         const previous = new Map(
           (d.registrations[stage.id]?.registrations ?? []).map((r) => [r.licence, r]),
         );
@@ -329,10 +393,9 @@ function ImportStep({
         ) : null
       }
     >
-      {locked ? (
-        <Banner icon={Check} tone="blue" className="mt-0">
-          Tournoi ouvert : {plural(regs.length, "inscrit")} ({fileName}). Les changements passent
-          désormais par le directeur de jeu.
+      {lock ? (
+        <Banner icon={Lock} tone="blue" className="mt-0">
+          {plural(regs.length, "inscrit")} ({fileName}). {lock}
         </Banner>
       ) : (
         <button
@@ -351,6 +414,11 @@ function ImportStep({
               : "border-line-2 bg-surface-2 hover:border-brand",
           )}
         >
+          {opened ? (
+            <span className="text-brand-ink text-[12px] font-semibold">
+              TN ouvert au DJ : un nouvel import est répercuté dans son tournoi et lui est notifié.
+            </span>
+          ) : null}
           {regs.length > 0 ? (
             <FileText className="text-ok size-6" aria-hidden="true" />
           ) : (
@@ -386,7 +454,8 @@ function OrderedStep({
   waiting,
   forfaits,
   juniors,
-  locked,
+  lock,
+  opened,
   onJunior,
   onForfait,
 }: {
@@ -395,10 +464,12 @@ function OrderedStep({
   waiting: Player[];
   forfaits: Player[];
   juniors: Set<string>;
-  locked: boolean;
+  lock: string | null;
+  opened: boolean;
   onJunior: (licence: string) => void;
   onForfait: (licence: string, forfait: boolean) => void;
 }) {
+  const locked = Boolean(lock);
   const [showAll, setShowAll] = useState(false);
   const list = showAll ? accepted : accepted.slice(0, 24);
   return (
@@ -432,6 +503,7 @@ function OrderedStep({
         <Empty icon={FileText}>Importez le CSV des inscrits pour obtenir la liste ordonnée.</Empty>
       ) : (
         <>
+          {opened ? <AfterOpeningBanner stage={stage} lock={lock} /> : null}
           <Table head={["Rang", "Joueur", "Club", "Licence", "Place", "", "U21", ""]} dense>
             {list.map((p) => (
               <PlayerRow
@@ -474,7 +546,14 @@ function OrderedStep({
                       <td>
                         <Num>{i + 1}</Num>
                       </td>
-                      <td className="font-semibold">{nice(p.name)}</td>
+                      <td className="font-semibold">
+                        {nice(p.name)}
+                        {i === 0 && !locked ? (
+                          <span className="text-brand-ink ml-2 text-[11px] font-semibold">
+                            entre au prochain forfait
+                          </span>
+                        ) : null}
+                      </td>
                       <td className="text-ink-muted">{clubShort(p.club)}</td>
                       <td>
                         <Num>{p.place ?? "nouveau"}</Num>
@@ -512,9 +591,94 @@ function OrderedStep({
               )}
             </div>
           </div>
+          {opened && stage.tournamentId ? <RosterLog tournamentId={stage.tournamentId} /> : null}
         </>
       )}
     </Step>
+  );
+}
+
+/** Rappel des règles après l'ouverture au DJ : date limite, tirage, répercussion. */
+function AfterOpeningBanner({ stage, lock }: { stage: Stage; lock: string | null }) {
+  if (lock) {
+    return (
+      <Banner icon={Lock} tone="gold" className="mt-0 mb-3">
+        {lock}
+      </Banner>
+    );
+  }
+  const wednesday = stage.start ? wednesdayBefore(stage.start) : null;
+  const late = wednesday !== null && new Date().toISOString().slice(0, 10) > wednesday;
+  return (
+    <Banner icon={Radio} tone={late ? "gold" : "blue"} className="mt-0 mb-3">
+      TN ouvert au DJ : chaque forfait, intégration depuis la liste d'attente ou drapeau U21 est
+      répercuté dans son tournoi et lui est notifié.{" "}
+      {stage.start
+        ? late
+          ? `Mercredi (${deadlineLabel(stage.start)}) passé : encore possible jusqu'au tirage des poules du vendredi.`
+          : `Jusqu'au ${deadlineLabel(stage.start)}, et en pratique jusqu'au tirage des poules.`
+        : ""}
+    </Banner>
+  );
+}
+
+/** Journal des modifications notifiées au DJ (lues ou non), et mention de l'app 5 Quilles. */
+function RosterLog({ tournamentId }: { tournamentId: string }) {
+  const { notifications } = useNotifications(tournamentId);
+  const list = notifications.filter((n) => n.kind === "forfait" || n.kind === "inscription");
+  return (
+    <div className="mt-4">
+      <div className="eyebrow mb-1.5 flex items-center gap-1.5">
+        <BellRing className="size-3.5" aria-hidden="true" />
+        Modifications notifiées au directeur de jeu · {list.length}
+      </div>
+      {list.length === 0 ? (
+        <p className="text-ink-muted text-[12.5px]">
+          Aucune modification depuis l'ouverture. Chaque changement apparaîtra ici, avec son impact
+          et son état de lecture par le DJ.
+        </p>
+      ) : (
+        <ol className="flex flex-col gap-2">
+          <AnimatePresence initial={false}>
+            {list.map((n) => (
+              <motion.li
+                key={n.id}
+                layout
+                initial={{ opacity: 0, y: -8 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="border-line flex flex-wrap items-start gap-3 rounded-[12px] border px-3 py-2.5"
+              >
+                <span
+                  className={cx(
+                    "mt-0.5 grid size-7 shrink-0 place-items-center rounded-full",
+                    n.kind === "forfait"
+                      ? "bg-alert-soft text-alert-ink"
+                      : "bg-ok-soft text-ok-ink",
+                  )}
+                >
+                  {n.kind === "forfait" ? (
+                    <UserX className="size-3.5" aria-hidden="true" />
+                  ) : (
+                    <UserPlus className="size-3.5" aria-hidden="true" />
+                  )}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <div className="text-[13px] font-bold">{n.title}</div>
+                  {n.impact ? <div className="text-[12.5px]">{n.impact}</div> : null}
+                  <div className="text-ink-muted mt-1 flex flex-wrap gap-x-3 gap-y-0.5 text-[11.5px]">
+                    <span>{frDateTime(n.at)}</span>
+                    <span className={n.read ? "text-ok-ink font-semibold" : ""}>
+                      {n.read ? "Lue par le DJ" : "Notifiée au DJ · non lue"}
+                    </span>
+                    <span>Application 5 Quilles : à venir avec le serveur</span>
+                  </div>
+                </div>
+              </motion.li>
+            ))}
+          </AnimatePresence>
+        </ol>
+      )}
+    </div>
   );
 }
 
