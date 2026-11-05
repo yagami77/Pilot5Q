@@ -143,3 +143,48 @@ export function convocationsCsv(convocations: Convocation[]): string {
     ...convocations.map((c) => [c.to, c.name, c.subject, c.body].map(q).join(";")),
   ].join("\n");
 }
+
+/** Lien de connexion du directeur de jeu (ouvre la fenêtre « Accès Directeur de jeu »). */
+export function djLoginLink(origin: string, base: string, email: string): string {
+  return `${origin}${base}?acces=dj&email=${encodeURIComponent(email)}`;
+}
+
+/** « 048213 » → « 048 213 » (lecture plus sûre au téléphone). */
+export function formatCode(code: string): string {
+  return `${code.slice(0, 3)} ${code.slice(3)}`;
+}
+
+/** Email d'activation du directeur de jeu : lien vers le site, email et code à 6 chiffres. */
+export function djActivationMail(
+  stage: Stage,
+  dj: { name: string; email: string },
+  link: string,
+  code: string,
+  accepted: number,
+): Convocation {
+  const prenom = splitName(dj.name).prenom || "";
+  const dates = stage.start && stage.end ? ` (${dateRange(stage.start, stage.end)})` : "";
+  const body = `Bonjour${prenom ? ` ${prenom}` : ""},
+
+Vous êtes directeur de jeu du ${stage.name} ${stage.season} à ${stage.city}${dates}. Votre tournoi est ouvert dans Pilot5Q : ${accepted} joueurs, liste ordonnée et billards prêts.
+
+Pour vous connecter :
+1. Ouvrez ce lien : ${link}
+2. « Accès Directeur de jeu » s'ouvre avec votre email
+3. Saisissez le code : ${formatCode(code)}
+
+Email : ${dj.email}
+Code : ${formatCode(code)}
+
+Vous arriverez directement sur votre tournoi. Vos droits valent jusqu'à la clôture du tournoi par le responsable national ; il restera ensuite consultable en lecture seule.
+Ce code est personnel : il donne accès à la saisie des résultats, ne le transmettez pas.
+
+Sportivement,
+Le responsable national 5-Quilles`;
+  return {
+    to: dj.email,
+    name: dj.name,
+    subject: `${stage.name} ${stage.season} · votre accès directeur de jeu`,
+    body,
+  };
+}

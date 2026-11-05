@@ -5,12 +5,12 @@
 import {
   acceptedListCsv,
   parseInscritsCsv,
+  recipients,
   type Player,
   type Registration,
   type Stage,
 } from "@pilot5q/domain";
 import {
-  ArrowRight,
   Check,
   Copy,
   Crown,
@@ -19,30 +19,30 @@ import {
   Mail,
   Printer,
   RotateCcw,
-  Rocket,
   Upload,
   UserX,
 } from "lucide-react";
 import { useMemo, useRef, useState, type DragEvent, type ReactNode } from "react";
-import { Link, Navigate, useNavigate, useParams } from "react-router";
+import { Link, Navigate, useParams } from "react-router";
 
 import { useToast } from "@/components/Toast";
 import { Avatar, Banner, Button, Card, Chip, PageHead, Tile, cx } from "@/components/ui";
 import { clubShort, dateRange, nice, plural } from "@/lib/format";
-import { useTournament } from "@/store/tournament";
 
 import { ClosureSection } from "./Closure";
 import {
   clubConvocation,
   convocationsCsv,
   djConvocation,
+  djLoginLink,
   playerConvocations,
   recipientList,
   type Convocation,
 } from "./convocations";
 import { StageStatusChip } from "./Dashboard";
+import { DjSection, DjStatusChip } from "./DjAccess";
 import { useSeason, useSeasonDoc } from "./store";
-import { openingEvents, stageAcceptance, stageCapacity } from "./stage";
+import { stageAcceptance, stageCapacity } from "./stage";
 import { Empty, Field, Input, Num, Row, Table, copyText, downloadText, frDateTime } from "./ui";
 
 /** Numéro d'étape et titre d'une section. */
@@ -141,9 +141,6 @@ function StageView({
   update: ReturnType<typeof useSeason>["update"];
 }) {
   const doc = useSeasonDoc();
-  const toast = useToast();
-  const navigate = useNavigate();
-  const cockpit = useTournament();
   const club = doc.clubs.find((c) => c.id === stage.clubId);
   const now = new Date().toISOString();
   const regsDoc = doc.registrations[stage.id];
@@ -152,7 +149,6 @@ function StageView({
   const acceptance = useMemo(() => stageAcceptance(doc, stage), [doc, stage]);
   const capacity = stageCapacity(doc, stage);
   const opened = Boolean(stage.openedAt);
-  const closed = Boolean(stage.closedAt);
 
   const setRegs = (fn: (r: Registration[]) => Registration[]) =>
     update((d) => {
@@ -242,51 +238,12 @@ function StageView({
         <ConvocationsStep stage={stage} accepted={acceptance.accepted} />
         <Step
           n={5}
-          title="Ouverture du tournoi pour le club hôte"
+          title="Directeur de jeu et ouverture du TN"
           done={opened}
-          help="Désigne le directeur de jeu (licence) et crée le tournoi dans le cockpit avec les billards du club, les paramètres de la saison et la liste ordonnée. Les droits du DJ valent jusqu'à la clôture."
+          help="Le responsable saisit le directeur de jeu, puis ouvre le TN : le tournoi est créé dans le cockpit (billards du club, paramètres de la saison, liste ordonnée) et un code à 6 chiffres est généré. Le DJ se connecte avec son email et ce code, arrive directement sur son tournoi et n'a accès à rien d'autre ; ses droits passent en lecture seule à la clôture."
+          aside={<DjStatusChip stage={stage} />}
         >
-          <OpenForDj
-            stage={stage}
-            accepted={acceptance.accepted}
-            onOpen={(dj) => {
-              if (acceptance.accepted.length < 16) {
-                toast("Il faut au moins 16 joueurs acceptés");
-                return;
-              }
-              if (stage.big + stage.small < doc.settings.minTables || !stage.start) {
-                toast("Billards et dates de l'étape à compléter dans le calendrier");
-                return;
-              }
-              const id = `${stage.id}-${Date.now().toString(36)}`;
-              cockpit.open(id, openingEvents(doc, stage, acceptance.accepted));
-              update((d) => ({
-                ...d,
-                stages: d.stages.map((s) =>
-                  s.id === stage.id
-                    ? { ...s, djLicence: dj, tournamentId: id, openedAt: new Date().toISOString() }
-                    : s,
-                ),
-              }));
-              toast("Tournoi ouvert pour le directeur de jeu");
-            }}
-            onGoto={() => navigate("/tournoi")}
-            onReset={() => {
-              if (
-                !window.confirm(
-                  "Retirer l'ouverture ? Le tournoi reste dans le cockpit, mais l'étape revient à la préparation.",
-                )
-              )
-                return;
-              update((d) => ({
-                ...d,
-                stages: d.stages.map((s) =>
-                  s.id === stage.id ? { ...s, tournamentId: null, openedAt: null } : s,
-                ),
-              }));
-            }}
-            closed={closed}
-          />
+          <DjSection stage={stage} accepted={acceptance.accepted} />
         </Step>
         <ClosureSection stage={stage} />
       </div>
@@ -620,15 +577,19 @@ function ConvocationsStep({ stage, accepted }: { stage: Stage; accepted: Player[
   const [tab, setTab] = useState<"joueurs" | "club" | "dj">("joueurs");
   const [index, setIndex] = useState(0);
   const djRecord = doc.players.find((p) => p.licence === stage.djLicence);
+  const djName = stage.dj?.name || djRecord?.name || "";
+  const djEmail = stage.dj?.email || djRecord?.email || "";
   const players = useMemo(() => playerConvocations(doc, stage, accepted), [doc, stage, accepted]);
-  const club = clubConvocation(doc, stage, accepted, djRecord ? nice(djRecord.name) : "");
-  const appUrl = `${window.location.origin}${import.meta.env.BASE_URL}tournoi`;
+  const club = clubConvocation(doc, stage, accepted, djName ? nice(djName) : "");
+  const appUrl = djLoginLink(window.location.origin, import.meta.env.BASE_URL, djEmail);
   const dj = djConvocation(
     stage,
-    { name: djRecord?.name ?? "DIRECTEUR DE JEU", email: djRecord?.email ?? "" },
+    { name: djName || "DIRECTEUR DE JEU", email: djEmail },
     appUrl,
     accepted.length,
   );
+  // Les convocations des joueurs partent avec le club hôte et le DJ en copie.
+  const cc = recipients([club.to, djEmail]);
   const current: Convocation | undefined =
     tab === "joueurs" ? players[index] : tab === "club" ? club : dj;
   const copy = async (text: string, what: string) =>
@@ -697,6 +658,12 @@ function ConvocationsStep({ stage, accepted }: { stage: Stage; accepted: Player[
                 <b>À :</b> {current.to || <span className="text-alert-ink">email inconnu</span>} ·{" "}
                 <b>Objet :</b> {current.subject}
               </div>
+              {tab === "joueurs" ? (
+                <div className="text-ink-muted mt-0.5 text-[12.5px]">
+                  <b className="text-ink">Copie :</b>{" "}
+                  {cc.length > 0 ? cc.join(", ") : "club hôte et DJ (emails à compléter)"}
+                </div>
+              ) : null}
               <pre className="bg-surface-2 border-line mt-2 max-h-[300px] overflow-auto rounded-[10px] border px-3 py-2 font-sans text-[12.5px] whitespace-pre-wrap">
                 {current.body}
               </pre>
@@ -720,6 +687,14 @@ function ConvocationsStep({ stage, accepted }: { stage: Stage; accepted: Player[
                     </Button>
                     <Button
                       size="sm"
+                      icon={Copy}
+                      disabled={cc.length === 0}
+                      onClick={() => void copy(cc.join("; "), "Copie club et DJ")}
+                    >
+                      Copier la copie (club + DJ)
+                    </Button>
+                    <Button
+                      size="sm"
                       icon={Download}
                       onClick={() =>
                         downloadText(`convocations-${stage.id}.csv`, convocationsCsv(players))
@@ -735,88 +710,5 @@ function ConvocationsStep({ stage, accepted }: { stage: Stage; accepted: Player[
         </div>
       )}
     </Step>
-  );
-}
-
-function OpenForDj({
-  stage,
-  accepted,
-  onOpen,
-  onGoto,
-  onReset,
-  closed,
-}: {
-  stage: Stage;
-  accepted: Player[];
-  onOpen: (dj: string) => void;
-  onGoto: () => void;
-  onReset: () => void;
-  closed: boolean;
-}) {
-  const doc = useSeasonDoc();
-  const cockpit = useTournament();
-  const [licence, setLicence] = useState(stage.djLicence ?? "");
-  const found = doc.players.find((p) => p.licence === licence.trim().toUpperCase());
-  if (stage.openedAt) {
-    const current = cockpit.id === stage.tournamentId;
-    return (
-      <Banner
-        icon={Rocket}
-        tone={closed ? "green" : "blue"}
-        className="mt-0"
-        actions={
-          closed ? null : (
-            <>
-              {current ? (
-                <Button variant="primary" iconRight={ArrowRight} onClick={onGoto}>
-                  Ouvrir le cockpit
-                </Button>
-              ) : null}
-              <Button size="sm" variant="ghost" onClick={onReset}>
-                Retirer l'ouverture
-              </Button>
-            </>
-          )
-        }
-      >
-        Ouvert le {frDateTime(stage.openedAt)} · directeur de jeu{" "}
-        {found ? nice(found.name) : stage.djLicence || "non désigné"} ·{" "}
-        {closed ? "droits expirés (tournoi clôturé)" : "droits actifs jusqu'à la clôture"}
-        {!current && !closed ? " · le cockpit de ce navigateur affiche un autre tournoi" : ""}
-      </Banner>
-    );
-  }
-  return (
-    <div className="flex flex-wrap items-end gap-3">
-      <Field
-        label="Licence du directeur de jeu"
-        hint={
-          found
-            ? `${nice(found.name)} · ${clubShort(found.club)}`
-            : licence
-              ? "Licence inconnue de la base joueurs"
-              : "Le DJ peut ne pas être joueur"
-        }
-        className="w-[260px]"
-      >
-        <Input value={licence} onChange={(e) => setLicence(e.target.value)} placeholder="123456A" />
-      </Field>
-      <Button
-        variant="primary"
-        size="lg"
-        icon={Rocket}
-        disabled={accepted.length === 0}
-        onClick={() => onOpen(licence.trim().toUpperCase())}
-      >
-        Ouvrir le tournoi ({accepted.length} joueurs)
-      </Button>
-      {cockpit.id && cockpit.state.info ? (
-        <p className="text-ink-muted text-[12px]">
-          Le cockpit de ce navigateur affiche « {cockpit.state.info.name} ·{" "}
-          {cockpit.state.info.city} » : il restera enregistré, le nouveau tournoi devient le tournoi
-          courant.
-        </p>
-      ) : null}
-    </div>
   );
 }

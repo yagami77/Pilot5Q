@@ -24,9 +24,11 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router";
 
+import { useAuth } from "@/auth/context";
 import { useToast } from "@/components/Toast";
 import { Avatar, Banner, Button, Card, Chip, cx } from "@/components/ui";
 import { clubShort, dateRange, nice } from "@/lib/format";
+import { addNotification } from "@/lib/notifications";
 import { loadEvents } from "@/store/persistence";
 import { useTournament } from "@/store/tournament";
 
@@ -39,7 +41,10 @@ import { Empty, Num, Row, Table, copyText, dec, frDateTime } from "./ui";
 const ORIGIN = { M: "Masters", N: "National", CLS: "Consolante", PREQ: "Vendredi" } as const;
 
 /** Journal du tournoi de l'étape : celui du cockpit s'il est ouvert, sinon celui enregistré. */
-function useStageEvents(stage: Stage): { events: TournamentEvent[] | null; current: boolean } {
+export function useStageEvents(stage: Stage): {
+  events: TournamentEvent[] | null;
+  current: boolean;
+} {
   const cockpit = useTournament();
   const current = Boolean(stage.tournamentId) && cockpit.id === stage.tournamentId;
   const [stored, setStored] = useState<TournamentEvent[] | null>(null);
@@ -60,6 +65,7 @@ export function ClosureSection({ stage }: { stage: Stage }) {
   const doc = useSeasonDoc();
   const { update } = useSeason();
   const cockpit = useTournament();
+  const { provider } = useAuth();
   const toast = useToast();
   const navigate = useNavigate();
   const { events, current } = useStageEvents(stage);
@@ -104,6 +110,16 @@ export function ClosureSection({ stage }: { stage: Stage }) {
       return;
     const now = new Date().toISOString();
     update((d) => closeStage(d, stage, awards, d.juniors, now));
+    // Les droits du directeur de jeu passent en lecture seule.
+    void provider.setStageClosed(stage.id, now);
+    if (stage.tournamentId) {
+      void addNotification({
+        tournamentId: stage.tournamentId,
+        kind: "info",
+        title: "Tournoi clôturé par le responsable national",
+        body: "Points attribués et classement glissant à jour. Le tournoi reste consultable en lecture seule.",
+      });
+    }
     setEdits({});
     toast("Tournoi clôturé : classement glissant et base joueurs à jour");
   };
@@ -116,6 +132,7 @@ export function ClosureSection({ stage }: { stage: Stage }) {
     )
       return;
     update((d) => reopenStage(d, stage));
+    void provider.setStageClosed(stage.id, null);
     toast("Clôture annulée : corrigez puis clôturez de nouveau");
   };
 

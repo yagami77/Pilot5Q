@@ -57,6 +57,21 @@ export function stageAcceptance(doc: SeasonDocument, stage: Stage): Acceptance {
   );
 }
 
+/**
+ * Valeurs dérivées enregistrées avec l'étape après une modification des inscrits : nombre d'U21
+ * parmi les acceptés (stocké avec le TN pour les primes et la feuille de pointage).
+ */
+export function withStageDerived(doc: SeasonDocument, stageId: string): SeasonDocument {
+  const stage = doc.stages.find((s) => s.id === stageId);
+  if (!stage) return doc;
+  const juniorCount = stageAcceptance(doc, stage).accepted.filter((p) => p.junior).length;
+  if (stage.juniorCount === juniorCount) return doc;
+  return {
+    ...doc,
+    stages: doc.stages.map((s) => (s.id === stageId ? { ...s, juniorCount } : s)),
+  };
+}
+
 /** Paramètres du tournoi déduits de ceux de la saison. */
 export function stageRules(doc: SeasonDocument): Rules {
   return {
