@@ -2,6 +2,7 @@
 import { Home, Undo2, Waypoints } from "lucide-react";
 import { Link, useLocation } from "react-router";
 
+import { ROLE_LABELS, useRole } from "@/admin/role";
 import { clock, dateRange, initials, plural } from "@/lib/format";
 import { useTournament } from "@/store/tournament";
 
@@ -34,6 +35,7 @@ export function BrandMark({ className }: { className?: string }) {
 
 export function TopBar() {
   const { state, savedAt, saving, undo, canUndo, events } = useTournament();
+  const [role] = useRole();
   const location = useLocation();
   const onSchema = location.pathname.endsWith("/tournoi/schema");
   const info = state.info;
@@ -124,10 +126,17 @@ export function TopBar() {
           </Link>
           <div className="hidden items-center gap-[9px] text-[12.5px] md:flex">
             <div className="flex flex-col text-right leading-[1.15]">
-              <b className="font-semibold">Directeur de jeu</b>
-              <span className="text-ink-muted text-[11.5px]">{info?.club ?? "Club hôte"}</span>
+              <b className="font-semibold">{ROLE_LABELS[role]}</b>
+              <span className="text-ink-muted text-[11.5px]">
+                {role === "responsable" ? "FFB · 5-Quilles" : (info?.club ?? "Club hôte")}
+              </span>
             </div>
-            <Avatar name={info?.club ?? "Directeur Jeu"} size="md" />
+            <Avatar
+              name={
+                role === "responsable" ? "Responsable National" : (info?.club ?? "Directeur Jeu")
+              }
+              size="md"
+            />
           </div>
         </div>
       </div>

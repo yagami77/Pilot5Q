@@ -1,6 +1,11 @@
 /** Briques propres à l'espace du responsable : champs de formulaire, tableaux, actions. */
 import type { LucideIcon } from "lucide-react";
-import type { InputHTMLAttributes, ReactNode, SelectHTMLAttributes, TextareaHTMLAttributes } from "react";
+import type {
+  InputHTMLAttributes,
+  ReactNode,
+  SelectHTMLAttributes,
+  TextareaHTMLAttributes,
+} from "react";
 
 import { cx } from "@/components/ui";
 
@@ -31,7 +36,12 @@ export function Input(props: InputHTMLAttributes<HTMLInputElement>) {
 }
 
 export function TextArea(props: TextareaHTMLAttributes<HTMLTextAreaElement>) {
-  return <textarea {...props} className={cx("field min-h-[120px] font-mono text-[12.5px]", props.className)} />;
+  return (
+    <textarea
+      {...props}
+      className={cx("field min-h-[120px] font-mono text-[12.5px]", props.className)}
+    />
+  );
 }
 
 export function SelectField({

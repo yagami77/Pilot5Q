@@ -1,15 +1,15 @@
 // Espace du responsable national : saison, clubs, calendrier, base joueurs, classement glissant.
 export type * from "./types.js";
 export {
-  BAREME_2026,
   baremeTable,
+  otherPointsTable,
   basePoints,
   decimalPoints,
   abandonCancelsPoints,
   awardPoints,
+  awardsFromRanking,
   awardTotal,
 } from "./bareme.js";
-export type { Bareme } from "./bareme.js";
 export {
   WINDOW_SIZE,
   TN_PER_SEASON,

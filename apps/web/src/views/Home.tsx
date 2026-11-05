@@ -4,6 +4,7 @@ import { ArrowRight, FileText, Sparkles, Trash2, Upload } from "lucide-react";
 import { useRef, useState, type DragEvent } from "react";
 import { useNavigate } from "react-router";
 
+import { RoleSwitch } from "@/admin/RoleSwitch";
 import { useToast } from "@/components/Toast";
 import { BrandMark } from "@/components/TopBar";
 import { Avatar, Button, Card, Chip, cx } from "@/components/ui";
@@ -92,6 +93,7 @@ export function Home() {
           préqualifications, barrages, National, Masters, consolante, primes.
         </p>
       </header>
+      <RoleSwitch />
 
       {ready && id && state.info ? (
         <Card

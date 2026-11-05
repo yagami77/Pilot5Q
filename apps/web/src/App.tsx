@@ -1,6 +1,7 @@
 import { MotionConfig } from "motion/react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router";
 
+import { adminRoutes } from "@/admin/routes";
 import { ToastProvider } from "@/components/Toast";
 import { PrintView } from "@/print/PrintView";
 import { TournamentProvider } from "@/store/tournament";
@@ -21,6 +22,7 @@ export default function App() {
               <Route path="/tournoi/imprimer/:doc" element={<PrintView />} />
               <Route path="/tournoi/schema" element={<Schema />} />
               <Route path="/tournoi/:day" element={<Cockpit />} />
+              {adminRoutes()}
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </ToastProvider>

@@ -16,6 +16,7 @@ import {
   acceptRegistrations,
   applyTournament,
   awardPoints,
+  awardsFromRanking,
   basePoints,
   capacityFor,
   convocationTime,
@@ -40,6 +41,7 @@ import type {
   Registration,
   Stage,
   TnResult,
+  TournamentRankRow,
   TournamentResult,
 } from "../src/index.js";
 
@@ -104,6 +106,34 @@ describe("barème réforme 2026-2027 (TN 2 2026-2027, 76 joueurs)", () => {
     const cls = results.filter((r) => r.abandon === "CLS");
     expect(cls.length).toBeGreaterThan(0);
     for (const r of cls) expect(byName.get(r.name)?.abandon).toBe(false);
+  });
+
+  it("convertit un classement final de tournoi (finalRanking) en entrées de la fenêtre", () => {
+    const row = (name: string, points: number, abandon = false): TournamentRankRow => ({
+      place: 0,
+      name,
+      origin: "N",
+      points,
+      decimal: 0.01,
+      ptm: 2,
+      pts: 1,
+      faits: 100,
+      subis: 90,
+      moy: 100 / 90,
+      joues: 1,
+      arrivee: 1,
+      abandon,
+    });
+    const out = awardsFromRanking([row("A B", 25), row("C D", 7, true)], {
+      "A B": { licence: "123456X", club: "BC Test" },
+    });
+    expect(out[0]).toMatchObject({
+      licence: "123456X",
+      club: "BC Test",
+      points: 25,
+      decimal: 0.01,
+    });
+    expect(out[1]).toMatchObject({ licence: "", points: 0, decimal: 0, abandon: true, faits: 100 });
   });
 
   it("applique les paliers Masters, National et hors tableaux", () => {

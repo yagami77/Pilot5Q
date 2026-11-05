@@ -1,0 +1,385 @@
+{
+ "_note": "Ordre d'inscription (site fédéral) des 76 inscrits du tournoi d'exemple, noms fictifs.",
+ "registrations": [
+  {
+   "order": 1,
+   "name": "DAVID SARAH",
+   "licence": "108494K"
+  },
+  {
+   "order": 2,
+   "name": "COLLIN RONAN",
+   "licence": "110138W"
+  },
+  {
+   "order": 3,
+   "name": "FLEURY SARAH",
+   "licence": "107398C"
+  },
+  {
+   "order": 4,
+   "name": "CHEVALLIER QUENTIN",
+   "licence": "100274C"
+  },
+  {
+   "order": 5,
+   "name": "PETIT LUCAS",
+   "licence": "100959H"
+  },
+  {
+   "order": 6,
+   "name": "JACQUET ÉRIC",
+   "licence": "100411D"
+  },
+  {
+   "order": 7,
+   "name": "HUBERT MICHEL",
+   "licence": "101096I"
+  },
+  {
+   "order": 8,
+   "name": "GRONDIN HUGO",
+   "licence": "102329R"
+  },
+  {
+   "order": 9,
+   "name": "SANCHEZ SOPHIE",
+   "licence": "104384G"
+  },
+  {
+   "order": 10,
+   "name": "CARON THIERRY",
+   "licence": "106165T"
+  },
+  {
+   "order": 11,
+   "name": "AUBRY THIERRY",
+   "licence": "108905N"
+  },
+  {
+   "order": 12,
+   "name": "ARNAUD CLÉMENT",
+   "licence": "109864U"
+  },
+  {
+   "order": 13,
+   "name": "PAYET DAVID",
+   "licence": "108357J"
+  },
+  {
+   "order": 14,
+   "name": "MALLET MAXIME",
+   "licence": "107672E"
+  },
+  {
+   "order": 15,
+   "name": "DUMONT LUCAS",
+   "licence": "101918O"
+  },
+  {
+   "order": 16,
+   "name": "MICHEL DAMIEN",
+   "licence": "104658I"
+  },
+  {
+   "order": 17,
+   "name": "PERRIN CHRISTOPHE",
+   "licence": "100548E"
+  },
+  {
+   "order": 18,
+   "name": "MAILLARD CAMILLE",
+   "licence": "105069L"
+  },
+  {
+   "order": 19,
+   "name": "BERTRAND DIDIER",
+   "licence": "103288Y"
+  },
+  {
+   "order": 20,
+   "name": "GAILLARD SÉBASTIEN",
+   "licence": "102877V"
+  },
+  {
+   "order": 21,
+   "name": "BOYER NOÉ",
+   "licence": "107946G"
+  },
+  {
+   "order": 22,
+   "name": "MARTINEZ JORDAN",
+   "licence": "106028S"
+  },
+  {
+   "order": 23,
+   "name": "LEGRAND ARNAUD",
+   "licence": "105891R"
+  },
+  {
+   "order": 24,
+   "name": "BOYER JULIEN",
+   "licence": "101781N"
+  },
+  {
+   "order": 25,
+   "name": "LAMBERT RACHID",
+   "licence": "109727T"
+  },
+  {
+   "order": 26,
+   "name": "ROBERT KEVIN",
+   "licence": "104247F"
+  },
+  {
+   "order": 27,
+   "name": "BOYER MANON",
+   "licence": "108083H"
+  },
+  {
+   "order": 28,
+   "name": "VASSEUR LAURENT",
+   "licence": "101644M"
+  },
+  {
+   "order": 29,
+   "name": "BOURGEOIS DIDIER",
+   "licence": "103425Z"
+  },
+  {
+   "order": 30,
+   "name": "BAILLY PATRICK",
+   "licence": "105206M"
+  },
+  {
+   "order": 31,
+   "name": "DUMONT ARNAUD",
+   "licence": "105754Q"
+  },
+  {
+   "order": 32,
+   "name": "CORDIER CAMILLE",
+   "licence": "104110E"
+  },
+  {
+   "order": 33,
+   "name": "CHEVALLIER LOÏC",
+   "licence": "102466S"
+  },
+  {
+   "order": 34,
+   "name": "LUCAS NICOLAS",
+   "licence": "103973D"
+  },
+  {
+   "order": 35,
+   "name": "CHAUVIN THIERRY",
+   "licence": "103562A"
+  },
+  {
+   "order": 36,
+   "name": "CARPENTIER BENOÎT",
+   "licence": "102740U"
+  },
+  {
+   "order": 37,
+   "name": "MERCIER ÉRIC",
+   "licence": "104795J"
+  },
+  {
+   "order": 38,
+   "name": "ROUSSEL JULIE",
+   "licence": "101233J"
+  },
+  {
+   "order": 39,
+   "name": "BRUN ERWAN",
+   "licence": "107124A"
+  },
+  {
+   "order": 40,
+   "name": "COLIN GWENDAL",
+   "licence": "103014W"
+  },
+  {
+   "order": 41,
+   "name": "OLIVIER PATRICK",
+   "licence": "107261B"
+  },
+  {
+   "order": 42,
+   "name": "FRANCOIS NADIA",
+   "licence": "108631L"
+  },
+  {
+   "order": 43,
+   "name": "HENRY GUILLAUME",
+   "licence": "106302U"
+  },
+  {
+   "order": 44,
+   "name": "LANGLOIS ARNAUD",
+   "licence": "103151X"
+  },
+  {
+   "order": 45,
+   "name": "LEBLANC MICKAËL",
+   "licence": "101507L"
+  },
+  {
+   "order": 46,
+   "name": "BONNET ERWAN",
+   "licence": "106850Y"
+  },
+  {
+   "order": 47,
+   "name": "LAURENT PAULINE",
+   "licence": "105617P"
+  },
+  {
+   "order": 48,
+   "name": "MARTINEZ GILLES",
+   "licence": "109042O"
+  },
+  {
+   "order": 49,
+   "name": "RENAUD HUGO",
+   "licence": "107809F"
+  },
+  {
+   "order": 50,
+   "name": "DUMAS DAMIEN",
+   "licence": "109590S"
+  },
+  {
+   "order": 51,
+   "name": "MARCHAND JORDAN",
+   "licence": "102192Q"
+  },
+  {
+   "order": 52,
+   "name": "MARTY FABIEN",
+   "licence": "106576W"
+  },
+  {
+   "order": 53,
+   "name": "BOUCHET CÉDRIC",
+   "licence": "103836C"
+  },
+  {
+   "order": 54,
+   "name": "LEGRAND PIERRE",
+   "licence": "107535D"
+  },
+  {
+   "order": 55,
+   "name": "MARECHAL DIDIER",
+   "licence": "106439V"
+  },
+  {
+   "order": 56,
+   "name": "BERTIN NADIA",
+   "licence": "108768M"
+  },
+  {
+   "order": 57,
+   "name": "BRETON CLAIRE",
+   "licence": "105480O"
+  },
+  {
+   "order": 58,
+   "name": "MARECHAL ROMAIN",
+   "licence": "106713X"
+  },
+  {
+   "order": 59,
+   "name": "COLLET OLIVIER",
+   "licence": "100822G"
+  },
+  {
+   "order": 60,
+   "name": "LEROUX NICOLAS",
+   "licence": "102603T"
+  },
+  {
+   "order": 61,
+   "name": "ADAM ÉRIC",
+   "licence": "100685F"
+  },
+  {
+   "order": 62,
+   "name": "COUSIN THOMAS",
+   "licence": "104521H"
+  },
+  {
+   "order": 63,
+   "name": "MATHIEU MEHDI",
+   "licence": "103699B"
+  },
+  {
+   "order": 64,
+   "name": "LEFEVRE BENOÎT",
+   "licence": "108220I"
+  },
+  {
+   "order": 65,
+   "name": "CARLIER SAMIR",
+   "licence": "105343N"
+  },
+  {
+   "order": 66,
+   "name": "CLEMENT GILLES",
+   "licence": "102055P"
+  },
+  {
+   "order": 67,
+   "name": "LAMY VINCENT",
+   "licence": "101370K"
+  },
+  {
+   "order": 68,
+   "name": "FAURE MARIE",
+   "licence": "109316Q"
+  },
+  {
+   "order": 69,
+   "name": "SCHNEIDER CÉDRIC",
+   "licence": "109453R"
+  },
+  {
+   "order": 70,
+   "name": "RODRIGUEZ MAXIME",
+   "licence": "110275X"
+  },
+  {
+   "order": 71,
+   "name": "BARRE PATRICK",
+   "licence": "100137B"
+  },
+  {
+   "order": 72,
+   "name": "ADAM CHLOÉ",
+   "licence": "109179P"
+  },
+  {
+   "order": 73,
+   "name": "REY DYLAN",
+   "licence": "110412Y"
+  },
+  {
+   "order": 74,
+   "name": "KLEIN ÉMILIE",
+   "licence": "104932K"
+  },
+  {
+   "order": 75,
+   "name": "BERTRAND CAMILLE",
+   "licence": "110001V"
+  },
+  {
+   "order": 76,
+   "name": "SCHNEIDER CHLOÉ",
+   "licence": "106987Z"
+  }
+ ]
+}

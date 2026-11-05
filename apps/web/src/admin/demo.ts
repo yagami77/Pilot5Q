@@ -10,12 +10,7 @@ import type {
   Stage,
   TnResult,
 } from "@pilot5q/domain";
-import {
-  DEFAULT_SEASON_SETTINGS,
-  rankingRows,
-  seasonStartYear,
-  sundayOf,
-} from "@pilot5q/domain";
+import { DEFAULT_SEASON_SETTINGS, rankingRows, seasonStartYear, sundayOf } from "@pilot5q/domain";
 
 import seasonFixture from "@/data/season-exemple.json";
 import { DEMO } from "@/lib/demo";
@@ -109,23 +104,25 @@ function demoPlayers(season: string, ranking: RankingEntry[]): PlayerRecord[] {
 export function demoRegistrations(order: { name: string; order: number }[]): Registration[] {
   const byName = new Map(DEMO.players.map((p) => [p.name, p]));
   const start = DEMO.tournament.dates[0];
-  return order
-    .map((o) => {
-      const p = byName.get(o.name);
-      if (!p) return null;
-      const day = addDays(start, -40 + Math.floor(o.order / 3));
-      return {
-        licence: p.licence,
-        name: p.name,
-        club: p.club,
-        email: "",
-        order: o.order,
-        registeredAt: `${day}T${String(8 + (o.order % 12)).padStart(2, "0")}:${String((o.order * 7) % 60).padStart(2, "0")}`,
-        junior: false,
-        forfait: false,
-      } satisfies Registration;
-    })
-    .filter((r): r is Registration => r !== null);
+  const out: Registration[] = [];
+  for (const o of order) {
+    const p = byName.get(o.name);
+    if (!p) continue;
+    const day = addDays(start, -40 + Math.floor(o.order / 3));
+    const hh = String(8 + (o.order % 12)).padStart(2, "0");
+    const mm = String((o.order * 7) % 60).padStart(2, "0");
+    out.push({
+      licence: p.licence,
+      name: p.name,
+      club: p.club,
+      email: "",
+      order: o.order,
+      registeredAt: `${day}T${hh}:${mm}`,
+      junior: false,
+      forfait: false,
+    });
+  }
+  return out;
 }
 
 /** Document de démonstration complet. */
