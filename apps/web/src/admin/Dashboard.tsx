@@ -1,5 +1,6 @@
 /** Tableau de bord de la saison : les 5 étapes et leur état, chiffres clés. */
 import {
+  consolanteCheck,
   stageStatus,
   stageStatusLabel,
   rankingRows,
@@ -100,6 +101,10 @@ export function Dashboard() {
                   <div className="mt-3 flex flex-wrap items-center gap-1.5">
                     <StageStatusChip stage={stage} now={now} />
                     {regs > 0 ? <Chip tone="grey">{plural(regs, "inscrit")}</Chip> : null}
+                    {stage.big + stage.small > 0 &&
+                    !consolanteCheck(stage, doc.settings).possible ? (
+                      <Chip tone="red">Pas de consolante</Chip>
+                    ) : null}
                   </div>
                   <div className="text-ink-muted mt-3 text-[11.5px] leading-[1.4]">
                     Inscriptions : {frDateTime(stage.registrationOpen)} →{" "}

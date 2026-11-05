@@ -12,6 +12,7 @@ import { useNavigate } from "react-router";
 import { useToast } from "@/components/Toast";
 import { Button, Card, PageHead } from "@/components/ui";
 
+import { AccountsCard } from "./Accounts";
 import { useSeason, useSeasonDoc } from "./store";
 import { Field, Input, Num, Row, Table, TextArea } from "./ui";
 
@@ -291,6 +292,7 @@ export function Settings() {
           </Field>
         </Card>
       </div>
+      <AccountsCard />
       <Card
         title="Zone sensible"
         className="border-alert-soft mt-4"

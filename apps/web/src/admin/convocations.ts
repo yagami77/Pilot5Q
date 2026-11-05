@@ -1,6 +1,12 @@
 /** Convocations d'une étape : mails des joueurs, du club hôte et du directeur de jeu. */
 import type { Player, Stage } from "@pilot5q/domain";
-import { convocationTime, recipients, renderTemplate, splitName } from "@pilot5q/domain";
+import {
+  convocationTime,
+  recipients,
+  renderTemplate,
+  splitName,
+  stageSettings,
+} from "@pilot5q/domain";
 
 import { dateRange, longDate } from "@/lib/format";
 
@@ -30,6 +36,8 @@ export function playerConvocations(
   placement: Record<string, { poule: number; billard: number | null }> = {},
 ): Convocation[] {
   const { lieu: where, adresse } = lieu(doc, stage);
+  // Horaires et canevas : ceux de l'étape s'ils sont surchargés, sinon ceux de la saison.
+  const settings = stageSettings(doc.settings, stage);
   const dates = stage.start && stage.end ? dateRange(stage.start, stage.end) : "";
   const masters = 8;
   const tournoi = `${stage.name} ${stage.season}`;
@@ -38,14 +46,14 @@ export function playerConvocations(
     const isMaster = p.seed <= masters;
     const day = isMaster ? "samedi" : "vendredi";
     const date = stage.start ? longDate(isMaster ? addOne(stage.start) : stage.start) : day;
-    const heure = `${date} à ${convocationTime(day, stage.big, doc.settings).replace(":", "h")}`;
+    const heure = `${date} à ${convocationTime(day, stage.big, settings).replace(":", "h")}`;
     const pl = placement[p.name];
     const poule = pl
       ? ` Poule ${pl.poule}${pl.billard !== null ? `, billard ${pl.billard}` : ""}.`
       : isMaster
         ? " Préqualifié(e) Masters : poules du samedi."
         : "";
-    const body = renderTemplate(doc.settings.mailTemplate, {
+    const body = renderTemplate(settings.mailTemplate, {
       prenom,
       nom,
       club: p.club,
@@ -82,7 +90,7 @@ export function clubConvocation(
 ): Convocation {
   const club = doc.clubs.find((c) => c.id === stage.clubId);
   const juniors = accepted.filter((p) => p.junior).length;
-  const s = doc.settings;
+  const s = stageSettings(doc.settings, stage);
   const body = `Bonjour,
 
 Merci d'accueillir le ${stage.name} ${stage.season} de billard 5-Quilles${stage.start ? ` du ${dateRange(stage.start, stage.end)}` : ""}.

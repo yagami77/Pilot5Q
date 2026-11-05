@@ -4,6 +4,7 @@
  */
 import {
   acceptedListCsv,
+  consolanteCheck,
   parseInscritsCsv,
   recipients,
   type Player,
@@ -15,6 +16,7 @@ import {
   Copy,
   Crown,
   Download,
+  FileDown,
   FileText,
   Mail,
   Printer,
@@ -46,6 +48,7 @@ import {
   type Convocation,
 } from "./convocations";
 import { StageStatusChip } from "./Dashboard";
+import { StageSettingsSection } from "./StageSettings";
 import { DjSection, DjStatusChip } from "./DjAccess";
 import { useSeason, useSeasonDoc } from "./store";
 import type { SeasonDocument } from "./persistence";
@@ -298,6 +301,21 @@ function StageView({
         />
         <ConvocationsStep stage={stage} accepted={acceptance.accepted} />
         <Step
+          n={4}
+          title="Paramètres du TN : consolante, U21, horaires"
+          done={acceptance.accepted.length > 0}
+          help="Vérification de la consolante d'après les billards de l'étape, nombre d'U21 enregistré avec le TN, horaires de convocation et canevas du mail propres à ce TN (sinon ceux de la saison)."
+          aside={
+            <Chip tone={consolanteCheck(stage, doc.settings).possible ? "green" : "red"}>
+              {consolanteCheck(stage, doc.settings).possible
+                ? "Consolante possible"
+                : "Pas de consolante"}
+            </Chip>
+          }
+        >
+          <StageSettingsSection stage={stage} accepted={acceptance.accepted} />
+        </Step>
+        <Step
           n={5}
           title="Directeur de jeu et ouverture du TN"
           done={opened}
@@ -490,6 +508,11 @@ function OrderedStep({
             >
               CSV
             </Button>
+            <Link to={`/responsable/imprimer/liste/${stage.id}?pdf=1`}>
+              <Button size="sm" icon={FileDown}>
+                PDF
+              </Button>
+            </Link>
             <Link to={`/responsable/imprimer/liste/${stage.id}`}>
               <Button size="sm" variant="primary" icon={Printer}>
                 Imprimer
@@ -763,7 +786,7 @@ function ConvocationsStep({ stage, accepted }: { stage: Stage; accepted: Player[
       n={3}
       title="Convocations"
       done={false}
-      help="Les mails sont prêts à copier ou à exporter : l'envoi direct arrivera avec le serveur. Le canevas et les horaires se règlent dans Paramètres."
+      help="Les mails sont prêts à copier ou à exporter : l'envoi direct arrivera avec le serveur. Horaires et canevas : ceux de la saison (Paramètres), ou ceux propres à ce TN (étape 4)."
       aside={
         <>
           {(["joueurs", "club", "dj"] as const).map((t) => (

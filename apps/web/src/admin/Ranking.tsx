@@ -7,7 +7,7 @@ import {
   type RankingEntry,
   type RankingRow,
 } from "@pilot5q/domain";
-import { Download, Printer, Trophy } from "lucide-react";
+import { Download, FileDown, Printer, Trophy } from "lucide-react";
 import { useMemo, useState } from "react";
 import { Link } from "react-router";
 
@@ -173,6 +173,11 @@ export function Ranking() {
         >
           Export CSV
         </Button>
+        <Link to="/responsable/imprimer/classement?pdf=1">
+          <Button icon={FileDown} disabled={rows.length === 0}>
+            Télécharger en PDF
+          </Button>
+        </Link>
         <Link to="/responsable/imprimer/classement">
           <Button variant="primary" icon={Printer} disabled={rows.length === 0}>
             Vue imprimable A4

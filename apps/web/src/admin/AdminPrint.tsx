@@ -1,8 +1,8 @@
 /** Documents imprimables (A4) de l'espace du responsable : liste ordonnée, classement glissant, points d'un TN. */
 import { latestStage, rankingRows, windowStages, type Stage } from "@pilot5q/domain";
-import { ArrowLeft, Printer } from "lucide-react";
-import type { ReactNode } from "react";
-import { useNavigate, useParams } from "react-router";
+import { ArrowLeft, FileDown, Printer } from "lucide-react";
+import { useEffect, useRef, type ReactNode } from "react";
+import { useNavigate, useParams, useSearchParams } from "react-router";
 
 import { Button } from "@/components/ui";
 import { clubShort, dateRange } from "@/lib/format";
@@ -219,10 +219,45 @@ export function PointsDoc({ doc, stage }: { doc: SeasonDocument; stage: Stage })
   );
 }
 
+/** Nom de fichier proposé par « Enregistrer au format PDF » (titre du document). */
+export function pdfTitle(kind: string | undefined, stage: Stage | undefined, season: string) {
+  const what =
+    kind === "classement"
+      ? `Classement glissant ${season}`
+      : kind === "liste"
+        ? "Liste des participants"
+        : "Points du tournoi";
+  return stage ? `${what} - ${stage.name} ${stage.season} ${stage.city}` : what;
+}
+
 function PrintShell() {
   const { ready, doc } = useSeason();
   const { doc: kind, stageId } = useParams();
+  const [params] = useSearchParams();
   const navigate = useNavigate();
+  const stageForTitle = doc?.stages.find((s) => s.id === stageId);
+  const title = pdfTitle(kind, stageForTitle, doc?.id ?? "");
+  const auto = params.get("pdf") === "1";
+  const printed = useRef(false);
+
+  // Le titre de la page devient le nom du PDF ; `?pdf=1` ouvre directement l'enregistrement.
+  useEffect(() => {
+    if (!ready || !doc) return;
+    const previous = document.title;
+    document.title = title;
+    let timer: number | undefined;
+    if (auto && !printed.current) {
+      printed.current = true;
+      timer = window.setTimeout(() => {
+        void document.fonts?.ready.then(() => window.print());
+      }, 400);
+    }
+    return () => {
+      document.title = previous;
+      if (timer) window.clearTimeout(timer);
+    };
+  }, [ready, doc, title, auto]);
+
   if (!ready)
     return <div className="text-ink-muted grid min-h-[60vh] place-items-center">Chargement…</div>;
   if (!doc)
@@ -262,7 +297,12 @@ function PrintShell() {
           >
             Retour
           </Button>
-          <div className="text-ink-muted min-w-0 flex-1 truncate text-[13px]">{label} · A4</div>
+          <div className="text-ink-muted min-w-0 flex-1 truncate text-[13px]">
+            {label} · A4 · PDF : choisir « Enregistrer au format PDF » comme imprimante
+          </div>
+          <Button icon={FileDown} onClick={() => window.print()}>
+            Télécharger en PDF
+          </Button>
           <Button variant="primary" icon={Printer} onClick={() => window.print()}>
             Imprimer
           </Button>
