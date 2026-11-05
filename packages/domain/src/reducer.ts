@@ -12,7 +12,10 @@
  * - `score.entered` : modifie le match dans la bonne phase (poules PREQ/QN/QM, `barrages`,
  *   `brackets` N/M/CLS) ; sur un tableau, les vainqueurs avancent (`advanceBracket`).
  * - `forfait.declared` : enregistre le forfait ; pour un barrage ou un tableau, le match en
- *   attente du joueur est marqué `forfait`.
+ *   attente du joueur est marqué `forfait` et ses points sont écrits comme le fait l'outil Excel
+ *   (SPEC §5) : la distance pour l'adversaire, et pour le forfait la moyenne des points subis par
+ *   l'adversaire dans les phases précédentes, ramenée à la distance en cours (`walkoverPoints`).
+ *   Dans une phase de poules, le même barème est fourni à `rankPhase` (`forfaitSubisOf`).
  * - `phase.closed` : `closed[phase] = true` et dérivation : PREQ → `barrages` (rankPhase +
  *   barragePairs) ; B → `poules.QM` (composeMasters) et `poules.QN` (composeNational, perdants
  *   ordonnés par le classement cumulé des barrages, puis places 17 à 40) ; QN → `brackets.N`
@@ -25,13 +28,18 @@
  *   sont ignorés).
  * - `arbitre.set` : numéro de licence de l'arbitre sur le match.
  *
+ * Sélecteurs dérivés : `phaseRanking` (classement d'une phase de poules, l'ordre d'arrivée
+ * étant l'ordre d'entrée dans la phase, cf. `entryArrivee`), `barrageRanking`, `bracketRanking`
+ * (classement d'une phase finale N/M/CLS), `playerTotals` (cumuls hors consolante),
+ * `finalRanking` (classement final du tournoi, SPEC §7) et `primesOf` (SPEC §6).
+ *
  * Choix : le réducteur est tolérant (phase ou match inconnu → événement ignoré ; dérivation
  * impossible, par ex. classement incomplet → structure laissée vide) et ne mute jamais l'état
  * reçu. Les distances par tour d'un tableau : National R16 = `huitiemes`, puis `final` ;
  * Masters = `final` ; consolante = `cls`. L'appelant doit vérifier `phaseComplete` avant
  * d'émettre `phase.closed`.
  */
-import { pouleMatches } from "./draw.js";
+import { pouleMatches, serpentinOrder } from "./draw.js";
 import {
   advanceBracket,
   barragePairs,
@@ -41,8 +49,9 @@ import {
   mastersQF,
   nationalR16,
 } from "./phases.js";
+import { primesTable, rankTournamentPhase, tournamentRanking } from "./results.js";
 import { cloneRules, DEFAULT_RULES } from "./rules.js";
-import { matchOutcome, rankBarrages, rankPhase, rankPouleInPhase } from "./scoring.js";
+import { matchOutcome, rankBarrages, rankPhase, rankPoule, rankPouleInPhase } from "./scoring.js";
 import type {
   BracketMatch,
   BracketRound,
@@ -51,9 +60,13 @@ import type {
   PhaseId,
   PhaseRankRow,
   Player,
+  PlayerTotals,
   Poule,
+  PrimesTable,
   Rules,
   TournamentEvent,
+  TournamentPhaseRow,
+  TournamentRankRow,
   TournamentState,
 } from "./types.js";
 
@@ -138,13 +151,198 @@ export function forfaitsOf(state: TournamentState, phase: PhaseId): string[] {
   return state.forfaits.filter((f) => f.phase === phase).map((f) => f.player);
 }
 
+/**
+ * Ordre d'arrivée d'une phase de poules : pour le vendredi et les Masters, la place dans la
+ * liste ordonnée (`seed`) ; pour le National du samedi, l'ordre d'entrée dans la phase (perdants
+ * de barrage dans l'ordre du classement cumulé, puis places 17 à 40), reconstitué à partir du
+ * serpentin des poules (colonne « Rang arrivée dans les QN » de l'outil Excel).
+ */
+export function entryArrivee(state: TournamentState, phase: PoulePhase): Record<string, number> {
+  const out = arriveeOf(state);
+  if (phase !== "QN") return out;
+  serpentinOrder(state.poules.QN.map((p) => p.players)).forEach((name, i) => {
+    out[name] = i + 1;
+  });
+  return out;
+}
+
+/** Points subis moyens par set (ramenés à 60) d'un joueur sur une liste de matchs. */
+function subisPerSet60(
+  name: string,
+  matches: Match[],
+  d: (m: Match) => Distance,
+): { subis60: number; sets: number } {
+  let subis = 0;
+  let sets = 0;
+  for (const m of matches) {
+    if (m.a !== name && m.b !== name) continue;
+    const dist = d(m);
+    const o = matchOutcome(m, dist);
+    if (!o) continue;
+    const played = o.setsWinner + o.setsLoser;
+    subis += ((o.winner === name ? o.pointsLoser : o.pointsWinner) * 60) / dist.pointsParSet;
+    sets += played;
+  }
+  return { subis60: subis, sets };
+}
+
+/**
+ * Points par set crédités au joueur forfait d'un match non joué contre `opponent` (SPEC §5) :
+ * moyenne des points subis par set par l'adversaire dans les phases précédentes (vendredi et
+ * barrage réunis, puis poules du samedi), ramenée à la distance en cours et plafonnée à la
+ * distance − 1 ; sans historique, 66 % de la distance (100 → 66, 80 → 53, 60 → 40). Pour le
+ * vendredi, l'historique est celui des autres matchs de l'adversaire dans sa poule.
+ */
+export function walkoverPoints(
+  state: TournamentState,
+  phase: PhaseId,
+  opponent: string,
+  d: Distance,
+): number {
+  const { rules } = state;
+  const samples: { subis60: number; sets: number }[] = [];
+  const pouleMatchesOf = (p: PoulePhase, only?: (poule: Poule) => boolean): Match[] =>
+    state.poules[p].filter((x) => only?.(x) ?? true).flatMap((x) => x.matches);
+  if (phase === "PREQ") {
+    samples.push(
+      subisPerSet60(
+        opponent,
+        pouleMatchesOf("PREQ", (x) => x.players.includes(opponent)),
+        () => rules.distances.preq,
+      ),
+    );
+  } else {
+    const friday = subisPerSet60(opponent, [...pouleMatchesOf("PREQ"), ...state.barrages], (m) =>
+      state.barrages.includes(m) ? rules.distances.barrage : rules.distances.preq,
+    );
+    samples.push(friday);
+    if (phase === "N") {
+      samples.push(subisPerSet60(opponent, pouleMatchesOf("QN"), () => rules.distances.qn));
+    } else if (phase === "M") {
+      samples.push(subisPerSet60(opponent, pouleMatchesOf("QM"), () => rules.distances.qm));
+    }
+  }
+  const valid = samples.filter((x) => x.sets > 0);
+  if (valid.length === 0) return Math.round(0.66 * d.pointsParSet);
+  const avg60 = valid.reduce((acc, x) => acc + x.subis60 / x.sets, 0) / valid.length;
+  return Math.min(Math.floor((avg60 / 60) * d.pointsParSet), d.pointsParSet - 1);
+}
+
+/** Points subis crédités à l'adversaire d'un forfait pour un match entier (sélecteur). */
+export function forfaitSubisOf(state: TournamentState, phase: PoulePhase): Record<string, number> {
+  const out: Record<string, number> = {};
+  if (forfaitsOf(state, phase).length === 0) return out;
+  const d = pouleDistance(state.rules, phase);
+  for (const p of state.poules[phase]) {
+    for (const name of p.players) {
+      out[name] = walkoverPoints(state, phase, name, d) * d.setsGagnants;
+    }
+  }
+  return out;
+}
+
 /** Classement de phase d'une phase de poules (sélecteur). */
 export function phaseRanking(state: TournamentState, phase: PoulePhase): PhaseRankRow[] {
   return rankPhase(
     state.poules[phase],
     pouleDistance(state.rules, phase),
-    arriveeOf(state),
+    entryArrivee(state, phase),
     forfaitsOf(state, phase),
+    forfaitSubisOf(state, phase),
+  );
+}
+
+/** Cumuls par joueur (Pm, Ps, points, matchs) sur le vendredi, le barrage, le samedi et les
+ * tableaux N/M, sans compensation « poule de 3 » et hors consolante (sélecteur, SPEC §7). */
+export function playerTotals(state: TournamentState): Record<string, PlayerTotals> {
+  const out: Record<string, PlayerTotals> = {};
+  const totals = (name: string): PlayerTotals => {
+    const t = out[name] ?? { ptm: 0, pts: 0, faits: 0, subis: 0, joues: 0 };
+    out[name] = t;
+    return t;
+  };
+  for (const phase of ["PREQ", "QN", "QM"] as const) {
+    const d = pouleDistance(state.rules, phase);
+    const forfaits = forfaitsOf(state, phase);
+    const subis = forfaitSubisOf(state, phase);
+    for (const p of state.poules[phase]) {
+      const { rows } = rankPoule(p.players, p.matches, d, {
+        compensate3: false,
+        forfaits,
+        forfaitSubis: subis,
+      });
+      for (const r of rows) {
+        const t = totals(r.name);
+        t.ptm += r.ptm;
+        t.pts += r.pts;
+        t.faits += r.faits;
+        t.subis += r.subis;
+        t.joues += r.joues;
+      }
+    }
+  }
+  const credit = (m: Match, d: Distance): void => {
+    const o = matchOutcome(m, d);
+    if (!o) return;
+    const w = totals(o.winner);
+    const l = totals(o.loser);
+    const maxSets = 2 * d.setsGagnants - 1;
+    w.ptm += 2;
+    w.pts += maxSets - o.setsLoser;
+    w.faits += o.pointsWinner;
+    w.subis += o.pointsLoser;
+    w.joues += 1;
+    l.pts += o.setsLoser;
+    l.faits += o.pointsLoser;
+    l.subis += o.pointsWinner;
+    l.joues += 1;
+  };
+  for (const m of state.barrages) credit(m, state.rules.distances.barrage);
+  for (const phase of ["N", "M"] as const) {
+    for (const m of state.brackets[phase]) {
+      if (m.a !== "" && m.b !== "") credit(m, bracketDistance(state.rules, phase, m.round));
+    }
+  }
+  return out;
+}
+
+/** Classement d'une phase finale N, M ou CLS (sélecteur ; cf. `rankTournamentPhase`). */
+export function bracketRanking(state: TournamentState, phase: BracketPhase): TournamentPhaseRow[] {
+  const qualif =
+    phase === "N" ? phaseRanking(state, "QN") : phase === "M" ? phaseRanking(state, "QM") : [];
+  return rankTournamentPhase(
+    qualif,
+    state.brackets[phase],
+    (round) => bracketDistance(state.rules, phase, round),
+    arriveeOf(state),
+  );
+}
+
+/** Classement final du tournoi (sélecteur, SPEC §7). */
+export function finalRanking(state: TournamentState): TournamentRankRow[] {
+  return tournamentRanking({
+    masters: bracketRanking(state, "M"),
+    national: bracketRanking(state, "N"),
+    consolante: bracketRanking(state, "CLS"),
+    preq: phaseRanking(state, "PREQ"),
+    prequalified: state.masters,
+    totals: playerTotals(state),
+    abandons: state.forfaits.filter((f) => f.phase !== "CLS").map((f) => f.player),
+    arrivee: arriveeOf(state),
+  });
+}
+
+/** Tableau des primes (sélecteur, SPEC §6). Les places du tableau non encore jouées restent
+ * sans nom ; les 3es et 4es de poule Masters sont connus dès la fin des poules. */
+export function primesOf(state: TournamentState): PrimesTable {
+  const blank = (rows: TournamentPhaseRow[]): TournamentPhaseRow[] =>
+    rows.map((r) => (r.reached === null && r.place <= 8 ? { ...r, name: "" } : r));
+  return primesTable(
+    state.players.length,
+    state.players.filter((p) => p.junior).length,
+    state.rules.inscriptionFee,
+    blank(bracketRanking(state, "M")),
+    blank(bracketRanking(state, "N")),
   );
 }
 
@@ -472,14 +670,40 @@ export function reduce(state: TournamentState, event: TournamentEvent): Tourname
         : { ...state, forfaits: [...state.forfaits, { phase, player, kind }] };
       const side = (m: Match): "a" | "b" | null =>
         m.a === player ? "a" : m.b === player ? "b" : null;
+      /** Match perdu par forfait : distance pour l'adversaire, points subis moyens pour le forfait. */
+      const walkover = <M extends Match>(m: M, d: Distance): M => {
+        const s = side(m);
+        if (s === null || m.a === "" || m.b === "") return { ...m, forfait: s };
+        const opponent = s === "a" ? m.b : m.a;
+        const ps = walkoverPoints(state, phase, opponent, d);
+        const winner = Array.from({ length: d.setsGagnants }, () => d.pointsParSet);
+        const loser = Array.from({ length: d.setsGagnants }, () => ps);
+        const out: M = { ...m, forfait: s };
+        if (d.setsGagnants <= 1) {
+          out.sa = s === "a" ? ps : d.pointsParSet;
+          out.sb = s === "a" ? d.pointsParSet : ps;
+          delete out.setsA;
+          delete out.setsB;
+        } else {
+          out.sa = s === "a" ? 0 : d.setsGagnants;
+          out.sb = s === "a" ? d.setsGagnants : 0;
+          out.setsA = s === "a" ? loser : winner;
+          out.setsB = s === "a" ? winner : loser;
+        }
+        return out;
+      };
       if (phase === "B") {
-        const m = pendingMatchOf(state.barrages, player, () => state.rules.distances.barrage);
-        if (m) next = updateMatch(next, "B", m.id, (x) => ({ ...x, forfait: side(x) }));
+        const d = state.rules.distances.barrage;
+        const m = pendingMatchOf(state.barrages, player, () => d);
+        if (m) next = updateMatch(next, "B", m.id, (x) => walkover(x, d));
       } else if (isBracketPhase(phase)) {
         const m = pendingMatchOf(state.brackets[phase], player, (x) =>
           bracketDistance(state.rules, phase, x.round),
         );
-        if (m) next = updateMatch(next, phase, m.id, (x) => ({ ...x, forfait: side(x) }));
+        if (m) {
+          const d = bracketDistance(state.rules, phase, m.round);
+          next = updateMatch(next, phase, m.id, (x) => walkover(x, d));
+        }
       }
       return next;
     }

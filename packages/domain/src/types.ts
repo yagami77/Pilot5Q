@@ -84,6 +84,63 @@ export type PhaseId = "PREQ" | "B" | "QN" | "QM" | "N" | "M" | "CLS";
 /** Tours d'un tableau à élimination directe (R64/R32 : consolante à plus de 16 joueurs). */
 export type BracketRound = "R64" | "R32" | "R16" | "QF" | "SF" | "F";
 
+/** Tour atteint dans un tableau : un tour, ou `W` pour le vainqueur du tableau. */
+export type BracketLevel = BracketRound | "W";
+
+/** Ligne du classement d'une phase finale (qualification + tableau cumulés). */
+export interface TournamentPhaseRow extends PhaseRankRow {
+  /** Tour atteint dans le tableau (null : non qualifié pour le tableau). */
+  reached: BracketLevel | null;
+  /** Dernier tour gagné dans le tableau (null : aucun match gagné). */
+  won: BracketRound | null;
+  /** Libellé du tour atteint (« Gagnant », « Finale », « 1/2 finale »…), vide sinon. */
+  label: string;
+}
+
+/** Cumuls d'un joueur sur l'ensemble du tournoi (pour le classement final). */
+export interface PlayerTotals {
+  ptm: number;
+  pts: number;
+  faits: number;
+  subis: number;
+  joues: number;
+}
+
+/** Ligne du classement final du tournoi (SPEC §7). */
+export interface TournamentRankRow extends PlayerTotals {
+  place: number;
+  name: string;
+  /** Phase qui fixe les points : Masters, National, consolante ou poules du vendredi. */
+  origin: "M" | "N" | "CLS" | "PREQ";
+  /** Points du barème (0 pour un forfait/abandon). */
+  points: number;
+  /** Décimale de départage : points de set / matchs joués / 100. */
+  decimal: number;
+  moy: number;
+  arrivee: number;
+  abandon: boolean;
+}
+
+/** Ligne du tableau des primes (SPEC §6). */
+export interface PrimeRow {
+  label: string;
+  pct: number;
+  amount: number;
+  name: string;
+}
+
+/** Tableau des primes (SPEC §6). */
+export interface PrimesTable {
+  players: number;
+  juniors: number;
+  inscriptions: number;
+  ffb: number;
+  club: number;
+  total: number;
+  masters: PrimeRow[];
+  national: PrimeRow[];
+}
+
 /** Match d'un tableau à élimination directe. `a`/`b` vides tant que le joueur n'est pas connu. */
 export interface BracketMatch extends Match {
   round: BracketRound;

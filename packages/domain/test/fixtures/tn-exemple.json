@@ -1,5 +1,5 @@
 {
- "_note": "Tournoi d'exemple : structure, billards et scores réels d'un TN (76 inscrits, 11 billards dont 4 de 3m10, 17 poules de 4), noms et clubs fictifs. 'expectedPhaseRanking' est le classement produit par l'outil Excel de référence ; la place 68 (dernier) est un joueur ayant abandonné.",
+ "_note": "Tournoi d'exemple : structure, billards et scores réels d'un TN complet (76 inscrits, 11 billards dont 4 de 3m10, 17 poules de 4), noms, clubs et licences fictifs ; les deux drapeaux `junior` sont fictifs (le classeur de référence ne stocke que le nombre de juniors, 2). Vendredi : `poules` (PREQ, 1 set à 100), `barrages` (B1..B8), `expectedPhaseRanking` (classement du vendredi produit par l'outil Excel ; la place 68 est un joueur ayant abandonné), `expectedBarrageRanking` (classement cumulé poules + barrage). `abandons` : joueurs déclarés forfait/abandon par phase (phase CLS = non volontaire pour la consolante). Samedi : `saturday.QN` et `saturday.QM` (poules réelles avec billards, scores par match ou par set, `excelRanking` de chaque poule et `expectedRanking` de la phase ; `arriveeQN` = ordre d'entrée dans le National). Dimanche : `brackets.N` (H1..H8 en 1 set à 100 puis Q1..Q4, D1, D2, F en 3 sets gagnants à 60, `labels` = croisements réels), `brackets.M` (Q1..Q4, D1, D2, F ; l'Excel numérote Q3 = 1er P2–2e P3 et Q4 = 1er P4–2e P1, à l'inverse de SPEC §5), `brackets.CLS` (consolante : `candidates` = places 41+, `players` = 19 volontaires dans l'ordre du classement, `seeds` des joueurs de barrage, B1..B3 puis H1..H8, Q1..Q4, D1, D2, F en 1 set à 100) et leurs `expectedRanking` (classements des phases finales de l'Excel : tour atteint, Pm, Ps, points et moyenne cumulés qualification + tableau). `expectedTournamentRanking` : classement final de l'Excel (points du barème + décimale Ps/matchs/100, faits, subis, moyenne) ; attention, l'onglet Q N de l'Excel compte 3, 4, 5 et 6 matchs aux quatre joueurs des poules 2 à 8 (série recopiée), ce qui fausse sa décimale pour ces joueurs. `primes` : onglet PRIMES (cagnotte et bénéficiaires).",
  "tournament": {
   "name": "TN 2",
   "season": "2026-2027",
@@ -660,7 +660,8 @@
    "name": "RODRIGUEZ MAXIME",
    "club": "Cercle de billard de Évry",
    "place": 500,
-   "lastSeason": null
+   "lastSeason": null,
+   "junior": true
   },
   {
    "seed": 76,
@@ -668,7 +669,8 @@
    "name": "REY DYLAN",
    "club": "AS Billard Cambrai",
    "place": 500,
-   "lastSeason": null
+   "lastSeason": null,
+   "junior": true
   }
  ],
  "poules": [
@@ -2338,5 +2340,4104 @@
    "rank": 16,
    "name": "ROUSSEL JULIE"
   }
- ]
+ ],
+ "abandons": [
+  {
+   "player": "SCHNEIDER CHLOÉ",
+   "phase": "CLS"
+  },
+  {
+   "player": "LEFEVRE BENOÎT",
+   "phase": "CLS"
+  },
+  {
+   "player": "BERTIN NADIA",
+   "phase": "CLS"
+  },
+  {
+   "player": "DUMAS DAMIEN",
+   "phase": "CLS"
+  },
+  {
+   "player": "MALLET MAXIME",
+   "phase": "CLS"
+  },
+  {
+   "player": "CLEMENT GILLES",
+   "phase": "PREQ"
+  },
+  {
+   "player": "LAMBERT RACHID",
+   "phase": "CLS"
+  },
+  {
+   "player": "BERTRAND CAMILLE",
+   "phase": "CLS"
+  },
+  {
+   "player": "MARTINEZ GILLES",
+   "phase": "CLS"
+  }
+ ],
+ "saturday": {
+  "QN": {
+   "distance": {
+    "pointsParSet": 100,
+    "setsGagnants": 1
+   },
+   "poules": [
+    {
+     "num": 1,
+     "billards": [
+      5
+     ],
+     "players": [
+      "LEROUX NICOLAS",
+      "COUSIN THOMAS",
+      "GRONDIN HUGO",
+      "LUCAS NICOLAS"
+     ],
+     "matches": [
+      {
+       "m": "M1",
+       "a": "COUSIN THOMAS",
+       "b": "GRONDIN HUGO",
+       "sa": 70,
+       "sb": 100
+      },
+      {
+       "m": "M2",
+       "a": "LEROUX NICOLAS",
+       "b": "LUCAS NICOLAS",
+       "sa": 100,
+       "sb": 87
+      },
+      {
+       "m": "M3",
+       "a": "GRONDIN HUGO",
+       "b": "LUCAS NICOLAS",
+       "sa": 100,
+       "sb": 65
+      },
+      {
+       "m": "M4",
+       "a": "COUSIN THOMAS",
+       "b": "LEROUX NICOLAS",
+       "sa": 81,
+       "sb": 100
+      },
+      {
+       "m": "M5",
+       "a": "COUSIN THOMAS",
+       "b": "LUCAS NICOLAS",
+       "sa": 63,
+       "sb": 100
+      },
+      {
+       "m": "M6",
+       "a": "GRONDIN HUGO",
+       "b": "LEROUX NICOLAS",
+       "sa": 100,
+       "sb": 69
+      }
+     ],
+     "excelRanking": [
+      {
+       "name": "GRONDIN HUGO",
+       "rang": 1,
+       "ptm": 6,
+       "pts": 3,
+       "faits": 300,
+       "subis": 204,
+       "moy": 1.4705882352941178
+      },
+      {
+       "name": "LEROUX NICOLAS",
+       "rang": 2,
+       "ptm": 4,
+       "pts": 2,
+       "faits": 269,
+       "subis": 268,
+       "moy": 1.0037313432835822
+      },
+      {
+       "name": "LUCAS NICOLAS",
+       "rang": 3,
+       "ptm": 2,
+       "pts": 1,
+       "faits": 252,
+       "subis": 263,
+       "moy": 0.9581749049429658
+      },
+      {
+       "name": "COUSIN THOMAS",
+       "rang": 4,
+       "ptm": 0,
+       "pts": 0,
+       "faits": 214,
+       "subis": 300,
+       "moy": 0.7133333333333334
+      }
+     ]
+    },
+    {
+     "num": 2,
+     "billards": [
+      7
+     ],
+     "players": [
+      "LANGLOIS ARNAUD",
+      "BERTRAND DIDIER",
+      "REY DYLAN",
+      "BONNET ERWAN"
+     ],
+     "matches": [
+      {
+       "m": "M1",
+       "a": "BERTRAND DIDIER",
+       "b": "REY DYLAN",
+       "sa": 100,
+       "sb": 85
+      },
+      {
+       "m": "M2",
+       "a": "LANGLOIS ARNAUD",
+       "b": "BONNET ERWAN",
+       "sa": 100,
+       "sb": 62
+      },
+      {
+       "m": "M3",
+       "a": "REY DYLAN",
+       "b": "BONNET ERWAN",
+       "sa": 54,
+       "sb": 100
+      },
+      {
+       "m": "M4",
+       "a": "BERTRAND DIDIER",
+       "b": "LANGLOIS ARNAUD",
+       "sa": 90,
+       "sb": 100
+      },
+      {
+       "m": "M5",
+       "a": "BERTRAND DIDIER",
+       "b": "BONNET ERWAN",
+       "sa": 100,
+       "sb": 75
+      },
+      {
+       "m": "M6",
+       "a": "REY DYLAN",
+       "b": "LANGLOIS ARNAUD",
+       "sa": 82,
+       "sb": 100
+      }
+     ],
+     "excelRanking": [
+      {
+       "name": "LANGLOIS ARNAUD",
+       "rang": 1,
+       "ptm": 6,
+       "pts": 3,
+       "faits": 300,
+       "subis": 234,
+       "moy": 1.2820512820512822
+      },
+      {
+       "name": "BERTRAND DIDIER",
+       "rang": 2,
+       "ptm": 4,
+       "pts": 2,
+       "faits": 290,
+       "subis": 260,
+       "moy": 1.1153846153846154
+      },
+      {
+       "name": "BONNET ERWAN",
+       "rang": 3,
+       "ptm": 2,
+       "pts": 1,
+       "faits": 237,
+       "subis": 254,
+       "moy": 0.9330708661417323
+      },
+      {
+       "name": "REY DYLAN",
+       "rang": 4,
+       "ptm": 0,
+       "pts": 0,
+       "faits": 221,
+       "subis": 300,
+       "moy": 0.7366666666666667
+      }
+     ]
+    },
+    {
+     "num": 3,
+     "billards": [
+      8
+     ],
+     "players": [
+      "BRETON CLAIRE",
+      "VASSEUR LAURENT",
+      "MARECHAL ROMAIN",
+      "HENRY GUILLAUME"
+     ],
+     "matches": [
+      {
+       "m": "M1",
+       "a": "VASSEUR LAURENT",
+       "b": "MARECHAL ROMAIN",
+       "sa": 100,
+       "sb": 46
+      },
+      {
+       "m": "M2",
+       "a": "BRETON CLAIRE",
+       "b": "HENRY GUILLAUME",
+       "sa": 67,
+       "sb": 100
+      },
+      {
+       "m": "M3",
+       "a": "MARECHAL ROMAIN",
+       "b": "HENRY GUILLAUME",
+       "sa": 100,
+       "sb": 88
+      },
+      {
+       "m": "M4",
+       "a": "VASSEUR LAURENT",
+       "b": "BRETON CLAIRE",
+       "sa": 100,
+       "sb": 41
+      },
+      {
+       "m": "M5",
+       "a": "VASSEUR LAURENT",
+       "b": "HENRY GUILLAUME",
+       "sa": 100,
+       "sb": 92
+      },
+      {
+       "m": "M6",
+       "a": "MARECHAL ROMAIN",
+       "b": "BRETON CLAIRE",
+       "sa": 100,
+       "sb": 86
+      }
+     ],
+     "excelRanking": [
+      {
+       "name": "VASSEUR LAURENT",
+       "rang": 1,
+       "ptm": 6,
+       "pts": 3,
+       "faits": 300,
+       "subis": 179,
+       "moy": 1.675977653631285
+      },
+      {
+       "name": "MARECHAL ROMAIN",
+       "rang": 2,
+       "ptm": 4,
+       "pts": 2,
+       "faits": 246,
+       "subis": 274,
+       "moy": 0.8978102189781022
+      },
+      {
+       "name": "HENRY GUILLAUME",
+       "rang": 3,
+       "ptm": 2,
+       "pts": 1,
+       "faits": 280,
+       "subis": 267,
+       "moy": 1.048689138576779
+      },
+      {
+       "name": "BRETON CLAIRE",
+       "rang": 4,
+       "ptm": 0,
+       "pts": 0,
+       "faits": 194,
+       "subis": 300,
+       "moy": 0.6466666666666666
+      }
+     ]
+    },
+    {
+     "num": 4,
+     "billards": [
+      6
+     ],
+     "players": [
+      "ROBERT KEVIN",
+      "LEBLANC MICKAËL",
+      "MERCIER ÉRIC",
+      "LAURENT PAULINE"
+     ],
+     "matches": [
+      {
+       "m": "M1",
+       "a": "ROBERT KEVIN",
+       "b": "MERCIER ÉRIC",
+       "sa": 48,
+       "sb": 100
+      },
+      {
+       "m": "M2",
+       "a": "LEBLANC MICKAËL",
+       "b": "LAURENT PAULINE",
+       "sa": 100,
+       "sb": 71
+      },
+      {
+       "m": "M3",
+       "a": "MERCIER ÉRIC",
+       "b": "LAURENT PAULINE",
+       "sa": 100,
+       "sb": 65
+      },
+      {
+       "m": "M4",
+       "a": "ROBERT KEVIN",
+       "b": "LEBLANC MICKAËL",
+       "sa": 80,
+       "sb": 100
+      },
+      {
+       "m": "M5",
+       "a": "ROBERT KEVIN",
+       "b": "LAURENT PAULINE",
+       "sa": 93,
+       "sb": 100
+      },
+      {
+       "m": "M6",
+       "a": "MERCIER ÉRIC",
+       "b": "LEBLANC MICKAËL",
+       "sa": 53,
+       "sb": 100
+      }
+     ],
+     "excelRanking": [
+      {
+       "name": "LEBLANC MICKAËL",
+       "rang": 1,
+       "ptm": 6,
+       "pts": 3,
+       "faits": 300,
+       "subis": 204,
+       "moy": 1.4705882352941178
+      },
+      {
+       "name": "MERCIER ÉRIC",
+       "rang": 2,
+       "ptm": 4,
+       "pts": 2,
+       "faits": 253,
+       "subis": 213,
+       "moy": 1.187793427230047
+      },
+      {
+       "name": "LAURENT PAULINE",
+       "rang": 3,
+       "ptm": 2,
+       "pts": 1,
+       "faits": 236,
+       "subis": 293,
+       "moy": 0.8054607508532423
+      },
+      {
+       "name": "ROBERT KEVIN",
+       "rang": 4,
+       "ptm": 0,
+       "pts": 0,
+       "faits": 221,
+       "subis": 300,
+       "moy": 0.7366666666666667
+      }
+     ]
+    },
+    {
+     "num": 5,
+     "billards": [
+      6
+     ],
+     "players": [
+      "CHEVALLIER LOÏC",
+      "AUBRY THIERRY",
+      "RODRIGUEZ MAXIME",
+      "CARPENTIER BENOÎT"
+     ],
+     "matches": [
+      {
+       "m": "M1",
+       "a": "AUBRY THIERRY",
+       "b": "RODRIGUEZ MAXIME",
+       "sa": 50,
+       "sb": 100
+      },
+      {
+       "m": "M2",
+       "a": "CHEVALLIER LOÏC",
+       "b": "CARPENTIER BENOÎT",
+       "sa": 68,
+       "sb": 100
+      },
+      {
+       "m": "M3",
+       "a": "RODRIGUEZ MAXIME",
+       "b": "CARPENTIER BENOÎT",
+       "sa": 100,
+       "sb": 88
+      },
+      {
+       "m": "M4",
+       "a": "AUBRY THIERRY",
+       "b": "CHEVALLIER LOÏC",
+       "sa": 95,
+       "sb": 100
+      },
+      {
+       "m": "M5",
+       "a": "AUBRY THIERRY",
+       "b": "CARPENTIER BENOÎT",
+       "sa": 66,
+       "sb": 100
+      },
+      {
+       "m": "M6",
+       "a": "RODRIGUEZ MAXIME",
+       "b": "CHEVALLIER LOÏC",
+       "sa": 94,
+       "sb": 100
+      }
+     ],
+     "excelRanking": [
+      {
+       "name": "RODRIGUEZ MAXIME",
+       "rang": 1,
+       "ptm": 4,
+       "pts": 2,
+       "faits": 294,
+       "subis": 238,
+       "moy": 1.2352941176470589
+      },
+      {
+       "name": "CARPENTIER BENOÎT",
+       "rang": 2,
+       "ptm": 4,
+       "pts": 2,
+       "faits": 288,
+       "subis": 234,
+       "moy": 1.2307692307692308
+      },
+      {
+       "name": "CHEVALLIER LOÏC",
+       "rang": 3,
+       "ptm": 4,
+       "pts": 2,
+       "faits": 268,
+       "subis": 289,
+       "moy": 0.9273356401384083
+      },
+      {
+       "name": "AUBRY THIERRY",
+       "rang": 4,
+       "ptm": 0,
+       "pts": 0,
+       "faits": 211,
+       "subis": 300,
+       "moy": 0.7033333333333334
+      }
+     ]
+    },
+    {
+     "num": 6,
+     "billards": [
+      8
+     ],
+     "players": [
+      "MATHIEU MEHDI",
+      "CORDIER CAMILLE",
+      "COLIN GWENDAL",
+      "ADAM CHLOÉ"
+     ],
+     "matches": [
+      {
+       "m": "M1",
+       "a": "CORDIER CAMILLE",
+       "b": "COLIN GWENDAL",
+       "sa": 60,
+       "sb": 100
+      },
+      {
+       "m": "M2",
+       "a": "MATHIEU MEHDI",
+       "b": "ADAM CHLOÉ",
+       "sa": 88,
+       "sb": 100
+      },
+      {
+       "m": "M3",
+       "a": "COLIN GWENDAL",
+       "b": "ADAM CHLOÉ",
+       "sa": 100,
+       "sb": 50
+      },
+      {
+       "m": "M4",
+       "a": "CORDIER CAMILLE",
+       "b": "MATHIEU MEHDI",
+       "sa": 96,
+       "sb": 100
+      },
+      {
+       "m": "M5",
+       "a": "CORDIER CAMILLE",
+       "b": "ADAM CHLOÉ",
+       "sa": 100,
+       "sb": 70
+      },
+      {
+       "m": "M6",
+       "a": "COLIN GWENDAL",
+       "b": "MATHIEU MEHDI",
+       "sa": 100,
+       "sb": 73
+      }
+     ],
+     "excelRanking": [
+      {
+       "name": "COLIN GWENDAL",
+       "rang": 1,
+       "ptm": 6,
+       "pts": 3,
+       "faits": 300,
+       "subis": 183,
+       "moy": 1.639344262295082
+      },
+      {
+       "name": "CORDIER CAMILLE",
+       "rang": 2,
+       "ptm": 2,
+       "pts": 1,
+       "faits": 256,
+       "subis": 270,
+       "moy": 0.9481481481481482
+      },
+      {
+       "name": "MATHIEU MEHDI",
+       "rang": 3,
+       "ptm": 2,
+       "pts": 1,
+       "faits": 261,
+       "subis": 296,
+       "moy": 0.8817567567567568
+      },
+      {
+       "name": "ADAM CHLOÉ",
+       "rang": 4,
+       "ptm": 2,
+       "pts": 1,
+       "faits": 220,
+       "subis": 288,
+       "moy": 0.7638888888888888
+      }
+     ]
+    },
+    {
+     "num": 7,
+     "billards": [
+      7
+     ],
+     "players": [
+      "GAILLARD SÉBASTIEN",
+      "SANCHEZ SOPHIE",
+      "MARECHAL DIDIER",
+      "BOUCHET CÉDRIC"
+     ],
+     "matches": [
+      {
+       "m": "M1",
+       "a": "SANCHEZ SOPHIE",
+       "b": "MARECHAL DIDIER",
+       "sa": 100,
+       "sb": 79
+      },
+      {
+       "m": "M2",
+       "a": "GAILLARD SÉBASTIEN",
+       "b": "BOUCHET CÉDRIC",
+       "sa": 45,
+       "sb": 100
+      },
+      {
+       "m": "M3",
+       "a": "MARECHAL DIDIER",
+       "b": "BOUCHET CÉDRIC",
+       "sa": 60,
+       "sb": 100
+      },
+      {
+       "m": "M4",
+       "a": "SANCHEZ SOPHIE",
+       "b": "GAILLARD SÉBASTIEN",
+       "sa": 100,
+       "sb": 80
+      },
+      {
+       "m": "M5",
+       "a": "SANCHEZ SOPHIE",
+       "b": "BOUCHET CÉDRIC",
+       "sa": 100,
+       "sb": 78
+      },
+      {
+       "m": "M6",
+       "a": "MARECHAL DIDIER",
+       "b": "GAILLARD SÉBASTIEN",
+       "sa": 90,
+       "sb": 100
+      }
+     ],
+     "excelRanking": [
+      {
+       "name": "SANCHEZ SOPHIE",
+       "rang": 1,
+       "ptm": 6,
+       "pts": 3,
+       "faits": 300,
+       "subis": 237,
+       "moy": 1.2658227848101267
+      },
+      {
+       "name": "BOUCHET CÉDRIC",
+       "rang": 2,
+       "ptm": 4,
+       "pts": 2,
+       "faits": 278,
+       "subis": 205,
+       "moy": 1.3560975609756099
+      },
+      {
+       "name": "GAILLARD SÉBASTIEN",
+       "rang": 3,
+       "ptm": 2,
+       "pts": 1,
+       "faits": 225,
+       "subis": 290,
+       "moy": 0.7758620689655172
+      },
+      {
+       "name": "MARECHAL DIDIER",
+       "rang": 4,
+       "ptm": 0,
+       "pts": 0,
+       "faits": 229,
+       "subis": 300,
+       "moy": 0.7633333333333333
+      }
+     ]
+    },
+    {
+     "num": 8,
+     "billards": [
+      5
+     ],
+     "players": [
+      "ROUSSEL JULIE",
+      "FRANCOIS NADIA",
+      "DUMONT LUCAS",
+      "BOURGEOIS DIDIER"
+     ],
+     "matches": [
+      {
+       "m": "M1",
+       "a": "FRANCOIS NADIA",
+       "b": "DUMONT LUCAS",
+       "sa": 100,
+       "sb": 86
+      },
+      {
+       "m": "M2",
+       "a": "ROUSSEL JULIE",
+       "b": "BOURGEOIS DIDIER",
+       "sa": 100,
+       "sb": 95
+      },
+      {
+       "m": "M3",
+       "a": "DUMONT LUCAS",
+       "b": "BOURGEOIS DIDIER",
+       "sa": 100,
+       "sb": 60
+      },
+      {
+       "m": "M4",
+       "a": "FRANCOIS NADIA",
+       "b": "ROUSSEL JULIE",
+       "sa": 100,
+       "sb": 96
+      },
+      {
+       "m": "M5",
+       "a": "FRANCOIS NADIA",
+       "b": "BOURGEOIS DIDIER",
+       "sa": 100,
+       "sb": 79
+      },
+      {
+       "m": "M6",
+       "a": "DUMONT LUCAS",
+       "b": "ROUSSEL JULIE",
+       "sa": 100,
+       "sb": 84
+      }
+     ],
+     "excelRanking": [
+      {
+       "name": "FRANCOIS NADIA",
+       "rang": 1,
+       "ptm": 6,
+       "pts": 3,
+       "faits": 300,
+       "subis": 261,
+       "moy": 1.1494252873563218
+      },
+      {
+       "name": "DUMONT LUCAS",
+       "rang": 2,
+       "ptm": 4,
+       "pts": 2,
+       "faits": 286,
+       "subis": 244,
+       "moy": 1.1721311475409837
+      },
+      {
+       "name": "ROUSSEL JULIE",
+       "rang": 3,
+       "ptm": 2,
+       "pts": 1,
+       "faits": 280,
+       "subis": 295,
+       "moy": 0.9491525423728814
+      },
+      {
+       "name": "BOURGEOIS DIDIER",
+       "rang": 4,
+       "ptm": 0,
+       "pts": 0,
+       "faits": 234,
+       "subis": 300,
+       "moy": 0.78
+      }
+     ]
+    }
+   ],
+   "expectedRanking": [
+    {
+     "rank": 1,
+     "name": "VASSEUR LAURENT",
+     "pouleRank": 1,
+     "ptm": 6,
+     "pts": 3,
+     "faits": 300,
+     "subis": 179,
+     "moy": 1.675977653631285,
+     "arriveeQN": 14
+    },
+    {
+     "rank": 2,
+     "name": "COLIN GWENDAL",
+     "pouleRank": 1,
+     "ptm": 6,
+     "pts": 3,
+     "faits": 300,
+     "subis": 183,
+     "moy": 1.639344262295082,
+     "arriveeQN": 22
+    },
+    {
+     "rank": 3,
+     "name": "LEBLANC MICKAËL",
+     "pouleRank": 1,
+     "ptm": 6,
+     "pts": 3,
+     "faits": 300,
+     "subis": 204,
+     "moy": 1.4705882352941178,
+     "arriveeQN": 13
+    },
+    {
+     "rank": 4,
+     "name": "GRONDIN HUGO",
+     "pouleRank": 1,
+     "ptm": 6,
+     "pts": 3,
+     "faits": 300,
+     "subis": 204,
+     "moy": 1.4705882352941178,
+     "arriveeQN": 17
+    },
+    {
+     "rank": 5,
+     "name": "LANGLOIS ARNAUD",
+     "pouleRank": 1,
+     "ptm": 6,
+     "pts": 3,
+     "faits": 300,
+     "subis": 234,
+     "moy": 1.2820512820512822,
+     "arriveeQN": 2
+    },
+    {
+     "rank": 6,
+     "name": "SANCHEZ SOPHIE",
+     "pouleRank": 1,
+     "ptm": 6,
+     "pts": 3,
+     "faits": 300,
+     "subis": 237,
+     "moy": 1.2658227848101267,
+     "arriveeQN": 10
+    },
+    {
+     "rank": 7,
+     "name": "FRANCOIS NADIA",
+     "pouleRank": 1,
+     "ptm": 6,
+     "pts": 3,
+     "faits": 300,
+     "subis": 261,
+     "moy": 1.1494252873563218,
+     "arriveeQN": 9
+    },
+    {
+     "rank": 8,
+     "name": "RODRIGUEZ MAXIME",
+     "pouleRank": 1,
+     "ptm": 4,
+     "pts": 2,
+     "faits": 294,
+     "subis": 238,
+     "moy": 1.2352941176470589,
+     "arriveeQN": 21
+    },
+    {
+     "rank": 9,
+     "name": "BOUCHET CÉDRIC",
+     "pouleRank": 2,
+     "ptm": 4,
+     "pts": 2,
+     "faits": 278,
+     "subis": 205,
+     "moy": 1.3560975609756099,
+     "arriveeQN": 26
+    },
+    {
+     "rank": 10,
+     "name": "CARPENTIER BENOÎT",
+     "pouleRank": 2,
+     "ptm": 4,
+     "pts": 2,
+     "faits": 288,
+     "subis": 234,
+     "moy": 1.2307692307692308,
+     "arriveeQN": 28
+    },
+    {
+     "rank": 11,
+     "name": "MERCIER ÉRIC",
+     "pouleRank": 2,
+     "ptm": 4,
+     "pts": 2,
+     "faits": 253,
+     "subis": 213,
+     "moy": 1.187793427230047,
+     "arriveeQN": 20
+    },
+    {
+     "rank": 12,
+     "name": "DUMONT LUCAS",
+     "pouleRank": 2,
+     "ptm": 4,
+     "pts": 2,
+     "faits": 286,
+     "subis": 244,
+     "moy": 1.1721311475409837,
+     "arriveeQN": 24
+    },
+    {
+     "rank": 13,
+     "name": "BERTRAND DIDIER",
+     "pouleRank": 2,
+     "ptm": 4,
+     "pts": 2,
+     "faits": 290,
+     "subis": 260,
+     "moy": 1.1153846153846154,
+     "arriveeQN": 15
+    },
+    {
+     "rank": 14,
+     "name": "LEROUX NICOLAS",
+     "pouleRank": 2,
+     "ptm": 4,
+     "pts": 2,
+     "faits": 269,
+     "subis": 268,
+     "moy": 1.0037313432835822,
+     "arriveeQN": 1
+    },
+    {
+     "rank": 15,
+     "name": "MARECHAL ROMAIN",
+     "pouleRank": 2,
+     "ptm": 4,
+     "pts": 2,
+     "faits": 246,
+     "subis": 274,
+     "moy": 0.8978102189781022,
+     "arriveeQN": 19
+    },
+    {
+     "rank": 16,
+     "name": "CORDIER CAMILLE",
+     "pouleRank": 2,
+     "ptm": 2,
+     "pts": 1,
+     "faits": 256,
+     "subis": 270,
+     "moy": 0.9481481481481482,
+     "arriveeQN": 11
+    },
+    {
+     "rank": 17,
+     "name": "CHEVALLIER LOÏC",
+     "pouleRank": 3,
+     "ptm": 4,
+     "pts": 2,
+     "faits": 268,
+     "subis": 289,
+     "moy": 0.9273356401384083,
+     "arriveeQN": 5
+    },
+    {
+     "rank": 18,
+     "name": "HENRY GUILLAUME",
+     "pouleRank": 3,
+     "ptm": 2,
+     "pts": 1,
+     "faits": 280,
+     "subis": 267,
+     "moy": 1.048689138576779,
+     "arriveeQN": 30
+    },
+    {
+     "rank": 19,
+     "name": "LUCAS NICOLAS",
+     "pouleRank": 3,
+     "ptm": 2,
+     "pts": 1,
+     "faits": 252,
+     "subis": 263,
+     "moy": 0.9581749049429658,
+     "arriveeQN": 32
+    },
+    {
+     "rank": 20,
+     "name": "ROUSSEL JULIE",
+     "pouleRank": 3,
+     "ptm": 2,
+     "pts": 1,
+     "faits": 280,
+     "subis": 295,
+     "moy": 0.9491525423728814,
+     "arriveeQN": 8
+    },
+    {
+     "rank": 21,
+     "name": "BONNET ERWAN",
+     "pouleRank": 3,
+     "ptm": 2,
+     "pts": 1,
+     "faits": 237,
+     "subis": 254,
+     "moy": 0.9330708661417323,
+     "arriveeQN": 31
+    },
+    {
+     "rank": 22,
+     "name": "MATHIEU MEHDI",
+     "pouleRank": 3,
+     "ptm": 2,
+     "pts": 1,
+     "faits": 261,
+     "subis": 296,
+     "moy": 0.8817567567567568,
+     "arriveeQN": 6
+    },
+    {
+     "rank": 23,
+     "name": "LAURENT PAULINE",
+     "pouleRank": 3,
+     "ptm": 2,
+     "pts": 1,
+     "faits": 236,
+     "subis": 293,
+     "moy": 0.8054607508532423,
+     "arriveeQN": 29
+    },
+    {
+     "rank": 24,
+     "name": "GAILLARD SÉBASTIEN",
+     "pouleRank": 3,
+     "ptm": 2,
+     "pts": 1,
+     "faits": 225,
+     "subis": 290,
+     "moy": 0.7758620689655172,
+     "arriveeQN": 7
+    },
+    {
+     "rank": 25,
+     "name": "ADAM CHLOÉ",
+     "pouleRank": 4,
+     "ptm": 2,
+     "pts": 1,
+     "faits": 220,
+     "subis": 288,
+     "moy": 0.7638888888888888,
+     "arriveeQN": 27
+    },
+    {
+     "rank": 26,
+     "name": "BOURGEOIS DIDIER",
+     "pouleRank": 4,
+     "ptm": 0,
+     "pts": 0,
+     "faits": 234,
+     "subis": 300,
+     "moy": 0.78,
+     "arriveeQN": 25
+    },
+    {
+     "rank": 27,
+     "name": "MARECHAL DIDIER",
+     "pouleRank": 4,
+     "ptm": 0,
+     "pts": 0,
+     "faits": 229,
+     "subis": 300,
+     "moy": 0.7633333333333333,
+     "arriveeQN": 23
+    },
+    {
+     "rank": 28,
+     "name": "ROBERT KEVIN",
+     "pouleRank": 4,
+     "ptm": 0,
+     "pts": 0,
+     "faits": 221,
+     "subis": 300,
+     "moy": 0.7366666666666667,
+     "arriveeQN": 4
+    },
+    {
+     "rank": 29,
+     "name": "REY DYLAN",
+     "pouleRank": 4,
+     "ptm": 0,
+     "pts": 0,
+     "faits": 221,
+     "subis": 300,
+     "moy": 0.7366666666666667,
+     "arriveeQN": 18
+    },
+    {
+     "rank": 30,
+     "name": "COUSIN THOMAS",
+     "pouleRank": 4,
+     "ptm": 0,
+     "pts": 0,
+     "faits": 214,
+     "subis": 300,
+     "moy": 0.7133333333333334,
+     "arriveeQN": 16
+    },
+    {
+     "rank": 31,
+     "name": "AUBRY THIERRY",
+     "pouleRank": 4,
+     "ptm": 0,
+     "pts": 0,
+     "faits": 211,
+     "subis": 300,
+     "moy": 0.7033333333333334,
+     "arriveeQN": 12
+    },
+    {
+     "rank": 32,
+     "name": "BRETON CLAIRE",
+     "pouleRank": 4,
+     "ptm": 0,
+     "pts": 0,
+     "faits": 194,
+     "subis": 300,
+     "moy": 0.6466666666666666,
+     "arriveeQN": 3
+    }
+   ]
+  },
+  "QM": {
+   "distance": {
+    "pointsParSet": 60,
+    "setsGagnants": 2
+   },
+   "poules": [
+    {
+     "num": 1,
+     "billards": [
+      2
+     ],
+     "players": [
+      "BARRE PATRICK",
+      "HUBERT MICHEL",
+      "LAMY VINCENT",
+      "CARLIER SAMIR"
+     ],
+     "matches": [
+      {
+       "m": "M1",
+       "a": "CARLIER SAMIR",
+       "b": "LAMY VINCENT",
+       "sa": 0,
+       "sb": 2,
+       "setsA": [
+        55,
+        40
+       ],
+       "setsB": [
+        60,
+        60
+       ]
+      },
+      {
+       "m": "M2",
+       "a": "BARRE PATRICK",
+       "b": "HUBERT MICHEL",
+       "sa": 1,
+       "sb": 2,
+       "setsA": [
+        60,
+        49,
+        49
+       ],
+       "setsB": [
+        51,
+        60,
+        60
+       ]
+      },
+      {
+       "m": "M3",
+       "a": "LAMY VINCENT",
+       "b": "HUBERT MICHEL",
+       "sa": 2,
+       "sb": 1,
+       "setsA": [
+        60,
+        32,
+        60
+       ],
+       "setsB": [
+        37,
+        60,
+        55
+       ]
+      },
+      {
+       "m": "M4",
+       "a": "CARLIER SAMIR",
+       "b": "BARRE PATRICK",
+       "sa": 0,
+       "sb": 2,
+       "setsA": [
+        17,
+        51
+       ],
+       "setsB": [
+        60,
+        60
+       ]
+      },
+      {
+       "m": "M5",
+       "a": "CARLIER SAMIR",
+       "b": "HUBERT MICHEL",
+       "sa": 1,
+       "sb": 2,
+       "setsA": [
+        60,
+        34,
+        36
+       ],
+       "setsB": [
+        53,
+        60,
+        60
+       ]
+      },
+      {
+       "m": "M6",
+       "a": "LAMY VINCENT",
+       "b": "BARRE PATRICK",
+       "sa": 0,
+       "sb": 2,
+       "setsA": [
+        51,
+        36
+       ],
+       "setsB": [
+        60,
+        60
+       ]
+      }
+     ],
+     "excelRanking": [
+      {
+       "name": "BARRE PATRICK",
+       "rang": 1,
+       "ptm": 4,
+       "pts": 7,
+       "faits": 398,
+       "subis": 326,
+       "moy": 1.2208588957055215
+      },
+      {
+       "name": "HUBERT MICHEL",
+       "rang": 2,
+       "ptm": 4,
+       "pts": 5,
+       "faits": 496,
+       "subis": 440,
+       "moy": 1.1272727272727272
+      },
+      {
+       "name": "LAMY VINCENT",
+       "rang": 3,
+       "ptm": 4,
+       "pts": 5,
+       "faits": 359,
+       "subis": 367,
+       "moy": 0.9782016348773842
+      },
+      {
+       "name": "CARLIER SAMIR",
+       "rang": 4,
+       "ptm": 0,
+       "pts": 1,
+       "faits": 293,
+       "subis": 413,
+       "moy": 0.7094430992736077
+      }
+     ]
+    },
+    {
+     "num": 2,
+     "billards": [
+      4
+     ],
+     "players": [
+      "CHEVALLIER QUENTIN",
+      "PETIT LUCAS",
+      "BOYER JULIEN",
+      "MAILLARD CAMILLE"
+     ],
+     "matches": [
+      {
+       "m": "M1",
+       "a": "PETIT LUCAS",
+       "b": "CHEVALLIER QUENTIN",
+       "sa": 0,
+       "sb": 2,
+       "setsA": [
+        41,
+        41
+       ],
+       "setsB": [
+        60,
+        60
+       ]
+      },
+      {
+       "m": "M2",
+       "a": "BOYER JULIEN",
+       "b": "MAILLARD CAMILLE",
+       "sa": 0,
+       "sb": 2,
+       "setsA": [
+        58,
+        15
+       ],
+       "setsB": [
+        60,
+        60
+       ]
+      },
+      {
+       "m": "M3",
+       "a": "CHEVALLIER QUENTIN",
+       "b": "MAILLARD CAMILLE",
+       "sa": 2,
+       "sb": 1,
+       "setsA": [
+        60,
+        52,
+        60
+       ],
+       "setsB": [
+        35,
+        60,
+        48
+       ]
+      },
+      {
+       "m": "M4",
+       "a": "PETIT LUCAS",
+       "b": "BOYER JULIEN",
+       "sa": 2,
+       "sb": 1,
+       "setsA": [
+        60,
+        47,
+        60
+       ],
+       "setsB": [
+        41,
+        60,
+        31
+       ]
+      },
+      {
+       "m": "M5",
+       "a": "PETIT LUCAS",
+       "b": "MAILLARD CAMILLE",
+       "sa": 2,
+       "sb": 0,
+       "setsA": [
+        60,
+        60
+       ],
+       "setsB": [
+        28,
+        27
+       ]
+      },
+      {
+       "m": "M6",
+       "a": "CHEVALLIER QUENTIN",
+       "b": "BOYER JULIEN",
+       "sa": 2,
+       "sb": 0,
+       "setsA": [
+        60,
+        60
+       ],
+       "setsB": [
+        22,
+        30
+       ]
+      }
+     ],
+     "excelRanking": [
+      {
+       "name": "CHEVALLIER QUENTIN",
+       "rang": 1,
+       "ptm": 6,
+       "pts": 8,
+       "faits": 412,
+       "subis": 277,
+       "moy": 1.4873646209386282
+      },
+      {
+       "name": "PETIT LUCAS",
+       "rang": 2,
+       "ptm": 4,
+       "pts": 5,
+       "faits": 369,
+       "subis": 307,
+       "moy": 1.201954397394137
+      },
+      {
+       "name": "MAILLARD CAMILLE",
+       "rang": 3,
+       "ptm": 2,
+       "pts": 4,
+       "faits": 318,
+       "subis": 365,
+       "moy": 0.8712328767123287
+      },
+      {
+       "name": "BOYER JULIEN",
+       "rang": 4,
+       "ptm": 0,
+       "pts": 1,
+       "faits": 257,
+       "subis": 407,
+       "moy": 0.6314496314496314
+      }
+     ]
+    },
+    {
+     "num": 3,
+     "billards": [
+      1
+     ],
+     "players": [
+      "JACQUET ÉRIC",
+      "COLLET OLIVIER",
+      "MARCHAND JORDAN",
+      "KLEIN ÉMILIE"
+     ],
+     "matches": [
+      {
+       "m": "M1",
+       "a": "COLLET OLIVIER",
+       "b": "MARCHAND JORDAN",
+       "sa": 2,
+       "sb": 0,
+       "setsA": [
+        60,
+        60
+       ],
+       "setsB": [
+        49,
+        28
+       ]
+      },
+      {
+       "m": "M2",
+       "a": "JACQUET ÉRIC",
+       "b": "KLEIN ÉMILIE",
+       "sa": 2,
+       "sb": 0,
+       "setsA": [
+        60,
+        60
+       ],
+       "setsB": [
+        38,
+        45
+       ]
+      },
+      {
+       "m": "M3",
+       "a": "MARCHAND JORDAN",
+       "b": "KLEIN ÉMILIE",
+       "sa": 2,
+       "sb": 0,
+       "setsA": [
+        60,
+        60
+       ],
+       "setsB": [
+        52,
+        18
+       ]
+      },
+      {
+       "m": "M4",
+       "a": "COLLET OLIVIER",
+       "b": "JACQUET ÉRIC",
+       "sa": 2,
+       "sb": 0,
+       "setsA": [
+        60,
+        60
+       ],
+       "setsB": [
+        57,
+        55
+       ]
+      },
+      {
+       "m": "M5",
+       "a": "COLLET OLIVIER",
+       "b": "KLEIN ÉMILIE",
+       "sa": 2,
+       "sb": 0,
+       "setsA": [
+        60,
+        60
+       ],
+       "setsB": [
+        51,
+        23
+       ]
+      },
+      {
+       "m": "M6",
+       "a": "MARCHAND JORDAN",
+       "b": "JACQUET ÉRIC",
+       "sa": 2,
+       "sb": 1,
+       "setsA": [
+        60,
+        54,
+        60
+       ],
+       "setsB": [
+        43,
+        60,
+        57
+       ]
+      }
+     ],
+     "excelRanking": [
+      {
+       "name": "COLLET OLIVIER",
+       "rang": 1,
+       "ptm": 6,
+       "pts": 9,
+       "faits": 360,
+       "subis": 263,
+       "moy": 1.3688212927756653
+      },
+      {
+       "name": "MARCHAND JORDAN",
+       "rang": 2,
+       "ptm": 4,
+       "pts": 5,
+       "faits": 371,
+       "subis": 350,
+       "moy": 1.06
+      },
+      {
+       "name": "JACQUET ÉRIC",
+       "rang": 3,
+       "ptm": 2,
+       "pts": 4,
+       "faits": 392,
+       "subis": 377,
+       "moy": 1.039787798408488
+      },
+      {
+       "name": "KLEIN ÉMILIE",
+       "rang": 4,
+       "ptm": 0,
+       "pts": 0,
+       "faits": 227,
+       "subis": 360,
+       "moy": 0.6305555555555555
+      }
+     ]
+    },
+    {
+     "num": 4,
+     "billards": [
+      3
+     ],
+     "players": [
+      "PERRIN CHRISTOPHE",
+      "ADAM ÉRIC",
+      "CHAUVIN THIERRY",
+      "MICHEL DAMIEN"
+     ],
+     "matches": [
+      {
+       "m": "M1",
+       "a": "ADAM ÉRIC",
+       "b": "CHAUVIN THIERRY",
+       "sa": 1,
+       "sb": 2,
+       "setsA": [
+        60,
+        58,
+        46
+       ],
+       "setsB": [
+        28,
+        60,
+        60
+       ]
+      },
+      {
+       "m": "M2",
+       "a": "PERRIN CHRISTOPHE",
+       "b": "MICHEL DAMIEN",
+       "sa": 2,
+       "sb": 0,
+       "setsA": [
+        60,
+        60
+       ],
+       "setsB": [
+        37,
+        27
+       ]
+      },
+      {
+       "m": "M3",
+       "a": "CHAUVIN THIERRY",
+       "b": "MICHEL DAMIEN",
+       "sa": 2,
+       "sb": 0,
+       "setsA": [
+        60,
+        60
+       ],
+       "setsB": [
+        28,
+        33
+       ]
+      },
+      {
+       "m": "M4",
+       "a": "ADAM ÉRIC",
+       "b": "PERRIN CHRISTOPHE",
+       "sa": 1,
+       "sb": 2,
+       "setsA": [
+        60,
+        45,
+        42
+       ],
+       "setsB": [
+        26,
+        60,
+        60
+       ]
+      },
+      {
+       "m": "M5",
+       "a": "ADAM ÉRIC",
+       "b": "MICHEL DAMIEN",
+       "sa": 2,
+       "sb": 0,
+       "setsA": [
+        60,
+        60
+       ],
+       "setsB": [
+        54,
+        30
+       ]
+      },
+      {
+       "m": "M6",
+       "a": "CHAUVIN THIERRY",
+       "b": "PERRIN CHRISTOPHE",
+       "sa": 0,
+       "sb": 2,
+       "setsA": [
+        17,
+        17
+       ],
+       "setsB": [
+        60,
+        60
+       ]
+      }
+     ],
+     "excelRanking": [
+      {
+       "name": "PERRIN CHRISTOPHE",
+       "rang": 1,
+       "ptm": 6,
+       "pts": 8,
+       "faits": 386,
+       "subis": 245,
+       "moy": 1.5755102040816327
+      },
+      {
+       "name": "CHAUVIN THIERRY",
+       "rang": 2,
+       "ptm": 4,
+       "pts": 5,
+       "faits": 302,
+       "subis": 345,
+       "moy": 0.8753623188405797
+      },
+      {
+       "name": "ADAM ÉRIC",
+       "rang": 3,
+       "ptm": 2,
+       "pts": 5,
+       "faits": 431,
+       "subis": 378,
+       "moy": 1.1402116402116402
+      },
+      {
+       "name": "MICHEL DAMIEN",
+       "rang": 4,
+       "ptm": 0,
+       "pts": 0,
+       "faits": 209,
+       "subis": 360,
+       "moy": 0.5805555555555556
+      }
+     ]
+    }
+   ],
+   "expectedRanking": [
+    {
+     "rank": 1,
+     "name": "COLLET OLIVIER",
+     "pouleRank": 1,
+     "ptm": 6,
+     "pts": 9,
+     "faits": 360,
+     "subis": 263,
+     "moy": 1.3688212927756653,
+     "arrivee": 6
+    },
+    {
+     "rank": 2,
+     "name": "PERRIN CHRISTOPHE",
+     "pouleRank": 1,
+     "ptm": 6,
+     "pts": 8,
+     "faits": 386,
+     "subis": 245,
+     "moy": 1.5755102040816327,
+     "arrivee": 4
+    },
+    {
+     "rank": 3,
+     "name": "CHEVALLIER QUENTIN",
+     "pouleRank": 1,
+     "ptm": 6,
+     "pts": 8,
+     "faits": 412,
+     "subis": 277,
+     "moy": 1.4873646209386282,
+     "arrivee": 2
+    },
+    {
+     "rank": 4,
+     "name": "BARRE PATRICK",
+     "pouleRank": 1,
+     "ptm": 4,
+     "pts": 7,
+     "faits": 398,
+     "subis": 326,
+     "moy": 1.2208588957055215,
+     "arrivee": 1
+    },
+    {
+     "rank": 5,
+     "name": "PETIT LUCAS",
+     "pouleRank": 2,
+     "ptm": 4,
+     "pts": 5,
+     "faits": 369,
+     "subis": 307,
+     "moy": 1.201954397394137,
+     "arrivee": 7
+    },
+    {
+     "rank": 6,
+     "name": "HUBERT MICHEL",
+     "pouleRank": 2,
+     "ptm": 4,
+     "pts": 5,
+     "faits": 496,
+     "subis": 440,
+     "moy": 1.1272727272727272,
+     "arrivee": 8
+    },
+    {
+     "rank": 7,
+     "name": "MARCHAND JORDAN",
+     "pouleRank": 2,
+     "ptm": 4,
+     "pts": 5,
+     "faits": 371,
+     "subis": 350,
+     "moy": 1.06,
+     "arrivee": 16
+    },
+    {
+     "rank": 8,
+     "name": "CHAUVIN THIERRY",
+     "pouleRank": 2,
+     "ptm": 4,
+     "pts": 5,
+     "faits": 302,
+     "subis": 345,
+     "moy": 0.8753623188405797,
+     "arrivee": 26
+    },
+    {
+     "rank": 9,
+     "name": "LAMY VINCENT",
+     "pouleRank": 3,
+     "ptm": 4,
+     "pts": 5,
+     "faits": 359,
+     "subis": 367,
+     "moy": 0.9782016348773842,
+     "arrivee": 10
+    },
+    {
+     "rank": 10,
+     "name": "ADAM ÉRIC",
+     "pouleRank": 3,
+     "ptm": 2,
+     "pts": 5,
+     "faits": 431,
+     "subis": 378,
+     "moy": 1.1402116402116402,
+     "arrivee": 5
+    },
+    {
+     "rank": 11,
+     "name": "JACQUET ÉRIC",
+     "pouleRank": 3,
+     "ptm": 2,
+     "pts": 4,
+     "faits": 392,
+     "subis": 377,
+     "moy": 1.039787798408488,
+     "arrivee": 3
+    },
+    {
+     "rank": 12,
+     "name": "MAILLARD CAMILLE",
+     "pouleRank": 3,
+     "ptm": 2,
+     "pts": 4,
+     "faits": 318,
+     "subis": 365,
+     "moy": 0.8712328767123287,
+     "arrivee": 37
+    },
+    {
+     "rank": 13,
+     "name": "CARLIER SAMIR",
+     "pouleRank": 4,
+     "ptm": 0,
+     "pts": 1,
+     "faits": 293,
+     "subis": 413,
+     "moy": 0.7094430992736077,
+     "arrivee": 39
+    },
+    {
+     "rank": 14,
+     "name": "BOYER JULIEN",
+     "pouleRank": 4,
+     "ptm": 0,
+     "pts": 1,
+     "faits": 257,
+     "subis": 407,
+     "moy": 0.6314496314496314,
+     "arrivee": 13
+    },
+    {
+     "rank": 15,
+     "name": "KLEIN ÉMILIE",
+     "pouleRank": 4,
+     "ptm": 0,
+     "pts": 0,
+     "faits": 227,
+     "subis": 360,
+     "moy": 0.6305555555555555,
+     "arrivee": 36
+    },
+    {
+     "rank": 16,
+     "name": "MICHEL DAMIEN",
+     "pouleRank": 4,
+     "ptm": 0,
+     "pts": 0,
+     "faits": 209,
+     "subis": 360,
+     "moy": 0.5805555555555556,
+     "arrivee": 34
+    }
+   ]
+  }
+ },
+ "brackets": {
+  "N": {
+   "labels": {
+    "H1": "1er P1 vs 2eme P8",
+    "H2": "1er P7 vs 2eme P2",
+    "H3": "1er P4 vs 2eme P5",
+    "H4": "1er P6 vs 2eme P3",
+    "H5": "1er P8 vs 2eme P1",
+    "H6": "1er P2 vs 2eme P7",
+    "H7": "1er P5 vs 2eme P4",
+    "H8": "1er P3 vs 2eme P6"
+   },
+   "matches": [
+    {
+     "id": "H1",
+     "round": "R16",
+     "a": "GRONDIN HUGO",
+     "b": "DUMONT LUCAS",
+     "sa": 100,
+     "sb": 37
+    },
+    {
+     "id": "H2",
+     "round": "R16",
+     "a": "SANCHEZ SOPHIE",
+     "b": "BERTRAND DIDIER",
+     "sa": 59,
+     "sb": 100
+    },
+    {
+     "id": "H3",
+     "round": "R16",
+     "a": "LEBLANC MICKAËL",
+     "b": "CARPENTIER BENOÎT",
+     "sa": 83,
+     "sb": 100
+    },
+    {
+     "id": "H4",
+     "round": "R16",
+     "a": "COLIN GWENDAL",
+     "b": "MARECHAL ROMAIN",
+     "sa": 100,
+     "sb": 78
+    },
+    {
+     "id": "H5",
+     "round": "R16",
+     "a": "FRANCOIS NADIA",
+     "b": "LEROUX NICOLAS",
+     "sa": 55,
+     "sb": 100
+    },
+    {
+     "id": "H6",
+     "round": "R16",
+     "a": "LANGLOIS ARNAUD",
+     "b": "BOUCHET CÉDRIC",
+     "sa": 100,
+     "sb": 94
+    },
+    {
+     "id": "H7",
+     "round": "R16",
+     "a": "RODRIGUEZ MAXIME",
+     "b": "MERCIER ÉRIC",
+     "sa": 100,
+     "sb": 89
+    },
+    {
+     "id": "H8",
+     "round": "R16",
+     "a": "VASSEUR LAURENT",
+     "b": "CORDIER CAMILLE",
+     "sa": 100,
+     "sb": 34
+    },
+    {
+     "id": "Q1",
+     "round": "QF",
+     "a": "GRONDIN HUGO",
+     "b": "BERTRAND DIDIER",
+     "sa": 1,
+     "sb": 3,
+     "setsA": [
+      60,
+      39,
+      50,
+      20
+     ],
+     "setsB": [
+      52,
+      60,
+      60,
+      60
+     ],
+     "billard": 5
+    },
+    {
+     "id": "Q2",
+     "round": "QF",
+     "a": "CARPENTIER BENOÎT",
+     "b": "COLIN GWENDAL",
+     "sa": 3,
+     "sb": 2,
+     "setsA": [
+      60,
+      52,
+      60,
+      50,
+      60
+     ],
+     "setsB": [
+      42,
+      60,
+      56,
+      60,
+      52
+     ],
+     "billard": 6
+    },
+    {
+     "id": "Q3",
+     "round": "QF",
+     "a": "LEROUX NICOLAS",
+     "b": "LANGLOIS ARNAUD",
+     "sa": 3,
+     "sb": 1,
+     "setsA": [
+      60,
+      53,
+      60,
+      60
+     ],
+     "setsB": [
+      51,
+      60,
+      53,
+      46
+     ],
+     "billard": 7
+    },
+    {
+     "id": "Q4",
+     "round": "QF",
+     "a": "RODRIGUEZ MAXIME",
+     "b": "VASSEUR LAURENT",
+     "sa": 1,
+     "sb": 3,
+     "setsA": [
+      27,
+      60,
+      8,
+      55
+     ],
+     "setsB": [
+      60,
+      56,
+      60,
+      60
+     ],
+     "billard": 8
+    },
+    {
+     "id": "D1",
+     "round": "SF",
+     "a": "BERTRAND DIDIER",
+     "b": "CARPENTIER BENOÎT",
+     "sa": 3,
+     "sb": 2,
+     "setsA": [
+      60,
+      50,
+      36,
+      60,
+      60
+     ],
+     "setsB": [
+      47,
+      60,
+      60,
+      28,
+      52
+     ],
+     "billard": 1
+    },
+    {
+     "id": "D2",
+     "round": "SF",
+     "a": "LEROUX NICOLAS",
+     "b": "VASSEUR LAURENT",
+     "sa": 2,
+     "sb": 3,
+     "setsA": [
+      43,
+      50,
+      60,
+      60,
+      30
+     ],
+     "setsB": [
+      60,
+      60,
+      53,
+      45,
+      60
+     ],
+     "billard": 4
+    },
+    {
+     "id": "F",
+     "round": "F",
+     "a": "BERTRAND DIDIER",
+     "b": "VASSEUR LAURENT",
+     "sa": 3,
+     "sb": 0,
+     "setsA": [
+      60,
+      60,
+      60
+     ],
+     "setsB": [
+      53,
+      36,
+      29
+     ],
+     "billard": 2
+    }
+   ],
+   "expectedRanking": [
+    {
+     "rank": 1,
+     "name": "BERTRAND DIDIER",
+     "phase": "Gagnant",
+     "pouleRank": null,
+     "ptm": 12,
+     "pts": 15,
+     "faits": 1068,
+     "subis": 853,
+     "moy": 1.2520515826494725
+    },
+    {
+     "rank": 2,
+     "name": "VASSEUR LAURENT",
+     "phase": "Finale",
+     "pouleRank": null,
+     "ptm": 12,
+     "pts": 11,
+     "faits": 1032,
+     "subis": 786,
+     "moy": 1.3129770992366412
+    },
+    {
+     "rank": 3,
+     "name": "LEROUX NICOLAS",
+     "phase": "1/2 finale",
+     "pouleRank": null,
+     "ptm": 8,
+     "pts": 9,
+     "faits": 845,
+     "subis": 811,
+     "moy": 1.0419235511713933
+    },
+    {
+     "rank": 4,
+     "name": "CARPENTIER BENOÎT",
+     "phase": "1/2 finale",
+     "pouleRank": null,
+     "ptm": 8,
+     "pts": 8,
+     "faits": 917,
+     "subis": 853,
+     "moy": 1.0750293083235638
+    },
+    {
+     "rank": 5,
+     "name": "COLIN GWENDAL",
+     "phase": "1/4 finale",
+     "pouleRank": null,
+     "ptm": 8,
+     "pts": 6,
+     "faits": 670,
+     "subis": 543,
+     "moy": 1.2338858195211786
+    },
+    {
+     "rank": 6,
+     "name": "GRONDIN HUGO",
+     "phase": "1/4 finale",
+     "pouleRank": null,
+     "ptm": 8,
+     "pts": 5,
+     "faits": 569,
+     "subis": 473,
+     "moy": 1.2029598308668077
+    },
+    {
+     "rank": 7,
+     "name": "LANGLOIS ARNAUD",
+     "phase": "1/4 finale",
+     "pouleRank": null,
+     "ptm": 8,
+     "pts": 5,
+     "faits": 610,
+     "subis": 561,
+     "moy": 1.0873440285204992
+    },
+    {
+     "rank": 8,
+     "name": "RODRIGUEZ MAXIME",
+     "phase": "1/4 finale",
+     "pouleRank": null,
+     "ptm": 6,
+     "pts": 4,
+     "faits": 544,
+     "subis": 563,
+     "moy": 0.9662522202486679
+    },
+    {
+     "rank": 9,
+     "name": "LEBLANC MICKAËL",
+     "phase": "1/8 finale",
+     "pouleRank": null,
+     "ptm": 6,
+     "pts": 3,
+     "faits": 383,
+     "subis": 304,
+     "moy": 1.2598684210526316
+    },
+    {
+     "rank": 10,
+     "name": "SANCHEZ SOPHIE",
+     "phase": "1/8 finale",
+     "pouleRank": null,
+     "ptm": 6,
+     "pts": 3,
+     "faits": 359,
+     "subis": 337,
+     "moy": 1.0652818991097923
+    },
+    {
+     "rank": 11,
+     "name": "FRANCOIS NADIA",
+     "phase": "1/8 finale",
+     "pouleRank": null,
+     "ptm": 6,
+     "pts": 3,
+     "faits": 355,
+     "subis": 361,
+     "moy": 0.9833795013850416
+    },
+    {
+     "rank": 12,
+     "name": "BOUCHET CÉDRIC",
+     "phase": "1/8 finale",
+     "pouleRank": null,
+     "ptm": 4,
+     "pts": 2,
+     "faits": 372,
+     "subis": 305,
+     "moy": 1.219672131147541
+    },
+    {
+     "rank": 13,
+     "name": "MERCIER ÉRIC",
+     "phase": "1/8 finale",
+     "pouleRank": null,
+     "ptm": 4,
+     "pts": 2,
+     "faits": 342,
+     "subis": 313,
+     "moy": 1.0926517571884984
+    },
+    {
+     "rank": 14,
+     "name": "DUMONT LUCAS",
+     "phase": "1/8 finale",
+     "pouleRank": null,
+     "ptm": 4,
+     "pts": 2,
+     "faits": 323,
+     "subis": 344,
+     "moy": 0.938953488372093
+    },
+    {
+     "rank": 15,
+     "name": "MARECHAL ROMAIN",
+     "phase": "1/8 finale",
+     "pouleRank": null,
+     "ptm": 4,
+     "pts": 2,
+     "faits": 324,
+     "subis": 374,
+     "moy": 0.8663101604278075
+    },
+    {
+     "rank": 16,
+     "name": "CORDIER CAMILLE",
+     "phase": "1/8 finale",
+     "pouleRank": null,
+     "ptm": 2,
+     "pts": 1,
+     "faits": 290,
+     "subis": 370,
+     "moy": 0.7837837837837838
+    },
+    {
+     "rank": 17,
+     "name": "CHEVALLIER LOÏC",
+     "phase": null,
+     "pouleRank": 3,
+     "ptm": 4,
+     "pts": 2,
+     "faits": 268,
+     "subis": 289,
+     "moy": 0.9273356401384083
+    },
+    {
+     "rank": 18,
+     "name": "HENRY GUILLAUME",
+     "phase": null,
+     "pouleRank": 3,
+     "ptm": 2,
+     "pts": 1,
+     "faits": 280,
+     "subis": 267,
+     "moy": 1.048689138576779
+    },
+    {
+     "rank": 19,
+     "name": "LUCAS NICOLAS",
+     "phase": null,
+     "pouleRank": 3,
+     "ptm": 2,
+     "pts": 1,
+     "faits": 252,
+     "subis": 263,
+     "moy": 0.9581749049429658
+    },
+    {
+     "rank": 20,
+     "name": "ROUSSEL JULIE",
+     "phase": null,
+     "pouleRank": 3,
+     "ptm": 2,
+     "pts": 1,
+     "faits": 280,
+     "subis": 295,
+     "moy": 0.9491525423728814
+    },
+    {
+     "rank": 21,
+     "name": "BONNET ERWAN",
+     "phase": null,
+     "pouleRank": 3,
+     "ptm": 2,
+     "pts": 1,
+     "faits": 237,
+     "subis": 254,
+     "moy": 0.9330708661417323
+    },
+    {
+     "rank": 22,
+     "name": "MATHIEU MEHDI",
+     "phase": null,
+     "pouleRank": 3,
+     "ptm": 2,
+     "pts": 1,
+     "faits": 261,
+     "subis": 296,
+     "moy": 0.8817567567567568
+    },
+    {
+     "rank": 23,
+     "name": "LAURENT PAULINE",
+     "phase": null,
+     "pouleRank": 3,
+     "ptm": 2,
+     "pts": 1,
+     "faits": 236,
+     "subis": 293,
+     "moy": 0.8054607508532423
+    },
+    {
+     "rank": 24,
+     "name": "GAILLARD SÉBASTIEN",
+     "phase": null,
+     "pouleRank": 3,
+     "ptm": 2,
+     "pts": 1,
+     "faits": 225,
+     "subis": 290,
+     "moy": 0.7758620689655172
+    },
+    {
+     "rank": 25,
+     "name": "ADAM CHLOÉ",
+     "phase": null,
+     "pouleRank": 4,
+     "ptm": 2,
+     "pts": 1,
+     "faits": 220,
+     "subis": 288,
+     "moy": 0.7638888888888888
+    },
+    {
+     "rank": 26,
+     "name": "BOURGEOIS DIDIER",
+     "phase": null,
+     "pouleRank": 4,
+     "ptm": 0,
+     "pts": 0,
+     "faits": 234,
+     "subis": 300,
+     "moy": 0.78
+    },
+    {
+     "rank": 27,
+     "name": "MARECHAL DIDIER",
+     "phase": null,
+     "pouleRank": 4,
+     "ptm": 0,
+     "pts": 0,
+     "faits": 229,
+     "subis": 300,
+     "moy": 0.7633333333333333
+    },
+    {
+     "rank": 28,
+     "name": "ROBERT KEVIN",
+     "phase": null,
+     "pouleRank": 4,
+     "ptm": 0,
+     "pts": 0,
+     "faits": 221,
+     "subis": 300,
+     "moy": 0.7366666666666667
+    },
+    {
+     "rank": 29,
+     "name": "REY DYLAN",
+     "phase": null,
+     "pouleRank": 4,
+     "ptm": 0,
+     "pts": 0,
+     "faits": 221,
+     "subis": 300,
+     "moy": 0.7366666666666667
+    },
+    {
+     "rank": 30,
+     "name": "COUSIN THOMAS",
+     "phase": null,
+     "pouleRank": 4,
+     "ptm": 0,
+     "pts": 0,
+     "faits": 214,
+     "subis": 300,
+     "moy": 0.7133333333333334
+    },
+    {
+     "rank": 31,
+     "name": "AUBRY THIERRY",
+     "phase": null,
+     "pouleRank": 4,
+     "ptm": 0,
+     "pts": 0,
+     "faits": 211,
+     "subis": 300,
+     "moy": 0.7033333333333334
+    },
+    {
+     "rank": 32,
+     "name": "BRETON CLAIRE",
+     "phase": null,
+     "pouleRank": 4,
+     "ptm": 0,
+     "pts": 0,
+     "faits": 194,
+     "subis": 300,
+     "moy": 0.6466666666666666
+    }
+   ]
+  },
+  "M": {
+   "labels": {
+    "Q1": "1er P1 vs 2eme P4",
+    "Q2": "1er P3 vs 2eme P2",
+    "Q3": "1er P2 vs 2eme P3",
+    "Q4": "1er P4 vs 2eme P1"
+   },
+   "matches": [
+    {
+     "id": "Q1",
+     "round": "QF",
+     "a": "BARRE PATRICK",
+     "b": "CHAUVIN THIERRY",
+     "sa": 3,
+     "sb": 0,
+     "setsA": [
+      60,
+      60,
+      60
+     ],
+     "setsB": [
+      43,
+      18,
+      22
+     ],
+     "billard": 1
+    },
+    {
+     "id": "Q2",
+     "round": "QF",
+     "a": "COLLET OLIVIER",
+     "b": "PETIT LUCAS",
+     "sa": 2,
+     "sb": 3,
+     "setsA": [
+      60,
+      44,
+      56,
+      60,
+      43
+     ],
+     "setsB": [
+      39,
+      60,
+      60,
+      38,
+      60
+     ],
+     "billard": 2
+    },
+    {
+     "id": "Q3",
+     "round": "QF",
+     "a": "CHEVALLIER QUENTIN",
+     "b": "MARCHAND JORDAN",
+     "sa": 3,
+     "sb": 0,
+     "setsA": [
+      60,
+      60,
+      60
+     ],
+     "setsB": [
+      23,
+      27,
+      29
+     ],
+     "billard": 3
+    },
+    {
+     "id": "Q4",
+     "round": "QF",
+     "a": "PERRIN CHRISTOPHE",
+     "b": "HUBERT MICHEL",
+     "sa": 1,
+     "sb": 3,
+     "setsA": [
+      57,
+      48,
+      60,
+      31
+     ],
+     "setsB": [
+      60,
+      60,
+      37,
+      60
+     ],
+     "billard": 4
+    },
+    {
+     "id": "D1",
+     "round": "SF",
+     "a": "BARRE PATRICK",
+     "b": "PETIT LUCAS",
+     "sa": 3,
+     "sb": 0,
+     "setsA": [
+      60,
+      60,
+      60
+     ],
+     "setsB": [
+      40,
+      39,
+      41
+     ],
+     "billard": 3
+    },
+    {
+     "id": "D2",
+     "round": "SF",
+     "a": "CHEVALLIER QUENTIN",
+     "b": "HUBERT MICHEL",
+     "sa": 2,
+     "sb": 3,
+     "setsA": [
+      39,
+      28,
+      60,
+      60,
+      16
+     ],
+     "setsB": [
+      60,
+      60,
+      33,
+      34,
+      60
+     ],
+     "billard": 2
+    },
+    {
+     "id": "F",
+     "round": "F",
+     "a": "BARRE PATRICK",
+     "b": "HUBERT MICHEL",
+     "sa": 3,
+     "sb": 2,
+     "setsA": [
+      44,
+      60,
+      35,
+      60,
+      60
+     ],
+     "setsB": [
+      60,
+      38,
+      60,
+      45,
+      21
+     ],
+     "billard": 4
+    }
+   ],
+   "expectedRanking": [
+    {
+     "rank": 1,
+     "name": "BARRE PATRICK",
+     "phase": "Gagnant",
+     "pouleRank": 1,
+     "ptm": 10,
+     "pts": 20,
+     "faits": 1017,
+     "subis": 753,
+     "moy": 1.350597609561753
+    },
+    {
+     "rank": 2,
+     "name": "HUBERT MICHEL",
+     "phase": "Finale",
+     "pouleRank": 2,
+     "ptm": 8,
+     "pts": 14,
+     "faits": 1184,
+     "subis": 1098,
+     "moy": 1.0783242258652095
+    },
+    {
+     "rank": 3,
+     "name": "CHEVALLIER QUENTIN",
+     "phase": "1/2 finale",
+     "pouleRank": 1,
+     "ptm": 8,
+     "pts": 15,
+     "faits": 795,
+     "subis": 603,
+     "moy": 1.318407960199005
+    },
+    {
+     "rank": 4,
+     "name": "PETIT LUCAS",
+     "phase": "1/2 finale",
+     "pouleRank": 2,
+     "ptm": 6,
+     "pts": 8,
+     "faits": 746,
+     "subis": 750,
+     "moy": 0.9946666666666667
+    },
+    {
+     "rank": 5,
+     "name": "COLLET OLIVIER",
+     "phase": "1/4 finale",
+     "pouleRank": 1,
+     "ptm": 6,
+     "pts": 11,
+     "faits": 623,
+     "subis": 520,
+     "moy": 1.198076923076923
+    },
+    {
+     "rank": 6,
+     "name": "PERRIN CHRISTOPHE",
+     "phase": "1/4 finale",
+     "pouleRank": 1,
+     "ptm": 6,
+     "pts": 9,
+     "faits": 582,
+     "subis": 462,
+     "moy": 1.2597402597402598
+    },
+    {
+     "rank": 7,
+     "name": "MARCHAND JORDAN",
+     "phase": "1/4 finale",
+     "pouleRank": 2,
+     "ptm": 4,
+     "pts": 5,
+     "faits": 450,
+     "subis": 530,
+     "moy": 0.8490566037735849
+    },
+    {
+     "rank": 8,
+     "name": "CHAUVIN THIERRY",
+     "phase": "1/4 finale",
+     "pouleRank": 2,
+     "ptm": 4,
+     "pts": 5,
+     "faits": 385,
+     "subis": 525,
+     "moy": 0.7333333333333333
+    },
+    {
+     "rank": 9,
+     "name": "LAMY VINCENT",
+     "phase": null,
+     "pouleRank": 3,
+     "ptm": 4,
+     "pts": 5,
+     "faits": 359,
+     "subis": 367,
+     "moy": 0.9782016348773842
+    },
+    {
+     "rank": 10,
+     "name": "ADAM ÉRIC",
+     "phase": null,
+     "pouleRank": 3,
+     "ptm": 2,
+     "pts": 5,
+     "faits": 431,
+     "subis": 378,
+     "moy": 1.1402116402116402
+    },
+    {
+     "rank": 11,
+     "name": "JACQUET ÉRIC",
+     "phase": null,
+     "pouleRank": 3,
+     "ptm": 2,
+     "pts": 4,
+     "faits": 392,
+     "subis": 377,
+     "moy": 1.039787798408488
+    },
+    {
+     "rank": 12,
+     "name": "MAILLARD CAMILLE",
+     "phase": null,
+     "pouleRank": 3,
+     "ptm": 2,
+     "pts": 4,
+     "faits": 318,
+     "subis": 365,
+     "moy": 0.8712328767123287
+    },
+    {
+     "rank": 13,
+     "name": "CARLIER SAMIR",
+     "phase": null,
+     "pouleRank": 4,
+     "ptm": 0,
+     "pts": 1,
+     "faits": 293,
+     "subis": 413,
+     "moy": 0.7094430992736077
+    },
+    {
+     "rank": 14,
+     "name": "BOYER JULIEN",
+     "phase": null,
+     "pouleRank": 4,
+     "ptm": 0,
+     "pts": 1,
+     "faits": 257,
+     "subis": 407,
+     "moy": 0.6314496314496314
+    },
+    {
+     "rank": 15,
+     "name": "KLEIN ÉMILIE",
+     "phase": null,
+     "pouleRank": 4,
+     "ptm": 0,
+     "pts": 0,
+     "faits": 227,
+     "subis": 360,
+     "moy": 0.6305555555555555
+    },
+    {
+     "rank": 16,
+     "name": "MICHEL DAMIEN",
+     "phase": null,
+     "pouleRank": 4,
+     "ptm": 0,
+     "pts": 0,
+     "faits": 209,
+     "subis": 360,
+     "moy": 0.5805555555555556
+    }
+   ]
+  },
+  "CLS": {
+   "candidates": [
+    "PAYET DAVID",
+    "MARTY FABIEN",
+    "DAVID SARAH",
+    "BAILLY PATRICK",
+    "CARON THIERRY",
+    "SCHNEIDER CHLOÉ",
+    "DUMONT ARNAUD",
+    "LEFEVRE BENOÎT",
+    "BERTIN NADIA",
+    "OLIVIER PATRICK",
+    "DUMAS DAMIEN",
+    "LEGRAND ARNAUD",
+    "MALLET MAXIME",
+    "LEGRAND PIERRE",
+    "BOYER NOÉ",
+    "RENAUD HUGO",
+    "BOYER MANON",
+    "MARTINEZ JORDAN",
+    "ARNAUD CLÉMENT",
+    "MARTINEZ GILLES",
+    "FAURE MARIE",
+    "LAMBERT RACHID",
+    "COLLIN RONAN",
+    "SCHNEIDER CÉDRIC",
+    "BRUN ERWAN",
+    "BERTRAND CAMILLE",
+    "FLEURY SARAH",
+    "CLEMENT GILLES"
+   ],
+   "players": [
+    "PAYET DAVID",
+    "MARTY FABIEN",
+    "DAVID SARAH",
+    "BAILLY PATRICK",
+    "CARON THIERRY",
+    "DUMONT ARNAUD",
+    "OLIVIER PATRICK",
+    "LEGRAND ARNAUD",
+    "LEGRAND PIERRE",
+    "BOYER NOÉ",
+    "RENAUD HUGO",
+    "BOYER MANON",
+    "MARTINEZ JORDAN",
+    "ARNAUD CLÉMENT",
+    "FAURE MARIE",
+    "COLLIN RONAN",
+    "SCHNEIDER CÉDRIC",
+    "BRUN ERWAN",
+    "FLEURY SARAH"
+   ],
+   "seeds": {
+    "ARNAUD CLÉMENT": 14,
+    "FLEURY SARAH": 19,
+    "FAURE MARIE": 15,
+    "BRUN ERWAN": 18,
+    "COLLIN RONAN": 16,
+    "SCHNEIDER CÉDRIC": 17
+   },
+   "matches": [
+    {
+     "id": "B1",
+     "round": "B",
+     "a": "ARNAUD CLÉMENT",
+     "b": "FLEURY SARAH",
+     "sa": 100,
+     "sb": 63
+    },
+    {
+     "id": "B2",
+     "round": "B",
+     "a": "FAURE MARIE",
+     "b": "BRUN ERWAN",
+     "sa": 77,
+     "sb": 100
+    },
+    {
+     "id": "B3",
+     "round": "B",
+     "a": "COLLIN RONAN",
+     "b": "SCHNEIDER CÉDRIC",
+     "sa": 78,
+     "sb": 100
+    },
+    {
+     "id": "H1",
+     "round": "R16",
+     "a": "PAYET DAVID",
+     "b": "ARNAUD CLÉMENT",
+     "sa": 100,
+     "sb": 63
+    },
+    {
+     "id": "H2",
+     "round": "R16",
+     "a": "LEGRAND ARNAUD",
+     "b": "LEGRAND PIERRE",
+     "sa": 100,
+     "sb": 52
+    },
+    {
+     "id": "H3",
+     "round": "R16",
+     "a": "BAILLY PATRICK",
+     "b": "MARTINEZ JORDAN",
+     "sa": 93,
+     "sb": 100
+    },
+    {
+     "id": "H4",
+     "round": "R16",
+     "a": "CARON THIERRY",
+     "b": "BOYER MANON",
+     "sa": 85,
+     "sb": 100
+    },
+    {
+     "id": "H5",
+     "round": "R16",
+     "a": "MARTY FABIEN",
+     "b": "BRUN ERWAN",
+     "sa": 100,
+     "sb": 94
+    },
+    {
+     "id": "H6",
+     "round": "R16",
+     "a": "OLIVIER PATRICK",
+     "b": "BOYER NOÉ",
+     "sa": 100,
+     "sb": 88
+    },
+    {
+     "id": "H7",
+     "round": "R16",
+     "a": "DAVID SARAH",
+     "b": "SCHNEIDER CÉDRIC",
+     "sa": 100,
+     "sb": 67
+    },
+    {
+     "id": "H8",
+     "round": "R16",
+     "a": "DUMONT ARNAUD",
+     "b": "RENAUD HUGO",
+     "sa": 86,
+     "sb": 100
+    },
+    {
+     "id": "Q1",
+     "round": "QF",
+     "a": "PAYET DAVID",
+     "b": "LEGRAND ARNAUD",
+     "sa": 100,
+     "sb": 62
+    },
+    {
+     "id": "Q2",
+     "round": "QF",
+     "a": "MARTINEZ JORDAN",
+     "b": "BOYER MANON",
+     "sa": 100,
+     "sb": 85
+    },
+    {
+     "id": "Q3",
+     "round": "QF",
+     "a": "MARTY FABIEN",
+     "b": "OLIVIER PATRICK",
+     "sa": 86,
+     "sb": 100
+    },
+    {
+     "id": "Q4",
+     "round": "QF",
+     "a": "DAVID SARAH",
+     "b": "RENAUD HUGO",
+     "sa": 100,
+     "sb": 64
+    },
+    {
+     "id": "D1",
+     "round": "SF",
+     "a": "PAYET DAVID",
+     "b": "MARTINEZ JORDAN",
+     "sa": 66,
+     "sb": 100
+    },
+    {
+     "id": "D2",
+     "round": "SF",
+     "a": "OLIVIER PATRICK",
+     "b": "DAVID SARAH",
+     "sa": 74,
+     "sb": 100
+    },
+    {
+     "id": "F",
+     "round": "F",
+     "a": "MARTINEZ JORDAN",
+     "b": "DAVID SARAH",
+     "sa": 68,
+     "sb": 100
+    }
+   ],
+   "expectedRanking": [
+    {
+     "rank": 1,
+     "name": "DAVID SARAH",
+     "ptm": 8,
+     "pts": 4,
+     "faits": 400,
+     "subis": 273,
+     "moy": 1.465201465201465,
+     "joues": 4
+    },
+    {
+     "rank": 2,
+     "name": "MARTINEZ JORDAN",
+     "ptm": 6,
+     "pts": 3,
+     "faits": 368,
+     "subis": 344,
+     "moy": 1.069767441860465,
+     "joues": 4
+    },
+    {
+     "rank": 3,
+     "name": "PAYET DAVID",
+     "ptm": 4,
+     "pts": 2,
+     "faits": 266,
+     "subis": 225,
+     "moy": 1.1822222222222223,
+     "joues": 3
+    },
+    {
+     "rank": 4,
+     "name": "OLIVIER PATRICK",
+     "ptm": 4,
+     "pts": 2,
+     "faits": 274,
+     "subis": 274,
+     "moy": 1,
+     "joues": 3
+    },
+    {
+     "rank": 5,
+     "name": "LEGRAND ARNAUD",
+     "ptm": 2,
+     "pts": 1,
+     "faits": 162,
+     "subis": 152,
+     "moy": 1.0657894736842106,
+     "joues": 2
+    },
+    {
+     "rank": 6,
+     "name": "BOYER MANON",
+     "ptm": 2,
+     "pts": 1,
+     "faits": 185,
+     "subis": 185,
+     "moy": 1,
+     "joues": 2
+    },
+    {
+     "rank": 7,
+     "name": "MARTY FABIEN",
+     "ptm": 2,
+     "pts": 1,
+     "faits": 186,
+     "subis": 194,
+     "moy": 0.9587628865979382,
+     "joues": 2
+    },
+    {
+     "rank": 8,
+     "name": "RENAUD HUGO",
+     "ptm": 2,
+     "pts": 1,
+     "faits": 164,
+     "subis": 186,
+     "moy": 0.8817204301075269,
+     "joues": 2
+    },
+    {
+     "rank": 9,
+     "name": "BRUN ERWAN",
+     "ptm": 2,
+     "pts": 1,
+     "faits": 194,
+     "subis": 177,
+     "moy": 1.0960451977401129,
+     "joues": 2
+    },
+    {
+     "rank": 10,
+     "name": "ARNAUD CLÉMENT",
+     "ptm": 2,
+     "pts": 1,
+     "faits": 163,
+     "subis": 163,
+     "moy": 1,
+     "joues": 2
+    },
+    {
+     "rank": 11,
+     "name": "SCHNEIDER CÉDRIC",
+     "ptm": 2,
+     "pts": 1,
+     "faits": 167,
+     "subis": 178,
+     "moy": 0.9382022471910112,
+     "joues": 2
+    },
+    {
+     "rank": 12,
+     "name": "BAILLY PATRICK",
+     "ptm": 0,
+     "pts": 0,
+     "faits": 93,
+     "subis": 100,
+     "moy": 0.93,
+     "joues": 1
+    },
+    {
+     "rank": 13,
+     "name": "BOYER NOÉ",
+     "ptm": 0,
+     "pts": 0,
+     "faits": 88,
+     "subis": 100,
+     "moy": 0.88,
+     "joues": 1
+    },
+    {
+     "rank": 14,
+     "name": "DUMONT ARNAUD",
+     "ptm": 0,
+     "pts": 0,
+     "faits": 86,
+     "subis": 100,
+     "moy": 0.86,
+     "joues": 1
+    },
+    {
+     "rank": 15,
+     "name": "CARON THIERRY",
+     "ptm": 0,
+     "pts": 0,
+     "faits": 85,
+     "subis": 100,
+     "moy": 0.85,
+     "joues": 1
+    },
+    {
+     "rank": 16,
+     "name": "COLLIN RONAN",
+     "ptm": 0,
+     "pts": 0,
+     "faits": 78,
+     "subis": 100,
+     "moy": 0.78,
+     "joues": 1
+    },
+    {
+     "rank": 17,
+     "name": "FAURE MARIE",
+     "ptm": 0,
+     "pts": 0,
+     "faits": 77,
+     "subis": 100,
+     "moy": 0.77,
+     "joues": 1
+    },
+    {
+     "rank": 18,
+     "name": "FLEURY SARAH",
+     "ptm": 0,
+     "pts": 0,
+     "faits": 63,
+     "subis": 100,
+     "moy": 0.63,
+     "joues": 1
+    },
+    {
+     "rank": 19,
+     "name": "LEGRAND PIERRE",
+     "ptm": 0,
+     "pts": 0,
+     "faits": 52,
+     "subis": 100,
+     "moy": 0.52,
+     "joues": 1
+    },
+    {
+     "rank": 20,
+     "name": "SCHNEIDER CHLOÉ",
+     "ptm": 0,
+     "pts": 0,
+     "faits": 0,
+     "subis": 0,
+     "moy": 0,
+     "joues": 0
+    },
+    {
+     "rank": 21,
+     "name": "LEFEVRE BENOÎT",
+     "ptm": 0,
+     "pts": 0,
+     "faits": 0,
+     "subis": 0,
+     "moy": 0,
+     "joues": 0
+    },
+    {
+     "rank": 22,
+     "name": "BERTIN NADIA",
+     "ptm": 0,
+     "pts": 0,
+     "faits": 0,
+     "subis": 0,
+     "moy": 0,
+     "joues": 0
+    },
+    {
+     "rank": 23,
+     "name": "DUMAS DAMIEN",
+     "ptm": 0,
+     "pts": 0,
+     "faits": 0,
+     "subis": 0,
+     "moy": 0,
+     "joues": 0
+    },
+    {
+     "rank": 24,
+     "name": "MALLET MAXIME",
+     "ptm": 0,
+     "pts": 0,
+     "faits": 0,
+     "subis": 0,
+     "moy": 0,
+     "joues": 0
+    },
+    {
+     "rank": 25,
+     "name": "MARTINEZ GILLES",
+     "ptm": 0,
+     "pts": 0,
+     "faits": 0,
+     "subis": 0,
+     "moy": 0,
+     "joues": 0
+    },
+    {
+     "rank": 26,
+     "name": "LAMBERT RACHID",
+     "ptm": 0,
+     "pts": 0,
+     "faits": 0,
+     "subis": 0,
+     "moy": 0,
+     "joues": 0
+    },
+    {
+     "rank": 27,
+     "name": "BERTRAND CAMILLE",
+     "ptm": 0,
+     "pts": 0,
+     "faits": 0,
+     "subis": 0,
+     "moy": 0,
+     "joues": 0
+    },
+    {
+     "rank": 28,
+     "name": "CLEMENT GILLES",
+     "ptm": 0,
+     "pts": 0,
+     "faits": 0,
+     "subis": 0,
+     "moy": 0,
+     "joues": 0
+    }
+   ]
+  }
+ },
+ "expectedTournamentRanking": [
+  {
+   "rank": 1,
+   "name": "BARRE PATRICK",
+   "points": 80.03333333333333,
+   "faits": 1017,
+   "subis": 753,
+   "moy": 1.350597609561753
+  },
+  {
+   "rank": 2,
+   "name": "HUBERT MICHEL",
+   "points": 54.02333333333333,
+   "faits": 1184,
+   "subis": 1098,
+   "moy": 1.0783242258652095
+  },
+  {
+   "rank": 3,
+   "name": "CHEVALLIER QUENTIN",
+   "points": 38.03,
+   "faits": 795,
+   "subis": 603,
+   "moy": 1.318407960199005
+  },
+  {
+   "rank": 4,
+   "name": "PETIT LUCAS",
+   "points": 38.016,
+   "faits": 746,
+   "subis": 750,
+   "moy": 0.9946666666666667
+  },
+  {
+   "rank": 5,
+   "name": "COLLET OLIVIER",
+   "points": 26.0275,
+   "faits": 623,
+   "subis": 520,
+   "moy": 1.198076923076923
+  },
+  {
+   "rank": 6,
+   "name": "PERRIN CHRISTOPHE",
+   "points": 26.0225,
+   "faits": 582,
+   "subis": 462,
+   "moy": 1.2597402597402598
+  },
+  {
+   "rank": 7,
+   "name": "CHAUVIN THIERRY",
+   "points": 26.01125,
+   "faits": 785,
+   "subis": 732,
+   "moy": 1.0724043715846994
+  },
+  {
+   "rank": 8,
+   "name": "MARCHAND JORDAN",
+   "points": 26.01125,
+   "faits": 850,
+   "subis": 800,
+   "moy": 1.0625
+  },
+  {
+   "rank": 9,
+   "name": "BERTRAND DIDIER",
+   "points": 25.015454545454546,
+   "faits": 1352,
+   "subis": 1074,
+   "moy": 1.2588454376163873
+  },
+  {
+   "rank": 10,
+   "name": "ADAM ÉRIC",
+   "points": 18.016666666666666,
+   "faits": 431,
+   "subis": 378,
+   "moy": 1.1402116402116402
+  },
+  {
+   "rank": 11,
+   "name": "JACQUET ÉRIC",
+   "points": 18.013333333333332,
+   "faits": 392,
+   "subis": 377,
+   "moy": 1.039787798408488
+  },
+  {
+   "rank": 12,
+   "name": "MAILLARD CAMILLE",
+   "points": 18.01142857142857,
+   "faits": 718,
+   "subis": 599,
+   "moy": 1.1986644407345577
+  },
+  {
+   "rank": 13,
+   "name": "LAMY VINCENT",
+   "points": 18.01142857142857,
+   "faits": 739,
+   "subis": 643,
+   "moy": 1.1493001555209954
+  },
+  {
+   "rank": 14,
+   "name": "VASSEUR LAURENT",
+   "points": 17.013,
+   "faits": 1327,
+   "subis": 1013,
+   "moy": 1.3099703849950641
+  },
+  {
+   "rank": 15,
+   "name": "CARLIER SAMIR",
+   "points": 13.007142857142858,
+   "faits": 693,
+   "subis": 714,
+   "moy": 0.9705882352941176
+  },
+  {
+   "rank": 16,
+   "name": "BOYER JULIEN",
+   "points": 13.007142857142858,
+   "faits": 657,
+   "subis": 683,
+   "moy": 0.9619326500732065
+  },
+  {
+   "rank": 17,
+   "name": "KLEIN ÉMILIE",
+   "points": 13.005714285714285,
+   "faits": 627,
+   "subis": 568,
+   "moy": 1.1038732394366197
+  },
+  {
+   "rank": 18,
+   "name": "MICHEL DAMIEN",
+   "points": 13.005714285714285,
+   "faits": 609,
+   "subis": 666,
+   "moy": 0.9144144144144144
+  },
+  {
+   "rank": 19,
+   "name": "LEROUX NICOLAS",
+   "points": 11.012,
+   "faits": 1210,
+   "subis": 1114,
+   "moy": 1.0861759425493716
+  },
+  {
+   "rank": 20,
+   "name": "CARPENTIER BENOÎT",
+   "points": 11.01,
+   "faits": 1179,
+   "subis": 1123,
+   "moy": 1.04986642920748
+  },
+  {
+   "rank": 21,
+   "name": "COLIN GWENDAL",
+   "points": 9.01,
+   "faits": 967,
+   "subis": 818,
+   "moy": 1.1821515892420538
+  },
+  {
+   "rank": 22,
+   "name": "LANGLOIS ARNAUD",
+   "points": 9.008888888888889,
+   "faits": 984,
+   "subis": 880,
+   "moy": 1.1181818181818182
+  },
+  {
+   "rank": 23,
+   "name": "GRONDIN HUGO",
+   "points": 9.00875,
+   "faits": 853,
+   "subis": 704,
+   "moy": 1.2116477272727273
+  },
+  {
+   "rank": 24,
+   "name": "RODRIGUEZ MAXIME",
+   "points": 9.0075,
+   "faits": 823,
+   "subis": 819,
+   "moy": 1.0048840048840049
+  },
+  {
+   "rank": 25,
+   "name": "LEBLANC MICKAËL",
+   "points": 7.007142857142857,
+   "faits": 672,
+   "subis": 526,
+   "moy": 1.2775665399239544
+  },
+  {
+   "rank": 26,
+   "name": "SANCHEZ SOPHIE",
+   "points": 7.007142857142857,
+   "faits": 651,
+   "subis": 536,
+   "moy": 1.2145522388059702
+  },
+  {
+   "rank": 27,
+   "name": "FRANCOIS NADIA",
+   "points": 7.007142857142857,
+   "faits": 623,
+   "subis": 620,
+   "moy": 1.0048387096774194
+  },
+  {
+   "rank": 28,
+   "name": "MERCIER ÉRIC",
+   "points": 7.005,
+   "faits": 608,
+   "subis": 551,
+   "moy": 1.103448275862069
+  },
+  {
+   "rank": 29,
+   "name": "DUMONT LUCAS",
+   "points": 7.005,
+   "faits": 596,
+   "subis": 617,
+   "moy": 0.965964343598055
+  },
+  {
+   "rank": 30,
+   "name": "MARECHAL ROMAIN",
+   "points": 7.005,
+   "faits": 578,
+   "subis": 601,
+   "moy": 0.961730449251248
+  },
+  {
+   "rank": 31,
+   "name": "BOUCHET CÉDRIC",
+   "points": 7.00375,
+   "faits": 647,
+   "subis": 569,
+   "moy": 1.1370826010544814
+  },
+  {
+   "rank": 32,
+   "name": "CORDIER CAMILLE",
+   "points": 7.00375,
+   "faits": 586,
+   "subis": 573,
+   "moy": 1.0226876090750436
+  },
+  {
+   "rank": 33,
+   "name": "CHEVALLIER LOÏC",
+   "points": 5.004444444444444,
+   "faits": 635,
+   "subis": 608,
+   "moy": 1.044407894736842
+  },
+  {
+   "rank": 34,
+   "name": "LAURENT PAULINE",
+   "points": 5.00375,
+   "faits": 491,
+   "subis": 567,
+   "moy": 0.8659611992945326
+  },
+  {
+   "rank": 35,
+   "name": "LUCAS NICOLAS",
+   "points": 5.003333333333333,
+   "faits": 510,
+   "subis": 521,
+   "moy": 0.9788867562380038
+  },
+  {
+   "rank": 36,
+   "name": "MATHIEU MEHDI",
+   "points": 5.003333333333333,
+   "faits": 625,
+   "subis": 666,
+   "moy": 0.9384384384384384
+  },
+  {
+   "rank": 37,
+   "name": "ROUSSEL JULIE",
+   "points": 5.003333333333333,
+   "faits": 599,
+   "subis": 642,
+   "moy": 0.9330218068535826
+  },
+  {
+   "rank": 38,
+   "name": "GAILLARD SÉBASTIEN",
+   "points": 5.003333333333333,
+   "faits": 564,
+   "subis": 648,
+   "moy": 0.8703703703703703
+  },
+  {
+   "rank": 39,
+   "name": "HENRY GUILLAUME",
+   "points": 5.0025,
+   "faits": 538,
+   "subis": 494,
+   "moy": 1.0890688259109311
+  },
+  {
+   "rank": 40,
+   "name": "BONNET ERWAN",
+   "points": 5.0025,
+   "faits": 498,
+   "subis": 508,
+   "moy": 0.9803149606299213
+  },
+  {
+   "rank": 41,
+   "name": "COUSIN THOMAS",
+   "points": 4.003333333333333,
+   "faits": 470,
+   "subis": 500,
+   "moy": 0.94
+  },
+  {
+   "rank": 42,
+   "name": "ADAM CHLOÉ",
+   "points": 4.003333333333333,
+   "faits": 511,
+   "subis": 555,
+   "moy": 0.9207207207207208
+  },
+  {
+   "rank": 43,
+   "name": "BRETON CLAIRE",
+   "points": 4.003,
+   "faits": 584,
+   "subis": 635,
+   "moy": 0.9196850393700787
+  },
+  {
+   "rank": 44,
+   "name": "AUBRY THIERRY",
+   "points": 4.002222222222223,
+   "faits": 489,
+   "subis": 491,
+   "moy": 0.9959266802443992
+  },
+  {
+   "rank": 45,
+   "name": "REY DYLAN",
+   "points": 4.002222222222223,
+   "faits": 504,
+   "subis": 551,
+   "moy": 0.9147005444646098
+  },
+  {
+   "rank": 46,
+   "name": "MARECHAL DIDIER",
+   "points": 4.002222222222223,
+   "faits": 456,
+   "subis": 519,
+   "moy": 0.8786127167630058
+  },
+  {
+   "rank": 47,
+   "name": "ROBERT KEVIN",
+   "points": 4.002,
+   "faits": 580,
+   "subis": 594,
+   "moy": 0.9764309764309764
+  },
+  {
+   "rank": 48,
+   "name": "BOURGEOIS DIDIER",
+   "points": 4.001111111111111,
+   "faits": 503,
+   "subis": 556,
+   "moy": 0.9046762589928058
+  },
+  {
+   "rank": 49,
+   "name": "DAVID SARAH",
+   "points": 3.0033333333333334,
+   "faits": 245,
+   "subis": 273,
+   "moy": 0.8974358974358975
+  },
+  {
+   "rank": 50,
+   "name": "PAYET DAVID",
+   "points": 2.0033333333333334,
+   "faits": 271,
+   "subis": 289,
+   "moy": 0.9377162629757786
+  },
+  {
+   "rank": 51,
+   "name": "MARTY FABIEN",
+   "points": 2.0033333333333334,
+   "faits": 261,
+   "subis": 290,
+   "moy": 0.9
+  },
+  {
+   "rank": 52,
+   "name": "BAILLY PATRICK",
+   "points": 2.0033333333333334,
+   "faits": 243,
+   "subis": 280,
+   "moy": 0.8678571428571429
+  },
+  {
+   "rank": 53,
+   "name": "CARON THIERRY",
+   "points": 2.0033333333333334,
+   "faits": 233,
+   "subis": 274,
+   "moy": 0.8503649635036497
+  },
+  {
+   "rank": 54,
+   "name": "SCHNEIDER CHLOÉ",
+   "points": 2.0033333333333334,
+   "faits": 236,
+   "subis": 289,
+   "moy": 0.8166089965397924
+  },
+  {
+   "rank": 55,
+   "name": "DUMONT ARNAUD",
+   "points": 2.0033333333333334,
+   "faits": 230,
+   "subis": 290,
+   "moy": 0.7931034482758621
+  },
+  {
+   "rank": 56,
+   "name": "LEFEVRE BENOÎT",
+   "points": 2.0033333333333334,
+   "faits": 217,
+   "subis": 297,
+   "moy": 0.7306397306397306
+  },
+  {
+   "rank": 57,
+   "name": "BERTIN NADIA",
+   "points": 2.0033333333333334,
+   "faits": 200,
+   "subis": 288,
+   "moy": 0.6944444444444444
+  },
+  {
+   "rank": 58,
+   "name": "OLIVIER PATRICK",
+   "points": 2.0033333333333334,
+   "faits": 180,
+   "subis": 290,
+   "moy": 0.6206896551724138
+  },
+  {
+   "rank": 59,
+   "name": "DUMAS DAMIEN",
+   "points": 2.0033333333333334,
+   "faits": 183,
+   "subis": 299,
+   "moy": 0.6120401337792643
+  },
+  {
+   "rank": 60,
+   "name": "LEGRAND ARNAUD",
+   "points": 1.0033333333333334,
+   "faits": 275,
+   "subis": 263,
+   "moy": 1.0456273764258555
+  },
+  {
+   "rank": 61,
+   "name": "MALLET MAXIME",
+   "points": 1.0033333333333334,
+   "faits": 237,
+   "subis": 268,
+   "moy": 0.8843283582089553
+  },
+  {
+   "rank": 62,
+   "name": "LEGRAND PIERRE",
+   "points": 1.0033333333333334,
+   "faits": 253,
+   "subis": 287,
+   "moy": 0.8815331010452961
+  },
+  {
+   "rank": 63,
+   "name": "BOYER NOÉ",
+   "points": 1.0033333333333334,
+   "faits": 225,
+   "subis": 283,
+   "moy": 0.7950530035335689
+  },
+  {
+   "rank": 64,
+   "name": "RENAUD HUGO",
+   "points": 1.0033333333333334,
+   "faits": 225,
+   "subis": 289,
+   "moy": 0.7785467128027682
+  },
+  {
+   "rank": 65,
+   "name": "BOYER MANON",
+   "points": 1.0033333333333334,
+   "faits": 178,
+   "subis": 260,
+   "moy": 0.6846153846153846
+  },
+  {
+   "rank": 66,
+   "name": "MARTINEZ JORDAN",
+   "points": 1,
+   "faits": 227,
+   "subis": 300,
+   "moy": 0.7566666666666667
+  },
+  {
+   "rank": 67,
+   "name": "ARNAUD CLÉMENT",
+   "points": 1,
+   "faits": 222,
+   "subis": 300,
+   "moy": 0.74
+  },
+  {
+   "rank": 68,
+   "name": "MARTINEZ GILLES",
+   "points": 1,
+   "faits": 220,
+   "subis": 300,
+   "moy": 0.7333333333333333
+  },
+  {
+   "rank": 69,
+   "name": "FAURE MARIE",
+   "points": 1,
+   "faits": 216,
+   "subis": 300,
+   "moy": 0.72
+  },
+  {
+   "rank": 70,
+   "name": "LAMBERT RACHID",
+   "points": 1,
+   "faits": 211,
+   "subis": 300,
+   "moy": 0.7033333333333334
+  },
+  {
+   "rank": 71,
+   "name": "COLLIN RONAN",
+   "points": 1,
+   "faits": 209,
+   "subis": 300,
+   "moy": 0.6966666666666667
+  },
+  {
+   "rank": 72,
+   "name": "SCHNEIDER CÉDRIC",
+   "points": 1,
+   "faits": 171,
+   "subis": 300,
+   "moy": 0.57
+  },
+  {
+   "rank": 73,
+   "name": "BRUN ERWAN",
+   "points": 1,
+   "faits": 155,
+   "subis": 300,
+   "moy": 0.5166666666666667
+  },
+  {
+   "rank": 74,
+   "name": "BERTRAND CAMILLE",
+   "points": 1,
+   "faits": 128,
+   "subis": 300,
+   "moy": 0.4266666666666667
+  },
+  {
+   "rank": 75,
+   "name": "FLEURY SARAH",
+   "points": 1,
+   "faits": 120,
+   "subis": 300,
+   "moy": 0.4
+  },
+  {
+   "rank": 76,
+   "name": "CLEMENT GILLES",
+   "points": 0,
+   "faits": 216,
+   "subis": 300,
+   "moy": 0.72
+  }
+ ],
+ "primes": {
+  "juniors": 2,
+  "players": 76,
+  "inscriptions": 2220,
+  "ffb": 450,
+  "club": 200,
+  "total": 2870,
+  "masters": [
+   {
+    "label": "1er",
+    "pct": 0.2,
+    "amount": 574,
+    "name": "BARRE PATRICK"
+   },
+   {
+    "label": "2ème",
+    "pct": 0.12,
+    "amount": 344.4,
+    "name": "HUBERT MICHEL"
+   },
+   {
+    "label": "Perdants demies",
+    "pct": 0.08,
+    "amount": 229.6,
+    "name": "PETIT LUCAS"
+   },
+   {
+    "label": null,
+    "pct": 0.08,
+    "amount": 229.6,
+    "name": "CHEVALLIER QUENTIN"
+   },
+   {
+    "label": "Perdants quarts",
+    "pct": 0.04,
+    "amount": 114.8,
+    "name": "CHAUVIN THIERRY"
+   },
+   {
+    "label": null,
+    "pct": 0.04,
+    "amount": 114.8,
+    "name": "COLLET OLIVIER"
+   },
+   {
+    "label": null,
+    "pct": 0.04,
+    "amount": 114.8,
+    "name": "MARCHAND JORDAN"
+   },
+   {
+    "label": null,
+    "pct": 0.04,
+    "amount": 114.8,
+    "name": "PERRIN CHRISTOPHE"
+   },
+   {
+    "label": "3ème et 4ème\nde poule",
+    "pct": 0.02,
+    "amount": 57.4,
+    "name": "LAMY VINCENT"
+   },
+   {
+    "label": null,
+    "pct": 0.02,
+    "amount": 57.4,
+    "name": "ADAM ÉRIC"
+   },
+   {
+    "label": null,
+    "pct": 0.02,
+    "amount": 57.4,
+    "name": "JACQUET ÉRIC"
+   },
+   {
+    "label": null,
+    "pct": 0.02,
+    "amount": 57.4,
+    "name": "MAILLARD CAMILLE"
+   },
+   {
+    "label": null,
+    "pct": 0.02,
+    "amount": 57.4,
+    "name": "CARLIER SAMIR"
+   },
+   {
+    "label": null,
+    "pct": 0.02,
+    "amount": 57.4,
+    "name": "BOYER JULIEN"
+   },
+   {
+    "label": null,
+    "pct": 0.02,
+    "amount": 57.4,
+    "name": "KLEIN ÉMILIE"
+   },
+   {
+    "label": null,
+    "pct": 0.02,
+    "amount": 57.4,
+    "name": "MICHEL DAMIEN"
+   }
+  ],
+  "national": [
+   {
+    "label": "1er",
+    "pct": 0.08,
+    "amount": 229.6,
+    "name": "BERTRAND DIDIER"
+   },
+   {
+    "label": "2ème",
+    "pct": 0.04,
+    "amount": 114.8,
+    "name": "VASSEUR LAURENT"
+   },
+   {
+    "label": "Perdants demies",
+    "pct": 0.02,
+    "amount": 57.4,
+    "name": "CARPENTIER BENOÎT"
+   },
+   {
+    "label": null,
+    "pct": 0.02,
+    "amount": 57.4,
+    "name": "LEROUX NICOLAS"
+   },
+   {
+    "label": "Perdants quarts",
+    "pct": 0.01,
+    "amount": 28.7,
+    "name": "GRONDIN HUGO"
+   },
+   {
+    "label": null,
+    "pct": 0.01,
+    "amount": 28.7,
+    "name": "COLIN GWENDAL"
+   },
+   {
+    "label": null,
+    "pct": 0.01,
+    "amount": 28.7,
+    "name": "LANGLOIS ARNAUD"
+   },
+   {
+    "label": null,
+    "pct": 0.01,
+    "amount": 28.7,
+    "name": "RODRIGUEZ MAXIME"
+   }
+  ]
+ }
 }

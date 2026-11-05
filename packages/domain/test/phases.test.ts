@@ -26,23 +26,30 @@ const wonPoule = (num: number, players: string[]): Poule => {
 };
 
 describe("croisements prédéfinis", () => {
-  it("nationalR16 : 1er P1–2e P8, 2e P1–1er P8, …", () => {
+  it("nationalR16 : les huit croisements de SPEC dans l'ordre du tableau réel (H1 = 1er P1–2e P8, H2 = 1er P7–2e P2, …)", () => {
     const poules = Array.from({ length: 8 }, (_, i) =>
       wonPoule(i + 1, [`P${i + 1}a`, `P${i + 1}b`, `P${i + 1}c`, `P${i + 1}d`]),
     );
     const r16 = nationalR16(poules, oneSet);
     expect(r16.map((m) => [m.id, m.a, m.b, m.labelA, m.labelB])).toEqual([
       ["N-R16-1", "P1a", "P8b", "1er P1", "2e P8"],
-      ["N-R16-2", "P1b", "P8a", "2e P1", "1er P8"],
-      ["N-R16-3", "P2a", "P7b", "1er P2", "2e P7"],
-      ["N-R16-4", "P2b", "P7a", "2e P2", "1er P7"],
-      ["N-R16-5", "P3a", "P6b", "1er P3", "2e P6"],
-      ["N-R16-6", "P3b", "P6a", "2e P3", "1er P6"],
-      ["N-R16-7", "P4a", "P5b", "1er P4", "2e P5"],
-      ["N-R16-8", "P4b", "P5a", "2e P4", "1er P5"],
+      ["N-R16-2", "P7a", "P2b", "1er P7", "2e P2"],
+      ["N-R16-3", "P4a", "P5b", "1er P4", "2e P5"],
+      ["N-R16-4", "P6a", "P3b", "1er P6", "2e P3"],
+      ["N-R16-5", "P8a", "P1b", "1er P8", "2e P1"],
+      ["N-R16-6", "P2a", "P7b", "1er P2", "2e P7"],
+      ["N-R16-7", "P5a", "P4b", "1er P5", "2e P4"],
+      ["N-R16-8", "P3a", "P6b", "1er P3", "2e P6"],
     ]);
     expect(r16.every((m) => m.round === "R16")).toBe(true);
     expect(r16.map((m) => m.slot)).toEqual([1, 2, 3, 4, 5, 6, 7, 8]);
+    // Les deux qualifiés d'une même poule sont dans des moitiés opposées du tableau.
+    const half = (slot: number): number => (slot <= 4 ? 1 : 2);
+    for (let p = 1; p <= 8; p++) {
+      const first = r16.find((m) => m.a === `P${p}a`)?.slot ?? 0;
+      const second = r16.find((m) => m.b === `P${p}b`)?.slot ?? 0;
+      expect(half(first)).not.toBe(half(second));
+    }
   });
 
   it("mastersQF : Q1 = 1er P1 vs 2e P4, Q2 = 1er P3 vs 2e P2, Q3 = 1er P4 vs 2e P1, Q4 = 1er P2 vs 2e P3", () => {
@@ -172,10 +179,49 @@ describe("consolanteBracket", () => {
     expect(next.find((m) => m.id === "CLS-QF1")).toMatchObject({ a: "C1", b: "C8" });
   });
 
-  it("40 joueurs : tableau de 64 avec 24 exempts ; au-delà du maximum → erreur", () => {
+  it("19 joueurs : tableau de 16 avec 3 barrages (TS 1 ↔ 14–19, TS 2 ↔ 15–18, TS 3 ↔ 16–17)", () => {
+    const ms = consolanteBracket(names(19), 40);
+    const pre = ms.filter((m) => m.round === "R32");
+    expect(pre.map((m) => [m.slot, m.a, m.b])).toEqual([
+      [2, "C14", "C19"],
+      [10, "C15", "C18"],
+      [14, "C16", "C17"],
+    ]);
+    const r16 = ms.filter((m) => m.round === "R16");
+    expect(r16).toHaveLength(8);
+    expect(r16.map((m) => [m.a, m.b])).toEqual([
+      ["C1", ""],
+      ["C8", "C9"],
+      ["C4", "C13"],
+      ["C5", "C12"],
+      ["C2", ""],
+      ["C7", "C10"],
+      ["C3", ""],
+      ["C6", "C11"],
+    ]);
+    expect(r16[0]?.labelB).toBe("Vainqueur R32-2");
+    expect(ms).toHaveLength(3 + 8 + 4 + 2 + 1);
+  });
+
+  it("40 joueurs : tableau de 32 avec 8 barrages ; au-delà du maximum → erreur", () => {
     const ms = consolanteBracket(names(40), 40);
     expect(ms.filter((m) => m.round === "R64")).toHaveLength(8);
     expect(ms.filter((m) => m.round === "R32")).toHaveLength(16);
+    const seed = (name: string): number => Number(name.slice(1));
+    const pre = ms
+      .filter((m) => m.round === "R64")
+      .map((m) => [m.a, m.b])
+      .sort((x, y) => seed(x[0] ?? "") - seed(y[0] ?? ""));
+    expect(pre).toEqual([
+      ["C25", "C40"],
+      ["C26", "C39"],
+      ["C27", "C38"],
+      ["C28", "C37"],
+      ["C29", "C36"],
+      ["C30", "C35"],
+      ["C31", "C34"],
+      ["C32", "C33"],
+    ]);
     expect(ms.filter((m) => m.round === "F")).toHaveLength(1);
     expect(() => consolanteBracket(names(41), 40)).toThrow(/maximum/);
     expect(consolanteBracket(names(2), 40).map((m) => m.id)).toEqual(["CLS-F"]);

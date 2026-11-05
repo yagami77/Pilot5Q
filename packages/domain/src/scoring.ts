@@ -26,7 +26,17 @@
  *   `opts.forfaitSubis[adversaire]` (SPEC §5 : moyenne des points subis dans la phase
  *   précédente, à fournir par l'appelant), 0 à défaut.
  * - Un match marqué `forfait: "a" | "b"` sans que le joueur soit déclaré forfait pour la poule
- *   est une simple défaite par forfait sur ce match (0 fait, 0 subi pour le forfait).
+ *   est une simple défaite par forfait sur ce match. Si des points sont renseignés sur le match
+ *   (`sa`/`sb` ou `setsA`/`setsB`, comme le fait l'outil Excel qui écrit « distance » pour le
+ *   vainqueur et la moyenne des points subis pour le forfait), ils sont comptés tels quels ;
+ *   sinon le vainqueur marque la distance et les points subis valent `opts.forfaitSubis`.
+ * - Classement cumulé des barrages (`rankBarrages`, formule RNK_B de l'outil Excel) : les
+ *   vainqueurs de barrage d'abord, puis Pm, Ps et moyenne cumulés (poule + barrage), puis ordre
+ *   d'arrivée.
+ * - Classement d'une phase finale (`rankTournamentPhase`, formules RNK_N / RNK_M / RNK_CLS) :
+ *   tour atteint dans le tableau (vainqueur, finale, demie, quart, huitième, barrage), puis Pm,
+ *   Ps et moyenne cumulés (poules de qualification + tableau), puis ordre d'arrivée ; les
+ *   joueurs non qualifiés pour le tableau conservent l'ordre du classement de qualification.
  * - Moyenne : faits / subis ; si aucun point subi, la moyenne vaut les points faits (évite la
  *   division par zéro et reste sérialisable en JSON).
  * - `joues` compte les matchs ayant un résultat (score ou forfait), y compris les victoires
@@ -111,13 +121,16 @@ function pointsOf(m: Match, d: Distance): [number, number] {
 export function matchOutcome(m: Match, d: Distance): MatchOutcome | null {
   if (m.forfait === "a" || m.forfait === "b") {
     const aForfait = m.forfait === "a";
+    const [pa, pb] = pointsOf(m, d);
+    const pw = aForfait ? pb : pa;
+    const pl = aForfait ? pa : pb;
     return {
       winner: aForfait ? m.b : m.a,
       loser: aForfait ? m.a : m.b,
       setsWinner: d.setsGagnants,
       setsLoser: 0,
-      pointsWinner: d.pointsParSet * d.setsGagnants,
-      pointsLoser: 0,
+      pointsWinner: pw > 0 ? pw : d.pointsParSet * d.setsGagnants,
+      pointsLoser: pl > 0 ? pl : 0,
       walkover: true,
     };
   }
@@ -194,14 +207,24 @@ export function rankPoule(
   /** Vainqueur de chaque confrontation (clé = paire), pour le match direct. */
   const directWinner = new Map<string, string>();
 
-  const creditWalkover = (winner: string, loser: string | null): void => {
+  const creditWalkover = (winner: string, loser: string | null, outcome?: MatchOutcome): void => {
     const w = row(winner);
+    const faits = outcome?.pointsWinner ?? d.pointsParSet * d.setsGagnants;
+    const subis =
+      outcome !== undefined && outcome.pointsLoser > 0
+        ? outcome.pointsLoser
+        : (opts?.forfaitSubis?.[winner] ?? 0);
     w.ptm += 2;
     w.pts += mSets;
-    w.faits += d.pointsParSet * d.setsGagnants;
-    w.subis += opts?.forfaitSubis?.[winner] ?? 0;
+    w.faits += faits;
+    w.subis += subis;
     w.joues += 1;
-    if (loser !== null) row(loser).joues += 1;
+    if (loser !== null) {
+      const l = row(loser);
+      l.faits += subis;
+      l.subis += faits;
+      l.joues += 1;
+    }
   };
 
   for (const m of matches) {
@@ -231,7 +254,7 @@ export function rankPoule(
     decided.add(pairKey(m.a, m.b));
     directWinner.set(pairKey(m.a, m.b), outcome.winner);
     if (outcome.walkover) {
-      creditWalkover(outcome.winner, outcome.loser);
+      creditWalkover(outcome.winner, outcome.loser, outcome);
       continue;
     }
     const w = row(outcome.winner);
@@ -379,9 +402,10 @@ export function rankPhase(
 
 /**
  * Classement cumulé de la journée du vendredi (poules + barrage), tel que produit par l'outil
- * de référence (fixture `expectedBarrageRanking`) : à chaque joueur de barrage, on ajoute le
- * résultat de son barrage (Pm, Ps, points) à sa ligne de phase, puis on trie par Pm, Ps,
- * moyenne et ordre d'arrivée. Sert à ordonner les perdants pour le National.
+ * de référence (fixture `expectedBarrageRanking`, formule RNK_B) : à chaque joueur de barrage,
+ * on ajoute le résultat de son barrage (Pm, Ps, points) à sa ligne de phase, puis on trie les
+ * vainqueurs de barrage avant les perdants, et à l'intérieur par Pm, Ps, moyenne cumulés et
+ * ordre d'arrivée. Sert à ordonner les perdants pour le National.
  */
 export function rankBarrages(
   ranking: PhaseRankRow[],
@@ -389,15 +413,16 @@ export function rankBarrages(
   d: Distance,
 ): PhaseRankRow[] {
   const byName = new Map(ranking.map((r) => [r.name, r]));
-  const rows: PhaseRankRow[] = [];
+  const rows: (PhaseRankRow & { won: number })[] = [];
   for (const m of barrages) {
     const outcome = matchOutcome(m, d);
     for (const name of [m.a, m.b]) {
       const base = byName.get(name);
       if (!base) continue;
-      const r: PhaseRankRow = { ...base, rang: null, place: 0 };
+      const r: PhaseRankRow & { won: number } = { ...base, rang: null, place: 0, won: 0 };
       if (outcome) {
         const won = outcome.winner === name;
+        r.won = won ? 1 : 0;
         const [psW, psL] = setPoints(outcome, d);
         r.ptm += won ? 2 : 0;
         r.pts += won ? psW : psL;
@@ -409,6 +434,9 @@ export function rankBarrages(
       rows.push(r);
     }
   }
-  rows.sort((x, y) => y.ptm - x.ptm || y.pts - x.pts || y.moy - x.moy || x.arrivee - y.arrivee);
-  return rows.map((r, i) => ({ ...r, place: i + 1 }));
+  rows.sort(
+    (x, y) =>
+      y.won - x.won || y.ptm - x.ptm || y.pts - x.pts || y.moy - x.moy || x.arrivee - y.arrivee,
+  );
+  return rows.map(({ won: _w, ...r }, i) => ({ ...r, place: i + 1 }));
 }

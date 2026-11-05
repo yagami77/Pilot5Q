@@ -8,6 +8,7 @@
  * - `draw.ts`    : serpentin, contrainte club, matchs d'une poule (§3, §4).
  * - `scoring.ts` : validité des scores, points, classements de poule et de phase (§1, §4).
  * - `phases.ts`  : barrages, poules du samedi, tableaux finaux, consolante (§4, §5, §6).
+ * - `results.ts` : classements des phases finales, classement final du tournoi, primes (§6, §7).
  * - `reducer.ts` : réducteur pur du journal d'événements et sélecteurs dérivés.
  * - `live.ts`    : export JSON pour l'application 5 Quilles (§9).
  */
@@ -59,6 +60,17 @@ export {
 } from "./phases.js";
 export type { BarrageMatch } from "./phases.js";
 export {
+  rankTournamentPhase,
+  tournamentRanking,
+  primesTable,
+  bracketLevelLabel,
+  preqPoints,
+  MASTERS_POINTS,
+  NATIONAL_POINTS,
+  CONSOLANTE_WINNER_POINTS,
+} from "./results.js";
+export type { TournamentRankingInput } from "./results.js";
+export {
   initialState,
   reduce,
   replay,
@@ -69,8 +81,15 @@ export {
   pouleDistance,
   bracketDistance,
   arriveeOf,
+  entryArrivee,
   clubOf,
   forfaitsOf,
+  forfaitSubisOf,
+  walkoverPoints,
+  playerTotals,
+  bracketRanking,
+  finalRanking,
+  primesOf,
 } from "./reducer.js";
 export { toLiveJson } from "./live.js";
 export type { LiveJson, LiveCompetition, LivePoule, LiveMatch } from "./live.js";
