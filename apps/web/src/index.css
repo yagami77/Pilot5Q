@@ -1,0 +1,91 @@
+/* Tokens de design Pilot5Q (docs/DESIGN.md), exposés à Tailwind v4 via @theme. */
+@import "tailwindcss";
+
+@theme {
+  /* Typographie */
+  --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  /* Fond, surfaces, texte, traits */
+  --color-page: #f4f6fb;
+  --color-surface: #ffffff;
+  --color-ink: #0f1b33;
+  --color-ink-secondary: #3c4a66;
+  --color-ink-muted: #6b7a99;
+  --color-line: #e4e9f3;
+
+  /* Bleu signature */
+  --color-brand: #0e37a8;
+  --color-brand-light: #1e4fd8;
+  --color-brand-soft: #e9effc;
+
+  /* Alertes / moments forts */
+  --color-alert: #dc3f5a;
+  --color-alert-soft: #fde9ed;
+
+  /* Vainqueurs / têtes de série */
+  --color-gold: #e89f1f;
+  --color-gold-soft: #fff4df;
+
+  /* Validé */
+  --color-ok: #1e9e62;
+  --color-ok-soft: #e5f6ec;
+
+  /* Rayons */
+  --radius-card: 14px;
+  --radius-small: 10px;
+
+  /* Ombres très légères teintées de bleu */
+  --shadow-card: 0 1px 2px rgb(14 55 168 / 0.04), 0 4px 16px rgb(14 55 168 / 0.06);
+  --shadow-raised: 0 2px 4px rgb(14 55 168 / 0.06), 0 12px 32px rgb(14 55 168 / 0.1);
+
+  /* Bandeaux d'action : dégradé du bleu signature */
+  --background-image-brand: linear-gradient(135deg, #0e37a8 0%, #1e4fd8 100%);
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+  }
+
+  body {
+    @apply bg-page text-ink font-sans antialiased;
+    font-feature-settings: "tnum" 1;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply font-extrabold tracking-tight;
+  }
+}
+
+@layer components {
+  /* Bande tricolore de 3 px en haut de page (docs/DESIGN.md). */
+  .tricolore {
+    height: 3px;
+    background: linear-gradient(
+      to right,
+      var(--color-brand) 0 33.333%,
+      #ffffff 33.333% 66.666%,
+      var(--color-alert) 66.666% 100%
+    );
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media print {
+  .tricolore {
+    display: none;
+  }
+}

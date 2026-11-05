@@ -1,0 +1,2342 @@
+{
+ "_note": "Tournoi d'exemple : structure, billards et scores réels d'un TN (76 inscrits, 11 billards dont 4 de 3m10, 17 poules de 4), noms et clubs fictifs. 'expectedPhaseRanking' est le classement produit par l'outil Excel de référence ; la place 68 (dernier) est un joueur ayant abandonné.",
+ "tournament": {
+  "name": "TN 2",
+  "season": "2026-2027",
+  "city": "Ronchin",
+  "club": "BC Ronchin",
+  "dates": [
+   "2026-10-30",
+   "2026-11-01"
+  ],
+  "billards": {
+   "3m10": 4,
+   "2m80": 7
+  },
+  "mastersPrequalified": 8
+ },
+ "billards": [
+  {
+   "num": 1,
+   "type": "3m10"
+  },
+  {
+   "num": 2,
+   "type": "3m10"
+  },
+  {
+   "num": 3,
+   "type": "3m10"
+  },
+  {
+   "num": 4,
+   "type": "3m10"
+  },
+  {
+   "num": 5,
+   "type": "2m80"
+  },
+  {
+   "num": 6,
+   "type": "2m80"
+  },
+  {
+   "num": 7,
+   "type": "2m80"
+  },
+  {
+   "num": 8,
+   "type": "2m80"
+  },
+  {
+   "num": 9,
+   "type": "2m80"
+  },
+  {
+   "num": 10,
+   "type": "2m80"
+  },
+  {
+   "num": 11,
+   "type": "2m80"
+  }
+ ],
+ "players": [
+  {
+   "seed": 1,
+   "licence": "100137B",
+   "name": "BARRE PATRICK",
+   "club": "Cercle de billard de Lille",
+   "place": 1,
+   "lastSeason": 2026
+  },
+  {
+   "seed": 2,
+   "licence": "100274C",
+   "name": "CHEVALLIER QUENTIN",
+   "club": "BC Amiens",
+   "place": 2,
+   "lastSeason": 2026
+  },
+  {
+   "seed": 3,
+   "licence": "100411D",
+   "name": "JACQUET ÉRIC",
+   "club": "BC Arras",
+   "place": 3,
+   "lastSeason": 2026
+  },
+  {
+   "seed": 4,
+   "licence": "100548E",
+   "name": "PERRIN CHRISTOPHE",
+   "club": "Cercle de billard de Calais",
+   "place": 4,
+   "lastSeason": 2026
+  },
+  {
+   "seed": 5,
+   "licence": "100685F",
+   "name": "ADAM ÉRIC",
+   "club": "AS Billard Reims",
+   "place": 5,
+   "lastSeason": 2026
+  },
+  {
+   "seed": 6,
+   "licence": "100822G",
+   "name": "COLLET OLIVIER",
+   "club": "Académie de billard de Nancy",
+   "place": 6,
+   "lastSeason": 2026
+  },
+  {
+   "seed": 7,
+   "licence": "100959H",
+   "name": "PETIT LUCAS",
+   "club": "BC Amiens",
+   "place": 7,
+   "lastSeason": 2026
+  },
+  {
+   "seed": 8,
+   "licence": "101096I",
+   "name": "HUBERT MICHEL",
+   "club": "Académie de billard de Nancy",
+   "place": 8,
+   "lastSeason": 2026
+  },
+  {
+   "seed": 9,
+   "licence": "101233J",
+   "name": "ROUSSEL JULIE",
+   "club": "Académie de billard de Metz",
+   "place": 12,
+   "lastSeason": 2026
+  },
+  {
+   "seed": 10,
+   "licence": "101370K",
+   "name": "LAMY VINCENT",
+   "club": "Académie de billard de Lyon",
+   "place": 13,
+   "lastSeason": 2026
+  },
+  {
+   "seed": 11,
+   "licence": "101507L",
+   "name": "LEBLANC MICKAËL",
+   "club": "BC Amiens",
+   "place": 14,
+   "lastSeason": 2026
+  },
+  {
+   "seed": 12,
+   "licence": "101644M",
+   "name": "VASSEUR LAURENT",
+   "club": "AS Billard Reims",
+   "place": 16,
+   "lastSeason": 2026
+  },
+  {
+   "seed": 13,
+   "licence": "101781N",
+   "name": "BOYER JULIEN",
+   "club": "BC Rennes",
+   "place": 17,
+   "lastSeason": 2026
+  },
+  {
+   "seed": 14,
+   "licence": "101918O",
+   "name": "DUMONT LUCAS",
+   "club": "Académie de billard de Nantes",
+   "place": 19,
+   "lastSeason": 2026
+  },
+  {
+   "seed": 15,
+   "licence": "102055P",
+   "name": "CLEMENT GILLES",
+   "club": "Cercle de billard de Bordeaux",
+   "place": 20,
+   "lastSeason": 2026
+  },
+  {
+   "seed": 16,
+   "licence": "102192Q",
+   "name": "MARCHAND JORDAN",
+   "club": "Académie de billard de Nancy",
+   "place": 21,
+   "lastSeason": 2026
+  },
+  {
+   "seed": 17,
+   "licence": "102329R",
+   "name": "GRONDIN HUGO",
+   "club": "Académie de billard de Toulouse",
+   "place": 22,
+   "lastSeason": 2025
+  },
+  {
+   "seed": 18,
+   "licence": "102466S",
+   "name": "CHEVALLIER LOÏC",
+   "club": "AS Billard Montpellier",
+   "place": 24,
+   "lastSeason": 2025
+  },
+  {
+   "seed": 19,
+   "licence": "102603T",
+   "name": "LEROUX NICOLAS",
+   "club": "Cercle de billard de Marseille",
+   "place": 24.5,
+   "lastSeason": 2022
+  },
+  {
+   "seed": 20,
+   "licence": "102740U",
+   "name": "CARPENTIER BENOÎT",
+   "club": "Académie de billard de Nice",
+   "place": 26,
+   "lastSeason": 2026
+  },
+  {
+   "seed": 21,
+   "licence": "102877V",
+   "name": "GAILLARD SÉBASTIEN",
+   "club": "Cercle de billard de Strasbourg",
+   "place": 27,
+   "lastSeason": 2026
+  },
+  {
+   "seed": 22,
+   "licence": "103014W",
+   "name": "COLIN GWENDAL",
+   "club": "BC Dijon",
+   "place": 28,
+   "lastSeason": 2026
+  },
+  {
+   "seed": 23,
+   "licence": "103151X",
+   "name": "LANGLOIS ARNAUD",
+   "club": "BC Amiens",
+   "place": 29,
+   "lastSeason": 2026
+  },
+  {
+   "seed": 24,
+   "licence": "103288Y",
+   "name": "BERTRAND DIDIER",
+   "club": "Cercle de billard de Strasbourg",
+   "place": 30,
+   "lastSeason": 2026
+  },
+  {
+   "seed": 25,
+   "licence": "103425Z",
+   "name": "BOURGEOIS DIDIER",
+   "club": "AS Billard Orléans",
+   "place": 31,
+   "lastSeason": 2025
+  },
+  {
+   "seed": 26,
+   "licence": "103562A",
+   "name": "CHAUVIN THIERRY",
+   "club": "Cercle de billard de Lille",
+   "place": 32,
+   "lastSeason": 2026
+  },
+  {
+   "seed": 27,
+   "licence": "103699B",
+   "name": "MATHIEU MEHDI",
+   "club": "AS Billard Tours",
+   "place": 34,
+   "lastSeason": 2025
+  },
+  {
+   "seed": 28,
+   "licence": "103836C",
+   "name": "BOUCHET CÉDRIC",
+   "club": "BC Rouen",
+   "place": 36,
+   "lastSeason": 2026
+  },
+  {
+   "seed": 29,
+   "licence": "103973D",
+   "name": "LUCAS NICOLAS",
+   "club": "AS Billard Montpellier",
+   "place": 38,
+   "lastSeason": 2025
+  },
+  {
+   "seed": 30,
+   "licence": "104110E",
+   "name": "CORDIER CAMILLE",
+   "club": "AS Billard Caen",
+   "place": 39,
+   "lastSeason": 2026
+  },
+  {
+   "seed": 31,
+   "licence": "104247F",
+   "name": "ROBERT KEVIN",
+   "club": "Académie de billard de Nice",
+   "place": 41,
+   "lastSeason": 2026
+  },
+  {
+   "seed": 32,
+   "licence": "104384G",
+   "name": "SANCHEZ SOPHIE",
+   "club": "AS Billard Brest",
+   "place": 41.5,
+   "lastSeason": 2025
+  },
+  {
+   "seed": 33,
+   "licence": "104521H",
+   "name": "COUSIN THOMAS",
+   "club": "AS Billard Angers",
+   "place": 41.5,
+   "lastSeason": 2024
+  },
+  {
+   "seed": 34,
+   "licence": "104658I",
+   "name": "MICHEL DAMIEN",
+   "club": "Académie de billard de Le Mans",
+   "place": 42,
+   "lastSeason": 2025
+  },
+  {
+   "seed": 35,
+   "licence": "104795J",
+   "name": "MERCIER ÉRIC",
+   "club": "Académie de billard de Nice",
+   "place": 43,
+   "lastSeason": 2025
+  },
+  {
+   "seed": 36,
+   "licence": "104932K",
+   "name": "KLEIN ÉMILIE",
+   "club": "BC Amiens",
+   "place": 44,
+   "lastSeason": 2025
+  },
+  {
+   "seed": 37,
+   "licence": "105069L",
+   "name": "MAILLARD CAMILLE",
+   "club": "Académie de billard de Nantes",
+   "place": 45,
+   "lastSeason": 2025
+  },
+  {
+   "seed": 38,
+   "licence": "105206M",
+   "name": "BAILLY PATRICK",
+   "club": "BC Amiens",
+   "place": 47,
+   "lastSeason": 2026
+  },
+  {
+   "seed": 39,
+   "licence": "105343N",
+   "name": "CARLIER SAMIR",
+   "club": "BC Limoges",
+   "place": 49,
+   "lastSeason": 2026
+  },
+  {
+   "seed": 40,
+   "licence": "105480O",
+   "name": "BRETON CLAIRE",
+   "club": "Cercle de billard de Clermont",
+   "place": 50,
+   "lastSeason": 2025
+  },
+  {
+   "seed": 41,
+   "licence": "105617P",
+   "name": "LAURENT PAULINE",
+   "club": "BC Grenoble",
+   "place": 51,
+   "lastSeason": 2026
+  },
+  {
+   "seed": 42,
+   "licence": "105754Q",
+   "name": "DUMONT ARNAUD",
+   "club": "Cercle de billard de Besançon",
+   "place": 52,
+   "lastSeason": 2026
+  },
+  {
+   "seed": 43,
+   "licence": "105891R",
+   "name": "LEGRAND ARNAUD",
+   "club": "Cercle de billard de Lille",
+   "place": 54,
+   "lastSeason": 2026
+  },
+  {
+   "seed": 44,
+   "licence": "106028S",
+   "name": "MARTINEZ JORDAN",
+   "club": "BC Troyes",
+   "place": 55,
+   "lastSeason": 2026
+  },
+  {
+   "seed": 45,
+   "licence": "106165T",
+   "name": "CARON THIERRY",
+   "club": "Cercle de billard de Épernay",
+   "place": 56,
+   "lastSeason": 2025
+  },
+  {
+   "seed": 46,
+   "licence": "106302U",
+   "name": "HENRY GUILLAUME",
+   "club": "Académie de billard de Laon",
+   "place": 58,
+   "lastSeason": 2026
+  },
+  {
+   "seed": 47,
+   "licence": "106439V",
+   "name": "MARECHAL DIDIER",
+   "club": "Académie de billard de Laon",
+   "place": 59,
+   "lastSeason": 2026
+  },
+  {
+   "seed": 48,
+   "licence": "106576W",
+   "name": "MARTY FABIEN",
+   "club": "BC Rouen",
+   "place": 63,
+   "lastSeason": 2026
+  },
+  {
+   "seed": 49,
+   "licence": "106713X",
+   "name": "MARECHAL ROMAIN",
+   "club": "Cercle de billard de Épernay",
+   "place": 66,
+   "lastSeason": 2025
+  },
+  {
+   "seed": 50,
+   "licence": "106850Y",
+   "name": "BONNET ERWAN",
+   "club": "Cercle de billard de Lille",
+   "place": 68,
+   "lastSeason": 2026
+  },
+  {
+   "seed": 51,
+   "licence": "106987Z",
+   "name": "SCHNEIDER CHLOÉ",
+   "club": "BC Soissons",
+   "place": 71,
+   "lastSeason": 2025
+  },
+  {
+   "seed": 52,
+   "licence": "107124A",
+   "name": "BRUN ERWAN",
+   "club": "BC Rennes",
+   "place": 72,
+   "lastSeason": 2026
+  },
+  {
+   "seed": 53,
+   "licence": "107261B",
+   "name": "OLIVIER PATRICK",
+   "club": "Académie de billard de Nancy",
+   "place": 73,
+   "lastSeason": 2026
+  },
+  {
+   "seed": 54,
+   "licence": "107398C",
+   "name": "FLEURY SARAH",
+   "club": "BC Limoges",
+   "place": 75,
+   "lastSeason": 2026
+  },
+  {
+   "seed": 55,
+   "licence": "107535D",
+   "name": "LEGRAND PIERRE",
+   "club": "BC Rouen",
+   "place": 76,
+   "lastSeason": 2026
+  },
+  {
+   "seed": 56,
+   "licence": "107672E",
+   "name": "MALLET MAXIME",
+   "club": "AS Billard Cambrai",
+   "place": 77,
+   "lastSeason": 2025
+  },
+  {
+   "seed": 57,
+   "licence": "107809F",
+   "name": "RENAUD HUGO",
+   "club": "AS Billard Cambrai",
+   "place": 78,
+   "lastSeason": 2025
+  },
+  {
+   "seed": 58,
+   "licence": "107946G",
+   "name": "BOYER NOÉ",
+   "club": "Académie de billard de Nice",
+   "place": 86,
+   "lastSeason": 2025
+  },
+  {
+   "seed": 59,
+   "licence": "108083H",
+   "name": "BOYER MANON",
+   "club": "AS Billard Reims",
+   "place": 87,
+   "lastSeason": 2026
+  },
+  {
+   "seed": 60,
+   "licence": "108220I",
+   "name": "LEFEVRE BENOÎT",
+   "club": "AS Billard Douai",
+   "place": 88,
+   "lastSeason": 2025
+  },
+  {
+   "seed": 61,
+   "licence": "108357J",
+   "name": "PAYET DAVID",
+   "club": "AS Billard Cambrai",
+   "place": 89.5,
+   "lastSeason": 2025
+  },
+  {
+   "seed": 62,
+   "licence": "108494K",
+   "name": "DAVID SARAH",
+   "club": "Cercle de billard de Valenciennes",
+   "place": 90,
+   "lastSeason": 2026
+  },
+  {
+   "seed": 63,
+   "licence": "108631L",
+   "name": "FRANCOIS NADIA",
+   "club": "Académie de billard de Boulogne",
+   "place": 95,
+   "lastSeason": 2026
+  },
+  {
+   "seed": 64,
+   "licence": "108768M",
+   "name": "BERTIN NADIA",
+   "club": "AS Billard Reims",
+   "place": 96,
+   "lastSeason": 2025
+  },
+  {
+   "seed": 65,
+   "licence": "108905N",
+   "name": "AUBRY THIERRY",
+   "club": "AS Billard Dunkerque",
+   "place": 99,
+   "lastSeason": 2026
+  },
+  {
+   "seed": 66,
+   "licence": "109042O",
+   "name": "MARTINEZ GILLES",
+   "club": "AS Billard Cambrai",
+   "place": 100.5,
+   "lastSeason": 2024
+  },
+  {
+   "seed": 67,
+   "licence": "109179P",
+   "name": "ADAM CHLOÉ",
+   "club": "Académie de billard de Beauvais",
+   "place": 107,
+   "lastSeason": 2025
+  },
+  {
+   "seed": 68,
+   "licence": "109316Q",
+   "name": "FAURE MARIE",
+   "club": "BC Amiens",
+   "place": 108,
+   "lastSeason": 2026
+  },
+  {
+   "seed": 69,
+   "licence": "109453R",
+   "name": "SCHNEIDER CÉDRIC",
+   "club": "AS Billard Compiègne",
+   "place": 109,
+   "lastSeason": 2025
+  },
+  {
+   "seed": 70,
+   "licence": "109590S",
+   "name": "DUMAS DAMIEN",
+   "club": "Cercle de billard de Strasbourg",
+   "place": 110,
+   "lastSeason": 2026
+  },
+  {
+   "seed": 71,
+   "licence": "109727T",
+   "name": "LAMBERT RACHID",
+   "club": "AS Billard Tours",
+   "place": 119,
+   "lastSeason": 2025
+  },
+  {
+   "seed": 72,
+   "licence": "109864U",
+   "name": "ARNAUD CLÉMENT",
+   "club": "Cercle de billard de Chartres",
+   "place": 127,
+   "lastSeason": 2026
+  },
+  {
+   "seed": 73,
+   "licence": "110001V",
+   "name": "BERTRAND CAMILLE",
+   "club": "BC Soissons",
+   "place": 129,
+   "lastSeason": 2025
+  },
+  {
+   "seed": 74,
+   "licence": "110138W",
+   "name": "COLLIN RONAN",
+   "club": "AS Billard Compiègne",
+   "place": 500,
+   "lastSeason": null
+  },
+  {
+   "seed": 75,
+   "licence": "110275X",
+   "name": "RODRIGUEZ MAXIME",
+   "club": "Cercle de billard de Évry",
+   "place": 500,
+   "lastSeason": null
+  },
+  {
+   "seed": 76,
+   "licence": "110412Y",
+   "name": "REY DYLAN",
+   "club": "AS Billard Cambrai",
+   "place": 500,
+   "lastSeason": null
+  }
+ ],
+ "poules": [
+  {
+   "num": 1,
+   "billards": [
+    11
+   ],
+   "players": [
+    "ROUSSEL JULIE",
+    "DUMONT ARNAUD",
+    "LEGRAND ARNAUD",
+    "REY DYLAN"
+   ],
+   "matches": [
+    {
+     "a": "DUMONT ARNAUD",
+     "b": "LEGRAND ARNAUD",
+     "sa": 100,
+     "sb": 90
+    },
+    {
+     "a": "ROUSSEL JULIE",
+     "b": "REY DYLAN",
+     "sa": 100,
+     "sb": 83
+    },
+    {
+     "a": "LEGRAND ARNAUD",
+     "b": "REY DYLAN",
+     "sa": 85,
+     "sb": 100
+    },
+    {
+     "a": "DUMONT ARNAUD",
+     "b": "ROUSSEL JULIE",
+     "sa": 64,
+     "sb": 100
+    },
+    {
+     "a": "DUMONT ARNAUD",
+     "b": "REY DYLAN",
+     "sa": 66,
+     "sb": 100
+    },
+    {
+     "a": "LEGRAND ARNAUD",
+     "b": "ROUSSEL JULIE",
+     "sa": 100,
+     "sb": 63
+    }
+   ]
+  },
+  {
+   "num": 2,
+   "billards": [
+    2
+   ],
+   "players": [
+    "LAMY VINCENT",
+    "LAURENT PAULINE",
+    "MARTINEZ JORDAN",
+    "RODRIGUEZ MAXIME"
+   ],
+   "matches": [
+    {
+     "a": "LAURENT PAULINE",
+     "b": "MARTINEZ JORDAN",
+     "sa": 100,
+     "sb": 95
+    },
+    {
+     "a": "LAMY VINCENT",
+     "b": "RODRIGUEZ MAXIME",
+     "sa": 80,
+     "sb": 100
+    },
+    {
+     "a": "MARTINEZ JORDAN",
+     "b": "RODRIGUEZ MAXIME",
+     "sa": 76,
+     "sb": 100
+    },
+    {
+     "a": "LAURENT PAULINE",
+     "b": "LAMY VINCENT",
+     "sa": 55,
+     "sb": 100
+    },
+    {
+     "a": "LAURENT PAULINE",
+     "b": "RODRIGUEZ MAXIME",
+     "sa": 100,
+     "sb": 79
+    },
+    {
+     "a": "MARTINEZ JORDAN",
+     "b": "LAMY VINCENT",
+     "sa": 56,
+     "sb": 100
+    }
+   ]
+  },
+  {
+   "num": 3,
+   "billards": [
+    1
+   ],
+   "players": [
+    "LEBLANC MICKAËL",
+    "BRETON CLAIRE",
+    "CARON THIERRY",
+    "COLLIN RONAN"
+   ],
+   "matches": [
+    {
+     "a": "BRETON CLAIRE",
+     "b": "CARON THIERRY",
+     "sa": 100,
+     "sb": 90
+    },
+    {
+     "a": "LEBLANC MICKAËL",
+     "b": "COLLIN RONAN",
+     "sa": 100,
+     "sb": 79
+    },
+    {
+     "a": "CARON THIERRY",
+     "b": "COLLIN RONAN",
+     "sa": 100,
+     "sb": 74
+    },
+    {
+     "a": "BRETON CLAIRE",
+     "b": "LEBLANC MICKAËL",
+     "sa": 100,
+     "sb": 89
+    },
+    {
+     "a": "BRETON CLAIRE",
+     "b": "COLLIN RONAN",
+     "sa": 100,
+     "sb": 56
+    },
+    {
+     "a": "CARON THIERRY",
+     "b": "LEBLANC MICKAËL",
+     "sa": 43,
+     "sb": 100
+    }
+   ]
+  },
+  {
+   "num": 4,
+   "billards": [
+    4
+   ],
+   "players": [
+    "VASSEUR LAURENT",
+    "CARLIER SAMIR",
+    "HENRY GUILLAUME",
+    "BERTRAND CAMILLE"
+   ],
+   "matches": [
+    {
+     "a": "CARLIER SAMIR",
+     "b": "HENRY GUILLAUME",
+     "sa": 100,
+     "sb": 73
+    },
+    {
+     "a": "VASSEUR LAURENT",
+     "b": "BERTRAND CAMILLE",
+     "sa": 100,
+     "sb": 42
+    },
+    {
+     "a": "HENRY GUILLAUME",
+     "b": "BERTRAND CAMILLE",
+     "sa": 100,
+     "sb": 27
+    },
+    {
+     "a": "CARLIER SAMIR",
+     "b": "VASSEUR LAURENT",
+     "sa": 100,
+     "sb": 95
+    },
+    {
+     "a": "CARLIER SAMIR",
+     "b": "BERTRAND CAMILLE",
+     "sa": 100,
+     "sb": 59
+    },
+    {
+     "a": "HENRY GUILLAUME",
+     "b": "VASSEUR LAURENT",
+     "sa": 85,
+     "sb": 100
+    }
+   ]
+  },
+  {
+   "num": 5,
+   "billards": [
+    7
+   ],
+   "players": [
+    "BOYER JULIEN",
+    "BAILLY PATRICK",
+    "MARECHAL DIDIER",
+    "ARNAUD CLÉMENT"
+   ],
+   "matches": [
+    {
+     "a": "BAILLY PATRICK",
+     "b": "MARECHAL DIDIER",
+     "sa": 65,
+     "sb": 100
+    },
+    {
+     "a": "BOYER JULIEN",
+     "b": "ARNAUD CLÉMENT",
+     "sa": 100,
+     "sb": 88
+    },
+    {
+     "a": "MARECHAL DIDIER",
+     "b": "ARNAUD CLÉMENT",
+     "sa": 100,
+     "sb": 54
+    },
+    {
+     "a": "BAILLY PATRICK",
+     "b": "BOYER JULIEN",
+     "sa": 78,
+     "sb": 100
+    },
+    {
+     "a": "BAILLY PATRICK",
+     "b": "ARNAUD CLÉMENT",
+     "sa": 100,
+     "sb": 80
+    },
+    {
+     "a": "MARECHAL DIDIER",
+     "b": "BOYER JULIEN",
+     "sa": 27,
+     "sb": 100
+    }
+   ]
+  },
+  {
+   "num": 6,
+   "billards": [
+    8
+   ],
+   "players": [
+    "DUMONT LUCAS",
+    "MAILLARD CAMILLE",
+    "MARTY FABIEN",
+    "LAMBERT RACHID"
+   ],
+   "matches": [
+    {
+     "a": "MAILLARD CAMILLE",
+     "b": "DUMONT LUCAS",
+     "sa": 100,
+     "sb": 73
+    },
+    {
+     "a": "MARTY FABIEN",
+     "b": "LAMBERT RACHID",
+     "sa": 100,
+     "sb": 90
+    },
+    {
+     "a": "DUMONT LUCAS",
+     "b": "LAMBERT RACHID",
+     "sa": 100,
+     "sb": 90
+    },
+    {
+     "a": "MAILLARD CAMILLE",
+     "b": "MARTY FABIEN",
+     "sa": 100,
+     "sb": 78
+    },
+    {
+     "a": "MAILLARD CAMILLE",
+     "b": "LAMBERT RACHID",
+     "sa": 100,
+     "sb": 31
+    },
+    {
+     "a": "DUMONT LUCAS",
+     "b": "MARTY FABIEN",
+     "sa": 100,
+     "sb": 83
+    }
+   ]
+  },
+  {
+   "num": 7,
+   "billards": [
+    9
+   ],
+   "players": [
+    "CLEMENT GILLES",
+    "KLEIN ÉMILIE",
+    "MARECHAL ROMAIN",
+    "DUMAS DAMIEN"
+   ],
+   "matches": [
+    {
+     "a": "KLEIN ÉMILIE",
+     "b": "MARECHAL ROMAIN",
+     "sa": 100,
+     "sb": 54
+    },
+    {
+     "a": "CLEMENT GILLES",
+     "b": "DUMAS DAMIEN",
+     "sa": 99,
+     "sb": 100
+    },
+    {
+     "a": "MARECHAL ROMAIN",
+     "b": "DUMAS DAMIEN",
+     "sa": 100,
+     "sb": 52
+    },
+    {
+     "a": "KLEIN ÉMILIE",
+     "b": "CLEMENT GILLES",
+     "sa": 100,
+     "sb": 42
+    },
+    {
+     "a": "KLEIN ÉMILIE",
+     "b": "DUMAS DAMIEN",
+     "sa": 100,
+     "sb": 31
+    },
+    {
+     "a": "MARECHAL ROMAIN",
+     "b": "CLEMENT GILLES",
+     "sa": 100,
+     "sb": 75
+    }
+   ]
+  },
+  {
+   "num": 8,
+   "billards": [
+    7
+   ],
+   "players": [
+    "MARCHAND JORDAN",
+    "MERCIER ÉRIC",
+    "BONNET ERWAN",
+    "SCHNEIDER CÉDRIC"
+   ],
+   "matches": [
+    {
+     "a": "MERCIER ÉRIC",
+     "b": "BONNET ERWAN",
+     "sa": 100,
+     "sb": 92
+    },
+    {
+     "a": "MARCHAND JORDAN",
+     "b": "SCHNEIDER CÉDRIC",
+     "sa": 100,
+     "sb": 71
+    },
+    {
+     "a": "BONNET ERWAN",
+     "b": "SCHNEIDER CÉDRIC",
+     "sa": 100,
+     "sb": 54
+    },
+    {
+     "a": "MERCIER ÉRIC",
+     "b": "MARCHAND JORDAN",
+     "sa": 66,
+     "sb": 100
+    },
+    {
+     "a": "MERCIER ÉRIC",
+     "b": "SCHNEIDER CÉDRIC",
+     "sa": 100,
+     "sb": 46
+    },
+    {
+     "a": "BONNET ERWAN",
+     "b": "MARCHAND JORDAN",
+     "sa": 69,
+     "sb": 100
+    }
+   ]
+  },
+  {
+   "num": 9,
+   "billards": [
+    4
+   ],
+   "players": [
+    "GRONDIN HUGO",
+    "MICHEL DAMIEN",
+    "SCHNEIDER CHLOÉ",
+    "FAURE MARIE"
+   ],
+   "matches": [
+    {
+     "a": "MICHEL DAMIEN",
+     "b": "SCHNEIDER CHLOÉ",
+     "sa": 100,
+     "sb": 74
+    },
+    {
+     "a": "GRONDIN HUGO",
+     "b": "FAURE MARIE",
+     "sa": 100,
+     "sb": 69
+    },
+    {
+     "a": "SCHNEIDER CHLOÉ",
+     "b": "FAURE MARIE",
+     "sa": 100,
+     "sb": 89
+    },
+    {
+     "a": "MICHEL DAMIEN",
+     "b": "GRONDIN HUGO",
+     "sa": 100,
+     "sb": 84
+    },
+    {
+     "a": "MICHEL DAMIEN",
+     "b": "FAURE MARIE",
+     "sa": 100,
+     "sb": 58
+    },
+    {
+     "a": "SCHNEIDER CHLOÉ",
+     "b": "GRONDIN HUGO",
+     "sa": 62,
+     "sb": 100
+    }
+   ]
+  },
+  {
+   "num": 10,
+   "billards": [
+    6
+   ],
+   "players": [
+    "CHEVALLIER LOÏC",
+    "COUSIN THOMAS",
+    "BRUN ERWAN",
+    "ADAM CHLOÉ"
+   ],
+   "matches": [
+    {
+     "a": "COUSIN THOMAS",
+     "b": "BRUN ERWAN",
+     "sa": 100,
+     "sb": 9
+    },
+    {
+     "a": "CHEVALLIER LOÏC",
+     "b": "ADAM CHLOÉ",
+     "sa": 84,
+     "sb": 100
+    },
+    {
+     "a": "BRUN ERWAN",
+     "b": "ADAM CHLOÉ",
+     "sa": 83,
+     "sb": 100
+    },
+    {
+     "a": "COUSIN THOMAS",
+     "b": "CHEVALLIER LOÏC",
+     "sa": 56,
+     "sb": 100
+    },
+    {
+     "a": "COUSIN THOMAS",
+     "b": "ADAM CHLOÉ",
+     "sa": 100,
+     "sb": 91
+    },
+    {
+     "a": "BRUN ERWAN",
+     "b": "CHEVALLIER LOÏC",
+     "sa": 63,
+     "sb": 100
+    }
+   ]
+  },
+  {
+   "num": 11,
+   "billards": [
+    10
+   ],
+   "players": [
+    "LEROUX NICOLAS",
+    "SANCHEZ SOPHIE",
+    "OLIVIER PATRICK",
+    "MARTINEZ GILLES"
+   ],
+   "matches": [
+    {
+     "a": "SANCHEZ SOPHIE",
+     "b": "OLIVIER PATRICK",
+     "sa": 100,
+     "sb": 22
+    },
+    {
+     "a": "LEROUX NICOLAS",
+     "b": "MARTINEZ GILLES",
+     "sa": 100,
+     "sb": 53
+    },
+    {
+     "a": "OLIVIER PATRICK",
+     "b": "MARTINEZ GILLES",
+     "sa": 100,
+     "sb": 90
+    },
+    {
+     "a": "SANCHEZ SOPHIE",
+     "b": "LEROUX NICOLAS",
+     "sa": 92,
+     "sb": 100
+    },
+    {
+     "a": "SANCHEZ SOPHIE",
+     "b": "MARTINEZ GILLES",
+     "sa": 100,
+     "sb": 77
+    },
+    {
+     "a": "OLIVIER PATRICK",
+     "b": "LEROUX NICOLAS",
+     "sa": 58,
+     "sb": 100
+    }
+   ]
+  },
+  {
+   "num": 12,
+   "billards": [
+    3
+   ],
+   "players": [
+    "CARPENTIER BENOÎT",
+    "ROBERT KEVIN",
+    "FLEURY SARAH",
+    "AUBRY THIERRY"
+   ],
+   "matches": [
+    {
+     "a": "ROBERT KEVIN",
+     "b": "CARPENTIER BENOÎT",
+     "sa": 95,
+     "sb": 100
+    },
+    {
+     "a": "FLEURY SARAH",
+     "b": "AUBRY THIERRY",
+     "sa": 29,
+     "sb": 100
+    },
+    {
+     "a": "CARPENTIER BENOÎT",
+     "b": "AUBRY THIERRY",
+     "sa": 62,
+     "sb": 100
+    },
+    {
+     "a": "ROBERT KEVIN",
+     "b": "FLEURY SARAH",
+     "sa": 100,
+     "sb": 16
+    },
+    {
+     "a": "ROBERT KEVIN",
+     "b": "AUBRY THIERRY",
+     "sa": 100,
+     "sb": 78
+    },
+    {
+     "a": "CARPENTIER BENOÎT",
+     "b": "FLEURY SARAH",
+     "sa": 100,
+     "sb": 75
+    }
+   ]
+  },
+  {
+   "num": 13,
+   "billards": [
+    5
+   ],
+   "players": [
+    "GAILLARD SÉBASTIEN",
+    "CORDIER CAMILLE",
+    "LEGRAND PIERRE",
+    "BERTIN NADIA"
+   ],
+   "matches": [
+    {
+     "a": "CORDIER CAMILLE",
+     "b": "LEGRAND PIERRE",
+     "sa": 100,
+     "sb": 65
+    },
+    {
+     "a": "GAILLARD SÉBASTIEN",
+     "b": "BERTIN NADIA",
+     "sa": 100,
+     "sb": 62
+    },
+    {
+     "a": "LEGRAND PIERRE",
+     "b": "BERTIN NADIA",
+     "sa": 88,
+     "sb": 100
+    },
+    {
+     "a": "CORDIER CAMILLE",
+     "b": "GAILLARD SÉBASTIEN",
+     "sa": 96,
+     "sb": 100
+    },
+    {
+     "a": "CORDIER CAMILLE",
+     "b": "BERTIN NADIA",
+     "sa": 100,
+     "sb": 38
+    },
+    {
+     "a": "LEGRAND PIERRE",
+     "b": "GAILLARD SÉBASTIEN",
+     "sa": 100,
+     "sb": 87
+    }
+   ]
+  },
+  {
+   "num": 14,
+   "billards": [
+    1
+   ],
+   "players": [
+    "COLIN GWENDAL",
+    "LUCAS NICOLAS",
+    "MALLET MAXIME",
+    "FRANCOIS NADIA"
+   ],
+   "matches": [
+    {
+     "a": "LUCAS NICOLAS",
+     "b": "MALLET MAXIME",
+     "sa": 100,
+     "sb": 58
+    },
+    {
+     "a": "COLIN GWENDAL",
+     "b": "FRANCOIS NADIA",
+     "sa": 97,
+     "sb": 100
+    },
+    {
+     "a": "MALLET MAXIME",
+     "b": "FRANCOIS NADIA",
+     "sa": 100,
+     "sb": 68
+    },
+    {
+     "a": "LUCAS NICOLAS",
+     "b": "COLIN GWENDAL",
+     "sa": 96,
+     "sb": 100
+    },
+    {
+     "a": "LUCAS NICOLAS",
+     "b": "FRANCOIS NADIA",
+     "sa": 62,
+     "sb": 100
+    },
+    {
+     "a": "MALLET MAXIME",
+     "b": "COLIN GWENDAL",
+     "sa": 79,
+     "sb": 100
+    }
+   ]
+  },
+  {
+   "num": 15,
+   "billards": [
+    8
+   ],
+   "players": [
+    "LANGLOIS ARNAUD",
+    "BOUCHET CÉDRIC",
+    "RENAUD HUGO",
+    "DAVID SARAH"
+   ],
+   "matches": [
+    {
+     "a": "BOUCHET CÉDRIC",
+     "b": "RENAUD HUGO",
+     "sa": 89,
+     "sb": 100
+    },
+    {
+     "a": "LANGLOIS ARNAUD",
+     "b": "DAVID SARAH",
+     "sa": 100,
+     "sb": 81
+    },
+    {
+     "a": "RENAUD HUGO",
+     "b": "DAVID SARAH",
+     "sa": 73,
+     "sb": 100
+    },
+    {
+     "a": "BOUCHET CÉDRIC",
+     "b": "LANGLOIS ARNAUD",
+     "sa": 86,
+     "sb": 100
+    },
+    {
+     "a": "BOUCHET CÉDRIC",
+     "b": "DAVID SARAH",
+     "sa": 100,
+     "sb": 64
+    },
+    {
+     "a": "RENAUD HUGO",
+     "b": "LANGLOIS ARNAUD",
+     "sa": 52,
+     "sb": 100
+    }
+   ]
+  },
+  {
+   "num": 16,
+   "billards": [
+    9
+   ],
+   "players": [
+    "BERTRAND DIDIER",
+    "MATHIEU MEHDI",
+    "BOYER NOÉ",
+    "PAYET DAVID"
+   ],
+   "matches": [
+    {
+     "a": "MATHIEU MEHDI",
+     "b": "BOYER NOÉ",
+     "sa": 83,
+     "sb": 100
+    },
+    {
+     "a": "BERTRAND DIDIER",
+     "b": "PAYET DAVID",
+     "sa": 100,
+     "sb": 85
+    },
+    {
+     "a": "BOYER NOÉ",
+     "b": "PAYET DAVID",
+     "sa": 89,
+     "sb": 100
+    },
+    {
+     "a": "MATHIEU MEHDI",
+     "b": "BERTRAND DIDIER",
+     "sa": 100,
+     "sb": 84
+    },
+    {
+     "a": "MATHIEU MEHDI",
+     "b": "PAYET DAVID",
+     "sa": 100,
+     "sb": 86
+    },
+    {
+     "a": "BOYER NOÉ",
+     "b": "BERTRAND DIDIER",
+     "sa": 36,
+     "sb": 100
+    }
+   ]
+  },
+  {
+   "num": 17,
+   "billards": [
+    6
+   ],
+   "players": [
+    "BOURGEOIS DIDIER",
+    "CHAUVIN THIERRY",
+    "BOYER MANON",
+    "LEFEVRE BENOÎT"
+   ],
+   "matches": [
+    {
+     "a": "CHAUVIN THIERRY",
+     "b": "BOYER MANON",
+     "sa": 100,
+     "sb": 22
+    },
+    {
+     "a": "BOURGEOIS DIDIER",
+     "b": "LEFEVRE BENOÎT",
+     "sa": 97,
+     "sb": 100
+    },
+    {
+     "a": "BOYER MANON",
+     "b": "LEFEVRE BENOÎT",
+     "sa": 100,
+     "sb": 60
+    },
+    {
+     "a": "CHAUVIN THIERRY",
+     "b": "BOURGEOIS DIDIER",
+     "sa": 100,
+     "sb": 72
+    },
+    {
+     "a": "CHAUVIN THIERRY",
+     "b": "LEFEVRE BENOÎT",
+     "sa": 100,
+     "sb": 57
+    },
+    {
+     "a": "BOYER MANON",
+     "b": "BOURGEOIS DIDIER",
+     "sa": 56,
+     "sb": 100
+    }
+   ]
+  }
+ ],
+ "barrages": [
+  {
+   "m": "B1",
+   "a": "KLEIN ÉMILIE",
+   "b": "MATHIEU MEHDI",
+   "sa": 100,
+   "sb": 81
+  },
+  {
+   "m": "B5",
+   "a": "LEROUX NICOLAS",
+   "b": "LAMY VINCENT",
+   "sa": 65,
+   "sb": 100
+  },
+  {
+   "m": "B2",
+   "a": "CHAUVIN THIERRY",
+   "b": "ROUSSEL JULIE",
+   "sa": 100,
+   "sb": 56
+  },
+  {
+   "m": "B6",
+   "a": "MARCHAND JORDAN",
+   "b": "ROBERT KEVIN",
+   "sa": 100,
+   "sb": 64
+  },
+  {
+   "m": "B3",
+   "a": "MAILLARD CAMILLE",
+   "b": "GAILLARD SÉBASTIEN",
+   "sa": 100,
+   "sb": 52
+  },
+  {
+   "m": "B7",
+   "a": "MICHEL DAMIEN",
+   "b": "BRETON CLAIRE",
+   "sa": 100,
+   "sb": 90
+  },
+  {
+   "m": "B4",
+   "a": "BOYER JULIEN",
+   "b": "CHEVALLIER LOÏC",
+   "sa": 100,
+   "sb": 83
+  },
+  {
+   "m": "B8",
+   "a": "LANGLOIS ARNAUD",
+   "b": "CARLIER SAMIR",
+   "sa": 74,
+   "sb": 100
+  }
+ ],
+ "barrageBillards": {
+  "B1": 4,
+  "B2": 3,
+  "B3": 1,
+  "B4": 2,
+  "B5": 5,
+  "B6": 8,
+  "B7": 7,
+  "B8": 6
+ },
+ "expectedPhaseRanking": [
+  {
+   "rank": 1,
+   "name": "KLEIN ÉMILIE",
+   "pouleRank": 1,
+   "ptm": 6,
+   "pts": 3,
+   "faits": 300,
+   "subis": 127,
+   "moy": 2.3622047244094486
+  },
+  {
+   "rank": 2,
+   "name": "CHAUVIN THIERRY",
+   "pouleRank": 1,
+   "ptm": 6,
+   "pts": 3,
+   "faits": 300,
+   "subis": 151,
+   "moy": 1.9867549668874172
+  },
+  {
+   "rank": 3,
+   "name": "MAILLARD CAMILLE",
+   "pouleRank": 1,
+   "ptm": 6,
+   "pts": 3,
+   "faits": 300,
+   "subis": 182,
+   "moy": 1.6483516483516483
+  },
+  {
+   "rank": 4,
+   "name": "BOYER JULIEN",
+   "pouleRank": 1,
+   "ptm": 6,
+   "pts": 3,
+   "faits": 300,
+   "subis": 193,
+   "moy": 1.5544041450777202
+  },
+  {
+   "rank": 5,
+   "name": "LEROUX NICOLAS",
+   "pouleRank": 1,
+   "ptm": 6,
+   "pts": 3,
+   "faits": 300,
+   "subis": 203,
+   "moy": 1.477832512315271
+  },
+  {
+   "rank": 6,
+   "name": "MARCHAND JORDAN",
+   "pouleRank": 1,
+   "ptm": 6,
+   "pts": 3,
+   "faits": 300,
+   "subis": 206,
+   "moy": 1.4563106796116505
+  },
+  {
+   "rank": 7,
+   "name": "MICHEL DAMIEN",
+   "pouleRank": 1,
+   "ptm": 6,
+   "pts": 3,
+   "faits": 300,
+   "subis": 216,
+   "moy": 1.3888888888888888
+  },
+  {
+   "rank": 8,
+   "name": "LANGLOIS ARNAUD",
+   "pouleRank": 1,
+   "ptm": 6,
+   "pts": 3,
+   "faits": 300,
+   "subis": 219,
+   "moy": 1.36986301369863
+  },
+  {
+   "rank": 9,
+   "name": "CARLIER SAMIR",
+   "pouleRank": 1,
+   "ptm": 6,
+   "pts": 3,
+   "faits": 300,
+   "subis": 227,
+   "moy": 1.3215859030837005
+  },
+  {
+   "rank": 10,
+   "name": "BRETON CLAIRE",
+   "pouleRank": 1,
+   "ptm": 6,
+   "pts": 3,
+   "faits": 300,
+   "subis": 235,
+   "moy": 1.2765957446808511
+  },
+  {
+   "rank": 11,
+   "name": "ROBERT KEVIN",
+   "pouleRank": 1,
+   "ptm": 4,
+   "pts": 2,
+   "faits": 295,
+   "subis": 194,
+   "moy": 1.5206185567010309
+  },
+  {
+   "rank": 12,
+   "name": "LAMY VINCENT",
+   "pouleRank": 1,
+   "ptm": 4,
+   "pts": 2,
+   "faits": 280,
+   "subis": 211,
+   "moy": 1.3270142180094786
+  },
+  {
+   "rank": 13,
+   "name": "CHEVALLIER LOÏC",
+   "pouleRank": 1,
+   "ptm": 4,
+   "pts": 2,
+   "faits": 284,
+   "subis": 219,
+   "moy": 1.2968036529680365
+  },
+  {
+   "rank": 14,
+   "name": "GAILLARD SÉBASTIEN",
+   "pouleRank": 1,
+   "ptm": 4,
+   "pts": 2,
+   "faits": 287,
+   "subis": 258,
+   "moy": 1.1124031007751938
+  },
+  {
+   "rank": 15,
+   "name": "ROUSSEL JULIE",
+   "pouleRank": 1,
+   "ptm": 4,
+   "pts": 2,
+   "faits": 263,
+   "subis": 247,
+   "moy": 1.0647773279352226
+  },
+  {
+   "rank": 16,
+   "name": "MATHIEU MEHDI",
+   "pouleRank": 1,
+   "ptm": 4,
+   "pts": 2,
+   "faits": 283,
+   "subis": 270,
+   "moy": 1.048148148148148
+  },
+  {
+   "rank": 17,
+   "name": "FRANCOIS NADIA",
+   "pouleRank": 1,
+   "ptm": 4,
+   "pts": 2,
+   "faits": 268,
+   "subis": 259,
+   "moy": 1.0347490347490347
+  },
+  {
+   "rank": 18,
+   "name": "SANCHEZ SOPHIE",
+   "pouleRank": 2,
+   "ptm": 4,
+   "pts": 2,
+   "faits": 292,
+   "subis": 199,
+   "moy": 1.4673366834170853
+  },
+  {
+   "rank": 19,
+   "name": "CORDIER CAMILLE",
+   "pouleRank": 2,
+   "ptm": 4,
+   "pts": 2,
+   "faits": 296,
+   "subis": 203,
+   "moy": 1.458128078817734
+  },
+  {
+   "rank": 20,
+   "name": "AUBRY THIERRY",
+   "pouleRank": 2,
+   "ptm": 4,
+   "pts": 2,
+   "faits": 278,
+   "subis": 191,
+   "moy": 1.455497382198953
+  },
+  {
+   "rank": 21,
+   "name": "LEBLANC MICKAËL",
+   "pouleRank": 2,
+   "ptm": 4,
+   "pts": 2,
+   "faits": 289,
+   "subis": 222,
+   "moy": 1.3018018018018018
+  },
+  {
+   "rank": 22,
+   "name": "VASSEUR LAURENT",
+   "pouleRank": 2,
+   "ptm": 4,
+   "pts": 2,
+   "faits": 295,
+   "subis": 227,
+   "moy": 1.2995594713656389
+  },
+  {
+   "rank": 23,
+   "name": "BERTRAND DIDIER",
+   "pouleRank": 2,
+   "ptm": 4,
+   "pts": 2,
+   "faits": 284,
+   "subis": 221,
+   "moy": 1.2850678733031675
+  },
+  {
+   "rank": 24,
+   "name": "COUSIN THOMAS",
+   "pouleRank": 2,
+   "ptm": 4,
+   "pts": 2,
+   "faits": 256,
+   "subis": 200,
+   "moy": 1.28
+  },
+  {
+   "rank": 25,
+   "name": "GRONDIN HUGO",
+   "pouleRank": 2,
+   "ptm": 4,
+   "pts": 2,
+   "faits": 284,
+   "subis": 231,
+   "moy": 1.2294372294372293
+  },
+  {
+   "rank": 26,
+   "name": "REY DYLAN",
+   "pouleRank": 2,
+   "ptm": 4,
+   "pts": 2,
+   "faits": 283,
+   "subis": 251,
+   "moy": 1.1274900398406376
+  },
+  {
+   "rank": 27,
+   "name": "MARECHAL ROMAIN",
+   "pouleRank": 2,
+   "ptm": 4,
+   "pts": 2,
+   "faits": 254,
+   "subis": 227,
+   "moy": 1.118942731277533
+  },
+  {
+   "rank": 28,
+   "name": "MERCIER ÉRIC",
+   "pouleRank": 2,
+   "ptm": 4,
+   "pts": 2,
+   "faits": 266,
+   "subis": 238,
+   "moy": 1.1176470588235294
+  },
+  {
+   "rank": 29,
+   "name": "RODRIGUEZ MAXIME",
+   "pouleRank": 2,
+   "ptm": 4,
+   "pts": 2,
+   "faits": 279,
+   "subis": 256,
+   "moy": 1.08984375
+  },
+  {
+   "rank": 30,
+   "name": "COLIN GWENDAL",
+   "pouleRank": 2,
+   "ptm": 4,
+   "pts": 2,
+   "faits": 297,
+   "subis": 275,
+   "moy": 1.08
+  },
+  {
+   "rank": 31,
+   "name": "MARECHAL DIDIER",
+   "pouleRank": 2,
+   "ptm": 4,
+   "pts": 2,
+   "faits": 227,
+   "subis": 219,
+   "moy": 1.0365296803652968
+  },
+  {
+   "rank": 32,
+   "name": "DUMONT LUCAS",
+   "pouleRank": 2,
+   "ptm": 4,
+   "pts": 2,
+   "faits": 273,
+   "subis": 273,
+   "moy": 1
+  },
+  {
+   "rank": 33,
+   "name": "BOURGEOIS DIDIER",
+   "pouleRank": 2,
+   "ptm": 2,
+   "pts": 1,
+   "faits": 269,
+   "subis": 256,
+   "moy": 1.05078125
+  },
+  {
+   "rank": 34,
+   "name": "BOUCHET CÉDRIC",
+   "pouleRank": 2,
+   "ptm": 2,
+   "pts": 1,
+   "faits": 275,
+   "subis": 264,
+   "moy": 1.0416666666666667
+  },
+  {
+   "rank": 35,
+   "name": "ADAM CHLOÉ",
+   "pouleRank": 3,
+   "ptm": 4,
+   "pts": 2,
+   "faits": 291,
+   "subis": 267,
+   "moy": 1.0898876404494382
+  },
+  {
+   "rank": 36,
+   "name": "CARPENTIER BENOÎT",
+   "pouleRank": 3,
+   "ptm": 4,
+   "pts": 2,
+   "faits": 262,
+   "subis": 270,
+   "moy": 0.9703703703703703
+  },
+  {
+   "rank": 37,
+   "name": "LAURENT PAULINE",
+   "pouleRank": 3,
+   "ptm": 4,
+   "pts": 2,
+   "faits": 255,
+   "subis": 274,
+   "moy": 0.9306569343065694
+  },
+  {
+   "rank": 38,
+   "name": "HENRY GUILLAUME",
+   "pouleRank": 3,
+   "ptm": 2,
+   "pts": 1,
+   "faits": 258,
+   "subis": 227,
+   "moy": 1.1365638766519823
+  },
+  {
+   "rank": 39,
+   "name": "BONNET ERWAN",
+   "pouleRank": 3,
+   "ptm": 2,
+   "pts": 1,
+   "faits": 261,
+   "subis": 254,
+   "moy": 1.0275590551181102
+  },
+  {
+   "rank": 40,
+   "name": "LUCAS NICOLAS",
+   "pouleRank": 3,
+   "ptm": 2,
+   "pts": 1,
+   "faits": 258,
+   "subis": 258,
+   "moy": 1
+  },
+  {
+   "rank": 41,
+   "name": "PAYET DAVID",
+   "pouleRank": 3,
+   "ptm": 2,
+   "pts": 1,
+   "faits": 271,
+   "subis": 289,
+   "moy": 0.9377162629757786
+  },
+  {
+   "rank": 42,
+   "name": "MARTY FABIEN",
+   "pouleRank": 3,
+   "ptm": 2,
+   "pts": 1,
+   "faits": 261,
+   "subis": 290,
+   "moy": 0.9
+  },
+  {
+   "rank": 43,
+   "name": "DAVID SARAH",
+   "pouleRank": 3,
+   "ptm": 2,
+   "pts": 1,
+   "faits": 245,
+   "subis": 273,
+   "moy": 0.8974358974358975
+  },
+  {
+   "rank": 44,
+   "name": "BAILLY PATRICK",
+   "pouleRank": 3,
+   "ptm": 2,
+   "pts": 1,
+   "faits": 243,
+   "subis": 280,
+   "moy": 0.8678571428571429
+  },
+  {
+   "rank": 45,
+   "name": "CARON THIERRY",
+   "pouleRank": 3,
+   "ptm": 2,
+   "pts": 1,
+   "faits": 233,
+   "subis": 274,
+   "moy": 0.8503649635036497
+  },
+  {
+   "rank": 46,
+   "name": "SCHNEIDER CHLOÉ",
+   "pouleRank": 3,
+   "ptm": 2,
+   "pts": 1,
+   "faits": 236,
+   "subis": 289,
+   "moy": 0.8166089965397924
+  },
+  {
+   "rank": 47,
+   "name": "DUMONT ARNAUD",
+   "pouleRank": 3,
+   "ptm": 2,
+   "pts": 1,
+   "faits": 230,
+   "subis": 290,
+   "moy": 0.7931034482758621
+  },
+  {
+   "rank": 48,
+   "name": "LEFEVRE BENOÎT",
+   "pouleRank": 3,
+   "ptm": 2,
+   "pts": 1,
+   "faits": 217,
+   "subis": 297,
+   "moy": 0.7306397306397306
+  },
+  {
+   "rank": 49,
+   "name": "BERTIN NADIA",
+   "pouleRank": 3,
+   "ptm": 2,
+   "pts": 1,
+   "faits": 200,
+   "subis": 288,
+   "moy": 0.6944444444444444
+  },
+  {
+   "rank": 50,
+   "name": "OLIVIER PATRICK",
+   "pouleRank": 3,
+   "ptm": 2,
+   "pts": 1,
+   "faits": 180,
+   "subis": 290,
+   "moy": 0.6206896551724138
+  },
+  {
+   "rank": 51,
+   "name": "DUMAS DAMIEN",
+   "pouleRank": 3,
+   "ptm": 2,
+   "pts": 1,
+   "faits": 183,
+   "subis": 299,
+   "moy": 0.6120401337792643
+  },
+  {
+   "rank": 52,
+   "name": "LEGRAND ARNAUD",
+   "pouleRank": 4,
+   "ptm": 2,
+   "pts": 1,
+   "faits": 275,
+   "subis": 263,
+   "moy": 1.0456273764258555
+  },
+  {
+   "rank": 53,
+   "name": "MALLET MAXIME",
+   "pouleRank": 4,
+   "ptm": 2,
+   "pts": 1,
+   "faits": 237,
+   "subis": 268,
+   "moy": 0.8843283582089553
+  },
+  {
+   "rank": 54,
+   "name": "LEGRAND PIERRE",
+   "pouleRank": 4,
+   "ptm": 2,
+   "pts": 1,
+   "faits": 253,
+   "subis": 287,
+   "moy": 0.8815331010452961
+  },
+  {
+   "rank": 55,
+   "name": "BOYER NOÉ",
+   "pouleRank": 4,
+   "ptm": 2,
+   "pts": 1,
+   "faits": 225,
+   "subis": 283,
+   "moy": 0.7950530035335689
+  },
+  {
+   "rank": 56,
+   "name": "RENAUD HUGO",
+   "pouleRank": 4,
+   "ptm": 2,
+   "pts": 1,
+   "faits": 225,
+   "subis": 289,
+   "moy": 0.7785467128027682
+  },
+  {
+   "rank": 57,
+   "name": "BOYER MANON",
+   "pouleRank": 4,
+   "ptm": 2,
+   "pts": 1,
+   "faits": 178,
+   "subis": 260,
+   "moy": 0.6846153846153846
+  },
+  {
+   "rank": 58,
+   "name": "MARTINEZ JORDAN",
+   "pouleRank": 4,
+   "ptm": 0,
+   "pts": 0,
+   "faits": 227,
+   "subis": 300,
+   "moy": 0.7566666666666667
+  },
+  {
+   "rank": 59,
+   "name": "ARNAUD CLÉMENT",
+   "pouleRank": 4,
+   "ptm": 0,
+   "pts": 0,
+   "faits": 222,
+   "subis": 300,
+   "moy": 0.74
+  },
+  {
+   "rank": 60,
+   "name": "MARTINEZ GILLES",
+   "pouleRank": 4,
+   "ptm": 0,
+   "pts": 0,
+   "faits": 220,
+   "subis": 300,
+   "moy": 0.7333333333333333
+  },
+  {
+   "rank": 61,
+   "name": "FAURE MARIE",
+   "pouleRank": 4,
+   "ptm": 0,
+   "pts": 0,
+   "faits": 216,
+   "subis": 300,
+   "moy": 0.72
+  },
+  {
+   "rank": 62,
+   "name": "LAMBERT RACHID",
+   "pouleRank": 4,
+   "ptm": 0,
+   "pts": 0,
+   "faits": 211,
+   "subis": 300,
+   "moy": 0.7033333333333334
+  },
+  {
+   "rank": 63,
+   "name": "COLLIN RONAN",
+   "pouleRank": 4,
+   "ptm": 0,
+   "pts": 0,
+   "faits": 209,
+   "subis": 300,
+   "moy": 0.6966666666666667
+  },
+  {
+   "rank": 64,
+   "name": "SCHNEIDER CÉDRIC",
+   "pouleRank": 4,
+   "ptm": 0,
+   "pts": 0,
+   "faits": 171,
+   "subis": 300,
+   "moy": 0.57
+  },
+  {
+   "rank": 65,
+   "name": "BRUN ERWAN",
+   "pouleRank": 4,
+   "ptm": 0,
+   "pts": 0,
+   "faits": 155,
+   "subis": 300,
+   "moy": 0.5166666666666667
+  },
+  {
+   "rank": 66,
+   "name": "BERTRAND CAMILLE",
+   "pouleRank": 4,
+   "ptm": 0,
+   "pts": 0,
+   "faits": 128,
+   "subis": 300,
+   "moy": 0.4266666666666667
+  },
+  {
+   "rank": 67,
+   "name": "FLEURY SARAH",
+   "pouleRank": 4,
+   "ptm": 0,
+   "pts": 0,
+   "faits": 120,
+   "subis": 300,
+   "moy": 0.4
+  },
+  {
+   "rank": 68,
+   "name": "CLEMENT GILLES",
+   "pouleRank": 4,
+   "ptm": 0,
+   "pts": 0,
+   "faits": 216,
+   "subis": 300,
+   "moy": 0.72
+  }
+ ],
+ "expectedBarrageRanking": [
+  {
+   "rank": 1,
+   "name": "CHAUVIN THIERRY"
+  },
+  {
+   "rank": 2,
+   "name": "KLEIN ÉMILIE"
+  },
+  {
+   "rank": 3,
+   "name": "MAILLARD CAMILLE"
+  },
+  {
+   "rank": 4,
+   "name": "MARCHAND JORDAN"
+  },
+  {
+   "rank": 5,
+   "name": "BOYER JULIEN"
+  },
+  {
+   "rank": 6,
+   "name": "CARLIER SAMIR"
+  },
+  {
+   "rank": 7,
+   "name": "MICHEL DAMIEN"
+  },
+  {
+   "rank": 8,
+   "name": "LAMY VINCENT"
+  },
+  {
+   "rank": 9,
+   "name": "LEROUX NICOLAS"
+  },
+  {
+   "rank": 10,
+   "name": "LANGLOIS ARNAUD"
+  },
+  {
+   "rank": 11,
+   "name": "BRETON CLAIRE"
+  },
+  {
+   "rank": 12,
+   "name": "ROBERT KEVIN"
+  },
+  {
+   "rank": 13,
+   "name": "CHEVALLIER LOÏC"
+  },
+  {
+   "rank": 14,
+   "name": "MATHIEU MEHDI"
+  },
+  {
+   "rank": 15,
+   "name": "GAILLARD SÉBASTIEN"
+  },
+  {
+   "rank": 16,
+   "name": "ROUSSEL JULIE"
+  }
+ ]
+}

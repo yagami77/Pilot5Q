@@ -1,0 +1,32 @@
+# Dépendances
+node_modules/
+.pnpm-store/
+
+# Sorties de build
+dist/
+build/
+coverage/
+*.tsbuildinfo
+
+# Environnement
+.env
+.env.*
+!.env.example
+
+# Système / éditeurs
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.swp
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Cache
+.cache/
+.eslintcache
+.vite/
