@@ -1,6 +1,8 @@
 /** Barre haute de l'espace du responsable : marque, saison, enregistrement, rôle. */
-import { Home } from "lucide-react";
-import { Link } from "react-router";
+import { Home, LogOut } from "lucide-react";
+import { Link, useNavigate } from "react-router";
+
+import { useAuth } from "@/auth/context";
 
 import { BrandMark } from "@/components/TopBar";
 import { Avatar, cx } from "@/components/ui";
@@ -11,6 +13,9 @@ import { useSeason } from "./store";
 
 export function AdminTopBar() {
   const { doc, saving, savedAt } = useSeason();
+  const { session, logout } = useAuth();
+  const navigate = useNavigate();
+  const who = session?.role === "responsable" ? session.displayName : ROLE_LABELS.responsable;
   return (
     <header className="no-print bg-surface/85 border-line sticky top-0 z-30 border-b backdrop-blur-[14px] backdrop-saturate-[1.4]">
       <div className="mx-auto flex max-w-[1440px] flex-wrap items-center gap-x-[18px] gap-y-2 px-4 py-2.5">
@@ -54,11 +59,21 @@ export function AdminTopBar() {
           </Link>
           <div className="hidden items-center gap-[9px] text-[12.5px] md:flex">
             <div className="flex flex-col text-right leading-[1.15]">
-              <b className="font-semibold">{ROLE_LABELS.responsable}</b>
-              <span className="text-ink-muted text-[11.5px]">FFB · 5-Quilles</span>
+              <b className="font-semibold">{who}</b>
+              <span className="text-ink-muted text-[11.5px]">
+                {session?.role === "responsable" ? `@${session.username}` : "FFB · 5-Quilles"}
+              </span>
             </div>
-            <Avatar name="Responsable National" size="md" />
+            <Avatar name={who} size="md" />
           </div>
+          <button
+            type="button"
+            onClick={() => void logout().then(() => navigate("/", { replace: true }))}
+            className="border-line-2 bg-surface hover:bg-alert-soft hover:text-alert-ink inline-flex items-center gap-1.5 rounded-[10px] border px-2.5 py-1.5 text-[12.5px] font-semibold transition-colors"
+          >
+            <LogOut className="size-3.5" aria-hidden="true" />
+            <span className="hidden sm:inline">Se déconnecter</span>
+          </button>
         </div>
       </div>
     </header>

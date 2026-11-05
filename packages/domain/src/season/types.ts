@@ -29,6 +29,26 @@ export interface HostClub {
   small: number;
 }
 
+/** Coordonnées du directeur de jeu désigné pour une étape. */
+export interface DjContact {
+  /** « NOM Prénom ». */
+  name: string;
+  email: string;
+  licence: string;
+  phone: string;
+}
+
+/**
+ * Surcharges propres à une étape des horaires de convocation et du canevas du mail ; une valeur
+ * absente reprend celle de la saison.
+ */
+export interface StageConvocation {
+  convocationFriday?: string;
+  convocationWeekend?: string;
+  convocationWeekendThreeBig?: string;
+  mailTemplate?: string;
+}
+
 /** Étape du calendrier : un TN (ou, à terme, une finale). */
 export interface Stage {
   id: string;
@@ -55,6 +75,12 @@ export interface Stage {
   tournamentId: string | null;
   openedAt: string | null;
   closedAt: string | null;
+  /** Directeur de jeu (nom, email, licence, téléphone). */
+  dj?: DjContact | null;
+  /** Horaires et canevas propres à l'étape (surcharge des paramètres de la saison). */
+  convocation?: StageConvocation | null;
+  /** Nombre de juniors (U21) parmi les acceptés, enregistré avec l'étape. */
+  juniorCount?: number | null;
 }
 
 /** Joueur de la base historique (clé : licence). */

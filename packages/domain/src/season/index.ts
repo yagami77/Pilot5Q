@@ -48,4 +48,7 @@ export {
   stageStatusLabel,
   sundayOf,
   hostCapable,
+  stageSettings,
+  consolanteCheck,
 } from "./calendar.js";
+export type { ConsolanteCheck } from "./calendar.js";

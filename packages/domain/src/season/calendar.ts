@@ -77,3 +77,43 @@ export function hostCapable(
     return { ok: false, reason: `Il faut au moins ${settings.minBigTables} billards 3m10` };
   return { ok: true, reason: "" };
 }
+
+/**
+ * Paramètres effectifs d'une étape : ceux de la saison, surchargés par les horaires et le canevas
+ * propres à l'étape (`stage.convocation`). Une surcharge vide est ignorée.
+ */
+export function stageSettings(settings: SeasonSettings, stage: Stage): SeasonSettings {
+  const o = stage.convocation ?? {};
+  const pick = (v: string | undefined, d: string) => (v !== undefined && v.trim() !== "" ? v : d);
+  return {
+    ...settings,
+    convocationFriday: pick(o.convocationFriday, settings.convocationFriday),
+    convocationWeekend: pick(o.convocationWeekend, settings.convocationWeekend),
+    convocationWeekendThreeBig: pick(
+      o.convocationWeekendThreeBig,
+      settings.convocationWeekendThreeBig,
+    ),
+    mailTemplate: pick(o.mailTemplate, settings.mailTemplate),
+  };
+}
+
+/** Résultat du contrôle de la consolante d'une étape. */
+export interface ConsolanteCheck {
+  possible: boolean;
+  /** Billards 2m80 disponibles. */
+  small: number;
+  /** Minimum exigé (SPEC §5, §8 : 5). */
+  min: number;
+  reason: string;
+}
+
+/** La consolante n'a lieu que si l'étape dispose d'au moins 5 billards 2m80 (SPEC §5, §8). */
+export function consolanteCheck(stage: Stage, settings: SeasonSettings): ConsolanteCheck {
+  const min = settings.consolanteMinSmallTables;
+  const small = stage.small;
+  const possible = small >= min;
+  const reason = possible
+    ? `${small} billards 2m80 pour un minimum de ${min} : la consolante peut avoir lieu.`
+    : `${small} billard${small > 1 ? "s" : ""} 2m80 pour un minimum de ${min} : pas de consolante sur cette étape.`;
+  return { possible, small, min, reason };
+}

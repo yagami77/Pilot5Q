@@ -1,6 +1,8 @@
 /** Routes de l'espace du responsable national (`/responsable/...`). */
 import { Navigate, Route } from "react-router";
 
+import { RequireResponsable } from "@/auth/guards";
+
 import { AdminLayout } from "./AdminLayout";
 import { AdminPrint } from "./AdminPrint";
 import { Calendar } from "./Calendar";
@@ -13,8 +15,24 @@ import { StagePage } from "./StagePage";
 
 export function adminRoutes() {
   return [
-    <Route key="print" path="/responsable/imprimer/:doc/:stageId?" element={<AdminPrint />} />,
-    <Route key="admin" path="/responsable" element={<AdminLayout />}>
+    <Route
+      key="print"
+      path="/responsable/imprimer/:doc/:stageId?"
+      element={
+        <RequireResponsable>
+          <AdminPrint />
+        </RequireResponsable>
+      }
+    />,
+    <Route
+      key="admin"
+      path="/responsable"
+      element={
+        <RequireResponsable>
+          <AdminLayout />
+        </RequireResponsable>
+      }
+    >
       <Route index element={<Dashboard />} />
       <Route path="calendrier" element={<Calendar />} />
       <Route path="clubs" element={<Clubs />} />
