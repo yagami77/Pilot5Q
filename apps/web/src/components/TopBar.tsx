@@ -1,10 +1,13 @@
 /** Barre haute : marque, tournoi, état d'enregistrement, annulation, utilisateur. */
-import { Home, Waypoints } from "lucide-react";
+import { Coins, Home, Info, Waypoints } from "lucide-react";
 import { Link, useLocation } from "react-router";
 
 import { ROLE_LABELS, useRole } from "@/admin/role";
 import { clock, dateRange, initials, plural } from "@/lib/format";
+import { dayStatuses } from "@/lib/tournament";
 import { useTournament } from "@/store/tournament";
+
+import { NotificationBell } from "./NotificationBell";
 
 import { Avatar, cx } from "./ui";
 import { UndoMenu } from "./UndoMenu";
@@ -38,7 +41,12 @@ export function TopBar() {
   const { state, savedAt, saving, events } = useTournament();
   const [role] = useRole();
   const location = useLocation();
-  const onSchema = location.pathname.endsWith("/tournoi/schema");
+  const satOpen = dayStatuses(state).samedi.unlocked;
+  const links = [
+    { to: "/tournoi/informations", label: "Informations", icon: Info },
+    ...(satOpen ? [{ to: "/tournoi/primes", label: "Primes", icon: Coins }] : []),
+    { to: "/tournoi/schema", label: "Schéma", icon: Waypoints },
+  ];
   const info = state.info;
   const lastEvent = events[events.length - 1];
   // Après rechargement, l'heure affichée est celle du dernier événement enregistré.
@@ -82,23 +90,33 @@ export function TopBar() {
         )}
         <div className="ml-auto flex items-center gap-2.5">
           {info ? (
-            <Link
-              to="/tournoi/schema"
-              aria-current={onSchema ? "page" : undefined}
-              className={cx(
-                "inline-flex items-center gap-1.5 rounded-[10px] border px-2.5 py-1.5 text-[12.5px] font-semibold transition-colors",
-                onSchema
-                  ? "bg-brand-soft text-brand-ink border-transparent"
-                  : "border-line-2 bg-surface hover:bg-brand-soft hover:text-brand-ink",
-              )}
-            >
-              <Waypoints className="size-3.5" aria-hidden="true" />
-              <span className="hidden sm:inline">Schéma</span>
-            </Link>
+            <nav className="flex items-center gap-1.5" aria-label="Pages du tournoi">
+              {links.map((l) => {
+                const current = location.pathname.endsWith(l.to);
+                return (
+                  <Link
+                    key={l.to}
+                    to={l.to}
+                    aria-current={current ? "page" : undefined}
+                    title={l.label}
+                    className={cx(
+                      "inline-flex items-center gap-1.5 rounded-[10px] border px-2.5 py-1.5 text-[12.5px] font-semibold transition-colors",
+                      current
+                        ? "bg-brand-soft text-brand-ink border-transparent"
+                        : "border-line-2 bg-surface hover:bg-brand-soft hover:text-brand-ink",
+                    )}
+                  >
+                    <l.icon className="size-3.5" aria-hidden="true" />
+                    <span className="hidden xl:inline">{l.label}</span>
+                  </Link>
+                );
+              })}
+              <NotificationBell />
+            </nav>
           ) : null}
           <span
             className="bg-surface-2 border-line text-ink-muted flex items-center gap-[7px] rounded-full border px-2.5 py-1.5 text-[12px]"
-            title={lastEvent ? `Dernier événement : ${lastEvent.type}` : undefined}
+            title={saving ? "Enregistrement…" : savedLabel}
           >
             <i
               className={cx(
@@ -107,7 +125,7 @@ export function TopBar() {
               )}
               aria-hidden="true"
             />
-            {saving ? "Enregistrement…" : savedLabel}
+            <span className="hidden 2xl:inline">{saving ? "Enregistrement…" : savedLabel}</span>
           </span>
           <UndoMenu />
           <Link

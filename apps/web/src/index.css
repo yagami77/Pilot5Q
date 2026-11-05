@@ -585,6 +585,11 @@
   color: #6b7480;
 }
 
+/* Bande tricolore dans un aperçu (email) */
+.tricolore-inline {
+  background: linear-gradient(90deg, #0e37a8 33.3%, #fff 33.3% 66.6%, #dc3f5a 66.6%);
+}
+
 /* Zone mise en évidence par un clic sur une tâche du jour */
 .zone-flash {
   animation: zone-flash 1.5s ease-out;

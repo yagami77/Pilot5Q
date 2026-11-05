@@ -15,7 +15,7 @@ const LABELS: Record<Day, string> = {
   dimanche: "Dimanche",
 };
 
-export function PhaseRail({ current }: { current: Day }) {
+export function PhaseRail({ current }: { current: Day | null }) {
   const { state } = useTournament();
   const navigate = useNavigate();
   const toast = useToast();

@@ -69,7 +69,7 @@ export function UndoMenu() {
         onClick={undoLast}
         disabled={!canUndo || !last}
         title={last ? `Annuler : ${lower(last.label)}` : "Rien à annuler"}
-        className="border-line-2 bg-surface enabled:hover:bg-brand-soft inline-flex max-w-[300px] items-center gap-1.5 rounded-l-[10px] border px-2.5 py-1.5 text-[12.5px] font-semibold transition-colors disabled:opacity-50"
+        className="border-line-2 bg-surface enabled:hover:bg-brand-soft inline-flex max-w-[280px] items-center gap-1.5 rounded-l-[10px] border px-2.5 py-1.5 text-[12.5px] font-semibold transition-colors disabled:opacity-50"
       >
         <Undo2 className="size-3.5 shrink-0" aria-hidden="true" />
         <span className="hidden md:inline">Annuler</span>

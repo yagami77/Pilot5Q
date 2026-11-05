@@ -13,9 +13,8 @@ import { SheetPages, barrageSheets, finalSheets, pairPages, pouleSheetPages } fr
 
 import { matchWinner } from "@/lib/engine";
 import { clubShort, euros, longDate, nice, shortName } from "@/lib/format";
-import { computePrizes } from "@/lib/prizes";
+import { progressivePrimes } from "@/lib/primes";
 import {
-  barragesDone,
   billardType,
   dayDate,
   distanceLabel,
@@ -562,50 +561,66 @@ function BracketTable({
 }
 
 function Primes({ state }: { state: TournamentState }) {
-  const p = computePrizes(state);
-  const block = (title: string, total: number, lines: typeof p.masters.lines) => (
-    <table className="mb-3">
-      <thead>
-        <tr>
-          <th colSpan={4}>
-            {title} · {euros(total)}
-          </th>
-        </tr>
-        <tr>
-          <th>Palier</th>
-          <th className="w-14">Nombre</th>
-          <th className="w-20">Par joueur</th>
-          <th>Bénéficiaires</th>
-        </tr>
-      </thead>
-      <tbody>
-        {lines.map((l) => (
-          <tr key={l.label}>
-            <td className="font-semibold">{l.label}</td>
-            <td className="text-center">{l.count}</td>
-            <td className="text-right font-mono">{euros(l.amount)}</td>
-            <td>{l.players.map(nice).join(", ")}</td>
+  const p = progressivePrimes(state);
+  const money = (n: number) =>
+    `${n.toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €`;
+  const block = (phase: "M" | "N", title: string) => {
+    const lines = p.lines.filter((l) => l.phase === phase);
+    const total = lines.reduce((t, l) => t + l.amount, 0);
+    return (
+      <table className="mb-3">
+        <thead>
+          <tr>
+            <th colSpan={6}>
+              {title} · {money(total)}
+            </th>
           </tr>
-        ))}
-      </tbody>
-    </table>
-  );
+          <tr>
+            <th>Palier</th>
+            <th>Bénéficiaire</th>
+            <th className="w-20 text-right">Montant</th>
+            <th className="w-24">Chèque n°</th>
+            <th className="w-10 text-center">Remis</th>
+            <th className="w-28">Signature</th>
+          </tr>
+        </thead>
+        <tbody>
+          {lines.map((l) => (
+            <tr key={l.key} className="h-7">
+              <td>
+                <b>{l.label}</b> <span className="text-[9px] text-[#5b6680]">{l.detail}</span>
+              </td>
+              <td className="font-semibold">{l.name ? nice(l.name) : ""}</td>
+              <td className="text-right font-mono">{money(l.amount)}</td>
+              <td />
+              <td className="text-center text-[13px]">{BOX}</td>
+              <td />
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    );
+  };
   return (
     <Page>
       <DocHeader
         state={state}
-        title="PRIMES"
-        subtitle={longDate(dayDate(state, "dimanche"), true)}
-        right={euros(p.cagnotte)}
+        title="PRIMES · PRÉPARATION DES CHÈQUES"
+        subtitle={`${longDate(dayDate(state, "samedi"), true)} → ${longDate(dayDate(state, "dimanche"), true)}`}
+        right={money(p.total)}
         rightSub="cagnotte"
       />
       <p className="mb-2">
-        Cagnotte : {state.rules.inscriptionFee} € × {p.payers} joueurs non juniors + {euros(p.ffb)}{" "}
-        FFB + {euros(p.club)} club = <b>{euros(p.cagnotte)}</b>. Masters 80 %, National 20 %.
+        Cagnotte : {state.rules.inscriptionFee} € × {p.players - p.juniors} joueurs non juniors +{" "}
+        {euros(p.ffb)} FFB + {euros(p.club)} club = <b>{money(p.total)}</b>. Masters 80 %, National
+        20 %. Les bénéficiaires encore inconnus à l'impression se complètent à la main.
       </p>
-      {block("Masters", p.masters.total, p.masters.lines)}
-      {block("National", p.national.total, p.national.lines)}
-      <Foot>Les primes des éliminés peuvent être réglées dès le samedi soir.</Foot>
+      {block("M", "Masters")}
+      {block("N", "National")}
+      <Foot>
+        Samedi : 3e et 4e des poules Masters, payables dès la fin de leur poule. Dimanche : après
+        chaque tour.
+      </Foot>
     </Page>
   );
 }
@@ -786,9 +801,9 @@ export const DOCS: DocDef[] = [
   },
   {
     id: "primes",
-    label: "Tableau des primes",
+    label: "Tableau des primes (préparation des chèques)",
     pages: () => 1,
-    available: (s) => s.players.length > 0 && barragesDone(s),
+    available: (s) => s.players.length > 0 && Boolean(s.closed.B),
     render: (s) => <Primes state={s} />,
   },
 ];
