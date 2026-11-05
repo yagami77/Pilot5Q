@@ -1,0 +1,196 @@
+/**
+ * Types de l'espace du responsable national : saison, clubs hôtes, calendrier, base joueurs,
+ * classement glissant et paramétrage des TN (SPEC §2, §7, §8).
+ *
+ * Les structures sont plates et identifiées par des clés simples (licence, id de club, id
+ * d'étape) pour se transposer telles quelles en tables d'une base relationnelle.
+ */
+import type { Rules } from "../types.js";
+
+/** Saison sportive, de l'automne à l'été : « 2026-2027 ». */
+export type SeasonId = string;
+
+/** Club hôte d'une étape. */
+export interface HostClub {
+  id: string;
+  name: string;
+  /** Numéro FFB du club (5 chiffres). */
+  ffbNumber: string;
+  address: string;
+  postcode: string;
+  city: string;
+  phone: string;
+  email: string;
+  lat: number | null;
+  lng: number | null;
+  /** Billards 3m10. */
+  big: number;
+  /** Billards 2m80 (ou 2m60). */
+  small: number;
+}
+
+/** Étape du calendrier : un TN (ou, à terme, une finale). */
+export interface Stage {
+  id: string;
+  season: SeasonId;
+  /** Numéro de l'étape dans la saison (TN 1 à 5). */
+  number: number;
+  kind: "TN" | "FINALE";
+  name: string;
+  clubId: string | null;
+  city: string;
+  /** Jours de compétition (AAAA-MM-JJ), vendredi → dimanche. */
+  start: string;
+  end: string;
+  /** Ouverture et fermeture des inscriptions (ISO 8601 avec heure). */
+  registrationOpen: string | null;
+  registrationClose: string | null;
+  registrationUrl: string;
+  /** Billards disponibles pour l'étape (par défaut ceux du club). */
+  big: number;
+  small: number;
+  /** Licence du directeur de jeu désigné pour le tournoi. */
+  djLicence: string | null;
+  /** Identifiant du journal du tournoi dans le cockpit, une fois ouvert pour le club hôte. */
+  tournamentId: string | null;
+  openedAt: string | null;
+  closedAt: string | null;
+}
+
+/** Joueur de la base historique (clé : licence). */
+export interface PlayerRecord {
+  licence: string;
+  name: string;
+  club: string;
+  /** Saison du dernier TN joué (null : jamais vu). */
+  lastSeason: SeasonId | null;
+  /** Place au classement glissant en cours (null : absent des 5 derniers TN). */
+  currentPlace: number | null;
+  /** Dernier classement connu : le classement en cours si actif, sinon celui à l'issue du dernier TN joué. */
+  lastPlace: number | null;
+  junior?: boolean;
+  email?: string;
+}
+
+/** Résultat d'un joueur à un TN, tel qu'il entre dans la fenêtre glissante. */
+export interface TnResult {
+  season: SeasonId;
+  tn: number;
+  /** Points du barème + décimale (0 pour un abandon). */
+  pts: number;
+  faits: number;
+  subis: number;
+}
+
+/** Fenêtre glissante d'un joueur : ses résultats sur les 5 derniers TN. */
+export interface RankingEntry {
+  licence: string;
+  name: string;
+  club: string;
+  results: TnResult[];
+}
+
+/** Ligne du classement glissant. */
+export interface RankingRow extends RankingEntry {
+  position: number;
+  /** Score : somme des 4 meilleurs résultats si 5 TN joués, somme simple sinon. */
+  pts: number;
+  /** Moyenne cumulée : points faits / points subis sur la fenêtre. */
+  moy: number;
+  /** Nombre de TN joués dans la fenêtre. */
+  count: number;
+}
+
+/** Points attribués à un joueur à l'issue d'un TN (entrée du classement glissant). */
+export interface TournamentAward {
+  name: string;
+  licence: string;
+  club: string;
+  /** Points du barème (0 pour un abandon hors consolante). */
+  points: number;
+  /** Décimale de départage : points de set / matchs joués / 100 (0 pour un abandon). */
+  decimal: number;
+  faits: number;
+  subis: number;
+  abandon: boolean;
+  /** Tableau d'origine des points. */
+  origin: "M" | "N" | "CLS" | "PREQ";
+}
+
+/** Résultat brut d'un joueur à un TN (placements + cumuls), avant application du barème. */
+export interface TournamentResult {
+  name: string;
+  licence?: string;
+  club?: string;
+  /** Tableau dans lequel le joueur a fini : Masters, National, ou hors tableaux (consolante / poules). */
+  table: "M" | "N" | "CLS";
+  /** Place dans ce tableau (1 = vainqueur ; consolante : 1 = vainqueur de la consolante). */
+  rank: number;
+  /** Rang dans la poule du vendredi (null pour un préqualifié Masters). */
+  preqPouleRank: number | null;
+  /** Points de set cumulés (vendredi, barrage, samedi, tableau ; hors consolante). */
+  setPoints: number;
+  /** Matchs joués (même périmètre). */
+  matches: number;
+  faits: number;
+  subis: number;
+  /** Phase de l'abandon, s'il y a lieu (un abandon en consolante ne retire pas les points). */
+  abandon?: string;
+}
+
+/** Paramétrage d'une saison (valeurs par défaut : SPEC §8 et outil de référence). */
+export interface SeasonSettings {
+  /** Billards minimum pour accueillir un TN, dont `minBigTables` de 3m10. */
+  minTables: number;
+  minBigTables: number;
+  /** Joueurs acceptés = billards × `playersPerTable` + `extraPlayers`, plafonné à `maxPlayers`. */
+  playersPerTable: number;
+  extraPlayers: number;
+  maxPlayers: number;
+  /** Liste d'attente : priorité aux `waitlistPriority` premiers du classement, puis ordre d'inscription. */
+  waitlistPriority: number;
+  /** Consolante seulement si au moins `consolanteMinSmallTables` billards 2m80. */
+  consolanteMinSmallTables: number;
+  /** Droit d'inscription (U21 exemptés). */
+  inscriptionFee: number;
+  ffbShare: number;
+  clubShare: number;
+  /** Parts des primes en pourcentage de la cagnotte (Masters puis National). */
+  prizesMasters: { label: string; pct: number; count: number }[];
+  prizesNational: { label: string; pct: number; count: number }[];
+  /** Horaires de convocation. */
+  convocationFriday: string;
+  convocationWeekend: string;
+  /** Samedi et dimanche quand le club n'a que 3 billards 3m10. */
+  convocationWeekendThreeBig: string;
+  /** Distances par phase (SPEC §8). */
+  distances: Rules["distances"];
+  /** Canevas du mail de convocation (variables entre accolades doubles). */
+  mailTemplate: string;
+}
+
+/** Inscription d'un joueur à une étape (ligne du CSV fédéral enrichie). */
+export interface Registration {
+  licence: string;
+  name: string;
+  club: string;
+  email: string;
+  /** Rang d'inscription (ordre chronologique du CSV). */
+  order: number;
+  registeredAt: string;
+  junior: boolean;
+  /** Forfait déclaré avant le tirage. */
+  forfait: boolean;
+}
+
+/** État des inscriptions d'une étape (base d'un futur `registrations` en base de données). */
+export interface StageRegistrations {
+  stageId: string;
+  importedAt: string | null;
+  fileName: string;
+  registrations: Registration[];
+}
+
+/** Statut d'une étape, dérivé des dates et de l'ouverture/clôture du tournoi. */
+export type StageStatus =
+  "a-venir" | "inscriptions-ouvertes" | "inscriptions-closes" | "ouvert-dj" | "cloture";

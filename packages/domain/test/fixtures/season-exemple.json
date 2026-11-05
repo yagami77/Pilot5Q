@@ -1,0 +1,9812 @@
+{
+ "_note": "Saison d'exemple (réforme 2026-2027) : calendrier réel (villes, dates, billards), clubs, joueurs et licences fictifs, classement glissant reconstitué avant le TN 2 et classement attendu après le TN 2 (source : classeur de référence du responsable national).",
+ "season": "2026-2027",
+ "clubs": [
+  {
+   "id": "club-13110",
+   "name": "AS Billard Brest",
+   "ffbNumber": "13110",
+   "address": "Salle de billard",
+   "postcode": "59112",
+   "city": "Annoeullin",
+   "phone": "",
+   "email": "",
+   "lat": 50.5269,
+   "lng": 2.9294,
+   "big": 3,
+   "small": 6
+  },
+  {
+   "id": "club-9010",
+   "name": "BC Mâcon",
+   "ffbNumber": "09010",
+   "address": "Salle de billard",
+   "postcode": "95100",
+   "city": "Argenteuil",
+   "phone": "",
+   "email": "",
+   "lat": 48.9525,
+   "lng": 2.2189,
+   "big": 4,
+   "small": 8
+  },
+  {
+   "id": "club-15047",
+   "name": "BC Laval",
+   "ffbNumber": "15047",
+   "address": "Salle de billard",
+   "postcode": "",
+   "city": "Blois",
+   "phone": "",
+   "email": "",
+   "lat": null,
+   "lng": null,
+   "big": 4,
+   "small": 7
+  },
+  {
+   "id": "club-13364",
+   "name": "Académie de billard de Nice",
+   "ffbNumber": "13364",
+   "address": "Salle de billard",
+   "postcode": "62100",
+   "city": "Calais",
+   "phone": "",
+   "email": "",
+   "lat": 50.9567,
+   "lng": 1.8889,
+   "big": 3,
+   "small": 5
+  },
+  {
+   "id": "club-2011",
+   "name": "BC Quimper",
+   "ffbNumber": "02011",
+   "address": "Salle de billard",
+   "postcode": "56850",
+   "city": "Caudan",
+   "phone": "",
+   "email": "",
+   "lat": 47.7857,
+   "lng": -3.3641,
+   "big": 0,
+   "small": 0
+  },
+  {
+   "id": "club-4007",
+   "name": "BC Colmar",
+   "ffbNumber": "04007",
+   "address": "Salle de billard",
+   "postcode": "33610",
+   "city": "Cestas",
+   "phone": "",
+   "email": "",
+   "lat": 44.7423,
+   "lng": -0.6853,
+   "big": 0,
+   "small": 0
+  },
+  {
+   "id": "club-9068",
+   "name": "BC Saint-Omer",
+   "ffbNumber": "09068",
+   "address": "Salle de billard",
+   "postcode": "92320",
+   "city": "Chatillon",
+   "phone": "",
+   "email": "",
+   "lat": 48.8095,
+   "lng": 2.2992,
+   "big": 0,
+   "small": 0
+  },
+  {
+   "id": "club-12035",
+   "name": "BC Évreux",
+   "ffbNumber": "12035",
+   "address": "Salle de billard",
+   "postcode": "69130",
+   "city": "Ecully",
+   "phone": "",
+   "email": "",
+   "lat": 45.7858,
+   "lng": 4.7821,
+   "big": 3,
+   "small": 7
+  },
+  {
+   "id": "club-4038",
+   "name": "BC Chambéry",
+   "ffbNumber": "04038",
+   "address": "Salle de billard",
+   "postcode": "33170",
+   "city": "Gradignan",
+   "phone": "",
+   "email": "",
+   "lat": 44.7779,
+   "lng": -0.5888,
+   "big": 0,
+   "small": 0
+  },
+  {
+   "id": "club-13355",
+   "name": "AS Billard Tours",
+   "ffbNumber": "13355",
+   "address": "Salle de billard",
+   "postcode": "59820",
+   "city": "Gravelines",
+   "phone": "",
+   "email": "",
+   "lat": 50.9798,
+   "lng": 2.1235,
+   "big": 6,
+   "small": 6
+  },
+  {
+   "id": "club-2009",
+   "name": "BC Poitiers",
+   "ffbNumber": "02009",
+   "address": "Salle de billard",
+   "postcode": "22300",
+   "city": "Lannion",
+   "phone": "",
+   "email": "",
+   "lat": 48.7577,
+   "lng": -3.4624,
+   "big": 0,
+   "small": 0
+  },
+  {
+   "id": "club-11027",
+   "name": "Académie de billard de Nancy",
+   "ffbNumber": "11027",
+   "address": "Salle de billard",
+   "postcode": "54520",
+   "city": "Laxou",
+   "phone": "",
+   "email": "",
+   "lat": 48.7,
+   "lng": 6.1318,
+   "big": 4,
+   "small": 4
+  },
+  {
+   "id": "club-10002",
+   "name": "Académie de billard de Boulogne",
+   "ffbNumber": "10002",
+   "address": "Salle de billard",
+   "postcode": "34400",
+   "city": "Lunel",
+   "phone": "",
+   "email": "",
+   "lat": 43.6772,
+   "lng": 4.1408,
+   "big": 4,
+   "small": 4
+  },
+  {
+   "id": "club-12003",
+   "name": "Cercle de billard de Lille",
+   "ffbNumber": "12003",
+   "address": "Salle de billard",
+   "postcode": "69001",
+   "city": "Lyon",
+   "phone": "",
+   "email": "",
+   "lat": 45.7733,
+   "lng": 4.8297,
+   "big": 0,
+   "small": 0
+  },
+  {
+   "id": "club-22053",
+   "name": "BC Melun",
+   "ffbNumber": "22053",
+   "address": "Salle de billard",
+   "postcode": "71000",
+   "city": "Macon",
+   "phone": "",
+   "email": "",
+   "lat": 46.3262,
+   "lng": 4.8269,
+   "big": 0,
+   "small": 0
+  },
+  {
+   "id": "club-9009",
+   "name": "BC Amiens",
+   "ffbNumber": "09009",
+   "address": "Salle de billard",
+   "postcode": "91420",
+   "city": "Morangis",
+   "phone": "",
+   "email": "",
+   "lat": 48.7059,
+   "lng": 2.3388,
+   "big": 4,
+   "small": 4
+  },
+  {
+   "id": "club-5043",
+   "name": "BC Bourges",
+   "ffbNumber": "05043",
+   "address": "Salle de billard",
+   "postcode": "51100",
+   "city": "Reims",
+   "phone": "",
+   "email": "",
+   "lat": 49.2495,
+   "lng": 4.0341,
+   "big": 3,
+   "small": 8
+  },
+  {
+   "id": "club-12031",
+   "name": "BC Arras",
+   "ffbNumber": "12031",
+   "address": "Salle de billard",
+   "postcode": "26100",
+   "city": "Romans Sur Isere",
+   "phone": "",
+   "email": "",
+   "lat": 45.0496,
+   "lng": 5.0503,
+   "big": 4,
+   "small": 4
+  },
+  {
+   "id": "club-13240",
+   "name": "AS Billard Cambrai",
+   "ffbNumber": "13240",
+   "address": "Salle de billard",
+   "postcode": "59790",
+   "city": "Ronchin",
+   "phone": "",
+   "email": "",
+   "lat": 50.6059,
+   "lng": 3.0787,
+   "big": 4,
+   "small": 7
+  },
+  {
+   "id": "club-14025",
+   "name": "BC Saint-Lô",
+   "ffbNumber": "14025",
+   "address": "Salle de billard",
+   "postcode": "76100",
+   "city": "Rouen",
+   "phone": "",
+   "email": "",
+   "lat": 49.434,
+   "lng": 1.0776,
+   "big": 4,
+   "small": 4
+  },
+  {
+   "id": "club-9024",
+   "name": "Académie de billard de Metz",
+   "ffbNumber": "09024",
+   "address": "Salle de billard",
+   "postcode": "94100",
+   "city": "Saint-Maur",
+   "phone": "",
+   "email": "",
+   "lat": 48.8016,
+   "lng": 2.4858,
+   "big": 5,
+   "small": 10
+  },
+  {
+   "id": "club-17010",
+   "name": "BC Nevers",
+   "ffbNumber": "17010",
+   "address": "Salle de billard",
+   "postcode": "02100",
+   "city": "Saint-Quentin",
+   "phone": "",
+   "email": "",
+   "lat": 49.8531,
+   "lng": 3.2805,
+   "big": 3,
+   "small": 5
+  },
+  {
+   "id": "club-19061",
+   "name": "BC Brive",
+   "ffbNumber": "19061",
+   "address": "Salle de billard",
+   "postcode": "83700",
+   "city": "Saint-Raphael",
+   "phone": "",
+   "email": "",
+   "lat": 43.4216,
+   "lng": 6.7682,
+   "big": 4,
+   "small": 4
+  },
+  {
+   "id": "club-1002",
+   "name": "BC Saintes",
+   "ffbNumber": "01002",
+   "address": "Salle de billard",
+   "postcode": "67300",
+   "city": "Schiltigheim",
+   "phone": "",
+   "email": "",
+   "lat": 48.6122,
+   "lng": 7.729,
+   "big": 4,
+   "small": 6
+  },
+  {
+   "id": "club-17011",
+   "name": "Cercle de billard de Valenciennes",
+   "ffbNumber": "17011",
+   "address": "Salle de billard",
+   "postcode": "02200",
+   "city": "Soissons",
+   "phone": "",
+   "email": "",
+   "lat": 49.3766,
+   "lng": 3.3234,
+   "big": 3,
+   "small": 6
+  }
+ ],
+ "calendar": [
+  {
+   "number": 1,
+   "name": "TN 1",
+   "clubId": "club-19061",
+   "city": "Saint-Raphael",
+   "start": "2026-10-04",
+   "end": "2026-10-06",
+   "big": 4,
+   "small": 4
+  },
+  {
+   "number": 2,
+   "name": "TN 2",
+   "clubId": "club-13240",
+   "city": "Ronchin",
+   "start": "2026-10-30",
+   "end": "2026-11-01",
+   "big": 4,
+   "small": 7
+  },
+  {
+   "number": 3,
+   "name": "TN 3",
+   "clubId": "club-11027",
+   "city": "Laxou",
+   "start": "2027-01-15",
+   "end": "2027-01-17",
+   "big": 4,
+   "small": 4
+  },
+  {
+   "number": 4,
+   "name": "TN 4",
+   "clubId": "club-17011",
+   "city": "Soissons",
+   "start": "2027-02-26",
+   "end": "2027-02-28",
+   "big": 3,
+   "small": 6
+  },
+  {
+   "number": 5,
+   "name": "TN 5",
+   "clubId": "club-13355",
+   "city": "Gravelines",
+   "start": "2027-04-09",
+   "end": "2027-04-11",
+   "big": 6,
+   "small": 6
+  }
+ ],
+ "players": [
+  {
+   "licence": "240723Z",
+   "name": "GUILLET HERVÉ",
+   "club": "Cercle de billard de Lille",
+   "lastSeason": "2022-2023",
+   "currentPlace": null,
+   "lastPlace": 87,
+   "posThis": null,
+   "posLast": 87
+  },
+  {
+   "licence": "250851X",
+   "name": "DIALLO LIONEL",
+   "club": "Cercle de billard de Calais",
+   "lastSeason": "2024-2025",
+   "currentPlace": null,
+   "lastPlace": 21,
+   "posThis": null,
+   "posLast": 21
+  },
+  {
+   "licence": "105343N",
+   "name": "CARLIER SAMIR",
+   "club": "BC Limoges",
+   "lastSeason": "2026-2027",
+   "currentPlace": 34,
+   "lastPlace": 34,
+   "posThis": 34,
+   "posLast": 80
+  },
+  {
+   "licence": "202532G",
+   "name": "AUBERT VICTOR",
+   "club": "BC Melun",
+   "lastSeason": "2021-2022",
+   "currentPlace": null,
+   "lastPlace": 34,
+   "posThis": 34,
+   "posLast": 34
+  },
+  {
+   "licence": "202743N",
+   "name": "BRIAND LUCAS",
+   "club": "BC Amiens",
+   "lastSeason": "2025-2026",
+   "currentPlace": null,
+   "lastPlace": 98,
+   "posThis": null,
+   "posLast": 98
+  },
+  {
+   "licence": "202954U",
+   "name": "POULAIN ISABELLE",
+   "club": "BC Beauvais",
+   "lastSeason": "2021-2022",
+   "currentPlace": null,
+   "lastPlace": 110,
+   "posThis": null,
+   "posLast": 110
+  },
+  {
+   "licence": "240090E",
+   "name": "LEROUX LÉA",
+   "club": "BC Rodez",
+   "lastSeason": "2021-2022",
+   "currentPlace": null,
+   "lastPlace": 76,
+   "posThis": 76,
+   "posLast": 76
+  },
+  {
+   "licence": "225320I",
+   "name": "GUICHARD GABRIEL",
+   "club": "BC Amiens",
+   "lastSeason": "2024-2025",
+   "currentPlace": null,
+   "lastPlace": 93,
+   "posThis": null,
+   "posLast": 93
+  },
+  {
+   "licence": "103288Y",
+   "name": "BERTRAND DIDIER",
+   "club": "Cercle de billard de Strasbourg",
+   "lastSeason": "2026-2027",
+   "currentPlace": 18,
+   "lastPlace": 18,
+   "posThis": 18,
+   "posLast": null
+  },
+  {
+   "licence": "107946G",
+   "name": "BOYER NOÉ",
+   "club": "Académie de billard de Nice",
+   "lastSeason": "2026-2027",
+   "currentPlace": 111,
+   "lastPlace": 111,
+   "posThis": 111,
+   "posLast": null
+  },
+  {
+   "licence": "249796O",
+   "name": "ROUSSEAU FRÉDÉRIC",
+   "club": "BC Vannes",
+   "lastSeason": "2025-2026",
+   "currentPlace": 89,
+   "lastPlace": 89,
+   "posThis": 89,
+   "posLast": 108
+  },
+  {
+   "licence": "248108K",
+   "name": "GARCIA JÉRÔME",
+   "club": "BC Arras",
+   "lastSeason": "2024-2025",
+   "currentPlace": null,
+   "lastPlace": 71,
+   "posThis": null,
+   "posLast": 71
+  },
+  {
+   "licence": "246631N",
+   "name": "LEFEBVRE YVES",
+   "club": "BC Arras",
+   "lastSeason": "2025-2026",
+   "currentPlace": null,
+   "lastPlace": 21,
+   "posThis": null,
+   "posLast": 21
+  },
+  {
+   "licence": "217724Q",
+   "name": "POIRIER MARCEL",
+   "club": "BC Guéret",
+   "lastSeason": "2022-2023",
+   "currentPlace": null,
+   "lastPlace": 75,
+   "posThis": null,
+   "posLast": 75
+  },
+  {
+   "licence": "224476G",
+   "name": "DUVAL LILIAN",
+   "club": "Cercle de billard de Strasbourg",
+   "lastSeason": "2026-2027",
+   "currentPlace": 124,
+   "lastPlace": 124,
+   "posThis": 126,
+   "posLast": 86
+  },
+  {
+   "licence": "233760C",
+   "name": "JEAN THOMAS",
+   "club": "BC Quimper",
+   "lastSeason": "2019-2020",
+   "currentPlace": null,
+   "lastPlace": 98,
+   "posThis": 98,
+   "posLast": 98
+  },
+  {
+   "licence": "252117N",
+   "name": "MARCHAND JEAN",
+   "club": "BC Arras",
+   "lastSeason": "2026-2027",
+   "currentPlace": 99,
+   "lastPlace": 99,
+   "posThis": 85,
+   "posLast": null
+  },
+  {
+   "licence": "221311F",
+   "name": "LAPORTE ÉMILIE",
+   "club": "Cercle de billard de Besançon",
+   "lastSeason": "2021-2022",
+   "currentPlace": null,
+   "lastPlace": 89,
+   "posThis": 89,
+   "posLast": 89
+  },
+  {
+   "licence": "215614Y",
+   "name": "CHAUVEAU ISABELLE",
+   "club": "BC Valence",
+   "lastSeason": "2021-2022",
+   "currentPlace": null,
+   "lastPlace": 26,
+   "posThis": 26,
+   "posLast": 26
+  },
+  {
+   "licence": "106302U",
+   "name": "HENRY GUILLAUME",
+   "club": "Académie de billard de Laon",
+   "lastSeason": "2026-2027",
+   "currentPlace": 47,
+   "lastPlace": 47,
+   "posThis": 47,
+   "posLast": 82
+  },
+  {
+   "licence": "208862I",
+   "name": "MARCHAL YVES",
+   "club": "BC Arras",
+   "lastSeason": "2022-2023",
+   "currentPlace": null,
+   "lastPlace": 114,
+   "posThis": null,
+   "posLast": 114
+  },
+  {
+   "licence": "234182Q",
+   "name": "MAILLARD DAVID",
+   "club": "BC Vichy",
+   "lastSeason": "2021-2022",
+   "currentPlace": null,
+   "lastPlace": 68,
+   "posThis": 68,
+   "posLast": 68
+  },
+  {
+   "licence": "105206M",
+   "name": "BAILLY PATRICK",
+   "club": "BC Amiens",
+   "lastSeason": "2026-2027",
+   "currentPlace": 46,
+   "lastPlace": 46,
+   "posThis": 46,
+   "posLast": null
+  },
+  {
+   "licence": "212449X",
+   "name": "FRANCOIS NATHAN",
+   "club": "BC Sens",
+   "lastSeason": "2024-2025",
+   "currentPlace": null,
+   "lastPlace": 84,
+   "posThis": null,
+   "posLast": 84
+  },
+  {
+   "licence": "235026S",
+   "name": "SCHNEIDER ANAÏS",
+   "club": "BC Chartres",
+   "lastSeason": "2012-2013",
+   "currentPlace": null,
+   "lastPlace": 97,
+   "posThis": 98,
+   "posLast": 97
+  },
+  {
+   "licence": "240301L",
+   "name": "CLEMENT OLIVIER",
+   "club": "BC Lisieux",
+   "lastSeason": "2023-2024",
+   "currentPlace": null,
+   "lastPlace": 48,
+   "posThis": null,
+   "posLast": 48
+  },
+  {
+   "licence": "107124A",
+   "name": "BRUN ERWAN",
+   "club": "BC Rennes",
+   "lastSeason": "2026-2027",
+   "currentPlace": 82,
+   "lastPlace": 82,
+   "posThis": 82,
+   "posLast": 66
+  },
+  {
+   "licence": "203165B",
+   "name": "VIDAL CAMILLE",
+   "club": "Académie de billard de Metz",
+   "lastSeason": "2025-2026",
+   "currentPlace": null,
+   "lastPlace": 82,
+   "posThis": null,
+   "posLast": 82
+  },
+  {
+   "licence": "230384U",
+   "name": "DIALLO SARAH",
+   "club": "AS Billard Cambrai",
+   "lastSeason": "2023-2024",
+   "currentPlace": null,
+   "lastPlace": 66,
+   "posThis": null,
+   "posLast": 66
+  },
+  {
+   "licence": "248530Y",
+   "name": "RENARD FRANÇOIS",
+   "club": "AS Billard Douai",
+   "lastSeason": "2024-2025",
+   "currentPlace": null,
+   "lastPlace": 69,
+   "posThis": null,
+   "posLast": 69
+  },
+  {
+   "licence": "203376I",
+   "name": "GERARD MARC",
+   "club": "BC Bayonne",
+   "lastSeason": "2025-2026",
+   "currentPlace": null,
+   "lastPlace": 86,
+   "posThis": null,
+   "posLast": 86
+  },
+  {
+   "licence": "202321Z",
+   "name": "BRUNET GILLES",
+   "club": "BC Chartres",
+   "lastSeason": "2025-2026",
+   "currentPlace": 71,
+   "lastPlace": 71,
+   "posThis": 72,
+   "posLast": null
+  },
+  {
+   "licence": "109864U",
+   "name": "ARNAUD CLÉMENT",
+   "club": "Cercle de billard de Chartres",
+   "lastSeason": "2026-2027",
+   "currentPlace": 113,
+   "lastPlace": 113,
+   "posThis": 113,
+   "posLast": null
+  },
+  {
+   "licence": "101370K",
+   "name": "LAMY VINCENT",
+   "club": "Académie de billard de Lyon",
+   "lastSeason": "2026-2027",
+   "currentPlace": 10,
+   "lastPlace": 10,
+   "posThis": 10,
+   "posLast": 22
+  },
+  {
+   "licence": "104658I",
+   "name": "MICHEL DAMIEN",
+   "club": "Académie de billard de Le Mans",
+   "lastSeason": "2026-2027",
+   "currentPlace": 30,
+   "lastPlace": 30,
+   "posThis": 30,
+   "posLast": 100
+  },
+  {
+   "licence": "202110S",
+   "name": "LAINE ANAÏS",
+   "club": "BC Rennes",
+   "lastSeason": "2026-2027",
+   "currentPlace": 87,
+   "lastPlace": 87,
+   "posThis": 70,
+   "posLast": null
+  },
+  {
+   "licence": "103973D",
+   "name": "LUCAS NICOLAS",
+   "club": "AS Billard Montpellier",
+   "lastSeason": "2026-2027",
+   "currentPlace": 40,
+   "lastPlace": 40,
+   "posThis": 40,
+   "posLast": 83
+  },
+  {
+   "licence": "228696Q",
+   "name": "LEMOINE RÉMI",
+   "club": "BC Gap",
+   "lastSeason": "2016-2017",
+   "currentPlace": null,
+   "lastPlace": 100,
+   "posThis": 100,
+   "posLast": 100
+  },
+  {
+   "licence": "217091V",
+   "name": "BIGOT JULES",
+   "club": "BC Belfort",
+   "lastSeason": "2019-2020",
+   "currentPlace": null,
+   "lastPlace": 77,
+   "posThis": 78,
+   "posLast": 77
+  },
+  {
+   "licence": "215825F",
+   "name": "GAUTIER FRANÇOISE",
+   "club": "BC Annecy",
+   "lastSeason": "2019-2020",
+   "currentPlace": null,
+   "lastPlace": 87,
+   "posThis": 88,
+   "posLast": 87
+  },
+  {
+   "licence": "104932K",
+   "name": "KLEIN ÉMILIE",
+   "club": "BC Amiens",
+   "lastSeason": "2026-2027",
+   "currentPlace": 31,
+   "lastPlace": 31,
+   "posThis": 31,
+   "posLast": 38
+  },
+  {
+   "licence": "247264I",
+   "name": "HAMON SERGE",
+   "club": "BC Beauvais",
+   "lastSeason": "2023-2024",
+   "currentPlace": null,
+   "lastPlace": 112,
+   "posThis": null,
+   "posLast": 112
+  },
+  {
+   "licence": "219412U",
+   "name": "MAHE GILLES",
+   "club": "Académie de billard de Nice",
+   "lastSeason": "2025-2026",
+   "currentPlace": 118,
+   "lastPlace": 118,
+   "posThis": 116,
+   "posLast": null
+  },
+  {
+   "licence": "243888A",
+   "name": "MULLER ÉLISE",
+   "club": "BC Pau",
+   "lastSeason": "2024-2025",
+   "currentPlace": null,
+   "lastPlace": 93,
+   "posThis": null,
+   "posLast": 93
+  },
+  {
+   "licence": "108220I",
+   "name": "LEFEVRE BENOÎT",
+   "club": "AS Billard Douai",
+   "lastSeason": "2026-2027",
+   "currentPlace": 86,
+   "lastPlace": 86,
+   "posThis": 86,
+   "posLast": null
+  },
+  {
+   "licence": "221733T",
+   "name": "MORIN LUDOVIC",
+   "club": "BC Montauban",
+   "lastSeason": "2017-2018",
+   "currentPlace": null,
+   "lastPlace": 56,
+   "posThis": 56,
+   "posLast": 56
+  },
+  {
+   "licence": "100822G",
+   "name": "COLLET OLIVIER",
+   "club": "Académie de billard de Nancy",
+   "lastSeason": "2026-2027",
+   "currentPlace": 8,
+   "lastPlace": 8,
+   "posThis": 8,
+   "posLast": 2
+  },
+  {
+   "licence": "241356U",
+   "name": "MORIN LOUIS",
+   "club": "Académie de billard de Nancy",
+   "lastSeason": "2017-2018",
+   "currentPlace": null,
+   "lastPlace": 89,
+   "posThis": 90,
+   "posLast": 89
+  },
+  {
+   "licence": "242622K",
+   "name": "CARON ENZO",
+   "club": "BC Castres",
+   "lastSeason": "2021-2022",
+   "currentPlace": null,
+   "lastPlace": 79,
+   "posThis": 79,
+   "posLast": 79
+  },
+  {
+   "licence": "200633V",
+   "name": "SCHNEIDER ALEXANDRE",
+   "club": "BC Tarbes",
+   "lastSeason": "2017-2018",
+   "currentPlace": null,
+   "lastPlace": 79,
+   "posThis": 80,
+   "posLast": 79
+  },
+  {
+   "licence": "210761T",
+   "name": "BLANCHARD XAVIER",
+   "club": "AS Billard Brest",
+   "lastSeason": "2018-2019",
+   "currentPlace": null,
+   "lastPlace": 101,
+   "posThis": 102,
+   "posLast": 101
+  },
+  {
+   "licence": "249374A",
+   "name": "GERARD GABRIEL",
+   "club": "BC Laval",
+   "lastSeason": "2023-2024",
+   "currentPlace": null,
+   "lastPlace": 120,
+   "posThis": null,
+   "posLast": 120
+  },
+  {
+   "licence": "227008M",
+   "name": "WEBER CHRISTINE",
+   "club": "BC Compiègne",
+   "lastSeason": "2016-2017",
+   "currentPlace": null,
+   "lastPlace": 103,
+   "posThis": 104,
+   "posLast": 103
+  },
+  {
+   "licence": "232705T",
+   "name": "MOULIN ARNAUD",
+   "club": "BC Beauvais",
+   "lastSeason": "2025-2026",
+   "currentPlace": 85,
+   "lastPlace": 85,
+   "posThis": 78,
+   "posLast": 93
+  },
+  {
+   "licence": "215192K",
+   "name": "POIRIER YANNICK",
+   "club": "BC Grenoble",
+   "lastSeason": "2024-2025",
+   "currentPlace": null,
+   "lastPlace": 73,
+   "posThis": null,
+   "posLast": 73
+  },
+  {
+   "licence": "207174E",
+   "name": "BRUNET JOËL",
+   "club": "BC Laval",
+   "lastSeason": "2023-2024",
+   "currentPlace": null,
+   "lastPlace": 96,
+   "posThis": null,
+   "posLast": 96
+  },
+  {
+   "licence": "210972A",
+   "name": "DENIS CÉDRIC",
+   "club": "AS Billard Brest",
+   "lastSeason": "2022-2023",
+   "currentPlace": null,
+   "lastPlace": 111,
+   "posThis": null,
+   "posLast": 111
+  },
+  {
+   "licence": "223210Q",
+   "name": "DANIEL FRANÇOISE",
+   "club": "BC Cholet",
+   "lastSeason": "2024-2025",
+   "currentPlace": null,
+   "lastPlace": 81,
+   "posThis": null,
+   "posLast": 81
+  },
+  {
+   "licence": "227219T",
+   "name": "FAURE LOÏC",
+   "club": "Académie de billard de Metz",
+   "lastSeason": "2025-2026",
+   "currentPlace": null,
+   "lastPlace": 135,
+   "posThis": null,
+   "posLast": 135
+  },
+  {
+   "licence": "239879X",
+   "name": "ARNAUD PAULINE",
+   "club": "Académie de billard de Lyon",
+   "lastSeason": "2024-2025",
+   "currentPlace": null,
+   "lastPlace": 34,
+   "posThis": null,
+   "posLast": 34
+  },
+  {
+   "licence": "228274C",
+   "name": "NOEL RÉMI",
+   "club": "BC Brive",
+   "lastSeason": "2026-2027",
+   "currentPlace": 116,
+   "lastPlace": 116,
+   "posThis": 118,
+   "posLast": 49
+  },
+  {
+   "licence": "248319R",
+   "name": "REY JULIE",
+   "club": "AS Billard Reims",
+   "lastSeason": "2023-2024",
+   "currentPlace": null,
+   "lastPlace": 117,
+   "posThis": null,
+   "posLast": 117
+  },
+  {
+   "licence": "212871L",
+   "name": "CARPENTIER NATHALIE",
+   "club": "BC Saint-Lô",
+   "lastSeason": "2021-2022",
+   "currentPlace": null,
+   "lastPlace": 61,
+   "posThis": 61,
+   "posLast": 61
+  },
+  {
+   "licence": "100137B",
+   "name": "BARRE PATRICK",
+   "club": "Cercle de billard de Lille",
+   "lastSeason": "2026-2027",
+   "currentPlace": 1,
+   "lastPlace": 1,
+   "posThis": 1,
+   "posLast": null
+  },
+  {
+   "licence": "245365X",
+   "name": "CARON ARNAUD",
+   "club": "BC Nevers",
+   "lastSeason": "2019-2020",
+   "currentPlace": null,
+   "lastPlace": 110,
+   "posThis": 110,
+   "posLast": 110
+  },
+  {
+   "licence": "105480O",
+   "name": "BRETON CLAIRE",
+   "club": "Cercle de billard de Clermont",
+   "lastSeason": "2026-2027",
+   "currentPlace": 51,
+   "lastPlace": 51,
+   "posThis": 51,
+   "posLast": null
+  },
+  {
+   "licence": "201688E",
+   "name": "BRUN BERNARD",
+   "club": "BC Chartres",
+   "lastSeason": "2025-2026",
+   "currentPlace": 101,
+   "lastPlace": 101,
+   "posThis": 99,
+   "posLast": null
+  },
+  {
+   "licence": "238402A",
+   "name": "LEROUX PIERRE",
+   "club": "BC Albi",
+   "lastSeason": "2019-2020",
+   "currentPlace": null,
+   "lastPlace": 108,
+   "posThis": 108,
+   "posLast": 108
+  },
+  {
+   "licence": "208440U",
+   "name": "COLIN JEAN",
+   "club": "Cercle de billard de Lille",
+   "lastSeason": "2019-2020",
+   "currentPlace": null,
+   "lastPlace": 68,
+   "posThis": 68,
+   "posLast": 68
+  },
+  {
+   "licence": "101096I",
+   "name": "HUBERT MICHEL",
+   "club": "Académie de billard de Nancy",
+   "lastSeason": "2026-2027",
+   "currentPlace": 6,
+   "lastPlace": 6,
+   "posThis": 6,
+   "posLast": 4
+  },
+  {
+   "licence": "212660E",
+   "name": "HUET STÉPHANE",
+   "club": "BC Saint-Lô",
+   "lastSeason": "2022-2023",
+   "currentPlace": null,
+   "lastPlace": 54,
+   "posThis": null,
+   "posLast": 54
+  },
+  {
+   "licence": "235448G",
+   "name": "LEGER MONIQUE",
+   "club": "BC Brive",
+   "lastSeason": "2017-2018",
+   "currentPlace": null,
+   "lastPlace": 93,
+   "posThis": 94,
+   "posLast": 93
+  },
+  {
+   "licence": "226586Y",
+   "name": "JACQUET CHLOÉ",
+   "club": "AS Billard Cambrai",
+   "lastSeason": "2024-2025",
+   "currentPlace": null,
+   "lastPlace": 105,
+   "posThis": null,
+   "posLast": 105
+  },
+  {
+   "licence": "229962G",
+   "name": "MULLER LUDOVIC",
+   "club": "Académie de billard de Le Mans",
+   "lastSeason": "2025-2026",
+   "currentPlace": 42,
+   "lastPlace": 42,
+   "posThis": 33,
+   "posLast": 114
+  },
+  {
+   "licence": "234393X",
+   "name": "PHILIPPE ALEXANDRE",
+   "club": "BC Bergerac",
+   "lastSeason": "2017-2018",
+   "currentPlace": null,
+   "lastPlace": 107,
+   "posThis": 108,
+   "posLast": 107
+  },
+  {
+   "licence": "225109B",
+   "name": "LANGLOIS PHILIPPE",
+   "club": "AS Billard Angers",
+   "lastSeason": "2021-2022",
+   "currentPlace": null,
+   "lastPlace": 65,
+   "posThis": 65,
+   "posLast": 65
+  },
+  {
+   "licence": "242200W",
+   "name": "GAUTHIER FRANCK",
+   "club": "BC Nevers",
+   "lastSeason": "2019-2020",
+   "currentPlace": null,
+   "lastPlace": 96,
+   "posThis": 96,
+   "posLast": 96
+  },
+  {
+   "licence": "108083H",
+   "name": "BOYER MANON",
+   "club": "AS Billard Reims",
+   "lastSeason": "2026-2027",
+   "currentPlace": 90,
+   "lastPlace": 90,
+   "posThis": 90,
+   "posLast": null
+  },
+  {
+   "licence": "247053B",
+   "name": "LECLERC FABRICE",
+   "club": "AS Billard Reims",
+   "lastSeason": "2025-2026",
+   "currentPlace": 103,
+   "lastPlace": 103,
+   "posThis": 99,
+   "posLast": 61
+  },
+  {
+   "licence": "101644M",
+   "name": "VASSEUR LAURENT",
+   "club": "AS Billard Reims",
+   "lastSeason": "2026-2027",
+   "currentPlace": 17,
+   "lastPlace": 17,
+   "posThis": 17,
+   "posLast": null
+  },
+  {
+   "licence": "218357L",
+   "name": "GIRARD RENÉ",
+   "club": "AS Billard Brest",
+   "lastSeason": "2022-2023",
+   "currentPlace": null,
+   "lastPlace": 74,
+   "posThis": null,
+   "posLast": 74
+  },
+  {
+   "licence": "224687N",
+   "name": "SIMON ANTOINE",
+   "club": "Académie de billard de Nantes",
+   "lastSeason": "2025-2026",
+   "currentPlace": 61,
+   "lastPlace": 61,
+   "posThis": 50,
+   "posLast": 64
+  },
+  {
+   "licence": "237136K",
+   "name": "VALLET ETHAN",
+   "club": "Académie de billard de Nancy",
+   "lastSeason": "2022-2023",
+   "currentPlace": null,
+   "lastPlace": 115,
+   "posThis": null,
+   "posLast": 115
+  },
+  {
+   "licence": "109727T",
+   "name": "LAMBERT RACHID",
+   "club": "AS Billard Tours",
+   "lastSeason": "2026-2027",
+   "currentPlace": 112,
+   "lastPlace": 112,
+   "posThis": 112,
+   "posLast": null
+  },
+  {
+   "licence": "218568S",
+   "name": "ROUX DAVID",
+   "club": "AS Billard Brest",
+   "lastSeason": "2022-2023",
+   "currentPlace": null,
+   "lastPlace": 97,
+   "posThis": null,
+   "posLast": 97
+  },
+  {
+   "licence": "234604E",
+   "name": "MARTIN MARIE",
+   "club": "BC Vichy",
+   "lastSeason": "2021-2022",
+   "currentPlace": null,
+   "lastPlace": 87,
+   "posThis": 87,
+   "posLast": 87
+  },
+  {
+   "licence": "108357J",
+   "name": "PAYET DAVID",
+   "club": "AS Billard Cambrai",
+   "lastSeason": "2026-2027",
+   "currentPlace": 109,
+   "lastPlace": 109,
+   "posThis": 109,
+   "posLast": 89
+  },
+  {
+   "licence": "226797F",
+   "name": "CHEVALIER MATHIS",
+   "club": "AS Billard Tours",
+   "lastSeason": "2021-2022",
+   "currentPlace": null,
+   "lastPlace": 104,
+   "posThis": null,
+   "posLast": 104
+  },
+  {
+   "licence": "104110E",
+   "name": "CORDIER CAMILLE",
+   "club": "AS Billard Caen",
+   "lastSeason": "2026-2027",
+   "currentPlace": 38,
+   "lastPlace": 38,
+   "posThis": 38,
+   "posLast": 47
+  },
+  {
+   "licence": "237980M",
+   "name": "ROY NATHALIE",
+   "club": "AS Billard Angers",
+   "lastSeason": "2019-2020",
+   "currentPlace": null,
+   "lastPlace": 109,
+   "posThis": 110,
+   "posLast": 109
+  },
+  {
+   "licence": "220889R",
+   "name": "DIAZ ADAM",
+   "club": "BC Toulon",
+   "lastSeason": "2024-2025",
+   "currentPlace": null,
+   "lastPlace": 59,
+   "posThis": null,
+   "posLast": 59
+  },
+  {
+   "licence": "222999J",
+   "name": "RICHARD RAPHAËL",
+   "club": "BC Roanne",
+   "lastSeason": "2023-2024",
+   "currentPlace": null,
+   "lastPlace": 89,
+   "posThis": null,
+   "posLast": 89
+  },
+  {
+   "licence": "208229N",
+   "name": "HOARAU MATHIEU",
+   "club": "AS Billard Cambrai",
+   "lastSeason": "2025-2026",
+   "currentPlace": null,
+   "lastPlace": 80,
+   "posThis": null,
+   "posLast": 80
+  },
+  {
+   "licence": "110001V",
+   "name": "BERTRAND CAMILLE",
+   "club": "BC Soissons",
+   "lastSeason": "2026-2027",
+   "currentPlace": 115,
+   "lastPlace": 115,
+   "posThis": 115,
+   "posLast": null
+  },
+  {
+   "licence": "208651B",
+   "name": "LAMBERT CHARLES",
+   "club": "BC Cambrai",
+   "lastSeason": "2022-2023",
+   "currentPlace": null,
+   "lastPlace": 74,
+   "posThis": null,
+   "posLast": 74
+  },
+  {
+   "licence": "203587P",
+   "name": "DELMAS ALAIN",
+   "club": "BC Beauvais",
+   "lastSeason": "2021-2022",
+   "currentPlace": null,
+   "lastPlace": 105,
+   "posThis": 105,
+   "posLast": 105
+  },
+  {
+   "licence": "103425Z",
+   "name": "BOURGEOIS DIDIER",
+   "club": "AS Billard Orléans",
+   "lastSeason": "2026-2027",
+   "currentPlace": 33,
+   "lastPlace": 33,
+   "posThis": 33,
+   "posLast": 75
+  },
+  {
+   "licence": "230806I",
+   "name": "MEUNIER ETHAN",
+   "club": "BC Lens",
+   "lastSeason": "2024-2025",
+   "currentPlace": null,
+   "lastPlace": 78,
+   "posThis": null,
+   "posLast": 78
+  },
+  {
+   "licence": "217302C",
+   "name": "MARTINEZ HUGO",
+   "club": "BC Sedan",
+   "lastSeason": "2022-2023",
+   "currentPlace": null,
+   "lastPlace": 99,
+   "posThis": null,
+   "posLast": 99
+  },
+  {
+   "licence": "241989P",
+   "name": "BLANCHARD RÉMI",
+   "club": "AS Billard Angers",
+   "lastSeason": "2019-2020",
+   "currentPlace": null,
+   "lastPlace": 103,
+   "posThis": 104,
+   "posLast": 103
+  },
+  {
+   "licence": "232072Y",
+   "name": "NOEL SANDRINE",
+   "club": "BC Périgueux",
+   "lastSeason": "2021-2022",
+   "currentPlace": null,
+   "lastPlace": 105,
+   "posThis": null,
+   "posLast": 105
+  },
+  {
+   "licence": "238824O",
+   "name": "BESSON SYLVIE",
+   "club": "BC Amiens",
+   "lastSeason": "2017-2018",
+   "currentPlace": null,
+   "lastPlace": 100,
+   "posThis": 100,
+   "posLast": 100
+  },
+  {
+   "licence": "201477X",
+   "name": "POIRIER ROGER",
+   "club": "BC Colmar",
+   "lastSeason": "2025-2026",
+   "currentPlace": null,
+   "lastPlace": 119,
+   "posThis": null,
+   "posLast": 119
+  },
+  {
+   "licence": "228063V",
+   "name": "MARTINEZ PAUL",
+   "club": "BC Mulhouse",
+   "lastSeason": "2025-2026",
+   "currentPlace": 106,
+   "lastPlace": 106,
+   "posThis": 96,
+   "posLast": 118
+  },
+  {
+   "licence": "100959H",
+   "name": "PETIT LUCAS",
+   "club": "BC Amiens",
+   "lastSeason": "2026-2027",
+   "currentPlace": 7,
+   "lastPlace": 7,
+   "posThis": 7,
+   "posLast": 3
+  },
+  {
+   "licence": "224054S",
+   "name": "RENAUD SÉBASTIEN",
+   "club": "BC Alès",
+   "lastSeason": "2025-2026",
+   "currentPlace": null,
+   "lastPlace": 132,
+   "posThis": null,
+   "posLast": 132
+  },
+  {
+   "licence": "203798W",
+   "name": "GARNIER RAYMOND",
+   "club": "Académie de billard de Metz",
+   "lastSeason": "2021-2022",
+   "currentPlace": null,
+   "lastPlace": 81,
+   "posThis": 81,
+   "posLast": 81
+  },
+  {
+   "licence": "109590S",
+   "name": "DUMAS DAMIEN",
+   "club": "Cercle de billard de Strasbourg",
+   "lastSeason": "2026-2027",
+   "currentPlace": 96,
+   "lastPlace": 96,
+   "posThis": 96,
+   "posLast": 78
+  },
+  {
+   "licence": "204009D",
+   "name": "CAMUS JEAN",
+   "club": "BC Saint-Lô",
+   "lastSeason": "2016-2017",
+   "currentPlace": null,
+   "lastPlace": 12,
+   "posThis": null,
+   "posLast": 12
+  },
+  {
+   "licence": "244521V",
+   "name": "OLIVIER JACQUES",
+   "club": "BC Lorient",
+   "lastSeason": "2017-2018",
+   "currentPlace": null,
+   "lastPlace": 104,
+   "posThis": 104,
+   "posLast": 104
+  },
+  {
+   "licence": "245154Q",
+   "name": "DUPONT ADRIEN",
+   "club": "Cercle de billard de Lille",
+   "lastSeason": "2026-2027",
+   "currentPlace": 60,
+   "lastPlace": 60,
+   "posThis": 60,
+   "posLast": 110
+  },
+  {
+   "licence": "251062E",
+   "name": "DURAND NOAH",
+   "club": "AS Billard Douai",
+   "lastSeason": "2025-2026",
+   "currentPlace": 49,
+   "lastPlace": 49,
+   "posThis": 34,
+   "posLast": null
+  },
+  {
+   "licence": "253383D",
+   "name": "LEGER LAURA",
+   "club": "AS Billard Douai",
+   "lastSeason": "2025-2026",
+   "currentPlace": 129,
+   "lastPlace": 129,
+   "posThis": 129,
+   "posLast": null
+  },
+  {
+   "licence": "235659N",
+   "name": "MOULIN JORDAN",
+   "club": "BC Beauvais",
+   "lastSeason": "2023-2024",
+   "currentPlace": null,
+   "lastPlace": 104,
+   "posThis": null,
+   "posLast": 104
+  },
+  {
+   "licence": "223632E",
+   "name": "ROUSSEAU GEORGES",
+   "club": "BC Saint-Omer",
+   "lastSeason": "2017-2018",
+   "currentPlace": null,
+   "lastPlace": 81,
+   "posThis": 82,
+   "posLast": 81
+  },
+  {
+   "licence": "249585H",
+   "name": "DUVAL LÉO",
+   "club": "BC Beauvais",
+   "lastSeason": "2025-2026",
+   "currentPlace": null,
+   "lastPlace": 8,
+   "posThis": null,
+   "posLast": 8
+  },
+  {
+   "licence": "229118E",
+   "name": "SANCHEZ VICTOR",
+   "club": "BC Guéret",
+   "lastSeason": "2019-2020",
+   "currentPlace": null,
+   "lastPlace": 90,
+   "posThis": 90,
+   "posLast": 90
+  },
+  {
+   "licence": "218990G",
+   "name": "KLEIN CLAUDE",
+   "club": "Cercle de billard de Lille",
+   "lastSeason": "2021-2022",
+   "currentPlace": null,
+   "lastPlace": 5,
+   "posThis": null,
+   "posLast": 5
+  },
+  {
+   "licence": "218779Z",
+   "name": "ROY LAURENT",
+   "club": "BC Castres",
+   "lastSeason": "2018-2019",
+   "currentPlace": null,
+   "lastPlace": 78,
+   "posThis": 78,
+   "posLast": 78
+  },
+  {
+   "licence": "110412Y",
+   "name": "REY DYLAN",
+   "club": "AS Billard Cambrai",
+   "lastSeason": "2026-2027",
+   "currentPlace": 100,
+   "lastPlace": 100,
+   "posThis": 100,
+   "posLast": null
+  },
+  {
+   "licence": "228907X",
+   "name": "GUILLET MICHEL",
+   "club": "BC Laval",
+   "lastSeason": "2023-2024",
+   "currentPlace": null,
+   "lastPlace": 82,
+   "posThis": null,
+   "posLast": 82
+  },
+  {
+   "licence": "230595B",
+   "name": "CHEVALIER XAVIER",
+   "club": "BC Saint-Lô",
+   "lastSeason": "2022-2023",
+   "currentPlace": null,
+   "lastPlace": 16,
+   "posThis": null,
+   "posLast": 16
+  },
+  {
+   "licence": "107535D",
+   "name": "LEGRAND PIERRE",
+   "club": "BC Rouen",
+   "lastSeason": "2026-2027",
+   "currentPlace": 74,
+   "lastPlace": 74,
+   "posThis": 74,
+   "posLast": null
+  },
+  {
+   "licence": "215403R",
+   "name": "GOMEZ FRANCK",
+   "club": "BC Grenoble",
+   "lastSeason": "2025-2026",
+   "currentPlace": 14,
+   "lastPlace": 14,
+   "posThis": 13,
+   "posLast": 16
+  },
+  {
+   "licence": "220678K",
+   "name": "JACQUET THOMAS",
+   "club": "BC Besançon",
+   "lastSeason": "2017-2018",
+   "currentPlace": null,
+   "lastPlace": 99,
+   "posThis": 100,
+   "posLast": 99
+  },
+  {
+   "licence": "105754Q",
+   "name": "DUMONT ARNAUD",
+   "club": "Cercle de billard de Besançon",
+   "lastSeason": "2026-2027",
+   "currentPlace": 48,
+   "lastPlace": 48,
+   "posThis": 48,
+   "posLast": null
+  },
+  {
+   "licence": "250007V",
+   "name": "POIRIER PIERRE",
+   "club": "BC Nevers",
+   "lastSeason": "2025-2026",
+   "currentPlace": 104,
+   "lastPlace": 104,
+   "posThis": 102,
+   "posLast": 97
+  },
+  {
+   "licence": "244099H",
+   "name": "PEREZ ARTHUR",
+   "club": "BC Lisieux",
+   "lastSeason": "2023-2024",
+   "currentPlace": null,
+   "lastPlace": 108,
+   "posThis": null,
+   "posLast": 108
+  },
+  {
+   "licence": "225742W",
+   "name": "LECONTE PAUL",
+   "club": "BC Thionville",
+   "lastSeason": "2017-2018",
+   "currentPlace": null,
+   "lastPlace": 86,
+   "posThis": 86,
+   "posLast": 86
+  },
+  {
+   "licence": "241567B",
+   "name": "HENRY SARAH",
+   "club": "BC Bergerac",
+   "lastSeason": "2017-2018",
+   "currentPlace": null,
+   "lastPlace": 91,
+   "posThis": 92,
+   "posLast": 91
+  },
+  {
+   "licence": "200422O",
+   "name": "ROUSSEL PASCAL",
+   "club": "BC Vannes",
+   "lastSeason": "2022-2023",
+   "currentPlace": null,
+   "lastPlace": 34,
+   "posThis": null,
+   "posLast": 34
+  },
+  {
+   "licence": "243677T",
+   "name": "GILBERT JORDAN",
+   "club": "BC Amiens",
+   "lastSeason": "2025-2026",
+   "currentPlace": 79,
+   "lastPlace": 79,
+   "posThis": 67,
+   "posLast": 92
+  },
+  {
+   "licence": "207596S",
+   "name": "BAILLY RAPHAËL",
+   "club": "BC Montauban",
+   "lastSeason": "2022-2023",
+   "currentPlace": null,
+   "lastPlace": 54,
+   "posThis": null,
+   "posLast": 54
+  },
+  {
+   "licence": "102329R",
+   "name": "GRONDIN HUGO",
+   "club": "Académie de billard de Toulouse",
+   "lastSeason": "2026-2027",
+   "currentPlace": 35,
+   "lastPlace": 35,
+   "posThis": 35,
+   "posLast": 29
+  },
+  {
+   "licence": "106713X",
+   "name": "MARECHAL ROMAIN",
+   "club": "Cercle de billard de Épernay",
+   "lastSeason": "2026-2027",
+   "currentPlace": 55,
+   "lastPlace": 55,
+   "posThis": 55,
+   "posLast": null
+  },
+  {
+   "licence": "108631L",
+   "name": "FRANCOIS NADIA",
+   "club": "Académie de billard de Boulogne",
+   "lastSeason": "2026-2027",
+   "currentPlace": 62,
+   "lastPlace": 62,
+   "posThis": 62,
+   "posLast": null
+  },
+  {
+   "licence": "104521H",
+   "name": "COUSIN THOMAS",
+   "club": "AS Billard Angers",
+   "lastSeason": "2026-2027",
+   "currentPlace": 98,
+   "lastPlace": 98,
+   "posThis": 98,
+   "posLast": 41
+  },
+  {
+   "licence": "109179P",
+   "name": "ADAM CHLOÉ",
+   "club": "Académie de billard de Beauvais",
+   "lastSeason": "2026-2027",
+   "currentPlace": 92,
+   "lastPlace": 92,
+   "posThis": 92,
+   "posLast": 89
+  },
+  {
+   "licence": "222155H",
+   "name": "DUBOIS BERNARD",
+   "club": "Académie de billard de Metz",
+   "lastSeason": "2025-2026",
+   "currentPlace": null,
+   "lastPlace": 118,
+   "posThis": null,
+   "posLast": 118
+  },
+  {
+   "licence": "211394O",
+   "name": "BAZIN ÉMILIE",
+   "club": "AS Billard Tours",
+   "lastSeason": "2023-2024",
+   "currentPlace": null,
+   "lastPlace": 23,
+   "posThis": null,
+   "posLast": 23
+  },
+  {
+   "licence": "201266Q",
+   "name": "NICOLAS VICTOR",
+   "club": "BC Quimper",
+   "lastSeason": "2017-2018",
+   "currentPlace": null,
+   "lastPlace": 96,
+   "posThis": 96,
+   "posLast": 96
+  },
+  {
+   "licence": "222788C",
+   "name": "HAMON RAYMOND",
+   "club": "BC Saint-Lô",
+   "lastSeason": "2021-2022",
+   "currentPlace": null,
+   "lastPlace": 84,
+   "posThis": 84,
+   "posLast": 84
+  },
+  {
+   "licence": "105891R",
+   "name": "LEGRAND ARNAUD",
+   "club": "Cercle de billard de Lille",
+   "lastSeason": "2026-2027",
+   "currentPlace": 50,
+   "lastPlace": 50,
+   "posThis": 50,
+   "posLast": 37
+  },
+  {
+   "licence": "235237Z",
+   "name": "MARTY SIMON",
+   "club": "Académie de billard de Le Mans",
+   "lastSeason": "2017-2018",
+   "currentPlace": null,
+   "lastPlace": 65,
+   "posThis": 66,
+   "posLast": 65
+  },
+  {
+   "licence": "211816C",
+   "name": "DUPONT RÉMI",
+   "club": "Cercle de billard de Valenciennes",
+   "lastSeason": "2024-2025",
+   "currentPlace": null,
+   "lastPlace": 25,
+   "posThis": null,
+   "posLast": 25
+  },
+  {
+   "licence": "110138W",
+   "name": "COLLIN RONAN",
+   "club": "AS Billard Compiègne",
+   "lastSeason": "2026-2027",
+   "currentPlace": 121,
+   "lastPlace": 121,
+   "posThis": 121,
+   "posLast": null
+  },
+  {
+   "licence": "238191T",
+   "name": "LECLERCQ CÉLINE",
+   "club": "BC Cahors",
+   "lastSeason": "2021-2022",
+   "currentPlace": null,
+   "lastPlace": 88,
+   "posThis": 88,
+   "posLast": 88
+  },
+  {
+   "licence": "240512S",
+   "name": "GUYOT JEAN",
+   "club": "AS Billard Angers",
+   "lastSeason": "2023-2024",
+   "currentPlace": null,
+   "lastPlace": 71,
+   "posThis": null,
+   "posLast": 71
+  },
+  {
+   "licence": "100274C",
+   "name": "CHEVALLIER QUENTIN",
+   "club": "BC Amiens",
+   "lastSeason": "2026-2027",
+   "currentPlace": 3,
+   "lastPlace": 3,
+   "posThis": 3,
+   "posLast": 6
+  },
+  {
+   "licence": "105069L",
+   "name": "MAILLARD CAMILLE",
+   "club": "Académie de billard de Nantes",
+   "lastSeason": "2026-2027",
+   "currentPlace": 36,
+   "lastPlace": 36,
+   "posThis": 36,
+   "posLast": 1000
+  },
+  {
+   "licence": "210339F",
+   "name": "MONNIER PATRICK",
+   "club": "AS Billard Brest",
+   "lastSeason": "2015-2016",
+   "currentPlace": null,
+   "lastPlace": 1,
+   "posThis": null,
+   "posLast": 1
+  },
+  {
+   "licence": "104384G",
+   "name": "SANCHEZ SOPHIE",
+   "club": "AS Billard Brest",
+   "lastSeason": "2026-2027",
+   "currentPlace": 80,
+   "lastPlace": 80,
+   "posThis": 80,
+   "posLast": 41
+  },
+  {
+   "licence": "209073P",
+   "name": "HOARAU ROLAND",
+   "club": "BC Lons",
+   "lastSeason": "2023-2024",
+   "currentPlace": null,
+   "lastPlace": 91,
+   "posThis": null,
+   "posLast": 91
+  },
+  {
+   "licence": "100685F",
+   "name": "ADAM ÉRIC",
+   "club": "AS Billard Reims",
+   "lastSeason": "2026-2027",
+   "currentPlace": 5,
+   "lastPlace": 5,
+   "posThis": 5,
+   "posLast": 9
+  },
+  {
+   "licence": "",
+   "name": "FOURNIER CÉDRIC",
+   "club": "BC Douai",
+   "lastSeason": "2017-2018",
+   "currentPlace": null,
+   "lastPlace": 69,
+   "posThis": 70,
+   "posLast": 69
+  },
+  {
+   "licence": "241145N",
+   "name": "DELMAS GÉRARD",
+   "club": "BC Quimper",
+   "lastSeason": "2016-2017",
+   "currentPlace": null,
+   "lastPlace": 102,
+   "posThis": 102,
+   "posLast": 102
+  },
+  {
+   "licence": "249163T",
+   "name": "MOREAU MONIQUE",
+   "club": "BC Laval",
+   "lastSeason": "2023-2024",
+   "currentPlace": null,
+   "lastPlace": 94,
+   "posThis": null,
+   "posLast": 94
+  },
+  {
+   "licence": "233127H",
+   "name": "MAHE SERGE",
+   "club": "AS Billard Brest",
+   "lastSeason": "2025-2026",
+   "currentPlace": 108,
+   "lastPlace": 108,
+   "posThis": 55,
+   "posLast": 94
+  },
+  {
+   "licence": "239035V",
+   "name": "WEBER ARTHUR",
+   "club": "AS Billard Brest",
+   "lastSeason": "2025-2026",
+   "currentPlace": 28,
+   "lastPlace": 28,
+   "posThis": 17,
+   "posLast": 101
+  },
+  {
+   "licence": "211605V",
+   "name": "CLEMENT FRANÇOISE",
+   "club": "AS Billard Brest",
+   "lastSeason": "2025-2026",
+   "currentPlace": 27,
+   "lastPlace": 27,
+   "posThis": 16,
+   "posLast": 8
+  },
+  {
+   "licence": "102603T",
+   "name": "LEROUX NICOLAS",
+   "club": "Cercle de billard de Marseille",
+   "lastSeason": "2026-2027",
+   "currentPlace": 66,
+   "lastPlace": 66,
+   "posThis": 66,
+   "posLast": 24
+  },
+  {
+   "licence": "110275X",
+   "name": "RODRIGUEZ MAXIME",
+   "club": "Cercle de billard de Évry",
+   "lastSeason": "2026-2027",
+   "currentPlace": 69,
+   "lastPlace": 69,
+   "posThis": 69,
+   "posLast": null
+  },
+  {
+   "licence": "204220K",
+   "name": "CLEMENT LUCAS",
+   "club": "BC Châlons",
+   "lastSeason": "2025-2026",
+   "currentPlace": 13,
+   "lastPlace": 13,
+   "posThis": 9,
+   "posLast": 10
+  },
+  {
+   "licence": "103699B",
+   "name": "MATHIEU MEHDI",
+   "club": "AS Billard Tours",
+   "lastSeason": "2026-2027",
+   "currentPlace": 39,
+   "lastPlace": 39,
+   "posThis": 39,
+   "posLast": null
+  },
+  {
+   "licence": "217935X",
+   "name": "PAYET MATHIEU",
+   "club": "Académie de billard de Boulogne",
+   "lastSeason": "2017-2018",
+   "currentPlace": null,
+   "lastPlace": 105,
+   "posThis": null,
+   "posLast": 105
+  },
+  {
+   "licence": "236925D",
+   "name": "PERRIN SERGE",
+   "club": "BC Vannes",
+   "lastSeason": "2025-2026",
+   "currentPlace": 43,
+   "lastPlace": 43,
+   "posThis": 37,
+   "posLast": 109
+  },
+  {
+   "licence": "103836C",
+   "name": "BOUCHET CÉDRIC",
+   "club": "BC Rouen",
+   "lastSeason": "2026-2027",
+   "currentPlace": 37,
+   "lastPlace": 37,
+   "posThis": 37,
+   "posLast": null
+  },
+  {
+   "licence": "225531P",
+   "name": "ROBERT ALBERT",
+   "club": "BC Béziers",
+   "lastSeason": "2018-2019",
+   "currentPlace": null,
+   "lastPlace": 58,
+   "posThis": 58,
+   "posLast": 58
+  },
+  {
+   "licence": "214137B",
+   "name": "CHARLES PAUL",
+   "club": "BC Saint-Lô",
+   "lastSeason": "2023-2024",
+   "currentPlace": null,
+   "lastPlace": 51,
+   "posThis": null,
+   "posLast": 51
+  },
+  {
+   "licence": "234815L",
+   "name": "FOURNIER ALBERT",
+   "club": "BC Montluçon",
+   "lastSeason": "2023-2024",
+   "currentPlace": null,
+   "lastPlace": 93,
+   "posThis": null,
+   "posLast": 93
+  },
+  {
+   "licence": "225953D",
+   "name": "ROLLAND GÉRARD",
+   "club": "Académie de billard de Nancy",
+   "lastSeason": "2024-2025",
+   "currentPlace": null,
+   "lastPlace": 109,
+   "posThis": null,
+   "posLast": 109
+  },
+  {
+   "licence": "107261B",
+   "name": "OLIVIER PATRICK",
+   "club": "Académie de billard de Nancy",
+   "lastSeason": "2026-2027",
+   "currentPlace": 73,
+   "lastPlace": 73,
+   "posThis": 73,
+   "posLast": null
+  },
+  {
+   "licence": "214348I",
+   "name": "MEYER RAYMOND",
+   "club": "BC Gap",
+   "lastSeason": "2025-2026",
+   "currentPlace": 97,
+   "lastPlace": 97,
+   "posThis": 94,
+   "posLast": 70
+  },
+  {
+   "licence": "219834I",
+   "name": "RENARD SANDRINE",
+   "club": "Académie de billard de Nancy",
+   "lastSeason": "2023-2024",
+   "currentPlace": null,
+   "lastPlace": 3,
+   "posThis": null,
+   "posLast": 3
+  },
+  {
+   "licence": "107398C",
+   "name": "FLEURY SARAH",
+   "club": "BC Limoges",
+   "lastSeason": "2026-2027",
+   "currentPlace": 78,
+   "lastPlace": 78,
+   "posThis": 78,
+   "posLast": 94
+  },
+  {
+   "licence": "233338O",
+   "name": "MICHEL SIMON",
+   "club": "AS Billard Tours",
+   "lastSeason": "2021-2022",
+   "currentPlace": null,
+   "lastPlace": 113,
+   "posThis": null,
+   "posLast": 113
+  },
+  {
+   "licence": "227430A",
+   "name": "GILLET MARTINE",
+   "club": "BC Sedan",
+   "lastSeason": "2025-2026",
+   "currentPlace": 128,
+   "lastPlace": 128,
+   "posThis": 128,
+   "posLast": null
+  },
+  {
+   "licence": "109316Q",
+   "name": "FAURE MARIE",
+   "club": "BC Amiens",
+   "lastSeason": "2026-2027",
+   "currentPlace": 95,
+   "lastPlace": 95,
+   "posThis": 95,
+   "posLast": null
+  },
+  {
+   "licence": "239246C",
+   "name": "FABRE BRIGITTE",
+   "club": "BC Castres",
+   "lastSeason": "2021-2022",
+   "currentPlace": null,
+   "lastPlace": 91,
+   "posThis": 91,
+   "posLast": 91
+  },
+  {
+   "licence": "220045P",
+   "name": "PASQUIER CHRISTOPHE",
+   "club": "BC Arras",
+   "lastSeason": "2024-2025",
+   "currentPlace": null,
+   "lastPlace": 88,
+   "posThis": null,
+   "posLast": 88
+  },
+  {
+   "licence": "232494M",
+   "name": "JACQUET MONIQUE",
+   "club": "BC Dunkerque",
+   "lastSeason": "2024-2025",
+   "currentPlace": null,
+   "lastPlace": 75,
+   "posThis": null,
+   "posLast": 75
+  },
+  {
+   "licence": "106576W",
+   "name": "MARTY FABIEN",
+   "club": "BC Rouen",
+   "lastSeason": "2026-2027",
+   "currentPlace": 65,
+   "lastPlace": 65,
+   "posThis": 65,
+   "posLast": null
+  },
+  {
+   "licence": "244943J",
+   "name": "ROBERT LAURENT",
+   "club": "BC Carcassonne",
+   "lastSeason": "2025-2026",
+   "currentPlace": null,
+   "lastPlace": 115,
+   "posThis": null,
+   "posLast": 115
+  },
+  {
+   "licence": "100411D",
+   "name": "JACQUET ÉRIC",
+   "club": "BC Arras",
+   "lastSeason": "2026-2027",
+   "currentPlace": 4,
+   "lastPlace": 4,
+   "posThis": 4,
+   "posLast": 15
+  },
+  {
+   "licence": "102192Q",
+   "name": "MARCHAND JORDAN",
+   "club": "Académie de billard de Nancy",
+   "lastSeason": "2026-2027",
+   "currentPlace": 12,
+   "lastPlace": 12,
+   "posThis": 12,
+   "posLast": 54
+  },
+  {
+   "licence": "221522M",
+   "name": "MARCHAL GABRIEL",
+   "club": "BC Castres",
+   "lastSeason": "2018-2019",
+   "currentPlace": null,
+   "lastPlace": 106,
+   "posThis": 106,
+   "posLast": 106
+  },
+  {
+   "licence": "237558Y",
+   "name": "POULAIN JÉRÔME",
+   "club": "BC Besançon",
+   "lastSeason": "2025-2026",
+   "currentPlace": null,
+   "lastPlace": 75,
+   "posThis": null,
+   "posLast": 75
+  },
+  {
+   "licence": "216036M",
+   "name": "VINCENT CLÉMENT",
+   "club": "BC Brive",
+   "lastSeason": "2018-2019",
+   "currentPlace": null,
+   "lastPlace": 85,
+   "posThis": 86,
+   "posLast": 85
+  },
+  {
+   "licence": "246209Z",
+   "name": "GAY SACHA",
+   "club": "Cercle de billard de Besançon",
+   "lastSeason": "2025-2026",
+   "currentPlace": 91,
+   "lastPlace": 91,
+   "posThis": 90,
+   "posLast": null
+  },
+  {
+   "licence": "213504G",
+   "name": "GUILLET PAULINE",
+   "club": "BC Cahors",
+   "lastSeason": "2018-2019",
+   "currentPlace": null,
+   "lastPlace": 107,
+   "posThis": 108,
+   "posLast": 107
+  },
+  {
+   "licence": "106028S",
+   "name": "MARTINEZ JORDAN",
+   "club": "BC Troyes",
+   "lastSeason": "2026-2027",
+   "currentPlace": 56,
+   "lastPlace": 56,
+   "posThis": 56,
+   "posLast": 42
+  },
+  {
+   "licence": "235870U",
+   "name": "ROUSSEL ENZO",
+   "club": "Cercle de billard de Strasbourg",
+   "lastSeason": "2021-2022",
+   "currentPlace": null,
+   "lastPlace": 77,
+   "posThis": 77,
+   "posLast": 77
+  },
+  {
+   "licence": "224898U",
+   "name": "TANGUY ROGER",
+   "club": "Académie de billard de Metz",
+   "lastSeason": "2021-2022",
+   "currentPlace": null,
+   "lastPlace": 107,
+   "posThis": 107,
+   "posLast": 107
+  },
+  {
+   "licence": "204431R",
+   "name": "HUBERT MICKAËL",
+   "club": "Académie de billard de Metz",
+   "lastSeason": "2021-2022",
+   "currentPlace": null,
+   "lastPlace": 95,
+   "posThis": 95,
+   "posLast": 95
+  },
+  {
+   "licence": "211183H",
+   "name": "LEMAIRE HERVÉ",
+   "club": "AS Billard Tours",
+   "lastSeason": "2021-2022",
+   "currentPlace": null,
+   "lastPlace": 125,
+   "posThis": null,
+   "posLast": 125
+  },
+  {
+   "licence": "210550M",
+   "name": "VOISIN FLORIAN",
+   "club": "Cercle de billard de Calais",
+   "lastSeason": "2023-2024",
+   "currentPlace": null,
+   "lastPlace": 123,
+   "posThis": null,
+   "posLast": 123
+  },
+  {
+   "licence": "220256W",
+   "name": "CORDIER ISABELLE",
+   "club": "BC Nevers",
+   "lastSeason": "2025-2026",
+   "currentPlace": 81,
+   "lastPlace": 81,
+   "posThis": 76,
+   "posLast": 109
+  },
+  {
+   "licence": "204642Y",
+   "name": "LAMY SÉBASTIEN",
+   "club": "Cercle de billard de Strasbourg",
+   "lastSeason": "2026-2027",
+   "currentPlace": 93,
+   "lastPlace": 93,
+   "posThis": 94,
+   "posLast": 80
+  },
+  {
+   "licence": "204853F",
+   "name": "GILBERT FABRICE",
+   "club": "Cercle de billard de Strasbourg",
+   "lastSeason": "2025-2026",
+   "currentPlace": null,
+   "lastPlace": 110,
+   "posThis": null,
+   "posLast": 110
+  },
+  {
+   "licence": "214559P",
+   "name": "LEMOINE SYLVIE",
+   "club": "BC Cahors",
+   "lastSeason": "2018-2019",
+   "currentPlace": null,
+   "lastPlace": 102,
+   "posThis": 102,
+   "posLast": 102
+  },
+  {
+   "licence": "231650K",
+   "name": "PICARD SÉBASTIEN",
+   "club": "AS Billard Tours",
+   "lastSeason": "2025-2026",
+   "currentPlace": 9,
+   "lastPlace": 9,
+   "posThis": 9,
+   "posLast": 10
+  },
+  {
+   "licence": "108905N",
+   "name": "AUBRY THIERRY",
+   "club": "AS Billard Dunkerque",
+   "lastSeason": "2026-2027",
+   "currentPlace": 76,
+   "lastPlace": 76,
+   "posThis": 76,
+   "posLast": null
+  },
+  {
+   "licence": "236503P",
+   "name": "BLANCHARD CAMILLE",
+   "club": "BC Thionville",
+   "lastSeason": "2017-2018",
+   "currentPlace": null,
+   "lastPlace": 63,
+   "posThis": 76,
+   "posLast": 63
+  },
+  {
+   "licence": "221100Y",
+   "name": "MARCHAND NATHALIE",
+   "club": "BC Rennes",
+   "lastSeason": "2024-2025",
+   "currentPlace": null,
+   "lastPlace": 60,
+   "posThis": null,
+   "posLast": 60
+  },
+  {
+   "licence": "222577V",
+   "name": "GUILLET ANDRÉ",
+   "club": "BC Troyes",
+   "lastSeason": "2016-2017",
+   "currentPlace": null,
+   "lastPlace": 50,
+   "posThis": 26,
+   "posLast": 50
+  },
+  {
+   "licence": "253172W",
+   "name": "SCHNEIDER CÉLINE",
+   "club": "BC Rouen",
+   "lastSeason": "2026-2027",
+   "currentPlace": 114,
+   "lastPlace": 114,
+   "posThis": 114,
+   "posLast": null
+  },
+  {
+   "licence": "245787L",
+   "name": "PARIS LUCAS",
+   "club": "BC Amiens",
+   "lastSeason": "2025-2026",
+   "currentPlace": 126,
+   "lastPlace": 126,
+   "posThis": 112,
+   "posLast": null
+  },
+  {
+   "licence": "205064M",
+   "name": "OLIVIER PAUL",
+   "club": "BC Vichy",
+   "lastSeason": "2025-2026",
+   "currentPlace": 122,
+   "lastPlace": 122,
+   "posThis": 119,
+   "posLast": 16
+  },
+  {
+   "licence": "101781N",
+   "name": "BOYER JULIEN",
+   "club": "BC Rennes",
+   "lastSeason": "2026-2027",
+   "currentPlace": 16,
+   "lastPlace": 16,
+   "posThis": 16,
+   "posLast": 102
+  },
+  {
+   "licence": "229329L",
+   "name": "RICHARD ÉLISE",
+   "club": "BC Perpignan",
+   "lastSeason": "2022-2023",
+   "currentPlace": null,
+   "lastPlace": 37,
+   "posThis": null,
+   "posLast": 37
+  },
+  {
+   "licence": "201899L",
+   "name": "LECLERCQ PAUL",
+   "club": "AS Billard Reims",
+   "lastSeason": "2026-2027",
+   "currentPlace": 21,
+   "lastPlace": 21,
+   "posThis": 23,
+   "posLast": null
+  },
+  {
+   "licence": "245998S",
+   "name": "MAHE ARTHUR",
+   "club": "BC Lisieux",
+   "lastSeason": "2023-2024",
+   "currentPlace": null,
+   "lastPlace": 125,
+   "posThis": null,
+   "posLast": 125
+  },
+  {
+   "licence": "242411D",
+   "name": "MARTINEZ STÉPHANE",
+   "club": "BC Rouen",
+   "lastSeason": "2025-2026",
+   "currentPlace": 117,
+   "lastPlace": 117,
+   "posThis": 117,
+   "posLast": null
+  },
+  {
+   "licence": "237347R",
+   "name": "REY DAVID",
+   "club": "AS Billard Douai",
+   "lastSeason": "2024-2025",
+   "currentPlace": null,
+   "lastPlace": 119,
+   "posThis": null,
+   "posLast": 119
+  },
+  {
+   "licence": "224265Z",
+   "name": "MERCIER DANIEL",
+   "club": "AS Billard Caen",
+   "lastSeason": "2018-2019",
+   "currentPlace": null,
+   "lastPlace": 32,
+   "posThis": 64,
+   "posLast": 32
+  },
+  {
+   "licence": "210128Y",
+   "name": "JACQUET HERVÉ",
+   "club": "AS Billard Brest",
+   "lastSeason": "2025-2026",
+   "currentPlace": null,
+   "lastPlace": 74,
+   "posThis": null,
+   "posLast": 74
+  },
+  {
+   "licence": "231017P",
+   "name": "CHAUVEAU RENÉ",
+   "club": "BC Bayonne",
+   "lastSeason": "2023-2024",
+   "currentPlace": null,
+   "lastPlace": 119,
+   "posThis": null,
+   "posLast": 119
+  },
+  {
+   "licence": "236292I",
+   "name": "BRETON BERNARD",
+   "club": "BC Lorient",
+   "lastSeason": "2019-2020",
+   "currentPlace": null,
+   "lastPlace": 91,
+   "posThis": 58,
+   "posLast": 91
+  },
+  {
+   "licence": "209917R",
+   "name": "ROUSSEAU YANNICK",
+   "club": "AS Billard Tours",
+   "lastSeason": "2021-2022",
+   "currentPlace": null,
+   "lastPlace": 35,
+   "posThis": 91,
+   "posLast": 35
+  },
+  {
+   "licence": "214770W",
+   "name": "LEMAIRE ADRIEN",
+   "club": "BC Auxerre",
+   "lastSeason": "2023-2024",
+   "currentPlace": null,
+   "lastPlace": 68,
+   "posThis": null,
+   "posLast": 68
+  },
+  {
+   "licence": "106987Z",
+   "name": "SCHNEIDER CHLOÉ",
+   "club": "BC Soissons",
+   "lastSeason": "2026-2027",
+   "currentPlace": 68,
+   "lastPlace": 68,
+   "posThis": 68,
+   "posLast": 123
+  },
+  {
+   "licence": "222366O",
+   "name": "LEROY FRÉDÉRIC",
+   "club": "BC Évreux",
+   "lastSeason": "2023-2024",
+   "currentPlace": null,
+   "lastPlace": 119,
+   "posThis": null,
+   "posLast": 119
+  },
+  {
+   "licence": "231861R",
+   "name": "BESSON SACHA",
+   "club": "BC Beauvais",
+   "lastSeason": "2022-2023",
+   "currentPlace": null,
+   "lastPlace": 110,
+   "posThis": null,
+   "posLast": 110
+  },
+  {
+   "licence": "218146E",
+   "name": "CHEVALIER GILLES",
+   "club": "BC Arras",
+   "lastSeason": "2022-2023",
+   "currentPlace": null,
+   "lastPlace": 94,
+   "posThis": null,
+   "posLast": 94
+  },
+  {
+   "licence": "243466M",
+   "name": "MICHEL ÉRIC",
+   "club": "AS Billard Orléans",
+   "lastSeason": "2021-2022",
+   "currentPlace": null,
+   "lastPlace": 112,
+   "posThis": 94,
+   "posLast": 112
+  },
+  {
+   "licence": "248952M",
+   "name": "PASQUIER HENRI",
+   "club": "BC Arras",
+   "lastSeason": "2022-2023",
+   "currentPlace": null,
+   "lastPlace": 129,
+   "posThis": null,
+   "posLast": 129
+  },
+  {
+   "licence": "251484S",
+   "name": "MICHEL TOM",
+   "club": "BC Saumur",
+   "lastSeason": "2024-2025",
+   "currentPlace": null,
+   "lastPlace": 16,
+   "posThis": null,
+   "posLast": 16
+  },
+  {
+   "licence": "251906G",
+   "name": "MARCHAL VICTOR",
+   "club": "BC Moulins",
+   "lastSeason": "2024-2025",
+   "currentPlace": null,
+   "lastPlace": 113,
+   "posThis": null,
+   "posLast": 113
+  },
+  {
+   "licence": "102055P",
+   "name": "CLEMENT GILLES",
+   "club": "Cercle de billard de Bordeaux",
+   "lastSeason": "2026-2027",
+   "currentPlace": 26,
+   "lastPlace": 26,
+   "posThis": 26,
+   "posLast": null
+  },
+  {
+   "licence": "103562A",
+   "name": "CHAUVIN THIERRY",
+   "club": "Cercle de billard de Lille",
+   "lastSeason": "2026-2027",
+   "currentPlace": 20,
+   "lastPlace": 20,
+   "posThis": 20,
+   "posLast": 90
+  },
+  {
+   "licence": "205275T",
+   "name": "AUBRY GABRIEL",
+   "club": "BC Arras",
+   "lastSeason": "2024-2025",
+   "currentPlace": null,
+   "lastPlace": 85,
+   "posThis": null,
+   "posLast": 85
+  },
+  {
+   "licence": "250218C",
+   "name": "CHARPENTIER LÉA",
+   "club": "BC Lisieux",
+   "lastSeason": "2024-2025",
+   "currentPlace": null,
+   "lastPlace": 65,
+   "posThis": null,
+   "posLast": 65
+  },
+  {
+   "licence": "227641H",
+   "name": "BAILLY NATHALIE",
+   "club": "AS Billard Tours",
+   "lastSeason": "2021-2022",
+   "currentPlace": null,
+   "lastPlace": 50,
+   "posThis": null,
+   "posLast": 50
+  },
+  {
+   "licence": "106439V",
+   "name": "MARECHAL DIDIER",
+   "club": "Académie de billard de Laon",
+   "lastSeason": "2026-2027",
+   "currentPlace": 54,
+   "lastPlace": 54,
+   "posThis": 54,
+   "posLast": null
+  },
+  {
+   "licence": "216247T",
+   "name": "MEUNIER MICKAËL",
+   "club": "BC Mende",
+   "lastSeason": "2018-2019",
+   "currentPlace": null,
+   "lastPlace": 91,
+   "posThis": 50,
+   "posLast": 91
+  },
+  {
+   "licence": "205486A",
+   "name": "DUBOIS ÉRIC",
+   "club": "BC Amiens",
+   "lastSeason": "2023-2024",
+   "currentPlace": null,
+   "lastPlace": 61,
+   "posThis": null,
+   "posLast": 61
+  },
+  {
+   "licence": "205697H",
+   "name": "ROGER ROBERT",
+   "club": "Cercle de billard de Strasbourg",
+   "lastSeason": "2025-2026",
+   "currentPlace": null,
+   "lastPlace": 109,
+   "posThis": null,
+   "posLast": 109
+  },
+  {
+   "licence": "208018G",
+   "name": "CHARPENTIER THOMAS",
+   "club": "Académie de billard de Nancy",
+   "lastSeason": "2024-2025",
+   "currentPlace": null,
+   "lastPlace": 92,
+   "posThis": null,
+   "posLast": 92
+  },
+  {
+   "licence": "243255F",
+   "name": "MAHE CHLOÉ",
+   "club": "Académie de billard de Nancy",
+   "lastSeason": "2024-2025",
+   "currentPlace": null,
+   "lastPlace": 107,
+   "posThis": null,
+   "posLast": 107
+  },
+  {
+   "licence": "238613H",
+   "name": "NAVARRO BRUNO",
+   "club": "Cercle de billard de Épernay",
+   "lastSeason": "2024-2025",
+   "currentPlace": null,
+   "lastPlace": 113,
+   "posThis": null,
+   "posLast": 113
+  },
+  {
+   "licence": "244732C",
+   "name": "FONTAINE MAXIME",
+   "club": "Cercle de billard de Épernay",
+   "lastSeason": "2024-2025",
+   "currentPlace": null,
+   "lastPlace": 65,
+   "posThis": null,
+   "posLast": 65
+  },
+  {
+   "licence": "106165T",
+   "name": "CARON THIERRY",
+   "club": "Cercle de billard de Épernay",
+   "lastSeason": "2026-2027",
+   "currentPlace": 57,
+   "lastPlace": 57,
+   "posThis": 57,
+   "posLast": 85
+  },
+  {
+   "licence": "207385L",
+   "name": "GUILLAUME ALEXANDRE",
+   "club": "BC Niort",
+   "lastSeason": "2022-2023",
+   "currentPlace": null,
+   "lastPlace": 120,
+   "posThis": null,
+   "posLast": 120
+  },
+  {
+   "licence": "216458A",
+   "name": "BLANCHARD PAUL",
+   "club": "BC Avignon",
+   "lastSeason": "2025-2026",
+   "currentPlace": 77,
+   "lastPlace": 77,
+   "posThis": 73,
+   "posLast": null
+  },
+  {
+   "licence": "240934G",
+   "name": "FRANCOIS HENRI",
+   "club": "AS Billard Tours",
+   "lastSeason": "2021-2022",
+   "currentPlace": null,
+   "lastPlace": 54,
+   "posThis": null,
+   "posLast": 54
+  },
+  {
+   "licence": "233971J",
+   "name": "WEBER CATHERINE",
+   "club": "BC Arles",
+   "lastSeason": "2017-2018",
+   "currentPlace": null,
+   "lastPlace": 22,
+   "posThis": 54,
+   "posLast": 22
+  },
+  {
+   "licence": "101233J",
+   "name": "ROUSSEL JULIE",
+   "club": "Académie de billard de Metz",
+   "lastSeason": "2026-2027",
+   "currentPlace": 11,
+   "lastPlace": 11,
+   "posThis": 11,
+   "posLast": null
+  },
+  {
+   "licence": "107809F",
+   "name": "RENAUD HUGO",
+   "club": "AS Billard Cambrai",
+   "lastSeason": "2026-2027",
+   "currentPlace": 72,
+   "lastPlace": 72,
+   "posThis": 72,
+   "posLast": 87
+  },
+  {
+   "licence": "221944A",
+   "name": "MULLER FABRICE",
+   "club": null,
+   "lastSeason": "2018-2019",
+   "currentPlace": null,
+   "lastPlace": 90,
+   "posThis": 88,
+   "posLast": 90
+  },
+  {
+   "licence": "233549V",
+   "name": "BENOIT ALBERT",
+   "club": "AS Billard Caen",
+   "lastSeason": "2016-2017",
+   "currentPlace": null,
+   "lastPlace": 102,
+   "posThis": 90,
+   "posLast": 102
+  },
+  {
+   "licence": "245576E",
+   "name": "DESCAMPS CATHERINE",
+   "club": "BC Arras",
+   "lastSeason": "2022-2023",
+   "currentPlace": null,
+   "lastPlace": 105,
+   "posThis": null,
+   "posLast": 105
+  },
+  {
+   "licence": "242833R",
+   "name": "DUMONT ÉMILIE",
+   "club": "BC Avignon",
+   "lastSeason": "2025-2026",
+   "currentPlace": 123,
+   "lastPlace": 123,
+   "posThis": 129,
+   "posLast": null
+  },
+  {
+   "licence": "205908O",
+   "name": "SIMON ÉMILIE",
+   "club": null,
+   "lastSeason": "2019-2020",
+   "currentPlace": null,
+   "lastPlace": 70,
+   "posThis": 106,
+   "posLast": 70
+  },
+  {
+   "licence": "241778I",
+   "name": "GAILLARD SÉBASTIEN",
+   "club": "Cercle de billard de Strasbourg",
+   "lastSeason": "2026-2027",
+   "currentPlace": 32,
+   "lastPlace": 32,
+   "posThis": 32,
+   "posLast": 103
+  },
+  {
+   "licence": "223421X",
+   "name": "ANDRE TOM",
+   "club": "BC Nevers",
+   "lastSeason": "2022-2023",
+   "currentPlace": null,
+   "lastPlace": 36,
+   "posThis": null,
+   "posLast": 36
+  },
+  {
+   "licence": "214981D",
+   "name": "RIVIERE MARTINE",
+   "club": "BC Grenoble",
+   "lastSeason": "2025-2026",
+   "currentPlace": 23,
+   "lastPlace": 23,
+   "posThis": 21,
+   "posLast": 75
+  },
+  {
+   "licence": "226375R",
+   "name": "LEFEBVRE FRÉDÉRIC",
+   "club": "BC Cognac",
+   "lastSeason": "2016-2017",
+   "currentPlace": null,
+   "lastPlace": 85,
+   "posThis": 76,
+   "posLast": 85
+  },
+  {
+   "licence": "217513J",
+   "name": "PHILIPPE MARTINE",
+   "club": "BC Brive",
+   "lastSeason": "2017-2018",
+   "currentPlace": null,
+   "lastPlace": 76,
+   "posThis": 86,
+   "posLast": 76
+  },
+  {
+   "licence": "220467D",
+   "name": "VOISIN LUDOVIC",
+   "club": "BC Brive",
+   "lastSeason": "2026-2027",
+   "currentPlace": 105,
+   "lastPlace": 105,
+   "posThis": 106,
+   "posLast": 95
+  },
+  {
+   "licence": "213926U",
+   "name": "ROYER CHRISTOPHE",
+   "club": "BC Saint-Lô",
+   "lastSeason": "2018-2019",
+   "currentPlace": null,
+   "lastPlace": 19,
+   "posThis": 96,
+   "posLast": 19
+  },
+  {
+   "licence": "207807Z",
+   "name": "BRUN ANTOINE",
+   "club": "Cercle de billard de Marseille",
+   "lastSeason": "2021-2022",
+   "currentPlace": null,
+   "lastPlace": 19,
+   "posThis": 19,
+   "posLast": null
+  },
+  {
+   "licence": "230173N",
+   "name": "CARON STÉPHANE",
+   "club": "AS Billard Reims",
+   "lastSeason": "2023-2024",
+   "currentPlace": null,
+   "lastPlace": 103,
+   "posThis": null,
+   "posLast": 103
+  },
+  {
+   "licence": "209706K",
+   "name": "BRIAND BRUNO",
+   "club": "AS Billard Tours",
+   "lastSeason": "2022-2023",
+   "currentPlace": null,
+   "lastPlace": 62,
+   "posThis": null,
+   "posLast": 62
+  },
+  {
+   "licence": "231439D",
+   "name": "PHILIPPE FRANÇOISE",
+   "club": "BC Quimper",
+   "lastSeason": "2019-2020",
+   "currentPlace": null,
+   "lastPlace": 107,
+   "posThis": 62,
+   "posLast": 107
+  },
+  {
+   "licence": "244310O",
+   "name": "GERARD JULES",
+   "club": "BC Cherbourg",
+   "lastSeason": "2021-2022",
+   "currentPlace": null,
+   "lastPlace": 11,
+   "posThis": 107,
+   "posLast": 11
+  },
+  {
+   "licence": "236714W",
+   "name": "DANIEL BENOÎT",
+   "club": "AS Billard Brest",
+   "lastSeason": "2022-2023",
+   "currentPlace": null,
+   "lastPlace": 19,
+   "posThis": null,
+   "posLast": 19
+  },
+  {
+   "licence": "103151X",
+   "name": "LANGLOIS ARNAUD",
+   "club": "BC Amiens",
+   "lastSeason": "2026-2027",
+   "currentPlace": 29,
+   "lastPlace": 29,
+   "posThis": 29,
+   "posLast": 19
+  },
+  {
+   "licence": "206119V",
+   "name": "MAILLARD ANAÏS",
+   "club": "BC Grenoble",
+   "lastSeason": "2021-2022",
+   "currentPlace": null,
+   "lastPlace": 98,
+   "posThis": 19,
+   "posLast": 98
+  },
+  {
+   "licence": "206330C",
+   "name": "JOLY CHRISTOPHE",
+   "club": "Cercle de billard de Besançon",
+   "lastSeason": "2012-2013",
+   "currentPlace": null,
+   "lastPlace": 68,
+   "posThis": 98,
+   "posLast": 68
+  },
+  {
+   "licence": "219201N",
+   "name": "SALMON ROGER",
+   "club": "BC Montauban",
+   "lastSeason": "2016-2017",
+   "currentPlace": null,
+   "lastPlace": 1000,
+   "posThis": 68,
+   "posLast": 1000
+  },
+  {
+   "licence": "223843L",
+   "name": "VALLET MARIE",
+   "club": "BC Amiens",
+   "lastSeason": "2009-2010",
+   "currentPlace": null,
+   "lastPlace": 105,
+   "posThis": null,
+   "posLast": 105
+  },
+  {
+   "licence": "109042O",
+   "name": "MARTINEZ GILLES",
+   "club": "AS Billard Cambrai",
+   "lastSeason": "2026-2027",
+   "currentPlace": 119,
+   "lastPlace": 119,
+   "posThis": 119,
+   "posLast": 100
+  },
+  {
+   "licence": "200211H",
+   "name": "DANIEL DANIEL",
+   "club": "BC Tarbes",
+   "lastSeason": "2017-2018",
+   "currentPlace": null,
+   "lastPlace": 32,
+   "posThis": 106,
+   "posLast": 32
+  },
+  {
+   "licence": "232916A",
+   "name": "CARON GILLES",
+   "club": "BC Narbonne",
+   "lastSeason": "2024-2025",
+   "currentPlace": null,
+   "lastPlace": 10,
+   "posThis": null,
+   "posLast": 10
+  },
+  {
+   "licence": "213293Z",
+   "name": "WEBER MARC",
+   "club": "BC Saint-Lô",
+   "lastSeason": "2023-2024",
+   "currentPlace": null,
+   "lastPlace": 55,
+   "posThis": null,
+   "posLast": 55
+  },
+  {
+   "licence": "226164K",
+   "name": "DUMONT LUCAS",
+   "club": "Académie de billard de Nantes",
+   "lastSeason": "2026-2027",
+   "currentPlace": 25,
+   "lastPlace": 25,
+   "posThis": 25,
+   "posLast": 97
+  },
+  {
+   "licence": "227852O",
+   "name": "DELORME AGNÈS",
+   "club": "BC Gap",
+   "lastSeason": "2018-2019",
+   "currentPlace": null,
+   "lastPlace": 11,
+   "posThis": 98,
+   "posLast": 11
+  },
+  {
+   "licence": "108768M",
+   "name": "BERTIN NADIA",
+   "club": "AS Billard Reims",
+   "lastSeason": "2026-2027",
+   "currentPlace": 94,
+   "lastPlace": 94,
+   "posThis": 94,
+   "posLast": null
+  },
+  {
+   "licence": "100548E",
+   "name": "PERRIN CHRISTOPHE",
+   "club": "Cercle de billard de Calais",
+   "lastSeason": "2026-2027",
+   "currentPlace": 2,
+   "lastPlace": 2,
+   "posThis": 2,
+   "posLast": 83
+  },
+  {
+   "licence": "228485J",
+   "name": "DUMONT PHILIPPE",
+   "club": "BC Amiens",
+   "lastSeason": "2023-2024",
+   "currentPlace": null,
+   "lastPlace": 115,
+   "posThis": null,
+   "posLast": 115
+  },
+  {
+   "licence": "248741F",
+   "name": "FAURE SOPHIE",
+   "club": "BC Lisieux",
+   "lastSeason": "2021-2022",
+   "currentPlace": null,
+   "lastPlace": 111,
+   "posThis": 71,
+   "posLast": 111
+  },
+  {
+   "licence": "252328U",
+   "name": "BLANC ROLAND",
+   "club": "BC Moulins",
+   "lastSeason": "2024-2025",
+   "currentPlace": null,
+   "lastPlace": 106,
+   "posThis": null,
+   "posLast": 106
+  },
+  {
+   "licence": "250429J",
+   "name": "BARBIER MICKAËL",
+   "club": "Cercle de billard de Épernay",
+   "lastSeason": "2025-2026",
+   "currentPlace": 127,
+   "lastPlace": 127,
+   "posThis": 132,
+   "posLast": null
+  },
+  {
+   "licence": "246842U",
+   "name": "COUSIN LOÏC",
+   "club": "BC Grenoble",
+   "lastSeason": "2024-2025",
+   "currentPlace": null,
+   "lastPlace": 70,
+   "posThis": null,
+   "posLast": 70
+  },
+  {
+   "licence": "105617P",
+   "name": "LAURENT PAULINE",
+   "club": "BC Grenoble",
+   "lastSeason": "2026-2027",
+   "currentPlace": 44,
+   "lastPlace": 44,
+   "posThis": 44,
+   "posLast": 78
+  },
+  {
+   "licence": "247897D",
+   "name": "ROY LOUIS",
+   "club": "BC Lorient",
+   "lastSeason": "2025-2026",
+   "currentPlace": 88,
+   "lastPlace": 88,
+   "posThis": 75,
+   "posLast": 33
+  },
+  {
+   "licence": "103014W",
+   "name": "COLIN GWENDAL",
+   "club": "BC Dijon",
+   "lastSeason": "2026-2027",
+   "currentPlace": 22,
+   "lastPlace": 22,
+   "posThis": 22,
+   "posLast": 35
+  },
+  {
+   "licence": "252750I",
+   "name": "DUFOUR TOM",
+   "club": "BC Moulins",
+   "lastSeason": "2024-2025",
+   "currentPlace": null,
+   "lastPlace": 88,
+   "posThis": null,
+   "posLast": 88
+  },
+  {
+   "licence": "106850Y",
+   "name": "BONNET ERWAN",
+   "club": "Cercle de billard de Lille",
+   "lastSeason": "2026-2027",
+   "currentPlace": 63,
+   "lastPlace": 63,
+   "posThis": 63,
+   "posLast": 30
+  },
+  {
+   "licence": "104247F",
+   "name": "ROBERT KEVIN",
+   "club": "Académie de billard de Nice",
+   "lastSeason": "2026-2027",
+   "currentPlace": 52,
+   "lastPlace": 52,
+   "posThis": 52,
+   "posLast": 28
+  },
+  {
+   "licence": "251273L",
+   "name": "BENOIT GEORGES",
+   "club": "BC Cholet",
+   "lastSeason": "2026-2027",
+   "currentPlace": 102,
+   "lastPlace": 102,
+   "posThis": 102,
+   "posLast": 86
+  },
+  {
+   "licence": "104795J",
+   "name": "MERCIER ÉRIC",
+   "club": "Académie de billard de Nice",
+   "lastSeason": "2026-2027",
+   "currentPlace": 45,
+   "lastPlace": 45,
+   "posThis": 45,
+   "posLast": 104
+  },
+  {
+   "licence": "236081B",
+   "name": "CHAUVIN SIMON",
+   "club": "BC Auch",
+   "lastSeason": "2024-2025",
+   "currentPlace": null,
+   "lastPlace": 58,
+   "posThis": null,
+   "posLast": 58
+  },
+  {
+   "licence": "252539B",
+   "name": "PASQUIER YVES",
+   "club": "BC Carcassonne",
+   "lastSeason": "2025-2026",
+   "currentPlace": 120,
+   "lastPlace": 120,
+   "posThis": 102,
+   "posLast": null
+  },
+  {
+   "licence": "213715N",
+   "name": "REY ADRIEN",
+   "club": "BC Saint-Lô",
+   "lastSeason": "2022-2023",
+   "currentPlace": null,
+   "lastPlace": 111,
+   "posThis": null,
+   "posLast": 111
+  },
+  {
+   "licence": "246420G",
+   "name": "ROYER BRIGITTE",
+   "club": "BC Brive",
+   "lastSeason": "2019-2020",
+   "currentPlace": null,
+   "lastPlace": 1000,
+   "posThis": 112,
+   "posLast": 1000
+  },
+  {
+   "licence": "216880O",
+   "name": "GILBERT MARTINE",
+   "club": "BC Avignon",
+   "lastSeason": "2025-2026",
+   "currentPlace": 53,
+   "lastPlace": 53,
+   "posThis": 51,
+   "posLast": 44
+  },
+  {
+   "licence": "216669H",
+   "name": "LEFEBVRE CHRISTINE",
+   "club": "BC Brive",
+   "lastSeason": "2026-2027",
+   "currentPlace": 84,
+   "lastPlace": 84,
+   "posThis": 83,
+   "posLast": 80
+  },
+  {
+   "licence": "243044Y",
+   "name": "VOISIN LIONEL",
+   "club": "AS Billard Montpellier",
+   "lastSeason": "2024-2025",
+   "currentPlace": null,
+   "lastPlace": 63,
+   "posThis": null,
+   "posLast": 63
+  },
+  {
+   "licence": "206541J",
+   "name": "GUYOT ARNAUD",
+   "club": "BC Amiens",
+   "lastSeason": "2023-2024",
+   "currentPlace": null,
+   "lastPlace": 121,
+   "posThis": null,
+   "posLast": 121
+  },
+  {
+   "licence": "209284W",
+   "name": "JOLY SERGE",
+   "club": "BC Dax",
+   "lastSeason": "2017-2018",
+   "currentPlace": null,
+   "lastPlace": 1000,
+   "posThis": 102,
+   "posLast": 1000
+  },
+  {
+   "licence": "213082S",
+   "name": "GIRAUD RAYMOND",
+   "club": "BC Gap",
+   "lastSeason": "2018-2019",
+   "currentPlace": null,
+   "lastPlace": 101,
+   "posThis": null,
+   "posLast": 101
+  },
+  {
+   "licence": "237769F",
+   "name": "WEBER XAVIER",
+   "club": "AS Billard Cambrai",
+   "lastSeason": "2016-2017",
+   "currentPlace": null,
+   "lastPlace": 102,
+   "posThis": 102,
+   "posLast": null
+  },
+  {
+   "licence": "251695Z",
+   "name": "GILLET LÉA",
+   "club": "BC Rouen",
+   "lastSeason": "2026-2027",
+   "currentPlace": 125,
+   "lastPlace": 125,
+   "posThis": 116,
+   "posLast": null
+  },
+  {
+   "licence": "109453R",
+   "name": "SCHNEIDER CÉDRIC",
+   "club": "AS Billard Compiègne",
+   "lastSeason": "2026-2027",
+   "currentPlace": 107,
+   "lastPlace": 107,
+   "posThis": 107,
+   "posLast": null
+  },
+  {
+   "licence": "250640Q",
+   "name": "ROUSSEAU SACHA",
+   "club": "AS Billard Douai",
+   "lastSeason": "2023-2024",
+   "currentPlace": null,
+   "lastPlace": 110,
+   "posThis": null,
+   "posLast": 110
+  },
+  {
+   "licence": "219623B",
+   "name": "MATHIEU RAPHAËL",
+   "club": "BC Lorient",
+   "lastSeason": "2025-2026",
+   "currentPlace": 64,
+   "lastPlace": 64,
+   "posThis": 61,
+   "posLast": 21
+  },
+  {
+   "licence": "201055J",
+   "name": "ADAM JOËL",
+   "club": "BC Lorient",
+   "lastSeason": "2025-2026",
+   "currentPlace": 110,
+   "lastPlace": 110,
+   "posThis": 108,
+   "posLast": 99
+  },
+  {
+   "licence": "",
+   "name": "MICHEL FABRICE",
+   "club": "BC Bastia",
+   "lastSeason": "2016-2017",
+   "currentPlace": null,
+   "lastPlace": 54,
+   "posThis": 100,
+   "posLast": 54
+  },
+  {
+   "licence": "229540S",
+   "name": "CORDIER CHARLES",
+   "club": "Cercle de billard de Valenciennes",
+   "lastSeason": "2026-2027",
+   "currentPlace": 41,
+   "lastPlace": 41,
+   "posThis": 35,
+   "posLast": 72
+  },
+  {
+   "licence": "232283F",
+   "name": "FOURNIER FRÉDÉRIC",
+   "club": "Cercle de billard de Valenciennes",
+   "lastSeason": "2026-2027",
+   "currentPlace": 59,
+   "lastPlace": 59,
+   "posThis": 48,
+   "posLast": 93
+  },
+  {
+   "licence": "231228W",
+   "name": "GOMEZ BERNARD",
+   "club": "BC Blois",
+   "lastSeason": "2025-2026",
+   "currentPlace": null,
+   "lastPlace": 90,
+   "posThis": null,
+   "posLast": 90
+  },
+  {
+   "licence": "108494K",
+   "name": "DAVID SARAH",
+   "club": "Cercle de billard de Valenciennes",
+   "lastSeason": "2026-2027",
+   "currentPlace": 75,
+   "lastPlace": 75,
+   "posThis": 75,
+   "posLast": 105
+  },
+  {
+   "licence": "252961P",
+   "name": "GRONDIN FRÉDÉRIC",
+   "club": "BC Moulins",
+   "lastSeason": "2025-2026",
+   "currentPlace": null,
+   "lastPlace": 116,
+   "posThis": null,
+   "posLast": 116
+  },
+  {
+   "licence": "247475P",
+   "name": "LECONTE ÉMILIE",
+   "club": "AS Billard Tours",
+   "lastSeason": "2023-2024",
+   "currentPlace": null,
+   "lastPlace": 104,
+   "posThis": null,
+   "posLast": 104
+  },
+  {
+   "licence": "212027J",
+   "name": "JULIEN NATHALIE",
+   "club": "AS Billard Tours",
+   "lastSeason": "2023-2024",
+   "currentPlace": null,
+   "lastPlace": 65,
+   "posThis": null,
+   "posLast": 65
+  },
+  {
+   "licence": "247686W",
+   "name": "CHARPENTIER CHRISTINE",
+   "club": "AS Billard Tours",
+   "lastSeason": "2023-2024",
+   "currentPlace": null,
+   "lastPlace": 103,
+   "posThis": null,
+   "posLast": 103
+  },
+  {
+   "licence": "212238Q",
+   "name": "GARCIA LOUIS",
+   "club": "AS Billard Tours",
+   "lastSeason": "2025-2026",
+   "currentPlace": 58,
+   "lastPlace": 58,
+   "posThis": 46,
+   "posLast": 12
+  },
+  {
+   "licence": "101507L",
+   "name": "LEBLANC MICKAËL",
+   "club": "BC Amiens",
+   "lastSeason": "2026-2027",
+   "currentPlace": 15,
+   "lastPlace": 15,
+   "posThis": 15,
+   "posLast": 40
+  },
+  {
+   "licence": "239457J",
+   "name": "NOEL STÉPHANE",
+   "club": "BC Brive",
+   "lastSeason": "2026-2027",
+   "currentPlace": 83,
+   "lastPlace": 83,
+   "posThis": 82,
+   "posLast": 74
+  },
+  {
+   "licence": "107672E",
+   "name": "MALLET MAXIME",
+   "club": "AS Billard Cambrai",
+   "lastSeason": "2026-2027",
+   "currentPlace": 70,
+   "lastPlace": 70,
+   "posThis": 70,
+   "posLast": null
+  },
+  {
+   "licence": "102466S",
+   "name": "CHEVALLIER LOÏC",
+   "club": "AS Billard Montpellier",
+   "lastSeason": "2026-2027",
+   "currentPlace": 19,
+   "lastPlace": 19,
+   "posThis": 19,
+   "posLast": 20
+  },
+  {
+   "licence": "102740U",
+   "name": "CARPENTIER BENOÎT",
+   "club": "Académie de billard de Nice",
+   "lastSeason": "2026-2027",
+   "currentPlace": 24,
+   "lastPlace": 24,
+   "posThis": 24,
+   "posLast": 102
+  },
+  {
+   "licence": "206752Q",
+   "name": "BIGOT SARAH",
+   "club": "BC Aurillac",
+   "lastSeason": "2019-2020",
+   "currentPlace": null,
+   "lastPlace": 55,
+   "posThis": 102,
+   "posLast": 55
+  },
+  {
+   "licence": "206963X",
+   "name": "POIRIER ROBERT",
+   "club": "BC Saint-Nazaire",
+   "lastSeason": "2024-2025",
+   "currentPlace": null,
+   "lastPlace": 98,
+   "posThis": null,
+   "posLast": 98
+  },
+  {
+   "licence": "229751Z",
+   "name": "DELMAS LAURENT",
+   "club": "BC Rennes",
+   "lastSeason": "2021-2022",
+   "currentPlace": null,
+   "lastPlace": 1000,
+   "posThis": 86,
+   "posLast": 1000
+  },
+  {
+   "licence": "209495D",
+   "name": "LEMOINE ANAÏS",
+   "club": "AS Billard Cambrai",
+   "lastSeason": "2011-2012",
+   "currentPlace": null,
+   "lastPlace": 82,
+   "posThis": 1000,
+   "posLast": 82
+  },
+  {
+   "licence": "239668Q",
+   "name": "ROUSSEAU CHLOÉ",
+   "club": "BC Dreux",
+   "lastSeason": "2019-2020",
+   "currentPlace": null,
+   "lastPlace": 90,
+   "posThis": 82,
+   "posLast": 90
+  },
+  {
+   "licence": "200844C",
+   "name": "MARIE DOMINIQUE",
+   "club": "BC Vannes",
+   "lastSeason": "2025-2026",
+   "currentPlace": 67,
+   "lastPlace": 67,
+   "posThis": 57,
+   "posLast": 88
+  }
+ ],
+ "windowBefore": [
+  {
+   "licence": "100137B",
+   "name": "BARRE PATRICK",
+   "club": "Cercle de billard de Lille",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 26.006,
+     "faits": 567,
+     "subis": 471
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 80.02,
+     "faits": 1175,
+     "subis": 991
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 80.02,
+     "faits": 1235,
+     "subis": 941
+    },
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 26.02,
+     "faits": 629,
+     "subis": 498
+    }
+   ]
+  },
+  {
+   "licence": "100548E",
+   "name": "PERRIN CHRISTOPHE",
+   "club": "Cercle de billard de Calais",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 80.01857142857143,
+     "faits": 1230,
+     "subis": 980
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 26.006,
+     "faits": 584,
+     "subis": 565
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 18.005,
+     "faits": 423,
+     "subis": 409
+    },
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 54.026666666666664,
+     "faits": 868,
+     "subis": 800
+    }
+   ]
+  },
+  {
+   "licence": "100274C",
+   "name": "CHEVALLIER QUENTIN",
+   "club": "BC Amiens",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 54.01857142857143,
+     "faits": 1053,
+     "subis": 840
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 54.01857142857143,
+     "faits": 1075,
+     "subis": 964
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 38.015,
+     "faits": 834,
+     "subis": 633
+    },
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 26.025,
+     "faits": 557,
+     "subis": 443
+    }
+   ]
+  },
+  {
+   "licence": "100411D",
+   "name": "JACQUET ÉRIC",
+   "club": "BC Arras",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 26.006,
+     "faits": 596,
+     "subis": 532
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 38.016666666666666,
+     "faits": 820,
+     "subis": 673
+    },
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 80.03,
+     "faits": 1152,
+     "subis": 966
+    }
+   ]
+  },
+  {
+   "licence": "100685F",
+   "name": "ADAM ÉRIC",
+   "club": "AS Billard Reims",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 26.006,
+     "faits": 533,
+     "subis": 520
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 26.01,
+     "faits": 662,
+     "subis": 494
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 54.01857142857143,
+     "faits": 1047,
+     "subis": 851
+    },
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 38.022,
+     "faits": 973,
+     "subis": 916
+    }
+   ]
+  },
+  {
+   "licence": "101096I",
+   "name": "HUBERT MICHEL",
+   "club": "Académie de billard de Nancy",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 26.01,
+     "faits": 694,
+     "subis": 620
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 18.0075,
+     "faits": 429,
+     "subis": 440
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 18.005,
+     "faits": 449,
+     "subis": 390
+    },
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 26.0175,
+     "faits": 510,
+     "subis": 508
+    }
+   ]
+  },
+  {
+   "licence": "100959H",
+   "name": "PETIT LUCAS",
+   "club": "BC Amiens",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 18.0075,
+     "faits": 476,
+     "subis": 419
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 38.01166666666666,
+     "faits": 914,
+     "subis": 818
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 18.005,
+     "faits": 421,
+     "subis": 396
+    },
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 26.0225,
+     "faits": 588,
+     "subis": 538
+    }
+   ]
+  },
+  {
+   "licence": "100822G",
+   "name": "COLLET OLIVIER",
+   "club": "Académie de billard de Nancy",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 13.0025,
+     "faits": 380,
+     "subis": 477
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 26.008,
+     "faits": 643,
+     "subis": 654
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 26.01,
+     "faits": 695,
+     "subis": 613
+    },
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 38.024,
+     "faits": 758,
+     "subis": 543
+    }
+   ]
+  },
+  {
+   "licence": "231650K",
+   "name": "PICARD SÉBASTIEN",
+   "club": "AS Billard Tours",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 18.00875,
+     "faits": 827,
+     "subis": 721
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 25.02,
+     "faits": 1366,
+     "subis": 743
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 38.015,
+     "faits": 1021,
+     "subis": 775
+    }
+   ]
+  },
+  {
+   "licence": "101370K",
+   "name": "LAMY VINCENT",
+   "club": "Académie de billard de Lyon",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 18.0075,
+     "faits": 426,
+     "subis": 393
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 18.005,
+     "faits": 416,
+     "subis": 439
+    },
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 18.011666666666667,
+     "faits": 601,
+     "subis": 486
+    }
+   ]
+  },
+  {
+   "licence": "101233J",
+   "name": "ROUSSEL JULIE",
+   "club": "Académie de billard de Metz",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 18.005,
+     "faits": 369,
+     "subis": 414
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 18.007142857142856,
+     "faits": 753,
+     "subis": 568
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 13.005,
+     "faits": 343,
+     "subis": 422
+    },
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 18.01,
+     "faits": 575,
+     "subis": 490
+    }
+   ]
+  },
+  {
+   "licence": "102192Q",
+   "name": "MARCHAND JORDAN",
+   "club": "Académie de billard de Nancy",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 17.013333333333332,
+     "faits": 1494,
+     "subis": 1220
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 10,
+     "faits": 390,
+     "subis": 480
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 7.007142857142857,
+     "faits": 743,
+     "subis": 604
+    },
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 13.004285714285714,
+     "faits": 605,
+     "subis": 646
+    }
+   ]
+  },
+  {
+   "licence": "204220K",
+   "name": "CLEMENT LUCAS",
+   "club": "BC Châlons",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 38.013,
+     "faits": 1192,
+     "subis": 893
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 26.01,
+     "faits": 702,
+     "subis": 600
+    }
+   ]
+  },
+  {
+   "licence": "215403R",
+   "name": "GOMEZ FRANCK",
+   "club": "BC Grenoble",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 38.013,
+     "faits": 1181,
+     "subis": 1039
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 26.01,
+     "faits": 1060,
+     "subis": 939
+    }
+   ]
+  },
+  {
+   "licence": "101507L",
+   "name": "LEBLANC MICKAËL",
+   "club": "BC Amiens",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 13.0025,
+     "faits": 382,
+     "subis": 460
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 13.0025,
+     "faits": 366,
+     "subis": 447
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 26.006,
+     "faits": 564,
+     "subis": 609
+    },
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 5.005,
+     "faits": 556,
+     "subis": 449
+    }
+   ]
+  },
+  {
+   "licence": "101781N",
+   "name": "BOYER JULIEN",
+   "club": "BC Rennes",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 7.0055555555555555,
+     "faits": 843,
+     "subis": 654
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 18.0075,
+     "faits": 744,
+     "subis": 732
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 13.0025,
+     "faits": 338,
+     "subis": 438
+    },
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 13.007142857142858,
+     "faits": 668,
+     "subis": 667
+    }
+   ]
+  },
+  {
+   "licence": "101644M",
+   "name": "VASSEUR LAURENT",
+   "club": "AS Billard Reims",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 7.0055555555555555,
+     "faits": 856,
+     "subis": 721
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 13.004285714285714,
+     "faits": 699,
+     "subis": 640
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 7.007142857142857,
+     "faits": 728,
+     "subis": 609
+    },
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 18.01142857142857,
+     "faits": 690,
+     "subis": 600
+    }
+   ]
+  },
+  {
+   "licence": "103288Y",
+   "name": "BERTRAND DIDIER",
+   "club": "Cercle de billard de Strasbourg",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 10.005,
+     "faits": 775,
+     "subis": 753
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 5.005,
+     "faits": 542,
+     "subis": 542
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 10.005,
+     "faits": 779,
+     "subis": 687
+    },
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 7.0075,
+     "faits": 763,
+     "subis": 603
+    }
+   ]
+  },
+  {
+   "licence": "102466S",
+   "name": "CHEVALLIER LOÏC",
+   "club": "AS Billard Montpellier",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 25.014545454545456,
+     "faits": 1445,
+     "subis": 1154
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 10,
+     "faits": 311,
+     "subis": 480
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 7.0055555555555555,
+     "faits": 772,
+     "subis": 700
+    }
+   ]
+  },
+  {
+   "licence": "103562A",
+   "name": "CHAUVIN THIERRY",
+   "club": "Cercle de billard de Lille",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 9.00875,
+     "faits": 1021,
+     "subis": 875
+    },
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 11.009,
+     "faits": 1112,
+     "subis": 978
+    }
+   ]
+  },
+  {
+   "licence": "201899L",
+   "name": "LECLERCQ PAUL",
+   "club": "AS Billard Reims",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 7.005,
+     "faits": 734,
+     "subis": 643
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 7.005,
+     "faits": 727,
+     "subis": 705
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 10.005,
+     "faits": 772,
+     "subis": 719
+    },
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 18.01142857142857,
+     "faits": 708,
+     "subis": 728
+    }
+   ]
+  },
+  {
+   "licence": "103014W",
+   "name": "COLIN GWENDAL",
+   "club": "BC Dijon",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 10.005,
+     "faits": 762,
+     "subis": 786
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 7.005714285714285,
+     "faits": 714,
+     "subis": 601
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 13.0075,
+     "faits": 811,
+     "subis": 737
+    },
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 1,
+     "faits": 211,
+     "subis": 300
+    }
+   ]
+  },
+  {
+   "licence": "214981D",
+   "name": "RIVIERE MARTINE",
+   "club": "BC Grenoble",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 4.003,
+     "faits": 717,
+     "subis": 619
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 9.0075,
+     "faits": 834,
+     "subis": 689
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 26.00777777777778,
+     "faits": 932,
+     "subis": 923
+    }
+   ]
+  },
+  {
+   "licence": "102740U",
+   "name": "CARPENTIER BENOÎT",
+   "club": "Académie de billard de Nice",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 7.005,
+     "faits": 714,
+     "subis": 668
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 11.008,
+     "faits": 1063,
+     "subis": 1051
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 7.00375,
+     "faits": 669,
+     "subis": 595
+    },
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 9.006666666666666,
+     "faits": 853,
+     "subis": 683
+    }
+   ]
+  },
+  {
+   "licence": "101918O",
+   "name": "DUMONT LUCAS",
+   "club": "Académie de billard de Nantes",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 7.00625,
+     "faits": 753,
+     "subis": 731
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 13.00625,
+     "faits": 791,
+     "subis": 778
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 1,
+     "faits": 248,
+     "subis": 300
+    },
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 11.011111111111111,
+     "faits": 1020,
+     "subis": 887
+    }
+   ]
+  },
+  {
+   "licence": "102055P",
+   "name": "CLEMENT GILLES",
+   "club": "Cercle de billard de Bordeaux",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 13.00625,
+     "faits": 688,
+     "subis": 737
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 17.015454545454546,
+     "faits": 1246,
+     "subis": 1091
+    },
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 7.005,
+     "faits": 590,
+     "subis": 580
+    }
+   ]
+  },
+  {
+   "licence": "211605V",
+   "name": "CLEMENT FRANÇOISE",
+   "club": "AS Billard Brest",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 10,
+     "faits": 383,
+     "subis": 480
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 18.007142857142856,
+     "faits": 716,
+     "subis": 627
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 9.0075,
+     "faits": 930,
+     "subis": 681
+    }
+   ]
+  },
+  {
+   "licence": "239035V",
+   "name": "WEBER ARTHUR",
+   "club": "AS Billard Brest",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 9.007777777777777,
+     "faits": 977,
+     "subis": 880
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 13.00625,
+     "faits": 756,
+     "subis": 655
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 13.00625,
+     "faits": 731,
+     "subis": 719
+    }
+   ]
+  },
+  {
+   "licence": "103151X",
+   "name": "LANGLOIS ARNAUD",
+   "club": "BC Amiens",
+   "results": [
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 25.019,
+     "faits": 1293,
+     "subis": 939
+    }
+   ]
+  },
+  {
+   "licence": "104658I",
+   "name": "MICHEL DAMIEN",
+   "club": "Académie de billard de Le Mans",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 5.005,
+     "faits": 593,
+     "subis": 572
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 7.0055555555555555,
+     "faits": 804,
+     "subis": 694
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 9.005555555555556,
+     "faits": 877,
+     "subis": 838
+    }
+   ]
+  },
+  {
+   "licence": "104932K",
+   "name": "KLEIN ÉMILIE",
+   "club": "BC Amiens",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 3.0033333333333334,
+     "faits": 277,
+     "subis": 294
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 10.005,
+     "faits": 766,
+     "subis": 770
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 7.00375,
+     "faits": 637,
+     "subis": 667
+    }
+   ]
+  },
+  {
+   "licence": "102877V",
+   "name": "GAILLARD SÉBASTIEN",
+   "club": "Cercle de billard de Strasbourg",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 4.003333333333333,
+     "faits": 588,
+     "subis": 575
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 11.008888888888889,
+     "faits": 946,
+     "subis": 889
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 11.009,
+     "faits": 1061,
+     "subis": 1081
+    },
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 5.00375,
+     "faits": 551,
+     "subis": 541
+    }
+   ]
+  },
+  {
+   "licence": "103425Z",
+   "name": "BOURGEOIS DIDIER",
+   "club": "AS Billard Orléans",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 2.0033333333333334,
+     "faits": 245,
+     "subis": 281
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 25.014166666666668,
+     "faits": 1548,
+     "subis": 1353
+    }
+   ]
+  },
+  {
+   "licence": "105343N",
+   "name": "CARLIER SAMIR",
+   "club": "BC Fréjus",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 4.002222222222223,
+     "faits": 548,
+     "subis": 589
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 2.0033333333333334,
+     "faits": 221,
+     "subis": 290
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 7.005,
+     "faits": 657,
+     "subis": 654
+    },
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 7.003333333333333,
+     "faits": 444,
+     "subis": 554
+    }
+   ]
+  },
+  {
+   "licence": "102329R",
+   "name": "GRONDIN HUGO",
+   "club": "Académie de billard de Toulouse",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 7.005,
+     "faits": 819,
+     "subis": 688
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 9.008888888888889,
+     "faits": 985,
+     "subis": 778
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 5.00375,
+     "faits": 626,
+     "subis": 608
+    }
+   ]
+  },
+  {
+   "licence": "105069L",
+   "name": "MAILLARD CAMILLE",
+   "club": "Académie de billard de Nantes",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 11.011111111111111,
+     "faits": 1152,
+     "subis": 1041
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 1.0033333333333334,
+     "faits": 293,
+     "subis": 295
+    }
+   ]
+  },
+  {
+   "licence": "103836C",
+   "name": "BOUCHET CÉDRIC",
+   "club": "BC Rouen",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 5.0025,
+     "faits": 559,
+     "subis": 590
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 7.004444444444444,
+     "faits": 759,
+     "subis": 808
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 7.005714285714285,
+     "faits": 677,
+     "subis": 632
+    },
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 7.00625,
+     "faits": 720,
+     "subis": 572
+    }
+   ]
+  },
+  {
+   "licence": "104110E",
+   "name": "CORDIER CAMILLE",
+   "club": "AS Billard Caen",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 1,
+     "faits": 192,
+     "subis": 300
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 7.005,
+     "faits": 646,
+     "subis": 690
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 9.0075,
+     "faits": 920,
+     "subis": 829
+    },
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 5.003333333333333,
+     "faits": 639,
+     "subis": 607
+    }
+   ]
+  },
+  {
+   "licence": "103699B",
+   "name": "MATHIEU MEHDI",
+   "club": "AS Billard Tours",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 11.008888888888889,
+     "faits": 1035,
+     "subis": 1099
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 10.005,
+     "faits": 751,
+     "subis": 678
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 1.0033333333333334,
+     "faits": 235,
+     "subis": 275
+    }
+   ]
+  },
+  {
+   "licence": "103973D",
+   "name": "LUCAS NICOLAS",
+   "club": "AS Billard Montpellier",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 13.0075,
+     "faits": 774,
+     "subis": 723
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 7.00625,
+     "faits": 750,
+     "subis": 634
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 1.0033333333333334,
+     "faits": 228,
+     "subis": 290
+    }
+   ]
+  },
+  {
+   "licence": "229540S",
+   "name": "CORDIER CHARLES",
+   "club": "Cercle de billard de Valenciennes",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 5.00375,
+     "faits": 515,
+     "subis": 633
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 5.002857142857143,
+     "faits": 482,
+     "subis": 470
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 10.00375,
+     "faits": 625,
+     "subis": 715
+    },
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 5.0025,
+     "faits": 467,
+     "subis": 565
+    }
+   ]
+  },
+  {
+   "licence": "229962G",
+   "name": "MULLER LUDOVIC",
+   "club": "Académie de billard de Le Mans",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 9.01,
+     "faits": 1136,
+     "subis": 814
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 4.003,
+     "faits": 684,
+     "subis": 703
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 9.00875,
+     "faits": 1035,
+     "subis": 800
+    }
+   ]
+  },
+  {
+   "licence": "236925D",
+   "name": "PERRIN SERGE",
+   "club": "BC Vannes",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 7.005,
+     "faits": 684,
+     "subis": 660
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 9.006666666666666,
+     "faits": 887,
+     "subis": 910
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 5.005,
+     "faits": 522,
+     "subis": 559
+    }
+   ]
+  },
+  {
+   "licence": "105617P",
+   "name": "LAURENT PAULINE",
+   "club": "BC Grenoble",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 7.005714285714285,
+     "faits": 597,
+     "subis": 715
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 4.003333333333333,
+     "faits": 565,
+     "subis": 505
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 4.003,
+     "faits": 570,
+     "subis": 672
+    },
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 1.0033333333333334,
+     "faits": 221,
+     "subis": 281
+    }
+   ]
+  },
+  {
+   "licence": "104795J",
+   "name": "MERCIER ÉRIC",
+   "club": "Académie de billard de Nice",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 9.005555555555556,
+     "faits": 941,
+     "subis": 892
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 4.002222222222223,
+     "faits": 595,
+     "subis": 575
+    }
+   ]
+  },
+  {
+   "licence": "105206M",
+   "name": "BAILLY PATRICK",
+   "club": "BC Amiens",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 1.0033333333333334,
+     "faits": 262,
+     "subis": 294
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 4.001666666666667,
+     "faits": 467,
+     "subis": 601
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 4.002222222222223,
+     "faits": 478,
+     "subis": 559
+    },
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 9.008571428571429,
+     "faits": 777,
+     "subis": 720
+    }
+   ]
+  },
+  {
+   "licence": "106302U",
+   "name": "HENRY GUILLAUME",
+   "club": "Académie de billard de Laon",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 5.003333333333333,
+     "faits": 617,
+     "subis": 667
+    },
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 9.00875,
+     "faits": 807,
+     "subis": 700
+    }
+   ]
+  },
+  {
+   "licence": "105754Q",
+   "name": "DUMONT ARNAUD",
+   "club": "Cercle de billard de Besançon",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 1,
+     "faits": 190,
+     "subis": 300
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 3,
+     "faits": 197,
+     "subis": 300
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 10.005,
+     "faits": 711,
+     "subis": 763
+    },
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 4.005,
+     "faits": 471,
+     "subis": 514
+    }
+   ]
+  },
+  {
+   "licence": "251062E",
+   "name": "DURAND NOAH",
+   "club": "AS Billard Douai",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 10.005,
+     "faits": 773,
+     "subis": 777
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 5.00375,
+     "faits": 577,
+     "subis": 584
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 4.002,
+     "faits": 608,
+     "subis": 671
+    }
+   ]
+  },
+  {
+   "licence": "105891R",
+   "name": "LEGRAND ARNAUD",
+   "club": "Cercle de billard de Lille",
+   "results": [
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 17.013333333333332,
+     "faits": 1318,
+     "subis": 1047
+    }
+   ]
+  },
+  {
+   "licence": "105480O",
+   "name": "BRETON CLAIRE",
+   "club": "Cercle de billard de Clermont",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 2.0033333333333334,
+     "faits": 190,
+     "subis": 292
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 5.002857142857143,
+     "faits": 426,
+     "subis": 477
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 7.005714285714285,
+     "faits": 708,
+     "subis": 698
+    }
+   ]
+  },
+  {
+   "licence": "104247F",
+   "name": "ROBERT KEVIN",
+   "club": "Académie de billard de Nice",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 5.005,
+     "faits": 549,
+     "subis": 591
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 4.002222222222223,
+     "faits": 528,
+     "subis": 602
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 3.0033333333333334,
+     "faits": 243,
+     "subis": 298
+    },
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 5.005,
+     "faits": 511,
+     "subis": 511
+    }
+   ]
+  },
+  {
+   "licence": "216880O",
+   "name": "GILBERT MARTINE",
+   "club": "BC Avignon",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 17.014,
+     "faits": 1332,
+     "subis": 1281
+    }
+   ]
+  },
+  {
+   "licence": "106439V",
+   "name": "MARECHAL DIDIER",
+   "club": "Académie de billard de Laon",
+   "results": [
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 13.005714285714285,
+     "faits": 588,
+     "subis": 634
+    }
+   ]
+  },
+  {
+   "licence": "106713X",
+   "name": "MARECHAL ROMAIN",
+   "club": "Cercle de billard de Épernay",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 2.0033333333333334,
+     "faits": 257,
+     "subis": 275
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 1,
+     "faits": 190,
+     "subis": 300
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 5.00375,
+     "faits": 464,
+     "subis": 620
+    }
+   ]
+  },
+  {
+   "licence": "106028S",
+   "name": "MARTINEZ JORDAN",
+   "club": "BC Troyes",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 1,
+     "faits": 243,
+     "subis": 300
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 5.002857142857143,
+     "faits": 435,
+     "subis": 509
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 2.0033333333333334,
+     "faits": 208,
+     "subis": 265
+    },
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 7.0042857142857144,
+     "faits": 546,
+     "subis": 509
+    }
+   ]
+  },
+  {
+   "licence": "106165T",
+   "name": "CARON THIERRY",
+   "club": "Cercle de billard de Épernay",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 2.0033333333333334,
+     "faits": 247,
+     "subis": 281
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 5.002857142857143,
+     "faits": 450,
+     "subis": 469
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 5.005,
+     "faits": 571,
+     "subis": 513
+    }
+   ]
+  },
+  {
+   "licence": "212238Q",
+   "name": "GARCIA LOUIS",
+   "club": "AS Billard Tours",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 2.0033333333333334,
+     "faits": 224,
+     "subis": 261
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 7.005714285714285,
+     "faits": 768,
+     "subis": 695
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 5.00375,
+     "faits": 566,
+     "subis": 579
+    }
+   ]
+  },
+  {
+   "licence": "232283F",
+   "name": "FOURNIER FRÉDÉRIC",
+   "club": "Cercle de billard de Valenciennes",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 4.003333333333333,
+     "faits": 605,
+     "subis": 563
+    },
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 9.005,
+     "faits": 820,
+     "subis": 853
+    }
+   ]
+  },
+  {
+   "licence": "245154Q",
+   "name": "DUPONT ADRIEN",
+   "club": "Cercle de billard de Lille",
+   "results": [
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 13.004285714285714,
+     "faits": 563,
+     "subis": 692
+    }
+   ]
+  },
+  {
+   "licence": "224687N",
+   "name": "SIMON ANTOINE",
+   "club": "Académie de billard de Nantes",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 2.0033333333333334,
+     "faits": 249,
+     "subis": 275
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 5.005,
+     "faits": 614,
+     "subis": 509
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 5.004444444444444,
+     "faits": 689,
+     "subis": 605
+    }
+   ]
+  },
+  {
+   "licence": "108631L",
+   "name": "FRANCOIS NADIA",
+   "club": "Académie de billard de Boulogne",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 4.002222222222223,
+     "faits": 513,
+     "subis": 606
+    },
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 1,
+     "faits": 229,
+     "subis": 300
+    }
+   ]
+  },
+  {
+   "licence": "106850Y",
+   "name": "BONNET ERWAN",
+   "club": "Cercle de billard de Lille",
+   "results": [
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 7.0042857142857144,
+     "faits": 561,
+     "subis": 653
+    }
+   ]
+  },
+  {
+   "licence": "219623B",
+   "name": "MATHIEU RAPHAËL",
+   "club": "BC Lorient",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 11.013,
+     "faits": 1302,
+     "subis": 1118
+    }
+   ]
+  },
+  {
+   "licence": "106576W",
+   "name": "MARTY FABIEN",
+   "club": "BC Rouen",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 2.0033333333333334,
+     "faits": 250,
+     "subis": 280
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 2.0033333333333334,
+     "faits": 205,
+     "subis": 286
+    },
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 5.0025,
+     "faits": 490,
+     "subis": 560
+    }
+   ]
+  },
+  {
+   "licence": "200844C",
+   "name": "MARIE DOMINIQUE",
+   "club": "BC Vannes",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 5.005,
+     "faits": 618,
+     "subis": 614
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 5.00375,
+     "faits": 521,
+     "subis": 577
+    }
+   ]
+  },
+  {
+   "licence": "106987Z",
+   "name": "SCHNEIDER CHLOÉ",
+   "club": "BC Soissons",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 4.003333333333333,
+     "faits": 521,
+     "subis": 524
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 1.0033333333333334,
+     "faits": 196,
+     "subis": 265
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 2.0033333333333334,
+     "faits": 223,
+     "subis": 283
+    }
+   ]
+  },
+  {
+   "licence": "107672E",
+   "name": "MALLET MAXIME",
+   "club": "AS Billard Cambrai",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 1,
+     "faits": 247,
+     "subis": 300
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 7.00375,
+     "faits": 671,
+     "subis": 697
+    }
+   ]
+  },
+  {
+   "licence": "202321Z",
+   "name": "BRUNET GILLES",
+   "club": "BC Chartres",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 9.006666666666666,
+     "faits": 863,
+     "subis": 857
+    }
+   ]
+  },
+  {
+   "licence": "107809F",
+   "name": "RENAUD HUGO",
+   "club": "AS Billard Cambrai",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 2.0033333333333334,
+     "faits": 233,
+     "subis": 276
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 4.002222222222223,
+     "faits": 478,
+     "subis": 587
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 1.0033333333333334,
+     "faits": 190,
+     "subis": 299
+    }
+   ]
+  },
+  {
+   "licence": "107261B",
+   "name": "OLIVIER PATRICK",
+   "club": "Académie de billard de Nancy",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 2.0033333333333334,
+     "faits": 260,
+     "subis": 291
+    },
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 4.002222222222223,
+     "faits": 517,
+     "subis": 537
+    }
+   ]
+  },
+  {
+   "licence": "107535D",
+   "name": "LEGRAND PIERRE",
+   "club": "BC Rouen",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 1,
+     "faits": 249,
+     "subis": 300
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 1,
+     "faits": 151,
+     "subis": 300
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 2.0033333333333334,
+     "faits": 209,
+     "subis": 294
+    },
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 4.001111111111111,
+     "faits": 303,
+     "subis": 563
+    }
+   ]
+  },
+  {
+   "licence": "108494K",
+   "name": "DAVID SARAH",
+   "club": "Cercle de billard de Valenciennes",
+   "results": [
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 5.00375,
+     "faits": 508,
+     "subis": 539
+    }
+   ]
+  },
+  {
+   "licence": "108905N",
+   "name": "AUBRY THIERRY",
+   "club": "BC Épinal",
+   "results": [
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 4.002222222222223,
+     "faits": 439,
+     "subis": 573
+    }
+   ]
+  },
+  {
+   "licence": "216458A",
+   "name": "BLANCHARD PAUL",
+   "club": "BC Avignon",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 4.003333333333333,
+     "faits": 561,
+     "subis": 575
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 4.001111111111111,
+     "faits": 434,
+     "subis": 592
+    }
+   ]
+  },
+  {
+   "licence": "107398C",
+   "name": "FLEURY SARAH",
+   "club": "BC Fréjus",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 2.0033333333333334,
+     "faits": 209,
+     "subis": 299
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 1,
+     "faits": 175,
+     "subis": 300
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 1,
+     "faits": 185,
+     "subis": 300
+    },
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 4.001111111111111,
+     "faits": 448,
+     "subis": 591
+    }
+   ]
+  },
+  {
+   "licence": "243677T",
+   "name": "GILBERT JORDAN",
+   "club": "BC Amiens",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 4.002222222222223,
+     "faits": 528,
+     "subis": 621
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 4.001666666666667,
+     "faits": 548,
+     "subis": 648
+    }
+   ]
+  },
+  {
+   "licence": "220256W",
+   "name": "CORDIER ISABELLE",
+   "club": "BC Nevers",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 5.00375,
+     "faits": 539,
+     "subis": 552
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 2.0033333333333334,
+     "faits": 201,
+     "subis": 271
+    }
+   ]
+  },
+  {
+   "licence": "107124A",
+   "name": "BRUN ERWAN",
+   "club": "BC Rennes",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 2.0033333333333334,
+     "faits": 189,
+     "subis": 293
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 1,
+     "faits": 163,
+     "subis": 300
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 2.0033333333333334,
+     "faits": 255,
+     "subis": 299
+    },
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 2,
+     "faits": 116,
+     "subis": 200
+    }
+   ]
+  },
+  {
+   "licence": "239457J",
+   "name": "NOEL STÉPHANE",
+   "club": "BC Brive",
+   "results": [
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 7.00375,
+     "faits": 631,
+     "subis": 569
+    }
+   ]
+  },
+  {
+   "licence": "216669H",
+   "name": "LEFEBVRE CHRISTINE",
+   "club": "BC Brive",
+   "results": [
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 7.00375,
+     "faits": 462,
+     "subis": 539
+    }
+   ]
+  },
+  {
+   "licence": "232705T",
+   "name": "MOULIN ARNAUD",
+   "club": "BC Beauvais",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 5.00375,
+     "faits": 524,
+     "subis": 603
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 1,
+     "faits": 223,
+     "subis": 300
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 1,
+     "faits": 193,
+     "subis": 300
+    }
+   ]
+  },
+  {
+   "licence": "108220I",
+   "name": "LEFEVRE BENOÎT",
+   "club": "AS Billard Douai",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 2.0033333333333334,
+     "faits": 230,
+     "subis": 276
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 1,
+     "faits": 216,
+     "subis": 300
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 1,
+     "faits": 128,
+     "subis": 300
+    }
+   ]
+  },
+  {
+   "licence": "202110S",
+   "name": "LAINE ANAÏS",
+   "club": "BC Rennes",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 2.0033333333333334,
+     "faits": 215,
+     "subis": 244
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 1,
+     "faits": 180,
+     "subis": 300
+    },
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 1,
+     "faits": 224,
+     "subis": 300
+    },
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 2,
+     "faits": 103,
+     "subis": 200
+    }
+   ]
+  },
+  {
+   "licence": "247897D",
+   "name": "ROY LOUIS",
+   "club": "BC Lorient",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 1.0033333333333334,
+     "faits": 225,
+     "subis": 299
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 4.002,
+     "faits": 503,
+     "subis": 691
+    }
+   ]
+  },
+  {
+   "licence": "249796O",
+   "name": "ROUSSEAU FRÉDÉRIC",
+   "club": "BC Vannes",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 5.00375,
+     "faits": 583,
+     "subis": 629
+    }
+   ]
+  },
+  {
+   "licence": "108083H",
+   "name": "BOYER MANON",
+   "club": "AS Billard Reims",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 1,
+     "faits": 202,
+     "subis": 300
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 2,
+     "faits": 149,
+     "subis": 200
+    },
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 1,
+     "faits": 211,
+     "subis": 300
+    }
+   ]
+  },
+  {
+   "licence": "246209Z",
+   "name": "GAY SACHA",
+   "club": "Cercle de billard de Besançon",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 5.003333333333333,
+     "faits": 682,
+     "subis": 648
+    }
+   ]
+  },
+  {
+   "licence": "109179P",
+   "name": "ADAM CHLOÉ",
+   "club": "Académie de billard de Beauvais",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 1,
+     "faits": 209,
+     "subis": 300
+    }
+   ]
+  },
+  {
+   "licence": "204642Y",
+   "name": "LAMY SÉBASTIEN",
+   "club": "Cercle de billard de Strasbourg",
+   "results": [
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 5.0025,
+     "faits": 466,
+     "subis": 523
+    }
+   ]
+  },
+  {
+   "licence": "108768M",
+   "name": "BERTIN NADIA",
+   "club": "AS Billard Reims",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 2.0033333333333334,
+     "faits": 288,
+     "subis": 282
+    }
+   ]
+  },
+  {
+   "licence": "109316Q",
+   "name": "FAURE MARIE",
+   "club": "BC Amiens",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 2.0033333333333334,
+     "faits": 196,
+     "subis": 262
+    },
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 1,
+     "faits": 227,
+     "subis": 300
+    }
+   ]
+  },
+  {
+   "licence": "109590S",
+   "name": "DUMAS DAMIEN",
+   "club": "Cercle de billard de Strasbourg",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 1,
+     "faits": 135,
+     "subis": 300
+    },
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 1,
+     "faits": 142,
+     "subis": 300
+    }
+   ]
+  },
+  {
+   "licence": "214348I",
+   "name": "MEYER RAYMOND",
+   "club": "BC Gap",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 4.003333333333333,
+     "faits": 552,
+     "subis": 544
+    }
+   ]
+  },
+  {
+   "licence": "252117N",
+   "name": "MARCHAND JEAN",
+   "club": "BC Arras",
+   "results": [
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 4.003333333333333,
+     "faits": 465,
+     "subis": 549
+    }
+   ]
+  },
+  {
+   "licence": "201688E",
+   "name": "BRUN BERNARD",
+   "club": "BC Chartres",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 4.002222222222223,
+     "faits": 481,
+     "subis": 647
+    }
+   ]
+  },
+  {
+   "licence": "251273L",
+   "name": "BENOIT GEORGES",
+   "club": "BC Cholet",
+   "results": [
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 4.002,
+     "faits": 578,
+     "subis": 592
+    }
+   ]
+  },
+  {
+   "licence": "247053B",
+   "name": "LECLERC FABRICE",
+   "club": "AS Billard Reims",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 4.001111111111111,
+     "faits": 593,
+     "subis": 630
+    }
+   ]
+  },
+  {
+   "licence": "250007V",
+   "name": "POIRIER PIERRE",
+   "club": "BC Nevers",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 0,
+     "faits": 241,
+     "subis": 300
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 4.001111111111111,
+     "faits": 432,
+     "subis": 627
+    }
+   ]
+  },
+  {
+   "licence": "220467D",
+   "name": "VOISIN LUDOVIC",
+   "club": "BC Brive",
+   "results": [
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 4.001111111111111,
+     "faits": 412,
+     "subis": 572
+    }
+   ]
+  },
+  {
+   "licence": "228063V",
+   "name": "MARTINEZ PAUL",
+   "club": "BC Mulhouse",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 1,
+     "faits": 163,
+     "subis": 300
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 2.0033333333333334,
+     "faits": 201,
+     "subis": 255
+    }
+   ]
+  },
+  {
+   "licence": "109453R",
+   "name": "SCHNEIDER CÉDRIC",
+   "club": "AS Billard Compiègne",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 1,
+     "faits": 160,
+     "subis": 300
+    },
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 1,
+     "faits": 106,
+     "subis": 300
+    }
+   ]
+  },
+  {
+   "licence": "233127H",
+   "name": "MAHE SERGE",
+   "club": "AS Billard Brest",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 2.0033333333333334,
+     "faits": 250,
+     "subis": 258
+    }
+   ]
+  },
+  {
+   "licence": "201055J",
+   "name": "ADAM JOËL",
+   "club": "BC Lorient",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 2.0033333333333334,
+     "faits": 251,
+     "subis": 296
+    }
+   ]
+  },
+  {
+   "licence": "107946G",
+   "name": "BOYER NOÉ",
+   "club": "Académie de billard de Nice",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 1,
+     "faits": 226,
+     "subis": 300
+    }
+   ]
+  },
+  {
+   "licence": "109727T",
+   "name": "LAMBERT RACHID",
+   "club": "AS Billard Tours",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 1.0033333333333334,
+     "faits": 226,
+     "subis": 295
+    }
+   ]
+  },
+  {
+   "licence": "109864U",
+   "name": "ARNAUD CLÉMENT",
+   "club": "Cercle de billard de Chartres",
+   "results": [
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 1,
+     "faits": 167,
+     "subis": 300
+    }
+   ]
+  },
+  {
+   "licence": "253172W",
+   "name": "SCHNEIDER CÉLINE",
+   "club": "BC Rouen",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 1,
+     "faits": 202,
+     "subis": 300
+    },
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 1,
+     "faits": 164,
+     "subis": 300
+    }
+   ]
+  },
+  {
+   "licence": "110001V",
+   "name": "BERTRAND CAMILLE",
+   "club": "BC Soissons",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 1,
+     "faits": 138,
+     "subis": 300
+    }
+   ]
+  },
+  {
+   "licence": "228274C",
+   "name": "NOEL RÉMI",
+   "club": "BC Brive",
+   "results": [
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 1.0033333333333334,
+     "faits": 269,
+     "subis": 283
+    }
+   ]
+  },
+  {
+   "licence": "242411D",
+   "name": "MARTINEZ STÉPHANE",
+   "club": "BC Rouen",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 1,
+     "faits": 265,
+     "subis": 300
+    }
+   ]
+  },
+  {
+   "licence": "219412U",
+   "name": "MAHE GILLES",
+   "club": "Académie de billard de Nice",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 1,
+     "faits": 254,
+     "subis": 300
+    }
+   ]
+  },
+  {
+   "licence": "252539B",
+   "name": "PASQUIER YVES",
+   "club": "BC Carcassonne",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 1,
+     "faits": 211,
+     "subis": 300
+    }
+   ]
+  },
+  {
+   "licence": "205064M",
+   "name": "OLIVIER PAUL",
+   "club": "BC Vichy",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 1,
+     "faits": 186,
+     "subis": 300
+    }
+   ]
+  },
+  {
+   "licence": "242833R",
+   "name": "DUMONT ÉMILIE",
+   "club": "BC Avignon",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 1,
+     "faits": 185,
+     "subis": 300
+    }
+   ]
+  },
+  {
+   "licence": "224476G",
+   "name": "DUVAL LILIAN",
+   "club": "Cercle de billard de Strasbourg",
+   "results": [
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 1,
+     "faits": 182,
+     "subis": 300
+    }
+   ]
+  },
+  {
+   "licence": "251695Z",
+   "name": "GILLET LÉA",
+   "club": "BC Rouen",
+   "results": [
+    {
+     "season": "2026-2027",
+     "tn": 1,
+     "pts": 1,
+     "faits": 178,
+     "subis": 300
+    }
+   ]
+  },
+  {
+   "licence": "245787L",
+   "name": "PARIS LUCAS",
+   "club": "BC Amiens",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 1,
+     "faits": 172,
+     "subis": 300
+    }
+   ]
+  },
+  {
+   "licence": "250429J",
+   "name": "BARBIER MICKAËL",
+   "club": "Cercle de billard de Épernay",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 3,
+     "pts": 1,
+     "faits": 155,
+     "subis": 300
+    }
+   ]
+  },
+  {
+   "licence": "227430A",
+   "name": "GILLET MARTINE",
+   "club": "BC Sedan",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 4,
+     "pts": 1,
+     "faits": 137,
+     "subis": 300
+    }
+   ]
+  },
+  {
+   "licence": "253383D",
+   "name": "LEGER LAURA",
+   "club": "AS Billard Douai",
+   "results": [
+    {
+     "season": "2025-2026",
+     "tn": 5,
+     "pts": 1,
+     "faits": 76,
+     "subis": 300
+    }
+   ]
+  }
+ ],
+ "expectedAfter": [
+  {
+   "position": 1,
+   "licence": "100137B",
+   "name": "BARRE PATRICK",
+   "club": "Cercle de billard de Lille",
+   "pts": 266.09333333333336,
+   "moy": 1.2651888341543513,
+   "count": 5,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 80.03333333333333,
+    "faits": 1017,
+    "subis": 753
+   }
+  },
+  {
+   "position": 2,
+   "licence": "100548E",
+   "name": "PERRIN CHRISTOPHE",
+   "club": "Cercle de billard de Calais",
+   "pts": 186.0737380952381,
+   "moy": 1.146455223880597,
+   "count": 5,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 26.0225,
+    "faits": 582,
+    "subis": 462
+   }
+  },
+  {
+   "position": 3,
+   "licence": "100274C",
+   "name": "CHEVALLIER QUENTIN",
+   "club": "BC Amiens",
+   "pts": 184.08214285714286,
+   "moy": 1.2385874246339363,
+   "count": 5,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 38.03,
+    "faits": 795,
+    "subis": 603
+   }
+  },
+  {
+   "position": 4,
+   "licence": "100411D",
+   "name": "JACQUET ÉRIC",
+   "club": "BC Arras",
+   "pts": 162.06599999999997,
+   "moy": 1.1616954474097332,
+   "count": 4,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 18.013333333333332,
+    "faits": 392,
+    "subis": 377
+   }
+  },
+  {
+   "position": 5,
+   "licence": "100685F",
+   "name": "ADAM ÉRIC",
+   "club": "AS Billard Reims",
+   "pts": 144.05657142857143,
+   "moy": 1.1541627097182652,
+   "count": 5,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 18.016666666666666,
+    "faits": 431,
+    "subis": 378
+   }
+  },
+  {
+   "position": 6,
+   "licence": "101096I",
+   "name": "HUBERT MICHEL",
+   "club": "Académie de billard de Nancy",
+   "pts": 124.05833333333334,
+   "moy": 1.068717277486911,
+   "count": 5,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 54.02333333333333,
+    "faits": 1184,
+    "subis": 1098
+   }
+  },
+  {
+   "position": 7,
+   "licence": "100959H",
+   "name": "PETIT LUCAS",
+   "club": "BC Amiens",
+   "pts": 120.05766666666665,
+   "moy": 1.076686066415611,
+   "count": 5,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 38.016,
+    "faits": 746,
+    "subis": 750
+   }
+  },
+  {
+   "position": 8,
+   "licence": "100822G",
+   "name": "COLLET OLIVIER",
+   "club": "Académie de billard de Nancy",
+   "pts": 116.0695,
+   "moy": 1.1040256501603134,
+   "count": 5,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 26.0275,
+    "faits": 623,
+    "subis": 520
+   }
+  },
+  {
+   "position": 9,
+   "licence": "231650K",
+   "name": "PICARD SÉBASTIEN",
+   "club": "AS Billard Tours",
+   "pts": 81.04375,
+   "moy": 1.435462259937472,
+   "count": 3,
+   "tn2": null
+  },
+  {
+   "position": 10,
+   "licence": "101370K",
+   "name": "LAMY VINCENT",
+   "club": "Académie de billard de Lyon",
+   "pts": 72.03559523809524,
+   "moy": 1.112697603263641,
+   "count": 4,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 18.01142857142857,
+    "faits": 739,
+    "subis": 643
+   }
+  },
+  {
+   "position": 11,
+   "licence": "101233J",
+   "name": "ROUSSEL JULIE",
+   "club": "Académie de billard de Metz",
+   "pts": 67.02714285714286,
+   "moy": 1.040615141955836,
+   "count": 5,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 5.003333333333333,
+    "faits": 599,
+    "subis": 642
+   }
+  },
+  {
+   "position": 12,
+   "licence": "102192Q",
+   "name": "MARCHAND JORDAN",
+   "club": "Académie de billard de Nancy",
+   "pts": 66.02886904761905,
+   "moy": 1.0885333333333334,
+   "count": 5,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 26.01125,
+    "faits": 850,
+    "subis": 800
+   }
+  },
+  {
+   "position": 13,
+   "licence": "204220K",
+   "name": "CLEMENT LUCAS",
+   "club": "BC Châlons",
+   "pts": 64.023,
+   "moy": 1.2685867381111855,
+   "count": 2,
+   "tn2": null
+  },
+  {
+   "position": 14,
+   "licence": "215403R",
+   "name": "GOMEZ FRANCK",
+   "club": "BC Grenoble",
+   "pts": 64.023,
+   "moy": 1.1329625884732053,
+   "count": 2,
+   "tn2": null
+  },
+  {
+   "position": 15,
+   "licence": "101507L",
+   "name": "LEBLANC MICKAËL",
+   "club": "BC Amiens",
+   "pts": 59.018142857142855,
+   "moy": 1.0196708149337614,
+   "count": 5,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 7.007142857142857,
+    "faits": 672,
+    "subis": 526
+   }
+  },
+  {
+   "position": 16,
+   "licence": "101781N",
+   "name": "BOYER JULIEN",
+   "club": "BC Rennes",
+   "pts": 57.02428571428572,
+   "moy": 1.0239445494643982,
+   "count": 5,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 13.007142857142858,
+    "faits": 657,
+    "subis": 683
+   }
+  },
+  {
+   "position": 17,
+   "licence": "101644M",
+   "name": "VASSEUR LAURENT",
+   "club": "AS Billard Reims",
+   "pts": 55.03585714285715,
+   "moy": 1.2001116382919341,
+   "count": 5,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 17.013,
+    "faits": 1327,
+    "subis": 1013
+   }
+  },
+  {
+   "position": 18,
+   "licence": "103288Y",
+   "name": "BERTRAND DIDIER",
+   "club": "Cercle de billard de Strasbourg",
+   "pts": 52.032954545454544,
+   "moy": 1.1508608909538125,
+   "count": 5,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 25.015454545454546,
+    "faits": 1352,
+    "subis": 1074
+   }
+  },
+  {
+   "position": 19,
+   "licence": "102466S",
+   "name": "CHEVALLIER LOÏC",
+   "club": "AS Billard Montpellier",
+   "pts": 47.02454545454545,
+   "moy": 1.075118966689327,
+   "count": 4,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 5.004444444444444,
+    "faits": 635,
+    "subis": 608
+   }
+  },
+  {
+   "position": 20,
+   "licence": "103562A",
+   "name": "CHAUVIN THIERRY",
+   "club": "Cercle de billard de Lille",
+   "pts": 46.028999999999996,
+   "moy": 1.1288201160541587,
+   "count": 3,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 26.01125,
+    "faits": 785,
+    "subis": 732
+   }
+  },
+  {
+   "position": 21,
+   "licence": "201899L",
+   "name": "LECLERCQ PAUL",
+   "club": "AS Billard Reims",
+   "pts": 42.02642857142857,
+   "moy": 1.0522361359570662,
+   "count": 4,
+   "tn2": null
+  },
+  {
+   "position": 22,
+   "licence": "103014W",
+   "name": "COLIN GWENDAL",
+   "club": "BC Dijon",
+   "pts": 39.028214285714284,
+   "moy": 1.0687847008019742,
+   "count": 5,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 9.01,
+    "faits": 967,
+    "subis": 818
+   }
+  },
+  {
+   "position": 23,
+   "licence": "214981D",
+   "name": "RIVIERE MARTINE",
+   "club": "BC Grenoble",
+   "pts": 39.01827777777778,
+   "moy": 1.1129538323621695,
+   "count": 3,
+   "tn2": null
+  },
+  {
+   "position": 24,
+   "licence": "102740U",
+   "name": "CARPENTIER BENOÎT",
+   "club": "Académie de billard de Nice",
+   "pts": 38.02966666666666,
+   "moy": 1.086893203883495,
+   "count": 5,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 11.01,
+    "faits": 1179,
+    "subis": 1123
+   }
+  },
+  {
+   "position": 25,
+   "licence": "101918O",
+   "name": "DUMONT LUCAS",
+   "club": "Académie de billard de Nantes",
+   "pts": 38.02861111111111,
+   "moy": 1.0286749169936613,
+   "count": 5,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 7.005,
+    "faits": 596,
+    "subis": 617
+   }
+  },
+  {
+   "position": 26,
+   "licence": "102055P",
+   "name": "CLEMENT GILLES",
+   "club": "Cercle de billard de Bordeaux",
+   "pts": 37.02670454545455,
+   "moy": 1.0118168389955686,
+   "count": 4,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 0,
+    "faits": 216,
+    "subis": 300
+   }
+  },
+  {
+   "position": 27,
+   "licence": "211605V",
+   "name": "CLEMENT FRANÇOISE",
+   "club": "AS Billard Brest",
+   "pts": 37.01464285714286,
+   "moy": 1.1347874720357942,
+   "count": 3,
+   "tn2": null
+  },
+  {
+   "position": 28,
+   "licence": "239035V",
+   "name": "WEBER ARTHUR",
+   "club": "AS Billard Brest",
+   "pts": 35.02027777777778,
+   "moy": 1.093167701863354,
+   "count": 3,
+   "tn2": null
+  },
+  {
+   "position": 29,
+   "licence": "103151X",
+   "name": "LANGLOIS ARNAUD",
+   "club": "BC Amiens",
+   "pts": 34.02788888888889,
+   "moy": 1.251786695986806,
+   "count": 2,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 9.008888888888889,
+    "faits": 984,
+    "subis": 880
+   }
+  },
+  {
+   "position": 30,
+   "licence": "104658I",
+   "name": "MICHEL DAMIEN",
+   "club": "Académie de billard de Le Mans",
+   "pts": 34.0218253968254,
+   "moy": 1.0407942238267147,
+   "count": 4,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 13.005714285714285,
+    "faits": 609,
+    "subis": 666
+   }
+  },
+  {
+   "position": 31,
+   "licence": "104932K",
+   "name": "KLEIN ÉMILIE",
+   "club": "BC Amiens",
+   "pts": 33.01779761904762,
+   "moy": 1.003479773814702,
+   "count": 4,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 13.005714285714285,
+    "faits": 627,
+    "subis": 568
+   }
+  },
+  {
+   "position": 32,
+   "licence": "102877V",
+   "name": "GAILLARD SÉBASTIEN",
+   "club": "Cercle de billard de Strasbourg",
+   "pts": 32.024972222222225,
+   "moy": 0.9935725763256561,
+   "count": 5,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 5.003333333333333,
+    "faits": 564,
+    "subis": 648
+   }
+  },
+  {
+   "position": 33,
+   "licence": "103425Z",
+   "name": "BOURGEOIS DIDIER",
+   "club": "AS Billard Orléans",
+   "pts": 31.018611111111113,
+   "moy": 1.0484018264840183,
+   "count": 3,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 4.001111111111111,
+    "faits": 503,
+    "subis": 556
+   }
+  },
+  {
+   "position": 34,
+   "licence": "105343N",
+   "name": "CARLIER SAMIR",
+   "club": "BC Fréjus",
+   "pts": 31.01769841269841,
+   "moy": 0.9150303463048911,
+   "count": 5,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 13.007142857142858,
+    "faits": 693,
+    "subis": 714
+   }
+  },
+  {
+   "position": 35,
+   "licence": "102329R",
+   "name": "GRONDIN HUGO",
+   "club": "Académie de billard de Toulouse",
+   "pts": 30.02638888888889,
+   "moy": 1.181785457163427,
+   "count": 4,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 9.00875,
+    "faits": 853,
+    "subis": 704
+   }
+  },
+  {
+   "position": 36,
+   "licence": "105069L",
+   "name": "MAILLARD CAMILLE",
+   "club": "Académie de billard de Nantes",
+   "pts": 30.025873015873017,
+   "moy": 1.117829457364341,
+   "count": 3,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 18.01142857142857,
+    "faits": 718,
+    "subis": 599
+   }
+  },
+  {
+   "position": 37,
+   "licence": "103836C",
+   "name": "BOUCHET CÉDRIC",
+   "club": "BC Rouen",
+   "pts": 28.020158730158723,
+   "moy": 1.0602333648691264,
+   "count": 5,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 7.00375,
+    "faits": 647,
+    "subis": 569
+   }
+  },
+  {
+   "position": 38,
+   "licence": "104110E",
+   "name": "CORDIER CAMILLE",
+   "club": "AS Billard Caen",
+   "pts": 28.019583333333333,
+   "moy": 0.9946648882960987,
+   "count": 5,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 7.00375,
+    "faits": 586,
+    "subis": 573
+   }
+  },
+  {
+   "position": 39,
+   "licence": "103699B",
+   "name": "MATHIEU MEHDI",
+   "club": "AS Billard Tours",
+   "pts": 27.020555555555557,
+   "moy": 0.9735099337748344,
+   "count": 4,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 5.003333333333333,
+    "faits": 625,
+    "subis": 666
+   }
+  },
+  {
+   "position": 40,
+   "licence": "103973D",
+   "name": "LUCAS NICOLAS",
+   "club": "AS Billard Montpellier",
+   "pts": 26.02041666666667,
+   "moy": 1.0433579335793357,
+   "count": 4,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 5.003333333333333,
+    "faits": 510,
+    "subis": 521
+   }
+  },
+  {
+   "position": 41,
+   "licence": "229540S",
+   "name": "CORDIER CHARLES",
+   "club": "Cercle de billard de Valenciennes",
+   "pts": 25.012857142857143,
+   "moy": 0.8766261015526647,
+   "count": 4,
+   "tn2": null
+  },
+  {
+   "position": 42,
+   "licence": "229962G",
+   "name": "MULLER LUDOVIC",
+   "club": "Académie de billard de Le Mans",
+   "pts": 22.021749999999997,
+   "moy": 1.232196806214933,
+   "count": 3,
+   "tn2": null
+  },
+  {
+   "position": 43,
+   "licence": "236925D",
+   "name": "PERRIN SERGE",
+   "club": "BC Vannes",
+   "pts": 21.016666666666666,
+   "moy": 0.9830906528886801,
+   "count": 3,
+   "tn2": null
+  },
+  {
+   "position": 44,
+   "licence": "105617P",
+   "name": "LAURENT PAULINE",
+   "club": "BC Grenoble",
+   "pts": 20.015797619047618,
+   "moy": 0.891970802919708,
+   "count": 5,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 5.00375,
+    "faits": 491,
+    "subis": 567
+   }
+  },
+  {
+   "position": 45,
+   "licence": "104795J",
+   "name": "MERCIER ÉRIC",
+   "club": "Académie de billard de Nice",
+   "pts": 20.012777777777778,
+   "moy": 1.0624380574826562,
+   "count": 3,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 7.005,
+    "faits": 608,
+    "subis": 551
+   }
+  },
+  {
+   "position": 46,
+   "licence": "105206M",
+   "name": "BAILLY PATRICK",
+   "club": "BC Amiens",
+   "pts": 19.015793650793654,
+   "moy": 0.9074979625101874,
+   "count": 5,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 2.0033333333333334,
+    "faits": 243,
+    "subis": 280
+   }
+  },
+  {
+   "position": 47,
+   "licence": "106302U",
+   "name": "HENRY GUILLAUME",
+   "club": "Académie de billard de Laon",
+   "pts": 19.014583333333334,
+   "moy": 1.0542718968296614,
+   "count": 3,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 5.0025,
+    "faits": 538,
+    "subis": 494
+   }
+  },
+  {
+   "position": 48,
+   "licence": "105754Q",
+   "name": "DUMONT ARNAUD",
+   "club": "Cercle de billard de Besançon",
+   "pts": 19.013333333333335,
+   "moy": 0.830179972311952,
+   "count": 5,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 2.0033333333333334,
+    "faits": 230,
+    "subis": 290
+   }
+  },
+  {
+   "position": 49,
+   "licence": "251062E",
+   "name": "DURAND NOAH",
+   "club": "AS Billard Douai",
+   "pts": 19.01075,
+   "moy": 0.9635826771653543,
+   "count": 3,
+   "tn2": null
+  },
+  {
+   "position": 50,
+   "licence": "105891R",
+   "name": "LEGRAND ARNAUD",
+   "club": "Cercle de billard de Lille",
+   "pts": 18.016666666666666,
+   "moy": 1.216030534351145,
+   "count": 2,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 1.0033333333333334,
+    "faits": 275,
+    "subis": 263
+   }
+  },
+  {
+   "position": 51,
+   "licence": "105480O",
+   "name": "BRETON CLAIRE",
+   "club": "Cercle de billard de Clermont",
+   "pts": 18.01490476190476,
+   "moy": 0.9077069457659372,
+   "count": 4,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 4.003,
+    "faits": 584,
+    "subis": 635
+   }
+  },
+  {
+   "position": 52,
+   "licence": "104247F",
+   "name": "ROBERT KEVIN",
+   "club": "Académie de billard de Nice",
+   "pts": 18.01422222222222,
+   "moy": 0.9287365177195686,
+   "count": 5,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 4.002,
+    "faits": 580,
+    "subis": 594
+   }
+  },
+  {
+   "position": 53,
+   "licence": "216880O",
+   "name": "GILBERT MARTINE",
+   "club": "BC Avignon",
+   "pts": 17.014,
+   "moy": 1.0398126463700235,
+   "count": 1,
+   "tn2": null
+  },
+  {
+   "position": 54,
+   "licence": "106439V",
+   "name": "MARECHAL DIDIER",
+   "club": "Académie de billard de Laon",
+   "pts": 17.007936507936506,
+   "moy": 0.9054640069384216,
+   "count": 2,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 4.002222222222223,
+    "faits": 456,
+    "subis": 519
+   }
+  },
+  {
+   "position": 55,
+   "licence": "106713X",
+   "name": "MARECHAL ROMAIN",
+   "club": "Cercle de billard de Épernay",
+   "pts": 15.012083333333333,
+   "moy": 0.829064587973274,
+   "count": 4,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 7.005,
+    "faits": 578,
+    "subis": 601
+   }
+  },
+  {
+   "position": 56,
+   "licence": "106028S",
+   "name": "MARTINEZ JORDAN",
+   "club": "BC Troyes",
+   "pts": 15.01047619047619,
+   "moy": 0.8810408921933085,
+   "count": 5,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 1,
+    "faits": 227,
+    "subis": 300
+   }
+  },
+  {
+   "position": 57,
+   "licence": "106165T",
+   "name": "CARON THIERRY",
+   "club": "Cercle de billard de Épernay",
+   "pts": 14.014523809523808,
+   "moy": 0.9765777488614183,
+   "count": 4,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 2.0033333333333334,
+    "faits": 233,
+    "subis": 274
+   }
+  },
+  {
+   "position": 58,
+   "licence": "212238Q",
+   "name": "GARCIA LOUIS",
+   "club": "AS Billard Tours",
+   "pts": 14.01279761904762,
+   "moy": 1.0149837133550488,
+   "count": 3,
+   "tn2": null
+  },
+  {
+   "position": 59,
+   "licence": "232283F",
+   "name": "FOURNIER FRÉDÉRIC",
+   "club": "Cercle de billard de Valenciennes",
+   "pts": 13.008333333333333,
+   "moy": 1.00635593220339,
+   "count": 2,
+   "tn2": null
+  },
+  {
+   "position": 60,
+   "licence": "245154Q",
+   "name": "DUPONT ADRIEN",
+   "club": "Cercle de billard de Lille",
+   "pts": 13.004285714285714,
+   "moy": 0.8135838150289018,
+   "count": 1,
+   "tn2": null
+  },
+  {
+   "position": 61,
+   "licence": "224687N",
+   "name": "SIMON ANTOINE",
+   "club": "Académie de billard de Nantes",
+   "pts": 12.012777777777778,
+   "moy": 1.117350611951044,
+   "count": 3,
+   "tn2": null
+  },
+  {
+   "position": 62,
+   "licence": "108631L",
+   "name": "FRANCOIS NADIA",
+   "club": "Académie de billard de Boulogne",
+   "pts": 12.009365079365079,
+   "moy": 0.8944954128440367,
+   "count": 3,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 7.007142857142857,
+    "faits": 623,
+    "subis": 620
+   }
+  },
+  {
+   "position": 63,
+   "licence": "106850Y",
+   "name": "BONNET ERWAN",
+   "club": "Cercle de billard de Lille",
+   "pts": 12.006785714285716,
+   "moy": 0.9121447028423773,
+   "count": 2,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 5.0025,
+    "faits": 498,
+    "subis": 508
+   }
+  },
+  {
+   "position": 64,
+   "licence": "219623B",
+   "name": "MATHIEU RAPHAËL",
+   "club": "BC Lorient",
+   "pts": 11.013,
+   "moy": 1.1645796064400715,
+   "count": 1,
+   "tn2": null
+  },
+  {
+   "position": 65,
+   "licence": "106576W",
+   "name": "MARTY FABIEN",
+   "club": "BC Rouen",
+   "pts": 11.012500000000001,
+   "moy": 0.8516949152542372,
+   "count": 4,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 2.0033333333333334,
+    "faits": 261,
+    "subis": 290
+   }
+  },
+  {
+   "position": 66,
+   "licence": "102603T",
+   "name": "LEROUX NICOLAS",
+   "club": "Cercle de billard de Marseille",
+   "pts": 11.012,
+   "moy": 1.0861759425493716,
+   "count": 1,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 11.012,
+    "faits": 1210,
+    "subis": 1114
+   }
+  },
+  {
+   "position": 67,
+   "licence": "200844C",
+   "name": "MARIE DOMINIQUE",
+   "club": "BC Vannes",
+   "pts": 10.00875,
+   "moy": 0.9563392107472712,
+   "count": 2,
+   "tn2": null
+  },
+  {
+   "position": 68,
+   "licence": "106987Z",
+   "name": "SCHNEIDER CHLOÉ",
+   "club": "BC Soissons",
+   "pts": 9.013333333333334,
+   "moy": 0.864070536370316,
+   "count": 4,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 2.0033333333333334,
+    "faits": 236,
+    "subis": 289
+   }
+  },
+  {
+   "position": 69,
+   "licence": "110275X",
+   "name": "RODRIGUEZ MAXIME",
+   "club": "Cercle de billard de Évry",
+   "pts": 9.0075,
+   "moy": 1.0048840048840049,
+   "count": 1,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 9.0075,
+    "faits": 823,
+    "subis": 819
+   }
+  },
+  {
+   "position": 70,
+   "licence": "107672E",
+   "name": "MALLET MAXIME",
+   "club": "AS Billard Cambrai",
+   "pts": 9.007083333333334,
+   "moy": 0.9130434782608695,
+   "count": 3,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 1.0033333333333334,
+    "faits": 237,
+    "subis": 268
+   }
+  },
+  {
+   "position": 71,
+   "licence": "202321Z",
+   "name": "BRUNET GILLES",
+   "club": "BC Chartres",
+   "pts": 9.006666666666666,
+   "moy": 1.0070011668611436,
+   "count": 1,
+   "tn2": null
+  },
+  {
+   "position": 72,
+   "licence": "107809F",
+   "name": "RENAUD HUGO",
+   "club": "AS Billard Cambrai",
+   "pts": 8.012222222222224,
+   "moy": 0.7760165403170227,
+   "count": 4,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 1.0033333333333334,
+    "faits": 225,
+    "subis": 289
+   }
+  },
+  {
+   "position": 73,
+   "licence": "107261B",
+   "name": "OLIVIER PATRICK",
+   "club": "Académie de billard de Nancy",
+   "pts": 8.00888888888889,
+   "moy": 0.8559928443649374,
+   "count": 3,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 2.0033333333333334,
+    "faits": 180,
+    "subis": 290
+   }
+  },
+  {
+   "position": 74,
+   "licence": "107535D",
+   "name": "LEGRAND PIERRE",
+   "club": "BC Rouen",
+   "pts": 8.007777777777779,
+   "moy": 0.6680045871559633,
+   "count": 5,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 1.0033333333333334,
+    "faits": 253,
+    "subis": 287
+   }
+  },
+  {
+   "position": 75,
+   "licence": "108494K",
+   "name": "DAVID SARAH",
+   "club": "Cercle de billard de Valenciennes",
+   "pts": 8.007083333333334,
+   "moy": 0.9273399014778325,
+   "count": 2,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 3.0033333333333334,
+    "faits": 245,
+    "subis": 273
+   }
+  },
+  {
+   "position": 76,
+   "licence": "108905N",
+   "name": "AUBRY THIERRY",
+   "club": "BC Épinal",
+   "pts": 8.004444444444445,
+   "moy": 0.8721804511278195,
+   "count": 2,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 4.002222222222223,
+    "faits": 489,
+    "subis": 491
+   }
+  },
+  {
+   "position": 77,
+   "licence": "216458A",
+   "name": "BLANCHARD PAUL",
+   "club": "BC Avignon",
+   "pts": 8.004444444444445,
+   "moy": 0.8526135389888603,
+   "count": 2,
+   "tn2": null
+  },
+  {
+   "position": 78,
+   "licence": "107398C",
+   "name": "FLEURY SARAH",
+   "club": "BC Fréjus",
+   "pts": 8.004444444444445,
+   "moy": 0.635195530726257,
+   "count": 5,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 1,
+    "faits": 120,
+    "subis": 300
+   }
+  },
+  {
+   "position": 79,
+   "licence": "243677T",
+   "name": "GILBERT JORDAN",
+   "club": "BC Amiens",
+   "pts": 8.00388888888889,
+   "moy": 0.8479117415287628,
+   "count": 2,
+   "tn2": null
+  },
+  {
+   "position": 80,
+   "licence": "104384G",
+   "name": "SANCHEZ SOPHIE",
+   "club": "AS Billard Brest",
+   "pts": 7.007142857142857,
+   "moy": 1.2145522388059702,
+   "count": 1,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 7.007142857142857,
+    "faits": 651,
+    "subis": 536
+   }
+  },
+  {
+   "position": 81,
+   "licence": "220256W",
+   "name": "CORDIER ISABELLE",
+   "club": "BC Nevers",
+   "pts": 7.007083333333334,
+   "moy": 0.8991494532199271,
+   "count": 2,
+   "tn2": null
+  },
+  {
+   "position": 82,
+   "licence": "107124A",
+   "name": "BRUN ERWAN",
+   "club": "BC Rennes",
+   "pts": 7.006666666666668,
+   "moy": 0.6307471264367817,
+   "count": 5,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 1,
+    "faits": 155,
+    "subis": 300
+   }
+  },
+  {
+   "position": 83,
+   "licence": "239457J",
+   "name": "NOEL STÉPHANE",
+   "club": "BC Brive",
+   "pts": 7.00375,
+   "moy": 1.10896309314587,
+   "count": 1,
+   "tn2": null
+  },
+  {
+   "position": 84,
+   "licence": "216669H",
+   "name": "LEFEBVRE CHRISTINE",
+   "club": "BC Brive",
+   "pts": 7.00375,
+   "moy": 0.8571428571428571,
+   "count": 1,
+   "tn2": null
+  },
+  {
+   "position": 85,
+   "licence": "232705T",
+   "name": "MOULIN ARNAUD",
+   "club": "BC Beauvais",
+   "pts": 7.00375,
+   "moy": 0.7813798836242727,
+   "count": 3,
+   "tn2": null
+  },
+  {
+   "position": 86,
+   "licence": "108220I",
+   "name": "LEFEVRE BENOÎT",
+   "club": "AS Billard Douai",
+   "pts": 6.006666666666668,
+   "moy": 0.6743393009377664,
+   "count": 4,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 2.0033333333333334,
+    "faits": 217,
+    "subis": 297
+   }
+  },
+  {
+   "position": 87,
+   "licence": "202110S",
+   "name": "LAINE ANAÏS",
+   "club": "BC Rennes",
+   "pts": 6.003333333333334,
+   "moy": 0.6915708812260536,
+   "count": 4,
+   "tn2": null
+  },
+  {
+   "position": 88,
+   "licence": "247897D",
+   "name": "ROY LOUIS",
+   "club": "BC Lorient",
+   "pts": 5.005333333333333,
+   "moy": 0.7353535353535353,
+   "count": 2,
+   "tn2": null
+  },
+  {
+   "position": 89,
+   "licence": "249796O",
+   "name": "ROUSSEAU FRÉDÉRIC",
+   "club": "BC Vannes",
+   "pts": 5.00375,
+   "moy": 0.9268680445151033,
+   "count": 1,
+   "tn2": null
+  },
+  {
+   "position": 90,
+   "licence": "108083H",
+   "name": "BOYER MANON",
+   "club": "AS Billard Reims",
+   "pts": 5.003333333333334,
+   "moy": 0.6981132075471698,
+   "count": 4,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 1.0033333333333334,
+    "faits": 178,
+    "subis": 260
+   }
+  },
+  {
+   "position": 91,
+   "licence": "246209Z",
+   "name": "GAY SACHA",
+   "club": "Cercle de billard de Besançon",
+   "pts": 5.003333333333333,
+   "moy": 1.0524691358024691,
+   "count": 1,
+   "tn2": null
+  },
+  {
+   "position": 92,
+   "licence": "109179P",
+   "name": "ADAM CHLOÉ",
+   "club": "Académie de billard de Beauvais",
+   "pts": 5.003333333333333,
+   "moy": 0.8421052631578947,
+   "count": 2,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 4.003333333333333,
+    "faits": 511,
+    "subis": 555
+   }
+  },
+  {
+   "position": 93,
+   "licence": "204642Y",
+   "name": "LAMY SÉBASTIEN",
+   "club": "Cercle de billard de Strasbourg",
+   "pts": 5.0025,
+   "moy": 0.8910133843212237,
+   "count": 1,
+   "tn2": null
+  },
+  {
+   "position": 94,
+   "licence": "108768M",
+   "name": "BERTIN NADIA",
+   "club": "AS Billard Reims",
+   "pts": 4.006666666666667,
+   "moy": 0.856140350877193,
+   "count": 2,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 2.0033333333333334,
+    "faits": 200,
+    "subis": 288
+   }
+  },
+  {
+   "position": 95,
+   "licence": "109316Q",
+   "name": "FAURE MARIE",
+   "club": "BC Amiens",
+   "pts": 4.003333333333334,
+   "moy": 0.7412993039443155,
+   "count": 3,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 1,
+    "faits": 216,
+    "subis": 300
+   }
+  },
+  {
+   "position": 96,
+   "licence": "109590S",
+   "name": "DUMAS DAMIEN",
+   "club": "Cercle de billard de Strasbourg",
+   "pts": 4.003333333333334,
+   "moy": 0.5116796440489433,
+   "count": 3,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 2.0033333333333334,
+    "faits": 183,
+    "subis": 299
+   }
+  },
+  {
+   "position": 97,
+   "licence": "214348I",
+   "name": "MEYER RAYMOND",
+   "club": "BC Gap",
+   "pts": 4.003333333333333,
+   "moy": 1.0147058823529411,
+   "count": 1,
+   "tn2": null
+  },
+  {
+   "position": 98,
+   "licence": "104521H",
+   "name": "COUSIN THOMAS",
+   "club": "AS Billard Angers",
+   "pts": 4.003333333333333,
+   "moy": 0.94,
+   "count": 1,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 4.003333333333333,
+    "faits": 470,
+    "subis": 500
+   }
+  },
+  {
+   "position": 99,
+   "licence": "252117N",
+   "name": "MARCHAND JEAN",
+   "club": "BC Arras",
+   "pts": 4.003333333333333,
+   "moy": 0.8469945355191257,
+   "count": 1,
+   "tn2": null
+  },
+  {
+   "position": 100,
+   "licence": "110412Y",
+   "name": "REY DYLAN",
+   "club": "AS Billard Cambrai",
+   "pts": 4.002222222222223,
+   "moy": 0.9147005444646098,
+   "count": 1,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 4.002222222222223,
+    "faits": 504,
+    "subis": 551
+   }
+  },
+  {
+   "position": 101,
+   "licence": "201688E",
+   "name": "BRUN BERNARD",
+   "club": "BC Chartres",
+   "pts": 4.002222222222223,
+   "moy": 0.7434312210200927,
+   "count": 1,
+   "tn2": null
+  },
+  {
+   "position": 102,
+   "licence": "251273L",
+   "name": "BENOIT GEORGES",
+   "club": "BC Cholet",
+   "pts": 4.002,
+   "moy": 0.9763513513513513,
+   "count": 1,
+   "tn2": null
+  },
+  {
+   "position": 103,
+   "licence": "247053B",
+   "name": "LECLERC FABRICE",
+   "club": "AS Billard Reims",
+   "pts": 4.001111111111111,
+   "moy": 0.9412698412698413,
+   "count": 1,
+   "tn2": null
+  },
+  {
+   "position": 104,
+   "licence": "250007V",
+   "name": "POIRIER PIERRE",
+   "club": "BC Nevers",
+   "pts": 4.001111111111111,
+   "moy": 0.7259978425026968,
+   "count": 2,
+   "tn2": null
+  },
+  {
+   "position": 105,
+   "licence": "220467D",
+   "name": "VOISIN LUDOVIC",
+   "club": "BC Brive",
+   "pts": 4.001111111111111,
+   "moy": 0.7202797202797203,
+   "count": 1,
+   "tn2": null
+  },
+  {
+   "position": 106,
+   "licence": "228063V",
+   "name": "MARTINEZ PAUL",
+   "club": "BC Mulhouse",
+   "pts": 3.0033333333333334,
+   "moy": 0.6558558558558558,
+   "count": 2,
+   "tn2": null
+  },
+  {
+   "position": 107,
+   "licence": "109453R",
+   "name": "SCHNEIDER CÉDRIC",
+   "club": "AS Billard Compiègne",
+   "pts": 3,
+   "moy": 0.4855555555555556,
+   "count": 3,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 1,
+    "faits": 171,
+    "subis": 300
+   }
+  },
+  {
+   "position": 108,
+   "licence": "233127H",
+   "name": "MAHE SERGE",
+   "club": "AS Billard Brest",
+   "pts": 2.0033333333333334,
+   "moy": 0.9689922480620154,
+   "count": 1,
+   "tn2": null
+  },
+  {
+   "position": 109,
+   "licence": "108357J",
+   "name": "PAYET DAVID",
+   "club": "AS Billard Cambrai",
+   "pts": 2.0033333333333334,
+   "moy": 0.9377162629757786,
+   "count": 1,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 2.0033333333333334,
+    "faits": 271,
+    "subis": 289
+   }
+  },
+  {
+   "position": 110,
+   "licence": "201055J",
+   "name": "ADAM JOËL",
+   "club": "BC Lorient",
+   "pts": 2.0033333333333334,
+   "moy": 0.847972972972973,
+   "count": 1,
+   "tn2": null
+  },
+  {
+   "position": 111,
+   "licence": "107946G",
+   "name": "BOYER NOÉ",
+   "club": "Académie de billard de Nice",
+   "pts": 2.0033333333333334,
+   "moy": 0.7735849056603774,
+   "count": 2,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 1.0033333333333334,
+    "faits": 225,
+    "subis": 283
+   }
+  },
+  {
+   "position": 112,
+   "licence": "109727T",
+   "name": "LAMBERT RACHID",
+   "club": "AS Billard Tours",
+   "pts": 2.0033333333333334,
+   "moy": 0.7344537815126051,
+   "count": 2,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 1,
+    "faits": 211,
+    "subis": 300
+   }
+  },
+  {
+   "position": 113,
+   "licence": "109864U",
+   "name": "ARNAUD CLÉMENT",
+   "club": "Cercle de billard de Chartres",
+   "pts": 2,
+   "moy": 0.6483333333333333,
+   "count": 2,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 1,
+    "faits": 222,
+    "subis": 300
+   }
+  },
+  {
+   "position": 114,
+   "licence": "253172W",
+   "name": "SCHNEIDER CÉLINE",
+   "club": "BC Rouen",
+   "pts": 2,
+   "moy": 0.61,
+   "count": 2,
+   "tn2": null
+  },
+  {
+   "position": 115,
+   "licence": "110001V",
+   "name": "BERTRAND CAMILLE",
+   "club": "BC Soissons",
+   "pts": 2,
+   "moy": 0.44333333333333336,
+   "count": 2,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 1,
+    "faits": 128,
+    "subis": 300
+   }
+  },
+  {
+   "position": 116,
+   "licence": "228274C",
+   "name": "NOEL RÉMI",
+   "club": "BC Brive",
+   "pts": 1.0033333333333334,
+   "moy": 0.950530035335689,
+   "count": 1,
+   "tn2": null
+  },
+  {
+   "position": 117,
+   "licence": "242411D",
+   "name": "MARTINEZ STÉPHANE",
+   "club": "BC Rouen",
+   "pts": 1,
+   "moy": 0.8833333333333333,
+   "count": 1,
+   "tn2": null
+  },
+  {
+   "position": 118,
+   "licence": "219412U",
+   "name": "MAHE GILLES",
+   "club": "Académie de billard de Nice",
+   "pts": 1,
+   "moy": 0.8466666666666667,
+   "count": 1,
+   "tn2": null
+  },
+  {
+   "position": 119,
+   "licence": "109042O",
+   "name": "MARTINEZ GILLES",
+   "club": "AS Billard Cambrai",
+   "pts": 1,
+   "moy": 0.7333333333333333,
+   "count": 1,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 1,
+    "faits": 220,
+    "subis": 300
+   }
+  },
+  {
+   "position": 120,
+   "licence": "252539B",
+   "name": "PASQUIER YVES",
+   "club": "BC Carcassonne",
+   "pts": 1,
+   "moy": 0.7033333333333334,
+   "count": 1,
+   "tn2": null
+  },
+  {
+   "position": 121,
+   "licence": "110138W",
+   "name": "COLLIN RONAN",
+   "club": "AS Billard Compiègne",
+   "pts": 1,
+   "moy": 0.6966666666666667,
+   "count": 1,
+   "tn2": {
+    "season": "2026-2027",
+    "tn": 2,
+    "pts": 1,
+    "faits": 209,
+    "subis": 300
+   }
+  },
+  {
+   "position": 122,
+   "licence": "205064M",
+   "name": "OLIVIER PAUL",
+   "club": "BC Vichy",
+   "pts": 1,
+   "moy": 0.62,
+   "count": 1,
+   "tn2": null
+  },
+  {
+   "position": 123,
+   "licence": "242833R",
+   "name": "DUMONT ÉMILIE",
+   "club": "BC Avignon",
+   "pts": 1,
+   "moy": 0.6166666666666667,
+   "count": 1,
+   "tn2": null
+  },
+  {
+   "position": 124,
+   "licence": "224476G",
+   "name": "DUVAL LILIAN",
+   "club": "Cercle de billard de Strasbourg",
+   "pts": 1,
+   "moy": 0.6066666666666667,
+   "count": 1,
+   "tn2": null
+  },
+  {
+   "position": 125,
+   "licence": "251695Z",
+   "name": "GILLET LÉA",
+   "club": "BC Rouen",
+   "pts": 1,
+   "moy": 0.5933333333333334,
+   "count": 1,
+   "tn2": null
+  },
+  {
+   "position": 126,
+   "licence": "245787L",
+   "name": "PARIS LUCAS",
+   "club": "BC Amiens",
+   "pts": 1,
+   "moy": 0.5733333333333334,
+   "count": 1,
+   "tn2": null
+  },
+  {
+   "position": 127,
+   "licence": "250429J",
+   "name": "BARBIER MICKAËL",
+   "club": "Cercle de billard de Épernay",
+   "pts": 1,
+   "moy": 0.5166666666666667,
+   "count": 1,
+   "tn2": null
+  },
+  {
+   "position": 128,
+   "licence": "227430A",
+   "name": "GILLET MARTINE",
+   "club": "BC Sedan",
+   "pts": 1,
+   "moy": 0.45666666666666667,
+   "count": 1,
+   "tn2": null
+  },
+  {
+   "position": 129,
+   "licence": "253383D",
+   "name": "LEGER LAURA",
+   "club": "AS Billard Douai",
+   "pts": 1,
+   "moy": 0.25333333333333335,
+   "count": 1,
+   "tn2": null
+  }
+ ],
+ "expectedAfterTitle": "CLASSEMENT GLISSANT 5 QUILLES APRES TN2 2026-2027",
+ "tournamentResults": [
+  {
+   "name": "BARRE PATRICK",
+   "table": "M",
+   "rank": 1,
+   "setPoints": 20,
+   "matches": 6,
+   "faits": 1017,
+   "subis": 753,
+   "preqPouleRank": null
+  },
+  {
+   "name": "HUBERT MICHEL",
+   "table": "M",
+   "rank": 2,
+   "setPoints": 14,
+   "matches": 6,
+   "faits": 1184,
+   "subis": 1098,
+   "preqPouleRank": null
+  },
+  {
+   "name": "CHEVALLIER QUENTIN",
+   "table": "M",
+   "rank": 3,
+   "setPoints": 15,
+   "matches": 5,
+   "faits": 795,
+   "subis": 603,
+   "preqPouleRank": null
+  },
+  {
+   "name": "PETIT LUCAS",
+   "table": "M",
+   "rank": 4,
+   "setPoints": 8,
+   "matches": 5,
+   "faits": 746,
+   "subis": 750,
+   "preqPouleRank": null
+  },
+  {
+   "name": "COLLET OLIVIER",
+   "table": "M",
+   "rank": 5,
+   "setPoints": 11,
+   "matches": 4,
+   "faits": 623,
+   "subis": 520,
+   "preqPouleRank": null
+  },
+  {
+   "name": "PERRIN CHRISTOPHE",
+   "table": "M",
+   "rank": 6,
+   "setPoints": 9,
+   "matches": 4,
+   "faits": 582,
+   "subis": 462,
+   "preqPouleRank": null
+  },
+  {
+   "name": "MARCHAND JORDAN",
+   "table": "M",
+   "rank": 7,
+   "setPoints": 9,
+   "matches": 8,
+   "faits": 850,
+   "subis": 800,
+   "preqPouleRank": 1
+  },
+  {
+   "name": "CHAUVIN THIERRY",
+   "table": "M",
+   "rank": 8,
+   "setPoints": 9,
+   "matches": 8,
+   "faits": 785,
+   "subis": 732,
+   "preqPouleRank": 1
+  },
+  {
+   "name": "LAMY VINCENT",
+   "table": "M",
+   "rank": 9,
+   "setPoints": 8,
+   "matches": 7,
+   "faits": 739,
+   "subis": 643,
+   "preqPouleRank": 1
+  },
+  {
+   "name": "ADAM ÉRIC",
+   "table": "M",
+   "rank": 10,
+   "setPoints": 5,
+   "matches": 3,
+   "faits": 431,
+   "subis": 378,
+   "preqPouleRank": null
+  },
+  {
+   "name": "JACQUET ÉRIC",
+   "table": "M",
+   "rank": 11,
+   "setPoints": 4,
+   "matches": 3,
+   "faits": 392,
+   "subis": 377,
+   "preqPouleRank": null
+  },
+  {
+   "name": "MAILLARD CAMILLE",
+   "table": "M",
+   "rank": 12,
+   "setPoints": 8,
+   "matches": 7,
+   "faits": 718,
+   "subis": 599,
+   "preqPouleRank": 1
+  },
+  {
+   "name": "CARLIER SAMIR",
+   "table": "M",
+   "rank": 13,
+   "setPoints": 5,
+   "matches": 7,
+   "faits": 693,
+   "subis": 714,
+   "preqPouleRank": 1
+  },
+  {
+   "name": "BOYER JULIEN",
+   "table": "M",
+   "rank": 14,
+   "setPoints": 5,
+   "matches": 7,
+   "faits": 657,
+   "subis": 683,
+   "preqPouleRank": 1
+  },
+  {
+   "name": "KLEIN ÉMILIE",
+   "table": "M",
+   "rank": 15,
+   "setPoints": 4,
+   "matches": 7,
+   "faits": 627,
+   "subis": 568,
+   "preqPouleRank": 1
+  },
+  {
+   "name": "MICHEL DAMIEN",
+   "table": "M",
+   "rank": 16,
+   "setPoints": 4,
+   "matches": 7,
+   "faits": 609,
+   "subis": 666,
+   "preqPouleRank": 1
+  },
+  {
+   "name": "BERTRAND DIDIER",
+   "table": "N",
+   "rank": 1,
+   "setPoints": 17,
+   "matches": 11,
+   "faits": 1352,
+   "subis": 1074,
+   "preqPouleRank": 2
+  },
+  {
+   "name": "VASSEUR LAURENT",
+   "table": "N",
+   "rank": 2,
+   "setPoints": 13,
+   "matches": 10,
+   "faits": 1327,
+   "subis": 1013,
+   "preqPouleRank": 2
+  },
+  {
+   "name": "LEROUX NICOLAS",
+   "table": "N",
+   "rank": 3,
+   "setPoints": 12,
+   "matches": 10,
+   "faits": 1210,
+   "subis": 1114,
+   "preqPouleRank": 1
+  },
+  {
+   "name": "CARPENTIER BENOÎT",
+   "table": "N",
+   "rank": 4,
+   "setPoints": 10,
+   "matches": 10,
+   "faits": 1179,
+   "subis": 1123,
+   "preqPouleRank": 3
+  },
+  {
+   "name": "COLIN GWENDAL",
+   "table": "N",
+   "rank": 5,
+   "setPoints": 8,
+   "matches": 8,
+   "faits": 967,
+   "subis": 818,
+   "preqPouleRank": 2
+  },
+  {
+   "name": "GRONDIN HUGO",
+   "table": "N",
+   "rank": 6,
+   "setPoints": 7,
+   "matches": 8,
+   "faits": 853,
+   "subis": 704,
+   "preqPouleRank": 2
+  },
+  {
+   "name": "LANGLOIS ARNAUD",
+   "table": "N",
+   "rank": 7,
+   "setPoints": 8,
+   "matches": 9,
+   "faits": 984,
+   "subis": 880,
+   "preqPouleRank": 1
+  },
+  {
+   "name": "RODRIGUEZ MAXIME",
+   "table": "N",
+   "rank": 8,
+   "setPoints": 6,
+   "matches": 8,
+   "faits": 823,
+   "subis": 819,
+   "preqPouleRank": 2
+  },
+  {
+   "name": "LEBLANC MICKAËL",
+   "table": "N",
+   "rank": 9,
+   "setPoints": 5,
+   "matches": 7,
+   "faits": 672,
+   "subis": 526,
+   "preqPouleRank": 2
+  },
+  {
+   "name": "SANCHEZ SOPHIE",
+   "table": "N",
+   "rank": 10,
+   "setPoints": 5,
+   "matches": 7,
+   "faits": 651,
+   "subis": 536,
+   "preqPouleRank": 2
+  },
+  {
+   "name": "FRANCOIS NADIA",
+   "table": "N",
+   "rank": 11,
+   "setPoints": 5,
+   "matches": 7,
+   "faits": 623,
+   "subis": 620,
+   "preqPouleRank": 1
+  },
+  {
+   "name": "BOUCHET CÉDRIC",
+   "table": "N",
+   "rank": 12,
+   "setPoints": 3,
+   "matches": 8,
+   "faits": 647,
+   "subis": 569,
+   "preqPouleRank": 2
+  },
+  {
+   "name": "MERCIER ÉRIC",
+   "table": "N",
+   "rank": 13,
+   "setPoints": 4,
+   "matches": 8,
+   "faits": 608,
+   "subis": 551,
+   "preqPouleRank": 2
+  },
+  {
+   "name": "DUMONT LUCAS",
+   "table": "N",
+   "rank": 14,
+   "setPoints": 4,
+   "matches": 8,
+   "faits": 596,
+   "subis": 617,
+   "preqPouleRank": 2
+  },
+  {
+   "name": "MARECHAL ROMAIN",
+   "table": "N",
+   "rank": 15,
+   "setPoints": 4,
+   "matches": 8,
+   "faits": 578,
+   "subis": 601,
+   "preqPouleRank": 2
+  },
+  {
+   "name": "CORDIER CAMILLE",
+   "table": "N",
+   "rank": 16,
+   "setPoints": 3,
+   "matches": 8,
+   "faits": 586,
+   "subis": 573,
+   "preqPouleRank": 2
+  },
+  {
+   "name": "CHEVALLIER LOÏC",
+   "table": "N",
+   "rank": 17,
+   "setPoints": 4,
+   "matches": 9,
+   "faits": 635,
+   "subis": 608,
+   "preqPouleRank": 1
+  },
+  {
+   "name": "HENRY GUILLAUME",
+   "table": "N",
+   "rank": 18,
+   "setPoints": 2,
+   "matches": 8,
+   "faits": 538,
+   "subis": 494,
+   "preqPouleRank": 3
+  },
+  {
+   "name": "LUCAS NICOLAS",
+   "table": "N",
+   "rank": 19,
+   "setPoints": 2,
+   "matches": 6,
+   "faits": 510,
+   "subis": 521,
+   "preqPouleRank": 3
+  },
+  {
+   "name": "ROUSSEL JULIE",
+   "table": "N",
+   "rank": 20,
+   "setPoints": 3,
+   "matches": 9,
+   "faits": 599,
+   "subis": 642,
+   "preqPouleRank": 1
+  },
+  {
+   "name": "BONNET ERWAN",
+   "table": "N",
+   "rank": 21,
+   "setPoints": 2,
+   "matches": 8,
+   "faits": 498,
+   "subis": 508,
+   "preqPouleRank": 3
+  },
+  {
+   "name": "MATHIEU MEHDI",
+   "table": "N",
+   "rank": 22,
+   "setPoints": 3,
+   "matches": 9,
+   "faits": 625,
+   "subis": 666,
+   "preqPouleRank": 1
+  },
+  {
+   "name": "LAURENT PAULINE",
+   "table": "N",
+   "rank": 23,
+   "setPoints": 3,
+   "matches": 8,
+   "faits": 491,
+   "subis": 567,
+   "preqPouleRank": 3
+  },
+  {
+   "name": "GAILLARD SÉBASTIEN",
+   "table": "N",
+   "rank": 24,
+   "setPoints": 3,
+   "matches": 9,
+   "faits": 564,
+   "subis": 648,
+   "preqPouleRank": 1
+  },
+  {
+   "name": "ADAM CHLOÉ",
+   "table": "N",
+   "rank": 25,
+   "setPoints": 3,
+   "matches": 9,
+   "faits": 511,
+   "subis": 555,
+   "preqPouleRank": 3
+  },
+  {
+   "name": "BOURGEOIS DIDIER",
+   "table": "N",
+   "rank": 26,
+   "setPoints": 1,
+   "matches": 9,
+   "faits": 503,
+   "subis": 556,
+   "preqPouleRank": 2
+  },
+  {
+   "name": "MARECHAL DIDIER",
+   "table": "N",
+   "rank": 27,
+   "setPoints": 2,
+   "matches": 9,
+   "faits": 456,
+   "subis": 519,
+   "preqPouleRank": 2
+  },
+  {
+   "name": "ROBERT KEVIN",
+   "table": "N",
+   "rank": 28,
+   "setPoints": 2,
+   "matches": 10,
+   "faits": 580,
+   "subis": 594,
+   "preqPouleRank": 1
+  },
+  {
+   "name": "REY DYLAN",
+   "table": "N",
+   "rank": 29,
+   "setPoints": 2,
+   "matches": 9,
+   "faits": 504,
+   "subis": 551,
+   "preqPouleRank": 2
+  },
+  {
+   "name": "COUSIN THOMAS",
+   "table": "N",
+   "rank": 30,
+   "setPoints": 2,
+   "matches": 6,
+   "faits": 470,
+   "subis": 500,
+   "preqPouleRank": 2
+  },
+  {
+   "name": "AUBRY THIERRY",
+   "table": "N",
+   "rank": 31,
+   "setPoints": 2,
+   "matches": 9,
+   "faits": 489,
+   "subis": 491,
+   "preqPouleRank": 2
+  },
+  {
+   "name": "BRETON CLAIRE",
+   "table": "N",
+   "rank": 32,
+   "setPoints": 3,
+   "matches": 10,
+   "faits": 584,
+   "subis": 635,
+   "preqPouleRank": 1
+  },
+  {
+   "name": "DAVID SARAH",
+   "table": "CLS",
+   "rank": 1,
+   "setPoints": 1,
+   "matches": 3,
+   "faits": 245,
+   "subis": 273,
+   "preqPouleRank": 3
+  },
+  {
+   "name": "MARTINEZ JORDAN",
+   "table": "CLS",
+   "rank": 2,
+   "setPoints": 0,
+   "matches": 3,
+   "faits": 227,
+   "subis": 300,
+   "preqPouleRank": 4
+  },
+  {
+   "name": "PAYET DAVID",
+   "table": "CLS",
+   "rank": 3,
+   "setPoints": 1,
+   "matches": 3,
+   "faits": 271,
+   "subis": 289,
+   "preqPouleRank": 3
+  },
+  {
+   "name": "OLIVIER PATRICK",
+   "table": "CLS",
+   "rank": 4,
+   "setPoints": 1,
+   "matches": 3,
+   "faits": 180,
+   "subis": 290,
+   "preqPouleRank": 3
+  },
+  {
+   "name": "LEGRAND ARNAUD",
+   "table": "CLS",
+   "rank": 5,
+   "setPoints": 1,
+   "matches": 3,
+   "faits": 275,
+   "subis": 263,
+   "preqPouleRank": 4
+  },
+  {
+   "name": "BOYER MANON",
+   "table": "CLS",
+   "rank": 6,
+   "setPoints": 1,
+   "matches": 3,
+   "faits": 178,
+   "subis": 260,
+   "preqPouleRank": 4
+  },
+  {
+   "name": "MARTY FABIEN",
+   "table": "CLS",
+   "rank": 7,
+   "setPoints": 1,
+   "matches": 3,
+   "faits": 261,
+   "subis": 290,
+   "preqPouleRank": 3
+  },
+  {
+   "name": "RENAUD HUGO",
+   "table": "CLS",
+   "rank": 8,
+   "setPoints": 1,
+   "matches": 3,
+   "faits": 225,
+   "subis": 289,
+   "preqPouleRank": 4
+  },
+  {
+   "name": "BRUN ERWAN",
+   "table": "CLS",
+   "rank": 9,
+   "setPoints": 0,
+   "matches": 3,
+   "faits": 155,
+   "subis": 300,
+   "preqPouleRank": 4
+  },
+  {
+   "name": "ARNAUD CLÉMENT",
+   "table": "CLS",
+   "rank": 10,
+   "setPoints": 0,
+   "matches": 3,
+   "faits": 222,
+   "subis": 300,
+   "preqPouleRank": 4
+  },
+  {
+   "name": "SCHNEIDER CÉDRIC",
+   "table": "CLS",
+   "rank": 11,
+   "setPoints": 0,
+   "matches": 3,
+   "faits": 171,
+   "subis": 300,
+   "preqPouleRank": 4
+  },
+  {
+   "name": "BAILLY PATRICK",
+   "table": "CLS",
+   "rank": 12,
+   "setPoints": 1,
+   "matches": 3,
+   "faits": 243,
+   "subis": 280,
+   "preqPouleRank": 3
+  },
+  {
+   "name": "BOYER NOÉ",
+   "table": "CLS",
+   "rank": 13,
+   "setPoints": 1,
+   "matches": 3,
+   "faits": 225,
+   "subis": 283,
+   "preqPouleRank": 4
+  },
+  {
+   "name": "DUMONT ARNAUD",
+   "table": "CLS",
+   "rank": 14,
+   "setPoints": 1,
+   "matches": 3,
+   "faits": 230,
+   "subis": 290,
+   "preqPouleRank": 3
+  },
+  {
+   "name": "CARON THIERRY",
+   "table": "CLS",
+   "rank": 15,
+   "setPoints": 1,
+   "matches": 3,
+   "faits": 233,
+   "subis": 274,
+   "preqPouleRank": 3
+  },
+  {
+   "name": "COLLIN RONAN",
+   "table": "CLS",
+   "rank": 16,
+   "setPoints": 0,
+   "matches": 3,
+   "faits": 209,
+   "subis": 300,
+   "preqPouleRank": 4
+  },
+  {
+   "name": "FAURE MARIE",
+   "table": "CLS",
+   "rank": 17,
+   "setPoints": 0,
+   "matches": 3,
+   "faits": 216,
+   "subis": 300,
+   "preqPouleRank": 4
+  },
+  {
+   "name": "FLEURY SARAH",
+   "table": "CLS",
+   "rank": 18,
+   "setPoints": 0,
+   "matches": 3,
+   "faits": 120,
+   "subis": 300,
+   "preqPouleRank": 4
+  },
+  {
+   "name": "LEGRAND PIERRE",
+   "table": "CLS",
+   "rank": 19,
+   "setPoints": 1,
+   "matches": 3,
+   "faits": 253,
+   "subis": 287,
+   "preqPouleRank": 4
+  },
+  {
+   "name": "SCHNEIDER CHLOÉ",
+   "table": "CLS",
+   "rank": 20,
+   "setPoints": 1,
+   "matches": 3,
+   "faits": 236,
+   "subis": 289,
+   "preqPouleRank": 3,
+   "abandon": "CLS"
+  },
+  {
+   "name": "LEFEVRE BENOÎT",
+   "table": "CLS",
+   "rank": 21,
+   "setPoints": 1,
+   "matches": 3,
+   "faits": 217,
+   "subis": 297,
+   "preqPouleRank": 3,
+   "abandon": "CLS"
+  },
+  {
+   "name": "BERTIN NADIA",
+   "table": "CLS",
+   "rank": 22,
+   "setPoints": 1,
+   "matches": 3,
+   "faits": 200,
+   "subis": 288,
+   "preqPouleRank": 3,
+   "abandon": "CLS"
+  },
+  {
+   "name": "DUMAS DAMIEN",
+   "table": "CLS",
+   "rank": 23,
+   "setPoints": 1,
+   "matches": 3,
+   "faits": 183,
+   "subis": 299,
+   "preqPouleRank": 3,
+   "abandon": "CLS"
+  },
+  {
+   "name": "MALLET MAXIME",
+   "table": "CLS",
+   "rank": 24,
+   "setPoints": 1,
+   "matches": 3,
+   "faits": 237,
+   "subis": 268,
+   "preqPouleRank": 4,
+   "abandon": "CLS"
+  },
+  {
+   "name": "MARTINEZ GILLES",
+   "table": "CLS",
+   "rank": 25,
+   "setPoints": 0,
+   "matches": 3,
+   "faits": 220,
+   "subis": 300,
+   "preqPouleRank": 4,
+   "abandon": "CLS"
+  },
+  {
+   "name": "LAMBERT RACHID",
+   "table": "CLS",
+   "rank": 26,
+   "setPoints": 0,
+   "matches": 3,
+   "faits": 211,
+   "subis": 300,
+   "preqPouleRank": 4,
+   "abandon": "CLS"
+  },
+  {
+   "name": "BERTRAND CAMILLE",
+   "table": "CLS",
+   "rank": 27,
+   "setPoints": 0,
+   "matches": 3,
+   "faits": 128,
+   "subis": 300,
+   "preqPouleRank": 4,
+   "abandon": "CLS"
+  },
+  {
+   "name": "CLEMENT GILLES",
+   "table": "CLS",
+   "rank": 28,
+   "setPoints": 0,
+   "matches": 3,
+   "faits": 216,
+   "subis": 300,
+   "preqPouleRank": 4,
+   "abandon": "PREQ"
+  }
+ ],
+ "consolanteHeld": true,
+ "expectedPoints": [
+  {
+   "name": "BARRE PATRICK",
+   "rank": 1,
+   "pts": 80.03333333333333,
+   "base": 80,
+   "decimal": 0.03333333333333333
+  },
+  {
+   "name": "HUBERT MICHEL",
+   "rank": 2,
+   "pts": 54.02333333333333,
+   "base": 54,
+   "decimal": 0.023333333333333334
+  },
+  {
+   "name": "CHEVALLIER QUENTIN",
+   "rank": 3,
+   "pts": 38.03,
+   "base": 38,
+   "decimal": 0.03
+  },
+  {
+   "name": "PETIT LUCAS",
+   "rank": 4,
+   "pts": 38.016,
+   "base": 38,
+   "decimal": 0.016
+  },
+  {
+   "name": "COLLET OLIVIER",
+   "rank": 5,
+   "pts": 26.0275,
+   "base": 26,
+   "decimal": 0.0275
+  },
+  {
+   "name": "PERRIN CHRISTOPHE",
+   "rank": 6,
+   "pts": 26.0225,
+   "base": 26,
+   "decimal": 0.0225
+  },
+  {
+   "name": "MARCHAND JORDAN",
+   "rank": 8,
+   "pts": 26.01125,
+   "base": 26,
+   "decimal": 0.01125
+  },
+  {
+   "name": "CHAUVIN THIERRY",
+   "rank": 7,
+   "pts": 26.01125,
+   "base": 26,
+   "decimal": 0.01125
+  },
+  {
+   "name": "LAMY VINCENT",
+   "rank": 13,
+   "pts": 18.01142857142857,
+   "base": 18,
+   "decimal": 0.011428571428571429
+  },
+  {
+   "name": "ADAM ÉRIC",
+   "rank": 10,
+   "pts": 18.016666666666666,
+   "base": 18,
+   "decimal": 0.016666666666666666
+  },
+  {
+   "name": "JACQUET ÉRIC",
+   "rank": 11,
+   "pts": 18.013333333333332,
+   "base": 18,
+   "decimal": 0.013333333333333332
+  },
+  {
+   "name": "MAILLARD CAMILLE",
+   "rank": 12,
+   "pts": 18.01142857142857,
+   "base": 18,
+   "decimal": 0.011428571428571429
+  },
+  {
+   "name": "CARLIER SAMIR",
+   "rank": 15,
+   "pts": 13.007142857142858,
+   "base": 13,
+   "decimal": 0.007142857142857143
+  },
+  {
+   "name": "BOYER JULIEN",
+   "rank": 16,
+   "pts": 13.007142857142858,
+   "base": 13,
+   "decimal": 0.007142857142857143
+  },
+  {
+   "name": "KLEIN ÉMILIE",
+   "rank": 17,
+   "pts": 13.005714285714285,
+   "base": 13,
+   "decimal": 0.005714285714285714
+  },
+  {
+   "name": "MICHEL DAMIEN",
+   "rank": 18,
+   "pts": 13.005714285714285,
+   "base": 13,
+   "decimal": 0.005714285714285714
+  },
+  {
+   "name": "BERTRAND DIDIER",
+   "rank": 9,
+   "pts": 25.015454545454546,
+   "base": 25,
+   "decimal": 0.015454545454545453
+  },
+  {
+   "name": "VASSEUR LAURENT",
+   "rank": 14,
+   "pts": 17.013,
+   "base": 17,
+   "decimal": 0.013000000000000001
+  },
+  {
+   "name": "LEROUX NICOLAS",
+   "rank": 19,
+   "pts": 11.012,
+   "base": 11,
+   "decimal": 0.012
+  },
+  {
+   "name": "CARPENTIER BENOÎT",
+   "rank": 20,
+   "pts": 11.01,
+   "base": 11,
+   "decimal": 0.01
+  },
+  {
+   "name": "COLIN GWENDAL",
+   "rank": 21,
+   "pts": 9.01,
+   "base": 9,
+   "decimal": 0.01
+  },
+  {
+   "name": "GRONDIN HUGO",
+   "rank": 23,
+   "pts": 9.00875,
+   "base": 9,
+   "decimal": 0.00875
+  },
+  {
+   "name": "LANGLOIS ARNAUD",
+   "rank": 22,
+   "pts": 9.008888888888889,
+   "base": 9,
+   "decimal": 0.008888888888888889
+  },
+  {
+   "name": "RODRIGUEZ MAXIME",
+   "rank": 24,
+   "pts": 9.0075,
+   "base": 9,
+   "decimal": 0.0075
+  },
+  {
+   "name": "LEBLANC MICKAËL",
+   "rank": 25,
+   "pts": 7.007142857142857,
+   "base": 7,
+   "decimal": 0.007142857142857143
+  },
+  {
+   "name": "SANCHEZ SOPHIE",
+   "rank": 26,
+   "pts": 7.007142857142857,
+   "base": 7,
+   "decimal": 0.007142857142857143
+  },
+  {
+   "name": "FRANCOIS NADIA",
+   "rank": 27,
+   "pts": 7.007142857142857,
+   "base": 7,
+   "decimal": 0.007142857142857143
+  },
+  {
+   "name": "BOUCHET CÉDRIC",
+   "rank": 31,
+   "pts": 7.00375,
+   "base": 7,
+   "decimal": 0.00375
+  },
+  {
+   "name": "MERCIER ÉRIC",
+   "rank": 28,
+   "pts": 7.005,
+   "base": 7,
+   "decimal": 0.005
+  },
+  {
+   "name": "DUMONT LUCAS",
+   "rank": 29,
+   "pts": 7.005,
+   "base": 7,
+   "decimal": 0.005
+  },
+  {
+   "name": "MARECHAL ROMAIN",
+   "rank": 30,
+   "pts": 7.005,
+   "base": 7,
+   "decimal": 0.005
+  },
+  {
+   "name": "CORDIER CAMILLE",
+   "rank": 32,
+   "pts": 7.00375,
+   "base": 7,
+   "decimal": 0.00375
+  },
+  {
+   "name": "CHEVALLIER LOÏC",
+   "rank": 33,
+   "pts": 5.004444444444444,
+   "base": 5,
+   "decimal": 0.0044444444444444444
+  },
+  {
+   "name": "HENRY GUILLAUME",
+   "rank": 39,
+   "pts": 5.0025,
+   "base": 5,
+   "decimal": 0.0025
+  },
+  {
+   "name": "LUCAS NICOLAS",
+   "rank": 35,
+   "pts": 5.003333333333333,
+   "base": 5,
+   "decimal": 0.003333333333333333
+  },
+  {
+   "name": "ROUSSEL JULIE",
+   "rank": 37,
+   "pts": 5.003333333333333,
+   "base": 5,
+   "decimal": 0.003333333333333333
+  },
+  {
+   "name": "BONNET ERWAN",
+   "rank": 40,
+   "pts": 5.0025,
+   "base": 5,
+   "decimal": 0.0025
+  },
+  {
+   "name": "MATHIEU MEHDI",
+   "rank": 36,
+   "pts": 5.003333333333333,
+   "base": 5,
+   "decimal": 0.003333333333333333
+  },
+  {
+   "name": "LAURENT PAULINE",
+   "rank": 34,
+   "pts": 5.00375,
+   "base": 5,
+   "decimal": 0.00375
+  },
+  {
+   "name": "GAILLARD SÉBASTIEN",
+   "rank": 38,
+   "pts": 5.003333333333333,
+   "base": 5,
+   "decimal": 0.003333333333333333
+  },
+  {
+   "name": "ADAM CHLOÉ",
+   "rank": 42,
+   "pts": 4.003333333333333,
+   "base": 4,
+   "decimal": 0.003333333333333333
+  },
+  {
+   "name": "BOURGEOIS DIDIER",
+   "rank": 48,
+   "pts": 4.001111111111111,
+   "base": 4,
+   "decimal": 0.0011111111111111111
+  },
+  {
+   "name": "MARECHAL DIDIER",
+   "rank": 46,
+   "pts": 4.002222222222223,
+   "base": 4,
+   "decimal": 0.0022222222222222222
+  },
+  {
+   "name": "ROBERT KEVIN",
+   "rank": 47,
+   "pts": 4.002,
+   "base": 4,
+   "decimal": 0.002
+  },
+  {
+   "name": "REY DYLAN",
+   "rank": 45,
+   "pts": 4.002222222222223,
+   "base": 4,
+   "decimal": 0.0022222222222222222
+  },
+  {
+   "name": "COUSIN THOMAS",
+   "rank": 41,
+   "pts": 4.003333333333333,
+   "base": 4,
+   "decimal": 0.003333333333333333
+  },
+  {
+   "name": "AUBRY THIERRY",
+   "rank": 44,
+   "pts": 4.002222222222223,
+   "base": 4,
+   "decimal": 0.0022222222222222222
+  },
+  {
+   "name": "BRETON CLAIRE",
+   "rank": 43,
+   "pts": 4.003,
+   "base": 4,
+   "decimal": 0.003
+  },
+  {
+   "name": "DAVID SARAH",
+   "rank": 49,
+   "pts": 3.0033333333333334,
+   "base": 3,
+   "decimal": 0.003333333333333333
+  },
+  {
+   "name": "MARTINEZ JORDAN",
+   "rank": 66,
+   "pts": 1,
+   "base": 1,
+   "decimal": 0
+  },
+  {
+   "name": "PAYET DAVID",
+   "rank": 50,
+   "pts": 2.0033333333333334,
+   "base": 2,
+   "decimal": 0.003333333333333333
+  },
+  {
+   "name": "OLIVIER PATRICK",
+   "rank": 58,
+   "pts": 2.0033333333333334,
+   "base": 2,
+   "decimal": 0.003333333333333333
+  },
+  {
+   "name": "LEGRAND ARNAUD",
+   "rank": 60,
+   "pts": 1.0033333333333334,
+   "base": 1,
+   "decimal": 0.003333333333333333
+  },
+  {
+   "name": "BOYER MANON",
+   "rank": 65,
+   "pts": 1.0033333333333334,
+   "base": 1,
+   "decimal": 0.003333333333333333
+  },
+  {
+   "name": "MARTY FABIEN",
+   "rank": 51,
+   "pts": 2.0033333333333334,
+   "base": 2,
+   "decimal": 0.003333333333333333
+  },
+  {
+   "name": "RENAUD HUGO",
+   "rank": 64,
+   "pts": 1.0033333333333334,
+   "base": 1,
+   "decimal": 0.003333333333333333
+  },
+  {
+   "name": "BRUN ERWAN",
+   "rank": 73,
+   "pts": 1,
+   "base": 1,
+   "decimal": 0
+  },
+  {
+   "name": "ARNAUD CLÉMENT",
+   "rank": 67,
+   "pts": 1,
+   "base": 1,
+   "decimal": 0
+  },
+  {
+   "name": "SCHNEIDER CÉDRIC",
+   "rank": 72,
+   "pts": 1,
+   "base": 1,
+   "decimal": 0
+  },
+  {
+   "name": "BAILLY PATRICK",
+   "rank": 52,
+   "pts": 2.0033333333333334,
+   "base": 2,
+   "decimal": 0.003333333333333333
+  },
+  {
+   "name": "BOYER NOÉ",
+   "rank": 63,
+   "pts": 1.0033333333333334,
+   "base": 1,
+   "decimal": 0.003333333333333333
+  },
+  {
+   "name": "DUMONT ARNAUD",
+   "rank": 55,
+   "pts": 2.0033333333333334,
+   "base": 2,
+   "decimal": 0.003333333333333333
+  },
+  {
+   "name": "CARON THIERRY",
+   "rank": 53,
+   "pts": 2.0033333333333334,
+   "base": 2,
+   "decimal": 0.003333333333333333
+  },
+  {
+   "name": "COLLIN RONAN",
+   "rank": 71,
+   "pts": 1,
+   "base": 1,
+   "decimal": 0
+  },
+  {
+   "name": "FAURE MARIE",
+   "rank": 69,
+   "pts": 1,
+   "base": 1,
+   "decimal": 0
+  },
+  {
+   "name": "FLEURY SARAH",
+   "rank": 75,
+   "pts": 1,
+   "base": 1,
+   "decimal": 0
+  },
+  {
+   "name": "LEGRAND PIERRE",
+   "rank": 62,
+   "pts": 1.0033333333333334,
+   "base": 1,
+   "decimal": 0.003333333333333333
+  },
+  {
+   "name": "SCHNEIDER CHLOÉ",
+   "rank": 54,
+   "pts": 2.0033333333333334,
+   "base": 2,
+   "decimal": 0.003333333333333333
+  },
+  {
+   "name": "LEFEVRE BENOÎT",
+   "rank": 56,
+   "pts": 2.0033333333333334,
+   "base": 2,
+   "decimal": 0.003333333333333333
+  },
+  {
+   "name": "BERTIN NADIA",
+   "rank": 57,
+   "pts": 2.0033333333333334,
+   "base": 2,
+   "decimal": 0.003333333333333333
+  },
+  {
+   "name": "DUMAS DAMIEN",
+   "rank": 59,
+   "pts": 2.0033333333333334,
+   "base": 2,
+   "decimal": 0.003333333333333333
+  },
+  {
+   "name": "MALLET MAXIME",
+   "rank": 61,
+   "pts": 1.0033333333333334,
+   "base": 1,
+   "decimal": 0.003333333333333333
+  },
+  {
+   "name": "MARTINEZ GILLES",
+   "rank": 68,
+   "pts": 1,
+   "base": 1,
+   "decimal": 0
+  },
+  {
+   "name": "LAMBERT RACHID",
+   "rank": 70,
+   "pts": 1,
+   "base": 1,
+   "decimal": 0
+  },
+  {
+   "name": "BERTRAND CAMILLE",
+   "rank": 74,
+   "pts": 1,
+   "base": 1,
+   "decimal": 0
+  },
+  {
+   "name": "CLEMENT GILLES",
+   "rank": 76,
+   "pts": 0,
+   "base": 1,
+   "decimal": 0
+  }
+ ],
+ "convocationTimes": [
+  [
+   "08:00",
+   "CONVOCATION : 08:00"
+  ],
+  [
+   "08:30",
+   "CONVOCATION : 08:45"
+  ],
+  [
+   "09:00",
+   "CONVOCATION : 09:00"
+  ],
+  [
+   "09:30",
+   "CONVOCATION : 09:30"
+  ],
+  [
+   "10:00",
+   "CONVOCATION : 10:00"
+  ],
+  [
+   "10:30",
+   "CONVOCATION : 10:15"
+  ],
+  [
+   "11:00",
+   "CONVOCATION : 11:00"
+  ],
+  [
+   "11:30",
+   "CONVOCATION : 11:45"
+  ],
+  [
+   "12:30",
+   "CONVOCATION : 12:30"
+  ],
+  [
+   "13:30",
+   "CONVOCATION : 13:15"
+  ],
+  [
+   "14:00",
+   "CONVOCATION : 14:00"
+  ],
+  [
+   "14:30",
+   "CONVOCATION : 14:45"
+  ],
+  [
+   "15:30",
+   "CONVOCATION : 15:30"
+  ],
+  [
+   "16:30",
+   "CONVOCATION : 16:15"
+  ],
+  [
+   "17:00",
+   "CONVOCATION : 17:00"
+  ],
+  [
+   "17:30",
+   "CONVOCATION : 17:45"
+  ],
+  [
+   "18:30",
+   "CONVOCATION : 18:30"
+  ],
+  [
+   "19:30",
+   "CONVOCATION : 19:15"
+  ]
+ ],
+ "primes": {
+  "masters": [
+   [
+    0.2,
+    "1er"
+   ],
+   [
+    0.12,
+    "2ème"
+   ],
+   [
+    0.08,
+    "Perdants demies"
+   ],
+   [
+    0.08,
+    null
+   ],
+   [
+    0.04,
+    "Perdants quarts"
+   ],
+   [
+    0.04,
+    null
+   ],
+   [
+    0.04,
+    null
+   ],
+   [
+    0.04,
+    null
+   ],
+   [
+    0.02,
+    "3ème et 4ème\nde poule"
+   ],
+   [
+    0.02,
+    null
+   ],
+   [
+    0.02,
+    null
+   ],
+   [
+    0.02,
+    null
+   ],
+   [
+    0.02,
+    null
+   ],
+   [
+    0.02,
+    null
+   ],
+   [
+    0.02,
+    null
+   ],
+   [
+    0.02,
+    null
+   ]
+  ],
+  "national": [
+   [
+    0.08,
+    "1er"
+   ],
+   [
+    0.04,
+    "2ème"
+   ],
+   [
+    0.02,
+    "Perdants demies"
+   ],
+   [
+    0.02,
+    null
+   ],
+   [
+    0.01,
+    "Perdants quarts"
+   ],
+   [
+    0.01,
+    null
+   ],
+   [
+    0.01,
+    null
+   ],
+   [
+    0.01,
+    null
+   ]
+  ],
+  "ffb": 450,
+  "club": 200
+ }
+}
