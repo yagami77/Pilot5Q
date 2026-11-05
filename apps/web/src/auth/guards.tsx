@@ -88,10 +88,10 @@ export function RequireCockpit({ children }: { children: ReactNode }) {
   if (session.readOnly && !location.pathname.startsWith("/tournoi/imprimer")) {
     return (
       <>
-        {/* Tournoi clôturé : toutes les commandes du cockpit sont désactivées. */}
-        <fieldset disabled className="contents" aria-label="Tournoi clôturé, consultation seule">
-          {children}
-        </fieldset>
+        {/* Tournoi clôturé : la saisie est verrouillée par le cockpit (store en lecture
+            seule, commandes de saisie masquées ou désactivées) ; navigation, impression,
+            schéma et primes restent consultables. */}
+        {children}
         <ReadOnlyBar />
         <SessionDock />
       </>
@@ -106,8 +106,8 @@ export function RequireCockpit({ children }: { children: ReactNode }) {
 }
 
 /**
- * Bandeau de consultation seule : le cockpit est désactivé (fieldset), on garde ici la
- * navigation entre les journées ouvertes et le schéma.
+ * Bandeau de consultation seule : rappelle que le tournoi est clôturé, avec un accès direct
+ * aux journées ouvertes et au schéma.
  */
 function ReadOnlyBar() {
   const { state } = useTournament();

@@ -18,7 +18,7 @@ import {
   roundLabel,
   roundShort,
 } from "@/lib/tournament";
-import { useTournament } from "@/store/tournament";
+import { useEditLock, useTournament } from "@/store/tournament";
 
 import { RollingNumber } from "./RollingNumber";
 import { ScoreCell, ScoreEditor, draftOf, scoreOf, type ScoreDraft } from "./ScoreEditor";
@@ -69,6 +69,7 @@ export function Bracket({
   championNote,
 }: BracketProps) {
   const { state } = useTournament();
+  const editLock = useEditLock();
   const all = state.brackets[phase];
   const shown = (rounds ?? ALL_ROUNDS).filter((r) => all.some((m) => m.round === r));
   const locked = Boolean(state.closed[phase]);
@@ -186,7 +187,7 @@ export function Bracket({
 
   const card = (m: BracketMatch, style?: CSSProperties, ri = 0) => {
     const r = m.round;
-    const editable = !locked && (editableRounds ?? shown).includes(r);
+    const editable = !locked && !editLock && (editableRounds ?? shown).includes(r);
     return (
       <MatchCard
         key={m.id}

@@ -18,7 +18,7 @@ function lower(label: string): string {
 }
 
 export function UndoMenu() {
-  const { events, undo, undoTo, canUndo } = useTournament();
+  const { events, undo, undoTo, canUndo, readOnly } = useTournament();
   const toast = useToast();
   const [open, setOpen] = useState(false);
   const [hover, setHover] = useState<number | null>(null);
@@ -82,7 +82,7 @@ export function UndoMenu() {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        disabled={history.length === 0}
+        disabled={history.length === 0 || readOnly}
         aria-expanded={open}
         aria-label="Historique des dernières actions"
         className="border-line-2 bg-surface enabled:hover:bg-brand-soft inline-flex items-center rounded-r-[10px] border border-l-0 px-1.5 transition-colors disabled:opacity-50"

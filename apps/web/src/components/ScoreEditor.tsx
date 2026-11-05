@@ -10,6 +10,8 @@ import { isValidScore } from "@/lib/engine";
 
 import { nice } from "@/lib/format";
 
+import { useEditLock } from "@/store/tournament";
+
 import { cx } from "./ui";
 
 export interface ScoreDraft {
@@ -94,6 +96,7 @@ export function ScoreEditor({
   idBase,
   size = "md",
 }: ScoreEditorProps) {
+  disabled = useEditLock() || disabled;
   const multi = d.setsGagnants > 1;
   const current = draftMatch(match, draft, d);
   const valid = isValidScore(current, d);
@@ -305,6 +308,7 @@ export function ScoreCell({
   d: Distance;
   size?: "md" | "sm";
 }) {
+  disabled = useEditLock() || disabled;
   // Les deux cases d'un match partagent le même brouillon ; on rend celle du joueur demandé.
   const current = draftMatch(match, draft, d);
   const valid = isValidScore(current, d);

@@ -20,11 +20,12 @@ import {
   distanceLabel,
   phaseDistance,
 } from "@/lib/tournament";
-import { useTournament } from "@/store/tournament";
+import { useEditLock, useTournament } from "@/store/tournament";
 
 export function Dimanche() {
   const { state, dispatch } = useTournament();
   const toast = useToast();
+  const ro = useEditLock();
   const [printOpen, setPrintOpen] = useState(false);
   const [showTables, setShowTables] = useState(false);
   const prizes = useMemo(() => computePrizes(state), [state]);
@@ -103,7 +104,7 @@ export function Dimanche() {
         <Chip tone="gold" icon={Trophy}>
           Primes : <RollingNumber value={euros(prizes.cagnotte)} />
         </Chip>
-        {!finished ? (
+        {!finished && !ro ? (
           <Button
             icon={WandSparkles}
             onClick={fill.start}

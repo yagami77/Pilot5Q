@@ -1,5 +1,6 @@
 /** Cockpit : barre haute, rail des journées, vue de la journée. */
 import { AnimatePresence, motion } from "motion/react";
+import { useEffect } from "react";
 import { Navigate, useParams } from "react-router";
 
 import { useReadOnly } from "@/auth/context";
@@ -36,9 +37,15 @@ function isPage(v: string | undefined): v is Page {
 }
 
 export function Cockpit() {
-  const { ready, id, state } = useTournament();
+  const { ready, id, state, setReadOnly } = useTournament();
   const { day } = useParams();
   const readOnly = useReadOnly();
+  // Consultation seule (DJ après la clôture) : la saisie est verrouillée dans le store,
+  // la navigation, l'impression, le schéma et les primes restent consultables.
+  useEffect(() => {
+    setReadOnly(readOnly);
+    return () => setReadOnly(false);
+  }, [readOnly, setReadOnly]);
   if (!ready) {
     return (
       <div className="text-ink-muted grid min-h-[60vh] place-items-center text-sm">

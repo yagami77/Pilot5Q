@@ -55,6 +55,9 @@ export interface TournamentStore {
   destroy: () => void;
   /** Corrige la structure des billards du tournoi (avant tout tirage). */
   amendBillards: (billards: Billard[]) => void;
+  /** Consultation seule (DJ après la clôture) : toute modification est ignorée. */
+  readOnly: boolean;
+  setReadOnly: (v: boolean) => void;
 }
 
 const Ctx = createContext<TournamentStore | null>(null);
@@ -81,6 +84,12 @@ export function TournamentProvider({
   const [savedAt, setSavedAt] = useState<Date | null>(null);
   const [saving, setSaving] = useState(false);
   const dirty = useRef(false);
+  const [readOnly, setReadOnlyState] = useState(false);
+  const locked = useRef(false);
+  const setReadOnly = useCallback((v: boolean) => {
+    locked.current = v;
+    setReadOnlyState(v);
+  }, []);
 
   // Chargement initial
   useEffect(() => {
@@ -137,13 +146,16 @@ export function TournamentProvider({
   const state = useMemo(() => replay(events), [events]);
 
   const dispatchMany = useCallback((inputs: EventInput[]) => {
+    if (locked.current) return;
     dirty.current = true;
     setEvents((prev) => [...prev, ...inputs.map(stamp)]);
   }, []);
   const dispatch = useCallback((e: EventInput) => dispatchMany([e]), [dispatchMany]);
 
-  const canUndo = events.length > 0 && !PROTECTED.includes(events[events.length - 1]!.type);
+  const canUndo =
+    !readOnly && events.length > 0 && !PROTECTED.includes(events[events.length - 1]!.type);
   const undo = useCallback(() => {
+    if (locked.current) return;
     dirty.current = true;
     setEvents((prev) => {
       const last = prev[prev.length - 1];
@@ -153,6 +165,7 @@ export function TournamentProvider({
   }, []);
 
   const undoTo = useCallback((index: number) => {
+    if (locked.current) return;
     dirty.current = true;
     setEvents((prev) => {
       if (index < 0 || index >= prev.length) return prev;
@@ -211,6 +224,8 @@ export function TournamentProvider({
       close,
       destroy,
       amendBillards,
+      readOnly,
+      setReadOnly,
     }),
     [
       id,
@@ -228,10 +243,17 @@ export function TournamentProvider({
       close,
       destroy,
       amendBillards,
+      readOnly,
+      setReadOnly,
     ],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
+}
+
+/** Commandes de saisie désactivées (consultation seule après la clôture). */
+export function useEditLock(): boolean {
+  return useContext(Ctx)?.readOnly ?? false;
 }
 
 export function useTournament(): TournamentStore {

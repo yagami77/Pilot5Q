@@ -18,7 +18,7 @@ import {
   phaseDistance,
   pouleBillards,
 } from "@/lib/tournament";
-import { useTournament } from "@/store/tournament";
+import { useEditLock, useTournament } from "@/store/tournament";
 
 import {
   ScoreCell,
@@ -105,7 +105,8 @@ function DrawerBody({
   const poules = state.poules[phase];
   const poule = poules.find((p) => p.num === pouleNum);
   const d = phaseDistance(state, phase);
-  const locked = Boolean(state.closed[phase]);
+  const editLock = useEditLock();
+  const locked = Boolean(state.closed[phase]) || editLock;
   const [drafts, setDrafts] = useState<Record<string, ScoreDraft>>({});
   const rootRef = useRef<HTMLDivElement>(null);
 

@@ -4,6 +4,8 @@ import type { ButtonHTMLAttributes, ReactNode } from "react";
 
 import { clubShort, hue, initials, nice } from "@/lib/format";
 
+import { useEditLock } from "@/store/tournament";
+
 import { RollingNumber } from "./RollingNumber";
 
 export function cx(...parts: (string | false | null | undefined)[]): string {
@@ -385,7 +387,8 @@ export function GaugeButton({
   onClick: () => void;
   disabled?: boolean;
 }) {
-  const ready = total > 0 && done === total && !disabled;
+  const lock = useEditLock();
+  const ready = total > 0 && done === total && !disabled && !lock;
   const pct = total ? Math.round((done / total) * 100) : 0;
   return (
     <button

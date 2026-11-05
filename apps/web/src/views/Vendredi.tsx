@@ -38,7 +38,7 @@ import {
   preqRanking,
   qualifiers,
 } from "@/lib/tournament";
-import { useTournament, type EventInput } from "@/store/tournament";
+import { useEditLock, useTournament, type EventInput } from "@/store/tournament";
 
 export function Vendredi() {
   const { state } = useTournament();
@@ -62,7 +62,8 @@ function Saisie() {
   const pr = poulesProgress(state, "PREQ");
   const complete = phaseComplete(state, "PREQ");
   const forfaits = forfaitsOf(state, "PREQ");
-  const demo = isDemo(state);
+  const ro = useEditLock();
+  const demo = isDemo(state) && !ro;
 
   const fillDemo = () => {
     const events: EventInput[] = [];
@@ -129,7 +130,7 @@ function Saisie() {
         </span>
       </PageHead>
 
-      {!preqStarted(state) ? <LateForfaits /> : null}
+      {!preqStarted(state) && !ro ? <LateForfaits /> : null}
 
       {forfaits.length > 0 ? (
         <div className="bg-alert-soft text-alert-ink mb-3.5 flex flex-wrap items-center gap-2 rounded-[12px] px-4 py-2.5 text-[13px] font-semibold">
@@ -181,7 +182,8 @@ function Resultats() {
   const bClosed = Boolean(state.closed.B);
   const bDone = barragesDone(state);
   const bpr = matchesProgress(state.barrages, bd);
-  const demo = isDemo(state);
+  const ro = useEditLock();
+  const demo = isDemo(state) && !ro;
   const placeOf = useMemo(() => new Map(ranking.map((r) => [r.name, r.place])), [ranking]);
 
   const reopen = () => {
@@ -229,7 +231,7 @@ function Resultats() {
         title="Classement des préqualifications"
         help="Rang dans la poule, puis points de match, points de set, moyenne, ordre d'arrivée."
       >
-        {!bClosed ? (
+        {!bClosed && !ro ? (
           <Button icon={RotateCcw} onClick={reopen}>
             Rouvrir la saisie
           </Button>
@@ -314,7 +316,7 @@ function Resultats() {
               <span className="text-ink-muted text-[12px]">
                 Vainqueurs → Masters · perdants → National
               </span>
-              {bClosed ? (
+              {bClosed && ro ? null : bClosed ? (
                 <Button
                   size="sm"
                   icon={RotateCcw}
@@ -437,6 +439,7 @@ function Qualifies({ onNext, onPrint }: { onNext: () => void; onPrint: () => voi
   const placeOf = useMemo(() => new Map(preqRanking(state).map((r) => [r.name, r.place])), [state]);
   const [volunteers, setVolunteers] = useState<Set<string>>(() => new Set(q.consolante));
   const allowed = consolanteAllowed(state);
+  const ro = useEditLock();
   const created = state.brackets.CLS.length > 0;
   const max = state.rules.consolanteMax;
   const list = (names: string[], tag: (n: string, i: number) => React.ReactNode) => (
@@ -515,7 +518,7 @@ function Qualifies({ onNext, onPrint }: { onNext: () => void; onPrint: () => voi
             className="accent-brand ml-auto"
             aria-label={`${nice(n)} souhaite jouer la consolante`}
             checked={volunteers.has(n)}
-            disabled={created || !allowed}
+            disabled={created || !allowed || ro}
             onChange={(e) => {
               const next = new Set(volunteers);
               if (e.target.checked) next.add(n);
@@ -530,7 +533,7 @@ function Qualifies({ onNext, onPrint }: { onNext: () => void; onPrint: () => voi
               ? `Tableau créé · ${plural(new Set(state.brackets.CLS.flatMap((m) => [m.a, m.b]).filter(Boolean)).size, "joueur")}`
               : `${volunteers.size} volontaires cochés`}
           </span>
-          {!created && allowed ? (
+          {!created && allowed && !ro ? (
             <Button
               size="sm"
               variant="primary"

@@ -35,7 +35,7 @@ import {
   pouleBillards,
   smallTables,
 } from "@/lib/tournament";
-import { useTournament } from "@/store/tournament";
+import { useEditLock, useTournament } from "@/store/tournament";
 
 export function Jeudi() {
   const { state, dispatch, dispatchMany, amendBillards } = useTournament();
@@ -46,8 +46,10 @@ export function Jeudi() {
   const [serpDone, setSerpDone] = useState(true);
   const [unresolved, setUnresolved] = useState<number[]>([]);
 
+  const ro = useEditLock();
   const drawn = state.poules.PREQ.length > 0;
   const locked =
+    ro ||
     Boolean(state.closed.PREQ) ||
     state.poules.PREQ.some((p) => p.matches.some((m) => m.sa !== null));
   const players = state.players;
@@ -172,7 +174,7 @@ export function Jeudi() {
 
       <BillardStructure
         billards={state.billards}
-        locked={drawn}
+        locked={drawn || ro}
         onChange={(billards) => {
           amendBillards(billards);
           const count = preqPouleCount(state);
@@ -194,7 +196,7 @@ export function Jeudi() {
 
       <LaterPhases />
 
-      {!drawn ? (
+      {!drawn && ro ? null : !drawn ? (
         <div
           id="tirage"
           className="bg-brand-cta relative mt-3.5 flex scroll-mt-4 flex-wrap items-center justify-between gap-5 overflow-hidden rounded-[18px] px-6 py-[22px] text-white shadow-[0_24px_50px_-24px_rgb(14_55_168/0.7)]"
@@ -489,7 +491,8 @@ function LaterPhases() {
   const bigOptions = options.filter(
     (o) => state.billards.find((b) => String(b.num) === o.value)?.type === "3m10",
   );
-  const locked = Boolean(state.closed.M && state.closed.N);
+  const ro = useEditLock();
+  const locked = ro || Boolean(state.closed.M && state.closed.N);
   const block = (
     title: string,
     tag: string,

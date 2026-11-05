@@ -31,11 +31,12 @@ import {
   poulesProgress,
   qualifiers,
 } from "@/lib/tournament";
-import { useTournament } from "@/store/tournament";
+import { useEditLock, useTournament } from "@/store/tournament";
 
 export function Samedi() {
   const { state, dispatch } = useTournament();
   const toast = useToast();
+  const ro = useEditLock();
   const navigate = useNavigate();
   const [open, setOpen] = useState<{ phase: "QM" | "QN"; num: number } | null>(null);
   const [printOpen, setPrintOpen] = useState(false);
@@ -126,7 +127,7 @@ export function Samedi() {
         <Chip>
           Convocations : {state.poules.QM.length * 4} + {state.poules.QN.length * 4} joueurs
         </Chip>
-        {!(closedM && closedN && !r16Pending) ? (
+        {!ro && !(closedM && closedN && !r16Pending) ? (
           <Button
             icon={WandSparkles}
             onClick={fill.start}
