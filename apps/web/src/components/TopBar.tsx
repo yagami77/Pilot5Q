@@ -1,12 +1,13 @@
 /** Barre haute : marque, tournoi, état d'enregistrement, annulation, utilisateur. */
-import { Home, Undo2, Waypoints } from "lucide-react";
+import { Home, Waypoints } from "lucide-react";
 import { Link, useLocation } from "react-router";
 
 import { ROLE_LABELS, useRole } from "@/admin/role";
 import { clock, dateRange, initials, plural } from "@/lib/format";
 import { useTournament } from "@/store/tournament";
 
-import { Avatar, Button, cx } from "./ui";
+import { Avatar, cx } from "./ui";
+import { UndoMenu } from "./UndoMenu";
 
 export function BrandMark({ className }: { className?: string }) {
   return (
@@ -34,7 +35,7 @@ export function BrandMark({ className }: { className?: string }) {
 }
 
 export function TopBar() {
-  const { state, savedAt, saving, undo, canUndo, events } = useTournament();
+  const { state, savedAt, saving, events } = useTournament();
   const [role] = useRole();
   const location = useLocation();
   const onSchema = location.pathname.endsWith("/tournoi/schema");
@@ -108,15 +109,7 @@ export function TopBar() {
             />
             {saving ? "Enregistrement…" : savedLabel}
           </span>
-          <Button
-            size="sm"
-            icon={Undo2}
-            onClick={undo}
-            disabled={!canUndo}
-            title="Annuler la dernière action"
-          >
-            <span className="hidden md:inline">Annuler</span>
-          </Button>
+          <UndoMenu />
           <Link
             to="/"
             className="border-line-2 bg-surface hover:shadow-card inline-flex size-8 items-center justify-center rounded-[10px] border md:hidden"

@@ -83,7 +83,7 @@ function DocHeader({
       <div>
         <b className="text-[14px]">{title}</b>
         <div>
-          {info ? `${info.name} · ${info.city} · ${info.club}` : ""}
+          {info ? `${info.name} · ${info.city}` : ""}
           {subtitle ? ` · ${subtitle}` : ""}
         </div>
       </div>
@@ -327,7 +327,6 @@ function JoueursPoules({ state }: { state: TournamentState }) {
           <thead>
             <tr>
               <th>Joueur</th>
-              <th>Club</th>
               <th className="w-12">Poule</th>
               <th className="w-14">Billard</th>
             </tr>
@@ -338,7 +337,6 @@ function JoueursPoules({ state }: { state: TournamentState }) {
               return (
                 <tr key={p.licence}>
                   <td className="font-semibold">{nice(p.name)}</td>
-                  <td>{clubShort(p.club)}</td>
                   <td className="text-center">{masters.has(p.name) ? "M" : (po?.num ?? "—")}</td>
                   <td className="text-center">
                     {po
@@ -369,7 +367,6 @@ function TableauPoules({
   title: string;
   day: Day;
 }) {
-  const by = playerByName(state);
   const d = phaseDistance(state, phase);
   return (
     <Page>
@@ -397,9 +394,6 @@ function TableauPoules({
                     <td className="w-5 text-center">{i + 1}</td>
                     <td>
                       <b>{nice(n)}</b>
-                      <div className="text-[9px] text-[#555]">
-                        {clubShort(by.get(n)?.club ?? "")}
-                      </div>
                     </td>
                   </tr>
                 ))}
@@ -463,7 +457,6 @@ function PremiersMatchs({ state }: { state: TournamentState }) {
 
 function ClassementPreq({ state }: { state: TournamentState }) {
   const ranking = preqRanking(state);
-  const by = playerByName(state);
   const size = state.rules.barrageSize;
   const natTo = size + state.rules.nationalSize - size / 2;
   return (
@@ -479,7 +472,6 @@ function ClassementPreq({ state }: { state: TournamentState }) {
           <tr>
             <th className="w-8">Place</th>
             <th>Joueur</th>
-            <th>Club</th>
             <th className="w-12">Poule</th>
             <th className="w-8">Rang</th>
             <th className="w-8">Pm</th>
@@ -495,7 +487,6 @@ function ClassementPreq({ state }: { state: TournamentState }) {
             <tr key={r.name} className={r.place <= size ? "bg-[#eef2fb]" : undefined}>
               <td className="text-center font-bold">{r.place}</td>
               <td className="font-semibold">{nice(r.name)}</td>
-              <td>{clubShort(by.get(r.name)?.club ?? "")}</td>
               <td className="text-center">{r.poule}</td>
               <td className="text-center">{r.rang ?? "–"}</td>
               <td className="text-center font-mono">{r.ptm}</td>
@@ -590,7 +581,6 @@ function ResultatsPoules({
 }
 
 function TableauBarrages({ state }: { state: TournamentState }) {
-  const by = playerByName(state);
   const ranking = preqRanking(state);
   const placeOf = new Map(ranking.map((r) => [r.name, r.place]));
   const d = state.rules.distances.barrage;
@@ -627,12 +617,10 @@ function TableauBarrages({ state }: { state: TournamentState }) {
                 </td>
                 <td>
                   <b>{nice(m.a)}</b> ({placeOf.get(m.a) ?? "–"})
-                  <div className="text-[9px] text-[#555]">{clubShort(by.get(m.a)?.club ?? "")}</div>
                 </td>
                 <td className="text-center font-mono">{scoreText(m, false)}</td>
                 <td>
                   <b>{nice(m.b)}</b> ({placeOf.get(m.b) ?? "–"})
-                  <div className="text-[9px] text-[#555]">{clubShort(by.get(m.b)?.club ?? "")}</div>
                 </td>
                 <td className="font-semibold">{w ? nice(w) : ""}</td>
               </tr>
@@ -695,7 +683,6 @@ function FeuillesBarrages({ state }: { state: TournamentState }) {
 
 function PointageConsolante({ state }: { state: TournamentState }) {
   const q = qualifiers(state);
-  const by = playerByName(state);
   const ranking = preqRanking(state);
   const placeOf = new Map(ranking.map((r) => [r.name, r.place]));
   return (
@@ -712,8 +699,6 @@ function PointageConsolante({ state }: { state: TournamentState }) {
             <th className="w-10">Joue</th>
             <th className="w-10">Place</th>
             <th>Joueur</th>
-            <th>Club</th>
-            <th className="w-32">Signature</th>
           </tr>
         </thead>
         <tbody>
@@ -722,8 +707,6 @@ function PointageConsolante({ state }: { state: TournamentState }) {
               <td className="text-center text-[13px]">{BOX}</td>
               <td className="text-center">{placeOf.get(n) ?? "–"}</td>
               <td className="font-semibold">{nice(n)}</td>
-              <td>{clubShort(by.get(n)?.club ?? "")}</td>
-              <td />
             </tr>
           ))}
         </tbody>
@@ -841,7 +824,6 @@ function BracketTable({
 }
 
 function FeuillesFinales({ state }: { state: TournamentState }) {
-  const by = playerByName(state);
   const sheets: { phase: "N" | "M"; m: BracketMatch }[] = [];
   for (const phase of ["M", "N"] as const)
     for (const m of state.brackets[phase]) if (m.round !== "R16") sheets.push({ phase, m });
@@ -863,7 +845,6 @@ function FeuillesFinales({ state }: { state: TournamentState }) {
               <thead>
                 <tr>
                   <th>Joueur</th>
-                  <th>Club</th>
                   {Array.from({ length: sets }, (_, i) => (
                     <th key={i} className="w-12 text-center">
                       Set {i + 1}
@@ -884,7 +865,6 @@ function FeuillesFinales({ state }: { state: TournamentState }) {
                     <td className="font-semibold">
                       {n ? nice(n) : <span className="text-[#555]">{label}</span>}
                     </td>
-                    <td>{n ? clubShort(by.get(n)?.club ?? "") : ""}</td>
                     {Array.from({ length: sets }, (_, k) => (
                       <td key={k} className="text-center font-mono">
                         {s?.[k] ?? ""}

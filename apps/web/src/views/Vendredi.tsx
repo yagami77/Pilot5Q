@@ -11,10 +11,19 @@ import { PouleDrawer } from "@/components/PouleDrawer";
 import { PrintCenter } from "@/components/PrintCenter";
 import { ScoreEditor, draftOf, scoreOf, type ScoreDraft } from "@/components/ScoreEditor";
 import { useToast } from "@/components/Toast";
-import { Avatar, Button, Card, Chip, GaugeButton, PageHead, PlayerLine, cx } from "@/components/ui";
+import {
+  Button,
+  Card,
+  Chip,
+  GaugeButton,
+  NumBadge,
+  PageHead,
+  PlayerLine,
+  cx,
+} from "@/components/ui";
 import { demoAbandon, demoBarrageScore, demoPreqScore, isDemo } from "@/lib/demo";
 import { forfaitsOf, isValidScore, matchWinner, phaseComplete } from "@/lib/engine";
-import { clubShort, longDate, moy, nice, ordinal, plural } from "@/lib/format";
+import { longDate, moy, nice, ordinal, plural } from "@/lib/format";
 import {
   barragesDone,
   consolanteAllowed,
@@ -22,7 +31,6 @@ import {
   distanceLabel,
   matchesProgress,
   phaseDistance,
-  playerByName,
   poulesProgress,
   preqRanking,
   qualifiers,
@@ -152,7 +160,6 @@ function Resultats() {
   const navigate = useNavigate();
   const [printOpen, setPrintOpen] = useState(false);
   const ranking = useMemo(() => preqRanking(state), [state]);
-  const by = playerByName(state);
   const size = state.rules.barrageSize;
   const natTo = size + state.rules.nationalSize - size / 2;
   const bd = state.rules.distances.barrage;
@@ -223,9 +230,8 @@ function Resultats() {
           aside={<Chip tone="grey">Poule · rang</Chip>}
           bodyClassName="pb-1"
         >
-          <div className="text-ink-muted grid grid-cols-[28px_1fr_50px_40px] gap-2 px-3.5 py-2 text-[10.5px] font-bold tracking-[0.06em] uppercase md:grid-cols-[30px_32px_1fr_60px_44px_44px_60px]">
+          <div className="text-ink-muted grid grid-cols-[28px_1fr_40px_40px] gap-2 px-3.5 py-2 text-[10.5px] font-bold tracking-[0.06em] uppercase md:grid-cols-[30px_1fr_70px_44px_44px_60px]">
             <span>#</span>
-            <span className="hidden md:block" />
             <span>Joueur</span>
             <span className="hidden md:block">Poule</span>
             <span className="text-right">Pm</span>
@@ -249,19 +255,11 @@ function Resultats() {
                   </div>
                 ) : null}
                 <div
-                  className="border-line animate-slide-in grid grid-cols-[28px_1fr_50px_40px] items-center gap-2 border-t px-3.5 py-1.5 text-[12.5px] md:grid-cols-[30px_32px_1fr_60px_44px_44px_60px]"
+                  className="border-line animate-slide-in grid grid-cols-[28px_1fr_40px_40px] items-center gap-2 border-t px-3.5 py-[5px] text-[12.5px] md:grid-cols-[30px_1fr_70px_44px_44px_60px]"
                   style={{ animationDelay: `${Math.min(i, 45) * 22}ms` }}
                 >
                   <span className="text-ink-secondary font-mono font-bold">{r.place}</span>
-                  <span className="hidden md:block">
-                    <Avatar name={r.name} size="sm" />
-                  </span>
-                  <div className="min-w-0">
-                    <div className="truncate font-semibold">{nice(r.name)}</div>
-                    <div className="text-ink-muted truncate text-[10.5px]">
-                      {clubShort(by.get(r.name)?.club ?? "")}
-                    </div>
-                  </div>
+                  <div className="min-w-0 truncate font-semibold">{nice(r.name)}</div>
                   <span className="text-ink-muted hidden font-mono text-[10.5px] md:block">
                     P{r.poule} · {r.rang ? ordinal(r.rang) : "ff"}
                   </span>
@@ -372,20 +370,14 @@ function BarrageRow({
       payload: { phase: "B", matchId: match.id, sa: s.sa, sb: s.sb },
     });
   };
-  const by = playerByName(state);
   const w = matchWinner(match, d);
   const side = (name: string, right: boolean) => (
     <div className={cx("flex min-w-0 items-center gap-2", right && "flex-row-reverse text-right")}>
-      <Avatar name={name} size="sm" crown={w === name} />
-      <div className="min-w-0">
-        <div className="truncate text-[12.5px] font-semibold">{nice(name)}</div>
-        <div className="text-brand font-mono text-[10.5px] font-bold">
-          {placeOf.get(name) ? `${ordinal(placeOf.get(name) ?? 0)} des poules` : ""}
-          <span className="text-ink-muted font-sans font-medium">
-            {" "}
-            · {clubShort(by.get(name)?.club ?? "")}
-          </span>
-        </div>
+      <NumBadge n={placeOf.get(name) ?? "–"} tone={w === name ? "gold" : "default"} />
+      <div
+        className={cx("min-w-0 truncate text-[12.5px]", w === name ? "font-bold" : "font-semibold")}
+      >
+        {nice(name)}
       </div>
     </div>
   );
@@ -426,7 +418,6 @@ function Qualifies({ onNext, onPrint }: { onNext: () => void; onPrint: () => voi
   const toast = useToast();
   const q = useMemo(() => qualifiers(state), [state]);
   const placeOf = useMemo(() => new Map(preqRanking(state).map((r) => [r.name, r.place])), [state]);
-  const by = playerByName(state);
   const [volunteers, setVolunteers] = useState<Set<string>>(() => new Set(q.consolante));
   const allowed = consolanteAllowed(state);
   const created = state.brackets.CLS.length > 0;
@@ -437,9 +428,8 @@ function Qualifies({ onNext, onPrint }: { onNext: () => void; onPrint: () => voi
         <div key={n} className="animate-slide-in" style={{ animationDelay: `${i * 35}ms` }}>
           <PlayerLine
             name={n}
-            club={by.get(n)?.club}
-            size="sm"
-            className="rounded-[9px] px-1 py-1"
+            num={i + 1}
+            className="rounded-[8px] px-1 py-[3px]"
             trailing={tag(n, i)}
           />
         </div>

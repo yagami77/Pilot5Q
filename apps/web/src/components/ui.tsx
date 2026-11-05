@@ -244,11 +244,43 @@ export function Avatar({
   );
 }
 
+/* ---------- Numéro du joueur dans sa poule ---------- */
+
+/**
+ * Badge discret (mono) : numéro du joueur dans sa poule (1 à 4), qui fixe l'ordre des matchs
+ * (2 contre 3, 1 contre 4). Remplace l'avatar dans les listes denses.
+ */
+export function NumBadge({
+  n,
+  tone = "default",
+  className,
+}: {
+  n: number | string;
+  tone?: "default" | "gold" | "muted";
+  className?: string;
+}) {
+  return (
+    <span
+      className={cx(
+        "grid h-[20px] min-w-[20px] shrink-0 place-items-center rounded-[6px] border px-1 font-mono text-[11px] leading-none font-bold tabular-nums",
+        tone === "default" && "border-line-2 bg-surface-2 text-ink-secondary",
+        tone === "gold" && "bg-gold-soft text-gold-ink border-transparent",
+        tone === "muted" && "border-line text-ink-muted bg-transparent",
+        className,
+      )}
+      aria-hidden="true"
+    >
+      {n}
+    </span>
+  );
+}
+
 /* ---------- Ligne joueur ---------- */
 
 export function PlayerLine({
   name,
   club,
+  num,
   size = "sm",
   trailing,
   prefix,
@@ -257,7 +289,10 @@ export function PlayerLine({
   muted,
 }: {
   name: string;
+  /** Affiché seulement si fourni (le DJ n'en a pas besoin dans les listes). */
   club?: string;
+  /** Numéro dans la poule : remplace l'avatar (listes denses). */
+  num?: number | string;
   size?: AvatarSize;
   trailing?: ReactNode;
   prefix?: ReactNode;
@@ -268,7 +303,11 @@ export function PlayerLine({
   return (
     <div className={cx("flex min-w-0 items-center gap-2.5", className)}>
       {prefix}
-      <Avatar name={name} size={size} crown={crown} />
+      {num !== undefined ? (
+        <NumBadge n={num} tone={crown ? "gold" : "default"} />
+      ) : (
+        <Avatar name={name} size={size} crown={crown} />
+      )}
       <div className="min-w-0 flex-1">
         <div
           className={cx(

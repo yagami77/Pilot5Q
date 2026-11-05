@@ -9,7 +9,7 @@ import { useToast } from "@/components/Toast";
 import { Avatar, Banner, Button, Card, Chip, GaugeButton, PageHead, cx } from "@/components/ui";
 import { phaseComplete, toLiveJson } from "@/lib/engine";
 import { pendingOf, useAutoFill } from "@/lib/fill";
-import { clubShort, euros, longDate, nice, plural } from "@/lib/format";
+import { euros, longDate, nice, plural } from "@/lib/format";
 import { celebrate } from "@/lib/motion";
 import { computePrizes } from "@/lib/prizes";
 import {
@@ -18,7 +18,6 @@ import {
   dayDate,
   distanceLabel,
   phaseDistance,
-  playerByName,
 } from "@/lib/tournament";
 import { useTournament } from "@/store/tournament";
 
@@ -263,7 +262,6 @@ function PrizesCard() {
 
 function Podium({ onTables, onExport }: { onTables: () => void; onExport: () => void }) {
   const { state } = useTournament();
-  const by = playerByName(state);
   const prizes = computePrizes(state);
   const step = (phase: "N" | "M") => {
     const place = bracketPlacement(state, phase);
@@ -282,9 +280,6 @@ function Podium({ onTables, onExport }: { onTables: () => void; onExport: () => 
           <div className="text-ink-muted font-mono text-[11px] font-bold">{rank}</div>
           <div className={cx("font-extrabold", big ? "text-[16px]" : "text-[13px]")}>
             {name ? nice(name) : "—"}
-          </div>
-          <div className="text-ink-muted text-[11px]">
-            {name ? clubShort(by.get(name)?.club ?? "") : ""}
           </div>
           <div className="text-gold-ink font-mono text-[12px] font-bold">{euros(amount)}</div>
         </div>

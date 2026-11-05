@@ -10,7 +10,6 @@ import {
   Shuffle,
   Trash2,
   TriangleAlert,
-  Trophy,
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router";
@@ -22,7 +21,7 @@ import { useToast } from "@/components/Toast";
 import { Avatar, Banner, Button, Card, Chip, PageHead, Select, Tile, cx } from "@/components/ui";
 import { drawPreqBillards } from "@/lib/draw";
 import { pouleMatches, pouleSizes, resolveClubConflicts, serpentin } from "@/lib/engine";
-import { clubShort, longDate, nice, plural } from "@/lib/format";
+import { longDate, nice, plural } from "@/lib/format";
 import { drawLaterPhaseEvents, preqPouleCount } from "@/lib/setup";
 import {
   bigTables,
@@ -42,8 +41,6 @@ export function Jeudi() {
   const [printOpen, setPrintOpen] = useState(false);
   const [drawSeq, setDrawSeq] = useState(0);
   const [serpDone, setSerpDone] = useState(true);
-  const [swapMode, setSwapMode] = useState(false);
-  const [selected, setSelected] = useState<string | null>(null);
   const [unresolved, setUnresolved] = useState<number[]>([]);
 
   const drawn = state.poules.PREQ.length > 0;
@@ -84,7 +81,7 @@ export function Jeudi() {
     );
     toast(
       res.unresolved.length
-        ? `Tirage effectué · ${plural(res.unresolved.length, "poule")} à corriger à la main`
+        ? `Tirage effectué · ${plural(res.unresolved.length, "poule")} en conflit de club`
         : "Tirage en cours…",
     );
   };
@@ -95,29 +92,6 @@ export function Jeudi() {
       return;
     }
     draw();
-  };
-
-  const swap = (name: string) => {
-    if (!selected) {
-      setSelected(name);
-      return;
-    }
-    if (selected === name) {
-      setSelected(null);
-      return;
-    }
-    const poules = state.poules.PREQ.map((p) => {
-      const names = p.players.map((n) => (n === selected ? name : n === name ? selected : n));
-      return { ...p, players: names, matches: pouleMatches(p.num, names) };
-    });
-    dispatch({ type: "poules.drawn", payload: { phase: "PREQ", poules } });
-    setSelected(null);
-    const res = resolveClubConflicts(
-      poules.map((p) => p.players),
-      clubOf(state),
-    );
-    setUnresolved(res.unresolved);
-    toast(`${nice(selected)} et ${nice(name)} échangés`);
   };
 
   const conflicts = useMemo(() => {
@@ -181,15 +155,7 @@ export function Jeudi() {
         />
       </div>
 
-      <Card
-        className="mt-3.5"
-        title="Têtes de série · qualifiés directs Masters"
-        aside={
-          <Chip tone="gold" icon={Trophy}>
-            Classement glissant
-          </Chip>
-        }
-      >
+      <Card className="mt-3.5" title="Têtes de série · qualifiés directs Masters">
         <div className="grid grid-cols-2 gap-2.5 px-4 pt-1 pb-4 sm:grid-cols-4 lg:grid-cols-8">
           {masters.map((p, i) => (
             <div
@@ -202,9 +168,6 @@ export function Jeudi() {
                 #{p.place ?? "–"}
               </span>
               <span className="text-[12px] leading-[1.2] font-bold">{nice(p.name)}</span>
-              <span className="text-ink-muted max-w-full truncate text-[10.5px]">
-                {clubShort(p.club)}
-              </span>
             </div>
           ))}
         </div>
@@ -277,33 +240,12 @@ export function Jeudi() {
             <div className="flex flex-wrap items-center gap-2">
               <Chip tone="grey">Têtes de poule en haut · place au classement à droite</Chip>
               {!locked ? (
-                <>
-                  <Button
-                    size="sm"
-                    icon={Pencil}
-                    variant={swapMode ? "primary" : "default"}
-                    onClick={() => {
-                      setSwapMode((v) => !v);
-                      setSelected(null);
-                    }}
-                    aria-pressed={swapMode}
-                  >
-                    {swapMode ? "Terminer la correction" : "Corriger à la main"}
-                  </Button>
-                  <Button size="sm" icon={Shuffle} onClick={redraw}>
-                    Refaire le tirage
-                  </Button>
-                </>
+                <Button size="sm" icon={Shuffle} onClick={redraw}>
+                  Refaire le tirage
+                </Button>
               ) : null}
             </div>
           </div>
-          {swapMode ? (
-            <div className="bg-brand-soft text-brand-ink mb-3 rounded-[10px] px-3.5 py-2 text-[13px] font-semibold">
-              {selected
-                ? `${nice(selected)} sélectionné · cliquez sur le joueur avec qui l'échanger.`
-                : "Cliquez sur un joueur, puis sur un second pour les échanger de poule."}
-            </div>
-          ) : null}
           <Card
             id="serpentin"
             className="mb-3.5"
@@ -321,8 +263,8 @@ export function Jeudi() {
             conflictSet.size > 0 ? (
               <Banner tone="red" icon={TriangleAlert} className="mt-0 mb-3.5">
                 {plural(conflictSet.size, "poule")} avec trois joueurs du même club (
-                {[...conflictSet].map((n) => `P${n}`).join(", ")}) : corrigez à la main en
-                échangeant un joueur.
+                {[...conflictSet].map((n) => `P${n}`).join(", ")}) que le décalage automatique ne
+                peut pas résoudre : à signaler au responsable national.
               </Banner>
             ) : (
               <Banner
@@ -358,8 +300,6 @@ export function Jeudi() {
                 poule={p}
                 distance={d}
                 conflict={conflictSet.has(p.num)}
-                selected={selected}
-                onSelectPlayer={swapMode ? swap : undefined}
                 showPlace
               />
             ))}

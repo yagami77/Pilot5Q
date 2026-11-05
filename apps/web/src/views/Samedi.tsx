@@ -26,7 +26,7 @@ import {
   dayDate,
   distanceLabel,
   phaseDistance,
-  playerByName,
+  pouleState,
   poulesProgress,
   qualifiers,
 } from "@/lib/tournament";
@@ -53,7 +53,6 @@ export function Samedi() {
   const conflicts = useMemo(() => mastersClubConflicts(state.poules.QM, clubOf(state)), [state]);
   const big = bigTables(state.billards);
   const convocation = big <= 3 ? "8h00" : "8h30";
-  const by = playerByName(state);
 
   const fill = useAutoFill(
     () => {
@@ -100,7 +99,15 @@ export function Samedi() {
     () => (closedN ? [] : nationalR16(state.poules.QN, dN, forfaitsOf(state, "QN"))),
     [state, closedN, dN],
   );
-  const liveReady = liveR16.filter((m) => m.a && m.b).length;
+  // Noms seulement quand les deux poules concernées sont terminées (« 1er poule 1 – 2e poule 8 »)
+  const qnComplete = useMemo(
+    () =>
+      new Set(state.poules.QN.filter((p) => pouleState(state, "QN", p).complete).map((p) => p.num)),
+    [state],
+  );
+  const r16Known = (m: { labelA?: string; labelB?: string }) =>
+    [m.labelA, m.labelB].every((l) => qnComplete.has(pouleOfLabel(l)));
+  const liveReady = liveR16.filter((m) => m.a && m.b && r16Known(m)).length;
   const r16Pending =
     closedN &&
     state.brackets.N.some(
@@ -227,7 +234,7 @@ export function Samedi() {
                     key={m.id}
                     className={cx(
                       "border-line bg-surface-2 animate-pop flex flex-col gap-1.5 rounded-[10px] border px-2.5 py-2",
-                      m.a && m.b && "border-[#bfe6d2]",
+                      m.a && m.b && r16Known(m) && "border-[#bfe6d2]",
                     )}
                     style={{ animationDelay: `${i * 40}ms` }}
                   >
@@ -241,10 +248,10 @@ export function Samedi() {
                       ] as const
                     ).map(([k, n, label]) => (
                       <div key={k} className="flex items-center gap-2 text-[12px]">
-                        {n ? (
-                          <PlayerLine name={n} club={by.get(n)?.club} size="xs" />
+                        {n && r16Known(m) ? (
+                          <PlayerLine name={n} size="xs" />
                         ) : (
-                          <span className="text-ink-muted">{label}</span>
+                          <span className="text-ink-muted font-medium">{longLabel(label)}</span>
                         )}
                       </div>
                     ))}
@@ -331,4 +338,15 @@ export function Samedi() {
       <PrintCenter day="samedi" open={printOpen} onClose={() => setPrintOpen(false)} />
     </section>
   );
+}
+
+/** Numéro de poule d'un libellé « 1er P3 ». */
+function pouleOfLabel(label: string | undefined): number {
+  const m = /P(\d+)/.exec(label ?? "");
+  return m ? Number(m[1]) : -1;
+}
+
+/** « 1er P3 » → « 1er poule 3 ». */
+function longLabel(label: string | undefined): string {
+  return (label ?? "").replace(/P(\d+)/, "poule $1");
 }

@@ -9,13 +9,12 @@ import { Pencil, Trophy, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 
 import { isValidScore, matchWinner } from "@/lib/engine";
-import { clubShort, nice } from "@/lib/format";
+import { nice } from "@/lib/format";
 import { celebrate, prefersReducedMotion } from "@/lib/motion";
 import {
   distanceLabel,
   matchTouched,
   phaseDistance,
-  playerByName,
   roundLabel,
   roundShort,
 } from "@/lib/tournament";
@@ -177,8 +176,6 @@ export function Bracket({
     return () => window.clearTimeout(t);
   }, [championKey]);
 
-  const by = playerByName(state);
-
   if (shown.length === 0) {
     return (
       <p className="text-ink-muted px-4 pb-4 text-[13px]">
@@ -206,7 +203,6 @@ export function Bracket({
         glow={Boolean(championKey) && r === "F"}
         refEl={r === "F" ? finalRef : undefined}
         delay={layout === "grid" ? m.slot * 40 : ri * 60}
-        club={(n: string) => clubShort(by.get(n)?.club ?? "")}
       />
     );
   };
@@ -302,10 +298,7 @@ export function Bracket({
           <Avatar name={champion} size="lg" crown className="ring-gold ring-2 ring-offset-2" />
           <div className="min-w-0 flex-1">
             <b className="text-[16px]">{nice(champion)}</b>
-            <small className="text-gold-ink block font-semibold">
-              {clubShort(by.get(champion)?.club ?? "")}
-              {championNote ? ` · ${championNote}` : ""}
-            </small>
+            <small className="text-gold-ink block font-semibold">{championNote ?? ""}</small>
           </div>
           <Chip tone="gold" icon={Trophy}>
             Podium
@@ -368,7 +361,6 @@ function MatchCard({
   glow,
   refEl,
   delay,
-  club,
 }: {
   phase: Phase;
   match: BracketMatch;
@@ -383,7 +375,6 @@ function MatchCard({
   glow: boolean;
   refEl?: React.RefObject<HTMLDivElement | null>;
   delay: number;
-  club: (n: string) => string;
 }) {
   const { dispatch } = useTournament();
   const multi = d.setsGagnants > 1;
@@ -454,7 +445,7 @@ function MatchCard({
                 {nice(name)}
               </div>
               <div className={cx("text-ink-muted truncate text-[10.5px]", isLose && "opacity-55")}>
-                {club(name)}
+                {label ?? ""}
               </div>
             </>
           ) : (

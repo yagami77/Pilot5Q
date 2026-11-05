@@ -1,8 +1,18 @@
 /** Carte d'une poule : joueurs, billard, progression des matchs, classement une fois terminée. */
 import type { Distance, Poule, TournamentState } from "@pilot5q/domain";
 
-import { isValidScore } from "@/lib/engine";
-import { billardType, matchTouched, pouleBillards, pouleState, type Day } from "@/lib/tournament";
+import type { Match } from "@pilot5q/domain";
+
+import { forfaitsOf, isValidScore, matchWinner } from "@/lib/engine";
+import { ordinal } from "@/lib/format";
+import {
+  billardType,
+  matchTouched,
+  orderedMatches,
+  pouleBillards,
+  pouleState,
+  type Day,
+} from "@/lib/tournament";
 
 import { Chip, Dots, PlayerLine, cx } from "./ui";
 
@@ -38,6 +48,7 @@ export function PouleCard({
   showPlace,
 }: PouleCardProps) {
   const r = pouleState(state, phase, poule);
+  const forfaits = new Set(forfaitsOf(state, phase));
   const rec = new Map(r.rows.map((x) => [x.name, x]));
   const done = poule.matches.filter((m) => isValidScore(m, distance)).length;
   const dots = poule.matches.map((m) => {
@@ -58,13 +69,18 @@ export function PouleCard({
       : live
         ? "En cours"
         : "À jouer";
-  const names = r.complete ? r.rows.map((x) => x.name) : poule.players;
   const byName = new Map(state.players.map((p) => [p.name, p]));
   const clubCounts = new Map<string, number>();
   for (const n of poule.players) {
     const c = byName.get(n)?.club ?? "";
     clubCounts.set(c, (clubCounts.get(c) ?? 0) + 1);
   }
+  const numOf = (n: string) => poule.players.indexOf(n) + 1;
+  const rankOf = new Map(r.rows.map((x, i) => [x.name, i + 1]));
+  // Matchs joués, dans l'ordre du code sportif, avec leurs vrais scores
+  const played = orderedMatches(poule, distance).filter(
+    (om) => isValidScore(om.match, distance) || Boolean(om.match.forfait),
+  );
   const Wrapper = onOpen ? "button" : "div";
   return (
     <Wrapper
@@ -94,45 +110,54 @@ export function PouleCard({
           B{bills.join("·")} · {type}
         </Chip>
       </div>
-      <div className="flex flex-col gap-[5px] px-[11px] pt-[9px] pb-2.5">
-        {names.map((n, i) => {
+      <div className="flex flex-col gap-[3px] px-[11px] pt-[8px] pb-2">
+        {poule.players.map((n, i) => {
           const x = rec.get(n);
           const club = byName.get(n)?.club ?? "";
           const isConflict = conflict && (clubCounts.get(club) ?? 0) >= 3;
-          const wins = x ? x.ptm / 2 : 0;
-          const losses = x ? x.joues - wins : 0;
           const delay = delays?.[n];
+          const rank = rankOf.get(n);
           const row = (
             <PlayerLine
               name={n}
-              club={club}
-              size="sm"
+              num={i + 1}
+              crown={r.complete && rank === 1}
+              muted={forfaits.has(n)}
               className={cx(
-                "rounded-[9px] px-1 py-1",
+                "rounded-[8px] px-1 py-[3px]",
                 delay !== undefined && "animate-slide-in",
                 isConflict && "bg-alert-soft",
                 selected === n && "bg-brand-soft ring-brand-light ring-2",
               )}
-              prefix={
-                r.complete && i === 0 ? (
-                  <span className="text-gold -mr-1 text-[12px]" aria-label="Première">
-                    ★
-                  </span>
-                ) : undefined
-              }
               trailing={
                 showPlace ? (
                   <span className="text-ink-muted ml-auto font-mono text-[11px]">
                     {byName.get(n)?.place ?? "nouveau"}
                   </span>
+                ) : forfaits.has(n) ? (
+                  <span className="text-alert-ink ml-auto text-[10.5px] font-bold">forfait</span>
                 ) : x && x.joues > 0 ? (
-                  <span
-                    className={cx(
-                      "ml-auto font-mono text-[11px] font-semibold tabular-nums",
-                      x.ptm >= 4 ? "text-ok" : "text-ink-muted",
-                    )}
-                  >
-                    {wins}V · {losses}D
+                  <span className="ml-auto flex items-baseline gap-1.5 font-mono text-[11px] tabular-nums">
+                    {r.complete && rank ? (
+                      <span
+                        className={cx(
+                          "font-sans text-[10.5px] font-bold",
+                          rank === 1
+                            ? "text-gold-ink"
+                            : rank === 2
+                              ? "text-ok-ink"
+                              : "text-ink-muted",
+                        )}
+                      >
+                        {ordinal(rank)}
+                      </span>
+                    ) : null}
+                    <span
+                      className={cx("font-bold", x.ptm >= 4 ? "text-ok-ink" : "text-ink-secondary")}
+                    >
+                      {x.ptm}
+                    </span>
+                    <span className="text-ink-muted text-[9.5px] font-semibold">Pm</span>
                   </span>
                 ) : undefined
               }
@@ -156,6 +181,16 @@ export function PouleCard({
           );
         })}
       </div>
+      {played.length > 0 ? (
+        <div
+          className="border-line grid grid-cols-2 gap-x-2 gap-y-[3px] border-t border-dashed px-[13px] py-[7px]"
+          aria-label="Matchs joués"
+        >
+          {played.map((om) => (
+            <MatchScore key={om.match.id} match={om.match} distance={distance} numOf={numOf} />
+          ))}
+        </div>
+      ) : null}
       {poule.matches.length > 0 ? (
         <div className="border-line flex items-center gap-[5px] border-t border-dashed px-[13px] pt-2 pb-[11px]">
           <Dots states={dots} />
@@ -171,5 +206,47 @@ export function PouleCard({
         </div>
       ) : null}
     </Wrapper>
+  );
+}
+
+/** Score compact d'un match joué : « 2 100–64 3 », vainqueur en gras. */
+function MatchScore({
+  match,
+  distance,
+  numOf,
+}: {
+  match: Match;
+  distance: Distance;
+  numOf: (name: string) => number;
+}) {
+  const w = matchWinner(match, distance);
+  const multi = distance.setsGagnants > 1;
+  const left = match.forfait === "a" ? "ff" : String(match.sa ?? "");
+  const right = match.forfait === "b" ? "ff" : String(match.sb ?? "");
+  const num = (name: string) => (
+    <span
+      className={cx(
+        "grid size-[15px] place-items-center rounded-[4px] text-[9.5px] font-bold",
+        w === name ? "bg-ink text-white" : "bg-surface-2 text-ink-muted",
+      )}
+    >
+      {numOf(name)}
+    </span>
+  );
+  return (
+    <span
+      className="animate-pop flex items-center gap-1 font-mono text-[11px] tabular-nums"
+      title={
+        multi && match.setsA && match.setsB
+          ? match.setsA.map((a, i) => `${a}-${match.setsB?.[i] ?? ""}`).join(" · ")
+          : undefined
+      }
+    >
+      {num(match.a)}
+      <span className={cx(w === match.a ? "text-ink font-bold" : "text-ink-muted")}>{left}</span>
+      <span className="text-ink-muted">–</span>
+      <span className={cx(w === match.b ? "text-ink font-bold" : "text-ink-muted")}>{right}</span>
+      {num(match.b)}
+    </span>
   );
 }

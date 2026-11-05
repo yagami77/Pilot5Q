@@ -9,14 +9,13 @@ import { AnimatePresence, LayoutGroup, motion } from "motion/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { forfaitsOf, isValidScore, matchOutcome, rankPouleInPhase } from "@/lib/engine";
-import { clubShort, moy, nice, shortName } from "@/lib/format";
+import { moy, nice, shortName } from "@/lib/format";
 import {
   arriveeOf,
   billardType,
   distanceLabel,
   orderedMatches,
   phaseDistance,
-  playerByName,
   pouleBillards,
 } from "@/lib/tournament";
 import { useTournament } from "@/store/tournament";
@@ -31,7 +30,7 @@ import {
 } from "./ScoreEditor";
 import { RollingNumber } from "./RollingNumber";
 import { useToast } from "./Toast";
-import { Avatar, Button, PlayerLine, cx } from "./ui";
+import { Button, NumBadge, PlayerLine, cx } from "./ui";
 
 export function PouleDrawer({
   phase,
@@ -121,7 +120,6 @@ function DrawerBody({
     return () => window.clearTimeout(t);
   }, [pouleNum]);
 
-  const by = playerByName(state);
   const forfaits = useMemo(() => new Set(forfaitsOf(state, phase)), [state, phase]);
 
   const merged = useMemo(() => {
@@ -181,7 +179,9 @@ function DrawerBody({
   return (
     <div ref={rootRef} data-score-root className="flex h-full flex-col">
       <div className="border-line flex items-center gap-3 border-b px-5 py-4">
-        <Avatar name={`P ${pouleNum}`} size="lg" />
+        <span className="bg-brand text-white grid size-[44px] shrink-0 place-items-center rounded-[12px] font-mono text-[19px] font-extrabold shadow-[0_8px_18px_-10px_rgb(14_55_168/0.7)]">
+          {pouleNum}
+        </span>
         <div className="min-w-0">
           <h3 className="text-[18px] font-extrabold tracking-[-0.02em]">Poule {pouleNum}</h3>
           <div className="text-ink-muted text-[12px]">
@@ -220,23 +220,18 @@ function DrawerBody({
               <div
                 className={cx(
                   "grid items-center gap-2.5 px-3 py-[7px]",
-                  multi ? "grid-cols-[34px_1fr]" : "grid-cols-[34px_1fr_72px]",
+                  multi ? "grid-cols-[24px_1fr]" : "grid-cols-[24px_1fr_72px]",
                   who === "b" && "border-line border-t border-dashed",
                 )}
               >
-                <Avatar name={name} size="md" />
-                <div className="min-w-0">
-                  <div
-                    className={cx(
-                      "truncate text-[13px] font-semibold",
-                      forfaits.has(name) && "text-ink-muted line-through",
-                    )}
-                  >
-                    {nice(name)}
-                  </div>
-                  <div className="text-ink-muted text-[11px]">
-                    {clubShort(by.get(name)?.club ?? "")}
-                  </div>
+                <NumBadge n={poule.players.indexOf(name) + 1} />
+                <div
+                  className={cx(
+                    "min-w-0 truncate text-[13.5px] font-semibold",
+                    forfaits.has(name) && "text-ink-muted line-through",
+                  )}
+                >
+                  {nice(name)}
                 </div>
                 {!multi ? (
                   <ScoreCell
@@ -326,7 +321,11 @@ function DrawerBody({
                         {rank.complete ? i + 1 : "–"}
                       </td>
                       <td className="px-2.5 py-[7px]">
-                        <PlayerLine name={r.name} size="sm" muted={forfaits.has(r.name)} />
+                        <PlayerLine
+                          name={r.name}
+                          num={poule.players.indexOf(r.name) + 1}
+                          muted={forfaits.has(r.name)}
+                        />
                       </td>
                       <td className="px-2.5 py-[7px] text-right font-mono">
                         <RollingNumber value={r.ptm} />

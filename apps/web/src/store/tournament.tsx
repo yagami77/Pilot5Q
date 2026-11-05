@@ -44,6 +44,8 @@ export interface TournamentStore {
   dispatch: (event: EventInput) => void;
   dispatchMany: (events: EventInput[]) => void;
   undo: () => void;
+  /** Annule toutes les actions à partir de l'index `index` du journal (inclus). */
+  undoTo: (index: number) => void;
   canUndo: boolean;
   /** Ouvre (ou crée) un tournoi avec un journal initial. */
   open: (id: string, events: EventInput[]) => void;
@@ -60,7 +62,7 @@ const Ctx = createContext<TournamentStore | null>(null);
 const stamp = (e: EventInput): TournamentEvent =>
   ({ ...e, at: new Date().toISOString() }) as TournamentEvent;
 
-const PROTECTED: TournamentEvent["type"][] = ["tournament.created", "players.imported"];
+export const PROTECTED: TournamentEvent["type"][] = ["tournament.created", "players.imported"];
 
 export function TournamentProvider({
   children,
@@ -150,6 +152,15 @@ export function TournamentProvider({
     });
   }, []);
 
+  const undoTo = useCallback((index: number) => {
+    dirty.current = true;
+    setEvents((prev) => {
+      if (index < 0 || index >= prev.length) return prev;
+      if (prev.slice(index).some((e) => PROTECTED.includes(e.type))) return prev;
+      return prev.slice(0, index);
+    });
+  }, []);
+
   const open = useCallback(
     (newId: string, inputs: EventInput[]) => {
       dirty.current = true;
@@ -194,6 +205,7 @@ export function TournamentProvider({
       dispatch,
       dispatchMany,
       undo,
+      undoTo,
       canUndo,
       open,
       close,
@@ -210,6 +222,7 @@ export function TournamentProvider({
       dispatch,
       dispatchMany,
       undo,
+      undoTo,
       canUndo,
       open,
       close,
