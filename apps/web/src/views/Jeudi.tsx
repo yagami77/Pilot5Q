@@ -20,7 +20,8 @@ import { Serpentin } from "@/components/Serpentin";
 import { PrintCenter } from "@/components/PrintCenter";
 import { useToast } from "@/components/Toast";
 import { Avatar, Banner, Button, Card, Chip, PageHead, Select, Tile, cx } from "@/components/ui";
-import { drawPreqBillards } from "@/lib/draw";
+import { BillardAssignment } from "@/dj/BillardAssignment";
+import { planToAssignments, proposePlan } from "@/lib/assign";
 import { pouleMatches, pouleSizes, resolveClubConflicts, serpentin } from "@/lib/engine";
 import { longDate, nice, plural } from "@/lib/format";
 import { drawLaterPhaseEvents, preqPouleCount } from "@/lib/setup";
@@ -184,7 +185,10 @@ export function Jeudi() {
           dispatchMany([
             {
               type: "billards.assigned",
-              payload: { phase: "PREQ", assignments: drawPreqBillards(count, billards) },
+              payload: {
+                phase: "PREQ",
+                assignments: planToAssignments(proposePlan(count, billards)),
+              },
             },
             ...drawLaterPhaseEvents(billards),
           ]);
@@ -192,23 +196,7 @@ export function Jeudi() {
         }}
       />
 
-      <PreqBillards
-        pouleCount={pouleCount}
-        locked={locked}
-        onShuffle={() => {
-          dispatch({
-            type: "billards.assigned",
-            payload: { phase: "PREQ", assignments: drawPreqBillards(pouleCount, state.billards) },
-          });
-          toast("Billards des poules tirés au sort");
-        }}
-        onAssign={(poule, billard) => {
-          dispatch({
-            type: "billards.assigned",
-            payload: { phase: "PREQ", assignments: { ...preqAssign, [poule]: [billard] } },
-          });
-        }}
-      />
+      <BillardAssignment pouleCount={pouleCount} locked={locked} />
 
       <LaterPhases />
 
@@ -487,117 +475,6 @@ function BillardStructure({
               <span className="text-[10.5px] font-semibold opacity-70">{b.type}</span>
             </span>
           ))}
-        </div>
-      )}
-    </Card>
-  );
-}
-
-/* ---------- Billards des poules du vendredi ---------- */
-
-function PreqBillards({
-  pouleCount,
-  locked,
-  onShuffle,
-  onAssign,
-}: {
-  pouleCount: number;
-  locked: boolean;
-  onShuffle: () => void;
-  onAssign: (poule: string, billard: number) => void;
-}) {
-  const { state } = useTournament();
-  const [editing, setEditing] = useState(false);
-  const assign = state.billardAssignments.PREQ ?? {};
-  const options = state.billards.map((b) => ({
-    value: String(b.num),
-    label: `Billard ${b.num} · ${b.type}`,
-  }));
-  return (
-    <Card
-      id="affectation"
-      className="mt-3.5"
-      title="Billards et poules affectées"
-      aside={
-        <>
-          <Chip tone="grey">2 poules par billard · 3m10 et 2m80 sans priorité</Chip>
-          {!locked ? (
-            <>
-              <Button
-                size="sm"
-                icon={Pencil}
-                variant={editing ? "primary" : "default"}
-                onClick={() => setEditing((v) => !v)}
-                aria-pressed={editing}
-              >
-                {editing ? "Terminer" : "Modifier"}
-              </Button>
-              <Button size="sm" icon={Shuffle} onClick={onShuffle}>
-                Tirer au sort
-              </Button>
-            </>
-          ) : null}
-        </>
-      }
-    >
-      {editing ? (
-        <div className="grid grid-cols-2 gap-2 px-4 pb-4 sm:grid-cols-3 lg:grid-cols-6">
-          {Array.from({ length: pouleCount }, (_, i) => String(i + 1)).map((key) => (
-            <label key={key} className="flex flex-col gap-1 text-[12px] font-semibold">
-              Poule {key}
-              <Select
-                ariaLabel={`Billard de la poule ${key}`}
-                value={String(assign[key]?.[0] ?? "")}
-                onChange={(v) => onAssign(key, Number(v))}
-                options={[{ value: "", label: "—" }, ...options]}
-              />
-            </label>
-          ))}
-        </div>
-      ) : (
-        <div className="grid grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-2.5 px-4 pt-1 pb-4">
-          {state.billards.map((b) => {
-            const poules = Array.from({ length: pouleCount }, (_, i) => i + 1).filter((n) =>
-              assign[String(n)]?.includes(b.num),
-            );
-            return (
-              <div
-                key={b.num}
-                className="bg-surface-2 border-line flex flex-col gap-2 rounded-[12px] border p-3"
-              >
-                <div className="flex items-center justify-between">
-                  <b className="text-[15px]">Billard {b.num}</b>
-                  <span
-                    className={cx(
-                      "rounded-[6px] border px-[7px] py-[3px] text-[10.5px] font-bold",
-                      b.type === "3m10"
-                        ? "bg-brand-soft text-brand-ink border-transparent"
-                        : "bg-surface border-line-2 text-ink-muted",
-                    )}
-                  >
-                    {b.type}
-                  </span>
-                </div>
-                <div className="flex min-h-6 flex-wrap gap-1.5">
-                  {poules.length ? (
-                    poules.map((n, k) => (
-                      <span
-                        key={n}
-                        className="bg-surface border-line-2 text-ink-secondary animate-pop rounded-full border px-2 py-[3px] text-[11px] font-bold"
-                        style={{ animationDelay: `${k * 25}ms` }}
-                      >
-                        Poule {n}
-                      </span>
-                    ))
-                  ) : (
-                    <span className="bg-surface border-line-2 text-ink-muted rounded-full border px-2 py-[3px] text-[11px] font-bold opacity-60">
-                      libre
-                    </span>
-                  )}
-                </div>
-              </div>
-            );
-          })}
         </div>
       )}
     </Card>
