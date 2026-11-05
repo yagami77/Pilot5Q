@@ -2,12 +2,16 @@
  * Documents imprimables (A4, noir sur blanc). Chaque document est une fonction de l'état
  * qui rend une ou plusieurs pages `.print-page`.
  */
-import type { BracketMatch, Match, Poule, TournamentState } from "@pilot5q/domain";
+import type { Match, Poule, TournamentState } from "@pilot5q/domain";
 import type { ReactNode } from "react";
 
 import { FlowDiagram } from "@/components/FlowDiagram";
 
-import { isValidScore, matchLabels, matchWinner } from "@/lib/engine";
+import { PlayersBoard, PoulesBoard } from "./boards";
+import { PrintHeader } from "./brand";
+import { SheetPages, barrageSheets, finalSheets, pairPages, pouleSheetPages } from "./sheets";
+
+import { matchWinner } from "@/lib/engine";
 import { clubShort, euros, longDate, nice, shortName } from "@/lib/format";
 import { computePrizes } from "@/lib/prizes";
 import {
@@ -17,7 +21,6 @@ import {
   distanceLabel,
   orderedMatches,
   phaseDistance,
-  playerByName,
   pouleBillards,
   pouleState,
   preqRanking,
@@ -64,6 +67,16 @@ function Page({ children }: { children: ReactNode }) {
   return <section className="print-page print-doc">{children}</section>;
 }
 
+/** Titre en minuscules accentuées (« POULES MASTERS » → « Poules Masters »). */
+function sentence(title: string): string {
+  const low = title.toLowerCase();
+  return (low.charAt(0).toUpperCase() + low.slice(1))
+    .replace(/\bmasters\b/g, "Masters")
+    .replace(/\bnational\b/g, "National")
+    .replace(/\btn\b/g, "TN")
+    .replace(/ · ([a-zà-ÿ])/g, (_, c: string) => ` · ${c.toUpperCase()}`);
+}
+
 function DocHeader({
   state,
   title,
@@ -77,23 +90,14 @@ function DocHeader({
   right?: string;
   rightSub?: string;
 }) {
-  const info = state.info;
   return (
-    <div className="mb-2 flex items-center justify-between border-b-2 border-black pb-1.5">
-      <div>
-        <b className="text-[14px]">{title}</b>
-        <div>
-          {info ? `${info.name} · ${info.city}` : ""}
-          {subtitle ? ` · ${subtitle}` : ""}
-        </div>
-      </div>
-      {right ? (
-        <div className="text-right">
-          <b className="text-[13px]">{right}</b>
-          {rightSub ? <div>{rightSub}</div> : null}
-        </div>
-      ) : null}
-    </div>
+    <PrintHeader
+      state={state}
+      title={sentence(title)}
+      {...(subtitle ? { date: subtitle } : {})}
+      right={right}
+      rightSub={rightSub}
+    />
   );
 }
 
@@ -109,127 +113,6 @@ function scoreText(m: Match, multi: boolean): string {
   if (multi && m.setsA && m.setsB)
     return `${m.sa}–${m.sb} (${m.setsA.map((a, i) => `${a}-${m.setsB?.[i] ?? ""}`).join(", ")})`;
   return `${m.sa} – ${m.sb}`;
-}
-
-/* ---------- Feuille de match d'une poule ---------- */
-
-function MatchSheet({
-  state,
-  poule,
-  phase,
-  dayLabel,
-}: {
-  state: TournamentState;
-  poule: Poule;
-  phase: "PREQ" | "QN" | "QM";
-  dayLabel: string;
-}) {
-  const d = phaseDistance(state, phase);
-  const bills = pouleBillards(state, phase, poule);
-  const by = playerByName(state);
-  const labels = matchLabels(poule.players.length);
-  const ordered = orderedMatches(poule, d);
-  const title = {
-    PREQ: "FEUILLE DE MATCH · PRÉQUALIFICATIONS",
-    QN: "FEUILLE DE MATCH · NATIONAL",
-    QM: "FEUILLE DE MATCH · MASTERS",
-  }[phase];
-  const multi = d.setsGagnants > 1;
-  const placeholders =
-    poule.players.length === 4
-      ? [
-          "2 – 3",
-          "1 – 4",
-          "Perdant M1 – Perdant M2",
-          "Gagnant M1 – Gagnant M2",
-          "Dernier match du 4",
-          "Dernier match du 1",
-        ]
-      : ["2 – 3", "1 – Gagnant M1", "1 – Perdant M1"];
-  return (
-    <Page>
-      <DocHeader
-        state={state}
-        title={`${title} · POULE ${poule.num}`}
-        subtitle={dayLabel}
-        right={`Billard ${bills.join(" & ")}`}
-        rightSub={`${billardType(state, bills[0])} · ${distanceLabel(d)}`}
-      />
-      <table>
-        <thead>
-          <tr>
-            <th className="w-6">#</th>
-            <th>Joueur</th>
-            <th>Club</th>
-            <th className="w-20">Licence</th>
-          </tr>
-        </thead>
-        <tbody>
-          {poule.players.map((n, i) => (
-            <tr key={n}>
-              <td className="text-center font-bold">{i + 1}</td>
-              <td className="font-semibold">{nice(n)}</td>
-              <td>{clubShort(by.get(n)?.club ?? "")}</td>
-              <td className="font-mono">{by.get(n)?.licence ?? ""}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <div className="h-2" />
-      <table>
-        <thead>
-          <tr>
-            <th className="w-8">Ordre</th>
-            <th>Match</th>
-            <th className="w-16">Gagnant (X)</th>
-            <th className="w-28">{multi ? "Sets (points)" : "Score"}</th>
-            <th className="w-28">Arbitre</th>
-            <th className="w-32">Signatures</th>
-          </tr>
-        </thead>
-        <tbody>
-          {ordered.map((om, i) => {
-            const known = i < 2 || isValidScore(om.match, d) || Boolean(matchWinner(om.match, d));
-            const fixed = poule.players.length === 3 ? i < 1 : i < 2;
-            return (
-              <tr key={om.match.id} className="h-10">
-                <td className="text-center">
-                  <b>{i + 1}</b>
-                  <div className="text-[8.5px] text-[#555]">{labels[i]}</div>
-                </td>
-                <td>
-                  {fixed || known ? (
-                    <>
-                      {shortName(om.match.a)}
-                      <br />
-                      {shortName(om.match.b)}
-                    </>
-                  ) : (
-                    <span className="text-[#555]">{placeholders[i]}</span>
-                  )}
-                </td>
-                <td className="text-center text-[13px] leading-[1.6]">
-                  {BOX}
-                  <br />
-                  {BOX}
-                </td>
-                <td className="font-mono">{scoreText(om.match, multi)}</td>
-                <td>{(fixed || known) && om.arbitre ? shortName(om.arbitre) : ""}</td>
-                <td />
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-      <Foot>
-        Ordre des matchs : {labels.join(", ").toLowerCase()}. Les joueurs qui ne jouent pas
-        arbitrent. Les deux joueurs vérifient et paraphent la feuille à la fin du match.
-        {multi
-          ? " Noter les points de chaque set."
-          : " Un match valide : un joueur à " + d.pointsParSet + ", l'autre en dessous."}
-      </Foot>
-    </Page>
-  );
 }
 
 /* ---------- Documents ---------- */
@@ -306,102 +189,6 @@ function Pointage({ state }: { state: TournamentState }) {
         samedi). U21 : exemptés du droit d'inscription ({juniors} signalé{juniors > 1 ? "s" : ""}).
         Total attendu : {euros(fee * (list.length - juniors))}.
       </Foot>
-    </Page>
-  );
-}
-
-function JoueursPoules({ state }: { state: TournamentState }) {
-  const masters = new Set(state.masters);
-  const pouleOf = pouleOfMap(state, "PREQ");
-  const list = [...state.players].sort((a, b) => sortFr(a.name, b.name));
-  return (
-    <Page>
-      <DocHeader
-        state={state}
-        title="LISTE DES JOUEURS · POULE ET BILLARD"
-        subtitle={`${longDate(dayDate(state, "vendredi"), true)} · convocation 10h30`}
-        right={`${list.length} joueurs`}
-      />
-      <div className="columns-2 gap-4">
-        <table>
-          <thead>
-            <tr>
-              <th>Joueur</th>
-              <th className="w-12">Poule</th>
-              <th className="w-14">Billard</th>
-            </tr>
-          </thead>
-          <tbody>
-            {list.map((p) => {
-              const po = pouleOf.get(p.name);
-              return (
-                <tr key={p.licence}>
-                  <td className="font-semibold">{nice(p.name)}</td>
-                  <td className="text-center">{masters.has(p.name) ? "M" : (po?.num ?? "—")}</td>
-                  <td className="text-center">
-                    {po
-                      ? pouleBillards(state, "PREQ", po).join(" & ")
-                      : masters.has(p.name)
-                        ? "samedi"
-                        : "—"}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-      <Foot>M : Masters préqualifié, entre en lice le samedi.</Foot>
-    </Page>
-  );
-}
-
-function TableauPoules({
-  state,
-  phase,
-  title,
-  day,
-}: {
-  state: TournamentState;
-  phase: "PREQ" | "QN" | "QM";
-  title: string;
-  day: Day;
-}) {
-  const d = phaseDistance(state, phase);
-  return (
-    <Page>
-      <DocHeader
-        state={state}
-        title={title}
-        subtitle={longDate(dayDate(state, day), true)}
-        right={distanceLabel(d)}
-      />
-      <div className="grid grid-cols-3 gap-2">
-        {state.poules[phase].map((p) => {
-          const bills = pouleBillards(state, phase, p);
-          return (
-            <table key={p.num}>
-              <thead>
-                <tr>
-                  <th colSpan={2}>
-                    Poule {p.num} · Billard {bills.join(" & ")} ({billardType(state, bills[0])})
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {p.players.map((n, i) => (
-                  <tr key={n}>
-                    <td className="w-5 text-center">{i + 1}</td>
-                    <td>
-                      <b>{nice(n)}</b>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          );
-        })}
-      </div>
     </Page>
   );
 }
@@ -632,55 +419,6 @@ function TableauBarrages({ state }: { state: TournamentState }) {
   );
 }
 
-function FeuillesBarrages({ state }: { state: TournamentState }) {
-  const d = state.rules.distances.barrage;
-  return (
-    <Page>
-      <DocHeader
-        state={state}
-        title="FEUILLES DE MATCH · BARRAGES"
-        subtitle={longDate(dayDate(state, "vendredi"), true)}
-        right={distanceLabel(d)}
-      />
-      <table>
-        <thead>
-          <tr>
-            <th className="w-10">Match</th>
-            <th className="w-14">Billard</th>
-            <th>Joueurs</th>
-            <th className="w-16">Gagnant (X)</th>
-            <th className="w-24">Score</th>
-            <th className="w-28">Arbitre</th>
-            <th className="w-32">Signatures</th>
-          </tr>
-        </thead>
-        <tbody>
-          {state.barrages.map((m) => (
-            <tr key={m.id} className="h-12">
-              <td className="font-bold">{m.id}</td>
-              <td className="text-center">{m.billard ?? "—"}</td>
-              <td>
-                {nice(m.a)}
-                <br />
-                {nice(m.b)}
-              </td>
-              <td className="text-center text-[13px] leading-[1.6]">
-                {BOX}
-                <br />
-                {BOX}
-              </td>
-              <td className="font-mono">{scoreText(m, false)}</td>
-              <td />
-              <td />
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <Foot>Arbitrage assuré par le club hôte. Les deux joueurs paraphent la feuille.</Foot>
-    </Page>
-  );
-}
-
 function PointageConsolante({ state }: { state: TournamentState }) {
   const q = qualifiers(state);
   const ranking = preqRanking(state);
@@ -823,79 +561,6 @@ function BracketTable({
   );
 }
 
-function FeuillesFinales({ state }: { state: TournamentState }) {
-  const sheets: { phase: "N" | "M"; m: BracketMatch }[] = [];
-  for (const phase of ["M", "N"] as const)
-    for (const m of state.brackets[phase]) if (m.round !== "R16") sheets.push({ phase, m });
-  return (
-    <>
-      {sheets.map(({ phase, m }) => {
-        const d = phaseDistance(state, phase, m.round);
-        const sets = 2 * d.setsGagnants - 1;
-        return (
-          <Page key={`${phase}-${m.id}`}>
-            <DocHeader
-              state={state}
-              title={`FEUILLE DE MATCH · ${phase === "M" ? "MASTERS" : "NATIONAL"} · ${roundLabel(m.round).toUpperCase()} ${m.slot}`}
-              subtitle={longDate(dayDate(state, "dimanche"), true)}
-              right={m.billard ? `Billard ${m.billard}` : "Billard à définir"}
-              rightSub={distanceLabel(d)}
-            />
-            <table>
-              <thead>
-                <tr>
-                  <th>Joueur</th>
-                  {Array.from({ length: sets }, (_, i) => (
-                    <th key={i} className="w-12 text-center">
-                      Set {i + 1}
-                    </th>
-                  ))}
-                  <th className="w-12 text-center">Sets</th>
-                  <th className="w-24">Signature</th>
-                </tr>
-              </thead>
-              <tbody>
-                {(
-                  [
-                    { n: m.a, label: m.labelA ?? "", s: m.setsA },
-                    { n: m.b, label: m.labelB ?? "", s: m.setsB },
-                  ] as { n: string; label: string; s: number[] | undefined }[]
-                ).map(({ n, label, s }, i) => (
-                  <tr key={i} className="h-10">
-                    <td className="font-semibold">
-                      {n ? nice(n) : <span className="text-[#555]">{label}</span>}
-                    </td>
-                    {Array.from({ length: sets }, (_, k) => (
-                      <td key={k} className="text-center font-mono">
-                        {s?.[k] ?? ""}
-                      </td>
-                    ))}
-                    <td className="text-center font-mono">
-                      {i === 0 ? (m.sa ?? "") : (m.sb ?? "")}
-                    </td>
-                    <td />
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            <table className="mt-2">
-              <tbody>
-                <tr className="h-9">
-                  <td className="w-40 font-bold">Arbitre (nom et licence)</td>
-                  <td className="font-mono">{m.arbitre ?? ""}</td>
-                  <td className="w-40 font-bold">Heure de début</td>
-                  <td />
-                </tr>
-              </tbody>
-            </table>
-            <Foot>Pause de 30 minutes minimum entre deux paliers pour un même joueur.</Foot>
-          </Page>
-        );
-      })}
-    </>
-  );
-}
-
 function Primes({ state }: { state: TournamentState }) {
   const p = computePrizes(state);
   const block = (title: string, total: number, lines: typeof p.masters.lines) => (
@@ -987,18 +652,17 @@ export const DOCS: DocDef[] = [
   {
     id: "joueurs-poules",
     label: "Liste des joueurs par poule et billard",
-    pages: (s) => Math.max(1, Math.ceil(s.players.length / 45)),
+    pages: (s) => Math.max(1, Math.ceil(s.players.length / 120)),
     available: drawn,
-    render: (s) => <JoueursPoules state={s} />,
+    render: (s) => <PlayersBoard state={s} />,
   },
   {
     id: "tableau-poules",
-    label: "Tableau des poules du vendredi",
+    label: "Tableau des poules du vendredi (affichage)",
+    landscape: true,
     pages: () => 1,
     available: drawn,
-    render: (s) => (
-      <TableauPoules state={s} phase="PREQ" title="POULES DU VENDREDI" day="vendredi" />
-    ),
+    render: (s) => <PoulesBoard state={s} phase="PREQ" title="Poules du vendredi" day="vendredi" />,
   },
   {
     id: "premiers-matchs",
@@ -1009,22 +673,11 @@ export const DOCS: DocDef[] = [
   },
   {
     id: "feuilles-preq",
-    label: "Feuilles de match des poules",
-    pages: (s) => s.poules.PREQ.length,
+    label: "Feuilles de match des poules (A4 paysage, 2 par page)",
+    landscape: true,
+    pages: (s) => pouleSheetPages(s, "PREQ", "vendredi").length,
     available: drawn,
-    render: (s) => (
-      <>
-        {s.poules.PREQ.map((p) => (
-          <MatchSheet
-            key={p.num}
-            state={s}
-            poule={p}
-            phase="PREQ"
-            dayLabel={longDate(dayDate(s, "vendredi"), true)}
-          />
-        ))}
-      </>
-    ),
+    render: (s) => <SheetPages pages={pouleSheetPages(s, "PREQ", "vendredi")} />,
   },
   {
     id: "classement-preq",
@@ -1051,10 +704,11 @@ export const DOCS: DocDef[] = [
   },
   {
     id: "feuilles-barrages",
-    label: "Feuilles de match des barrages",
-    pages: () => 1,
+    label: "Feuilles de match des barrages (2 par page)",
+    landscape: true,
+    pages: (s) => pairPages(barrageSheets(s)).length,
     available: preqClosed,
-    render: (s) => <FeuillesBarrages state={s} />,
+    render: (s) => <SheetPages pages={pairPages(barrageSheets(s))} />,
   },
   {
     id: "pointage-consolante",
@@ -1065,53 +719,32 @@ export const DOCS: DocDef[] = [
   },
   {
     id: "poules-samedi",
-    label: "Poules Masters et National du samedi",
+    label: "Poules Masters et National du samedi (affichage)",
+    landscape: true,
     pages: () => 2,
     available: satReady,
     render: (s) => (
       <>
-        <TableauPoules state={s} phase="QM" title="POULES MASTERS" day="samedi" />
-        <TableauPoules state={s} phase="QN" title="POULES NATIONAL" day="samedi" />
+        <PoulesBoard state={s} phase="QM" title="Poules Masters" day="samedi" />
+        <PoulesBoard state={s} phase="QN" title="Poules National" day="samedi" />
       </>
     ),
   },
   {
     id: "feuilles-qm",
-    label: "Feuilles de match Masters",
-    pages: (s) => s.poules.QM.length,
+    label: "Feuilles de match Masters (2 par page)",
+    landscape: true,
+    pages: (s) => pouleSheetPages(s, "QM", "samedi").length,
     available: satReady,
-    render: (s) => (
-      <>
-        {s.poules.QM.map((p) => (
-          <MatchSheet
-            key={p.num}
-            state={s}
-            poule={p}
-            phase="QM"
-            dayLabel={longDate(dayDate(s, "samedi"), true)}
-          />
-        ))}
-      </>
-    ),
+    render: (s) => <SheetPages pages={pouleSheetPages(s, "QM", "samedi")} />,
   },
   {
     id: "feuilles-qn",
-    label: "Feuilles de match National",
-    pages: (s) => s.poules.QN.length,
+    label: "Feuilles de match National (2 par page)",
+    landscape: true,
+    pages: (s) => pouleSheetPages(s, "QN", "samedi").length,
     available: satReady,
-    render: (s) => (
-      <>
-        {s.poules.QN.map((p) => (
-          <MatchSheet
-            key={p.num}
-            state={s}
-            poule={p}
-            phase="QN"
-            dayLabel={longDate(dayDate(s, "samedi"), true)}
-          />
-        ))}
-      </>
-    ),
+    render: (s) => <SheetPages pages={pouleSheetPages(s, "QN", "samedi")} />,
   },
   {
     id: "tours-masters",
@@ -1145,12 +778,11 @@ export const DOCS: DocDef[] = [
   },
   {
     id: "feuilles-finales",
-    label: "Feuilles de match des quarts, demies et finales",
-    pages: (s) =>
-      s.brackets.N.filter((m) => m.round !== "R16").length +
-      s.brackets.M.filter((m) => m.round !== "R16").length,
+    label: "Feuilles de match des quarts, demies et finales (2 par page)",
+    landscape: true,
+    pages: (s) => pairPages(finalSheets(s)).length,
     available: (s) => s.brackets.N.length > 0 || s.brackets.M.length > 0,
-    render: (s) => <FeuillesFinales state={s} />,
+    render: (s) => <SheetPages pages={pairPages(finalSheets(s))} />,
   },
   {
     id: "primes",

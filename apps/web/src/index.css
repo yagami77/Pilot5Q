@@ -241,10 +241,10 @@
 }
 .print-doc th,
 .print-doc td {
-  @apply border border-[#333] px-1.5 py-1 text-left align-middle;
+  @apply border border-[#aab2c0] px-1.5 py-1 text-left align-middle;
 }
 .print-doc th {
-  @apply bg-[#f1f1f1] text-[10px] font-bold uppercase;
+  @apply bg-[#f2f4f7] text-[9px] font-bold tracking-[0.06em] text-[#3c4a66] uppercase;
 }
 .print-page {
   @apply mb-8 bg-white p-[12mm] shadow-raised;
@@ -262,6 +262,329 @@
   max-width: 277mm;
 }
 
+/* ---------- Documents imprimés : identité ---------- */
+
+@page {
+  size: A4;
+  margin: 10mm;
+}
+
+.print-tricolore {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  height: 0.9mm;
+  border-radius: 0.5mm;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 0.15mm #c9ced8;
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+
+/* ---------- Tableaux d'affichage (poules, joueurs) ---------- */
+
+.print-board {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: 210mm;
+  min-height: 297mm;
+  max-width: none;
+  padding: 10mm;
+  margin: 0 auto 8mm;
+  background: #fff;
+  color: #0f1b33;
+  font-family: var(--font-sans);
+  font-feature-settings: "tnum" 1;
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+.print-board.print-landscape {
+  width: 297mm;
+  min-height: 210mm;
+  max-width: none;
+}
+.board-tile {
+  break-inside: avoid;
+  padding: 1.4mm 3mm 1.8mm;
+  border: 0.3mm solid #c9ced8;
+  border-radius: 2.4mm;
+}
+.board-num {
+  font-family: var(--font-mono);
+  font-size: 24pt;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+.board-num-lg {
+  font-size: 40pt;
+}
+.board-bill {
+  font-family: var(--font-mono);
+  font-size: 20pt;
+  font-weight: 700;
+  line-height: 1;
+}
+.board-bill-lg {
+  font-size: 30pt;
+}
+.board-player {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 1.8mm;
+  font-size: 11pt;
+  font-weight: 600;
+  line-height: 1.16;
+}
+.board-player-md {
+  font-size: 14pt;
+  line-height: 1.35;
+}
+.board-player-lg {
+  font-size: 17pt;
+  line-height: 1.75;
+}
+.board-dot {
+  display: inline-grid;
+  width: 4.8mm;
+  height: 4.8mm;
+  flex-shrink: 0;
+  place-items: center;
+  border: 0.25mm solid #5b6680;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 8.5pt;
+  font-weight: 700;
+  color: #3c4a66;
+}
+.players-cols {
+  column-count: 3;
+  column-gap: 7mm;
+  column-rule: 0.25mm solid #e1e5ec;
+}
+.players-row {
+  display: grid;
+  grid-template-columns: 4mm minmax(0, 1fr) 9mm 13mm;
+  align-items: center;
+  gap: 1.5mm;
+  padding: 1.15mm 0;
+  border-bottom: 0.2mm solid #eef0f4;
+  font-size: 9.4pt;
+  break-inside: avoid;
+}
+.players-head {
+  font-size: 6.5pt;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #6b7480;
+  border-bottom: 0.35mm solid #0f1b33;
+}
+.players-letter {
+  margin-top: 1.2mm;
+}
+.players-initial {
+  font-weight: 800;
+  color: #0e37a8;
+}
+
+/* ---------- Feuilles de match : A4 paysage, deux demi-feuilles ---------- */
+
+@page sheet {
+  size: A4 landscape;
+  margin: 0;
+}
+
+.print-sheet {
+  page: sheet;
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 297mm;
+  height: 210mm;
+  margin: 0 auto 8mm;
+  overflow: hidden;
+  background: #fff;
+  color: #0f1b33;
+  box-shadow: var(--shadow-raised);
+  break-after: page;
+  font-family: var(--font-sans);
+  font-feature-settings: "tnum" 1;
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+.sheet-half {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  padding: 9mm 10mm 8mm;
+}
+.sheet-cut {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  border-left: 0.3mm dashed #a9b0bd;
+}
+.sheet-scissors {
+  position: absolute;
+  top: 3mm;
+  left: -2.1mm;
+  display: block;
+  transform: rotate(-90deg);
+  background: #fff;
+}
+.sheet-head {
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  align-items: start;
+  gap: 8mm;
+  margin: 3.5mm 0 3.5mm;
+  padding-bottom: 3mm;
+  border-bottom: 0.35mm solid #0f1b33;
+}
+.sheet-label {
+  font-size: 7pt;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #5b6680;
+}
+.sheet-big {
+  font-family: var(--font-mono);
+  font-size: 24pt;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: #0f1b33;
+}
+.sheet-sub {
+  margin-top: 0.8mm;
+  font-size: 7.5pt;
+  color: #5b6680;
+}
+.sheet-table {
+  display: flex;
+  flex-direction: column;
+}
+.sheet-cols {
+  display: grid;
+  column-gap: 2mm;
+  padding: 0 0 1.2mm;
+  font-size: 6.5pt;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #6b7480;
+}
+.sheet-match {
+  display: grid;
+  grid-template-columns: 14mm minmax(0, 1fr);
+  column-gap: 2mm;
+  padding: 1.6mm 0 1.4mm;
+  border-top: 0.25mm solid #c9ced8;
+}
+.sheet-single {
+  display: flex;
+  flex-direction: column;
+  gap: 4mm;
+}
+.sheet-player {
+  padding: 3mm 0 3.5mm;
+  border-top: 0.25mm solid #c9ced8;
+}
+.sheet-player-name {
+  min-height: 9mm;
+  margin-bottom: 2.5mm;
+  font-size: 15pt;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.sheet-player-name .sheet-write {
+  height: 9mm;
+}
+.sheet-box-lg {
+  width: 15mm;
+  height: 11mm;
+  font-size: 13pt;
+}
+.sheet-order {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  line-height: 1.1;
+}
+.sheet-order b {
+  font-family: var(--font-mono);
+  font-size: 12pt;
+  font-weight: 700;
+}
+.sheet-order span {
+  font-size: 6.5pt;
+  color: #5b6680;
+}
+.sheet-row {
+  display: grid;
+  align-items: center;
+  column-gap: 2mm;
+  height: 10.6mm;
+}
+.sheet-name {
+  min-width: 0;
+  font-size: 10pt;
+  font-weight: 600;
+}
+.sheet-write {
+  position: relative;
+  display: block;
+  height: 8.5mm;
+  border-bottom: 0.3mm solid #8a93a3;
+}
+.sheet-hint {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: 6.5pt;
+  font-weight: 600;
+  color: #8a93a3;
+}
+.sheet-check {
+  display: grid;
+  width: 6.5mm;
+  height: 6.5mm;
+  place-items: center;
+  border: 0.35mm solid #3c4a66;
+  border-radius: 1mm;
+  font-size: 10pt;
+  font-weight: 700;
+}
+.sheet-box {
+  display: grid;
+  width: 14mm;
+  height: 9mm;
+  place-items: center;
+  border: 0.35mm solid #3c4a66;
+  border-radius: 1.2mm;
+  font-family: var(--font-mono);
+  font-size: 12pt;
+  font-weight: 600;
+}
+.sheet-sign {
+  align-self: end;
+  height: 7mm;
+  margin-bottom: 1.2mm;
+  border-bottom: 0.3mm solid #8a93a3;
+}
+.sheet-rule {
+  margin-top: auto;
+  padding-top: 2.5mm;
+  border-top: 0.25mm solid #e1e5ec;
+  font-size: 6.8pt;
+  line-height: 1.35;
+  color: #6b7480;
+}
+
 @media print {
   .tricolore,
   .no-print {
@@ -275,6 +598,21 @@
     box-shadow: none !important;
     margin: 0 !important;
     padding: 0 !important;
+  }
+  .print-sheet {
+    box-shadow: none !important;
+    margin: 0 !important;
+  }
+  .print-board {
+    width: auto !important;
+    min-height: 276mm;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    break-after: page;
+  }
+  .print-board.print-landscape {
+    min-height: 189mm;
   }
   * {
     animation: none !important;

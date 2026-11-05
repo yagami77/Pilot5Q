@@ -138,7 +138,11 @@ export function PrintCenter({
               {preview ? (
                 <div
                   className="origin-top-left"
-                  style={{ width: "210mm", transform: "scale(0.72)", marginBottom: "-28%" }}
+                  style={
+                    preview.landscape
+                      ? { width: "297mm", transform: "scale(0.5)", marginBottom: "-50%" }
+                      : { width: "210mm", transform: "scale(0.72)", marginBottom: "-28%" }
+                  }
                   aria-hidden="true"
                 >
                   {preview.render(state)}
