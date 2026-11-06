@@ -1,9 +1,11 @@
 /**
  * Feuilles de match à remplir au stylo : A4 paysage, deux demi-feuilles A5 côte à côte avec
- * un trait de coupe. En-tête compact (tournoi, poule, billard(s), distance), colonnes ordre,
- * match, gagnant, score (une case par set), paraphe. Sans tableau des joueurs ni arbitre pour
- * les poules et les barrages ; l'arbitre (licence) reste demandé pour les quarts, demies et
- * finales (SPEC §6).
+ * un trait de coupe. Bandeau plein (tournoi, lieu, journée) avec un grand cartouche « POULE ·
+ * BILLARD » lisible de loin ; six blocs de match de hauteur égale, zébrés, avec pour chaque
+ * joueur une case GAGNANT, une boîte SCORE (ou une boîte par set et le total de sets) et un
+ * PARAPHE ; rappel des règles et QR code vers la poule en ligne en pied. Barrages, quarts,
+ * demies et finales : deux matchs par demi-feuille, arbitres et heure demandés le dimanche
+ * (SPEC §6).
  */
 import type { BracketMatch, Distance, Match, Poule, TournamentState } from "@pilot5q/domain";
 import type { ReactNode } from "react";
@@ -21,7 +23,7 @@ import {
   type Day,
 } from "@/lib/tournament";
 
-import { PrintLogo, Tricolore, tournamentLine } from "./brand";
+import { PrintBanner, PrintLogo, QrSvg, publicUrl, type BannerCell } from "./brand";
 import { paginateHalves, pairs } from "./layout";
 
 /* ---------- Modèle ---------- */
@@ -35,7 +37,10 @@ export interface SheetLine {
   hint?: string;
   /** Score connu (réimpression) : points d'un set, ou points par set. */
   sets?: (number | null)[];
+  /** Sets gagnés (distance à plusieurs sets, réimpression). */
+  setsWon?: number;
   won?: boolean;
+  lost?: boolean;
 }
 
 export interface SheetMatch {
@@ -43,27 +48,34 @@ export interface SheetMatch {
   label: string;
   a: SheetLine;
   b: SheetLine;
+  /** Match isolé : titre du bloc (« Barrage 3 », « Quart 1 »). */
+  title?: string;
+  billards?: number[];
+  billardType?: string;
+  /** Champs à remplir sous le match (arbitres, heure). */
+  fields?: string[];
 }
 
 export interface HalfSheetData {
   key: string;
+  /** Poule (six blocs) ou matchs isolés (deux blocs par demi-feuille). */
+  kind: "poule" | "single";
   /** Phase (« Préqualifications », « Masters », « Barrages »…). */
   phase: string;
-  /** Repère principal (« Poule », « Barrage », « Quart »…). */
-  bigLabel: string;
-  bigValue: string;
-  /** « TN 2 · Ronchin ». */
+  /** « TN 2 ». */
   tournament: string;
-  billards: number[];
-  billardType: string;
-  /** Billard partagé : la poule au numéro le plus élevé commence. */
-  turn?: "premier" | "ensuite";
-  distance: Distance;
+  /** « Ronchin ». */
+  place: string;
+  /** « Vendredi 30 octobre 2026 ». */
   date: string;
+  /** Cartouche blanc du bandeau. */
+  cells: BannerCell[];
+  distance: Distance;
+  /** Billard partagé : « Commence » ou « Joue après la poule 9 ». */
+  turn?: string;
   matches: SheetMatch[];
-  /** Champs à remplir en bas (arbitre, heure). */
-  fields?: string[];
   rule: string;
+  qr?: { url: string; caption: string };
 }
 
 const PLACEHOLDERS_4: [string | null, string | null][] = [
@@ -90,17 +102,40 @@ function setsOf(m: Match, side: "a" | "b", d: Distance): (number | null)[] | und
   return v === null ? undefined : [v];
 }
 
+function line(m: Match, side: "a" | "b", d: Distance, num?: number): SheetLine {
+  const name = side === "a" ? m.a : m.b;
+  const w = matchWinner(m, d);
+  const sets = setsOf(m, side, d);
+  const setsWon = d.setsGagnants > 1 ? (side === "a" ? m.sa : m.sb) : null;
+  return {
+    name,
+    ...(num ? { num } : {}),
+    ...(sets ? { sets } : {}),
+    ...(setsWon !== null && setsWon !== undefined ? { setsWon } : {}),
+    won: w === name,
+    lost: Boolean(w) && w !== name,
+  };
+}
+
+function validText(d: Distance): string {
+  return d.setsGagnants === 1
+    ? `Match valide : un joueur à ${d.pointsParSet}, l'autre en dessous.`
+    : `Set gagné à ${d.pointsParSet}, ${d.setsGagnants} sets gagnants : noter les points de chaque set et le total de sets.`;
+}
+
 function ruleText(d: Distance, size: number): string {
   const order =
     size === 3
       ? "Ordre : 2–3, 1–gagnant, 1–perdant."
-      : "Ordre : 2–3, 1–4, perdants, gagnants, dernier match du 4, dernier match du 1.";
-  const valid =
-    d.setsGagnants === 1
-      ? `Match valide : un joueur à ${d.pointsParSet}, l'autre en dessous.`
-      : `Set gagné à ${d.pointsParSet}, ${d.setsGagnants} sets gagnants : noter les points de chaque set.`;
-  return `${valid} ${order} Les joueurs qui ne jouent pas arbitrent ; chacun paraphe après son match.`;
+      : "Ordre : 2–3, 1–4, perdants, gagnants, dernier de 4, dernier de 1.";
+  return `${validText(d)} ${order} Les joueurs qui ne jouent pas arbitrent ; chacun paraphe après son match.`;
 }
+
+const PHASE_NAME = {
+  PREQ: "Préqualifications",
+  QN: "Qualification National",
+  QM: "Qualification Masters",
+} as const;
 
 /** Feuille d'une poule (vendredi ou samedi). */
 export function pouleSheet(
@@ -122,25 +157,14 @@ export function pouleSheet(
       ? Boolean(first && second && matchWinner(first, d) && matchWinner(second, d))
       : Boolean(first && matchWinner(first, d));
   const placeholders = size === 3 ? PLACEHOLDERS_3 : PLACEHOLDERS_4;
-  const line = (m: Match, side: "a" | "b"): SheetLine => {
-    const name = side === "a" ? m.a : m.b;
-    const w = matchWinner(m, d);
-    const sets = setsOf(m, side, d);
-    return {
-      name,
-      num: numOf(name),
-      ...(sets ? { sets } : {}),
-      won: w === name,
-    };
-  };
   const matches: SheetMatch[] = ordered.map((om, i) => {
     const fixed = i < (size === 3 ? 1 : 2);
     if (fixed || resolved) {
       return {
         order: i + 1,
         label: labels[i] ?? "",
-        a: line(om.match, "a"),
-        b: line(om.match, "b"),
+        a: line(om.match, "a", d, numOf(om.match.a)),
+        b: line(om.match, "b", d, numOf(om.match.b)),
       };
     }
     const [pa, pb] = placeholders[i] ?? [null, null];
@@ -153,20 +177,30 @@ export function pouleSheet(
     };
     return { order: i + 1, label: labels[i] ?? "", a: known(pa), b: known(pb) };
   });
+  const type = billardType(state, bills[0]);
+  const phaseParam = phase === "PREQ" ? "" : `phase=${phase}&`;
   return {
     key: `${phase}-${poule.num}`,
-    phase: { PREQ: "Préqualifications", QN: "Qualification National", QM: "Qualification Masters" }[
-      phase
-    ],
-    bigLabel: "Poule",
-    bigValue: String(poule.num),
-    tournament: tournamentLine(state),
-    billards: bills,
-    billardType: billardType(state, bills[0]),
-    distance: d,
+    kind: "poule",
+    phase: PHASE_NAME[phase],
+    tournament: state.info?.name ?? "",
+    place: state.info?.city ?? "",
     date: longDate(dayDate(state, day), true),
+    cells: [
+      { label: "Poule", value: String(poule.num) },
+      {
+        label: bills.length > 1 ? "Billards" : "Billard",
+        value: bills.length ? bills.join(" & ") : "—",
+        sub: type,
+      },
+    ],
+    distance: d,
     matches,
     rule: ruleText(d, size),
+    qr: {
+      url: publicUrl(`tournoi/${day}?${phaseParam}poule=${poule.num}`),
+      caption: `Poule ${poule.num} en ligne`,
+    },
   };
 }
 
@@ -179,81 +213,93 @@ function friendlyLabel(label: string): string {
     .replace(/\bP(\d+)/, "poule $1");
 }
 
-/** Feuille d'un match isolé (barrage, tour de tableau). */
-function singleMatchSheet(
+/** Match isolé (barrage, tour de tableau) avec sa phase, prêt à être groupé par deux. */
+export interface SingleSheet {
+  phase: string;
+  /** Libellé du cartouche (« Barrage », « Quart », « Finale »). */
+  label: string;
+  /** Valeur du cartouche (« 3 », « Masters »). */
+  value: string;
+  d: Distance;
+  day: Day;
+  match: SheetMatch;
+}
+
+function singleMatch(
   state: TournamentState,
   m: Match,
   opts: {
-    key: string;
     phase: string;
-    bigLabel: string;
-    bigValue: string;
+    label: string;
+    value: string;
+    title: string;
     d: Distance;
     day: Day;
     labelA?: string;
     labelB?: string;
     fields?: string[];
   },
-): HalfSheetData {
-  const w = matchWinner(m, opts.d);
+): SingleSheet {
   const side = (s: "a" | "b"): SheetLine => {
     const name = s === "a" ? m.a : m.b;
-    const sets = setsOf(m, s, opts.d);
     return name
-      ? { name, ...(sets ? { sets } : {}), won: w === name }
+      ? line(m, s, opts.d)
       : { name: "", hint: friendlyLabel((s === "a" ? opts.labelA : opts.labelB) ?? "") };
   };
   const bills = m.billard ? [m.billard] : [];
-  const rule =
-    opts.d.setsGagnants === 1
-      ? `Match valide : un joueur à ${opts.d.pointsParSet}, l'autre en dessous. Les deux joueurs paraphent la feuille.`
-      : `Set gagné à ${opts.d.pointsParSet}, ${opts.d.setsGagnants} sets gagnants : noter les points de chaque set. Pause de 30 minutes minimum entre deux paliers.`;
   return {
-    key: opts.key,
     phase: opts.phase,
-    bigLabel: opts.bigLabel,
-    bigValue: opts.bigValue,
-    tournament: tournamentLine(state),
-    billards: bills,
-    billardType: bills[0] ? billardType(state, bills[0]) : "",
-    distance: opts.d,
-    date: longDate(dayDate(state, opts.day), true),
-    matches: [{ order: 1, label: "", a: side("a"), b: side("b") }],
-    ...(opts.fields ? { fields: opts.fields } : {}),
-    rule,
+    label: opts.label,
+    value: opts.value,
+    d: opts.d,
+    day: opts.day,
+    match: {
+      order: 1,
+      label: "",
+      title: opts.title,
+      a: side("a"),
+      b: side("b"),
+      billards: bills,
+      billardType: bills[0] ? billardType(state, bills[0]) : "",
+      ...(opts.fields ? { fields: opts.fields } : {}),
+    },
   };
 }
 
-export function barrageSheets(state: TournamentState): HalfSheetData[] {
+export function barrageSheets(state: TournamentState): SingleSheet[] {
   const d = state.rules.distances.barrage;
-  return state.barrages.map((m) =>
-    singleMatchSheet(state, m, {
-      key: `B-${m.id}`,
+  return state.barrages.map((m) => {
+    const n = m.id.replace(/^B/, "");
+    return singleMatch(state, m, {
       phase: "Barrages",
-      bigLabel: "Barrage",
-      bigValue: m.id.replace(/^B/, ""),
+      label: "Barrage",
+      value: n,
+      title: `Barrage ${n}`,
       d,
       day: "vendredi",
-    }),
-  );
+    });
+  });
 }
 
-export function finalSheets(state: TournamentState): HalfSheetData[] {
-  const out: HalfSheetData[] = [];
+export function finalSheets(state: TournamentState): SingleSheet[] {
+  const out: SingleSheet[] = [];
   for (const phase of ["M", "N"] as const)
     for (const m of state.brackets[phase] as BracketMatch[]) {
       if (m.round === "R16" || m.round === "R32" || m.round === "R64") continue;
+      const phaseName = phase === "M" ? "Masters" : "National";
+      const roundName = m.round === "F" ? "Finale" : roundLabel(m.round).replace(/s$/, "");
+      const round = m.round === "F" ? "Finale" : `${roundName} ${m.slot}`;
       out.push(
-        singleMatchSheet(state, m, {
-          key: `${phase}-${m.id}`,
-          phase: phase === "M" ? "Masters" : "National",
-          bigLabel: m.round === "F" ? "Tour" : roundLabel(m.round).replace(/s$/, ""),
-          bigValue: m.round === "F" ? "Finale" : String(m.slot),
+        singleMatch(state, m, {
+          phase: phaseName,
+          label: m.round === "F" ? phaseName : `${phaseName} · ${roundName}`,
+          value: m.round === "F" ? "Finale" : String(m.slot),
+          title: `${round} ${phaseName}`,
           d: phaseDistance(state, phase, m.round),
           day: "dimanche",
           ...(m.labelA ? { labelA: m.labelA } : {}),
           ...(m.labelB ? { labelB: m.labelB } : {}),
-          fields: ["Arbitre (nom et licence)", "Heure de début"],
+          fields: ["Arbitre 1", "Arbitre 2", "Heure"],
         }),
       );
     }
@@ -275,15 +321,57 @@ export function pouleSheetPages(
     poules.map((p) => {
       const mates = shared(p);
       const sheet = pouleSheet(state, phase, p, day);
-      if (mates.length > 1)
-        sheet.turn = Math.max(...mates.map((q) => q.num)) === p.num ? "premier" : "ensuite";
+      if (mates.length > 1) {
+        const first = Math.max(...mates.map((q) => q.num));
+        sheet.turn = first === p.num ? "Commence" : `Joue après la poule ${first}`;
+      }
       return { item: sheet, billards: pouleBillards(state, phase, p) };
     }),
   );
 }
 
-export function pairPages(sheets: HalfSheetData[]): HalfSheetData[][] {
-  return pairs(sheets);
+/**
+ * Demi-feuilles de matchs isolés : deux matchs par demi-feuille, sans mélanger les phases
+ * (Masters et National restent sur des demi-feuilles distinctes).
+ */
+export function singleHalves(state: TournamentState, singles: SingleSheet[]): HalfSheetData[] {
+  const groups = new Map<string, SingleSheet[]>();
+  for (const s of singles) groups.set(s.phase, [...(groups.get(s.phase) ?? []), s]);
+  const out: HalfSheetData[] = [];
+  for (const group of groups.values())
+    for (const pair of pairs(group)) {
+      const first = pair[0]!;
+      const d = first.d;
+      const cells: BannerCell[] = pair.map((s) => {
+        const b = s.match.billards?.[0];
+        return {
+          label: s.label,
+          value: s.value,
+          size: /^\d+$/.test(s.value) ? "lg" : "sm",
+          sub: b ? `Billard ${b} · ${s.match.billardType}` : "Billard à préciser",
+        };
+      });
+      out.push({
+        key: pair.map((s) => `${s.phase}-${s.match.title}`).join("+"),
+        kind: "single",
+        phase: first.phase,
+        tournament: state.info?.name ?? "",
+        place: state.info?.city ?? "",
+        date: longDate(dayDate(state, first.day), true),
+        cells,
+        distance: d,
+        matches: pair.map((s, i) => ({ ...s.match, order: i + 1 })),
+        rule:
+          d.setsGagnants === 1
+            ? `${validText(d)} Les deux joueurs paraphent la feuille après le match.`
+            : `${validText(d)} Pause de 30 minutes minimum entre deux paliers. Les deux joueurs paraphent la feuille.`,
+      });
+    }
+  return out;
+}
+
+export function pairPages(halves: HalfSheetData[]): HalfSheetData[][] {
+  return pairs(halves);
 }
 
 /* ---------- Rendu ---------- */
@@ -310,6 +398,14 @@ function Scissors() {
   );
 }
 
+function Check() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.4" aria-hidden="true">
+      <path d="M4.5 12.5l5 5 10-11" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 /** Page A4 paysage de deux demi-feuilles avec trait de coupe. */
 export function SheetPage({ halves }: { halves: HalfSheetData[] }) {
   return (
@@ -327,191 +423,271 @@ export function SheetPage({ halves }: { halves: HalfSheetData[] }) {
   );
 }
 
-function NumDot({ n }: { n: number }) {
-  return (
-    <span className="mr-[1.6mm] inline-grid size-[4.2mm] shrink-0 place-items-center rounded-full border-[0.25mm] border-[#5b6680] font-mono text-[7pt] leading-none font-bold text-[#3c4a66]">
-      {n}
-    </span>
-  );
-}
-
-function PlayerRow({
-  line,
-  setCount,
-  compact,
-}: {
-  line: SheetLine;
-  setCount: number;
-  compact: boolean;
-}) {
-  return (
-    <div className="sheet-row" style={{ gridTemplateColumns: rowColumns(setCount, compact) }}>
-      <div className="sheet-name">
-        {line.name ? (
-          <span className="flex min-w-0 items-center">
-            {line.num ? <NumDot n={line.num} /> : null}
-            <span className="truncate">{compact ? shortName(line.name) : nice2(line.name)}</span>
-          </span>
-        ) : (
-          <span className="sheet-write">
-            <span className="sheet-hint">{line.hint}</span>
-          </span>
-        )}
-      </div>
-      <div className="grid place-items-center">
-        <span className="sheet-check">{line.won ? "✕" : ""}</span>
-      </div>
-      <div className="flex items-center gap-[1.5mm]">
-        {Array.from({ length: setCount }, (_, i) => (
-          <span key={i} className="sheet-box">
-            {line.sets?.[i] ?? ""}
-          </span>
-        ))}
-      </div>
-      <div className="sheet-sign" />
-    </div>
-  );
-}
-
 /** « DUPONT JEAN » → « Dupont Jean » (nom complet quand la place le permet). */
 function nice2(name: string): string {
   return name.toLowerCase().replace(/(^|[\s'-])\p{L}/gu, (c) => c.toUpperCase());
 }
 
-function rowColumns(setCount: number, compact: boolean): string {
-  const scores = `${setCount * 14 + (setCount - 1) * 1.5}mm`;
-  return `minmax(0,1fr) 9mm ${scores} ${compact ? "17mm" : "22mm"}`;
+/** Nombre de cases de score : une, ou une par set possible (2n − 1). */
+function setCountOf(d: Distance): number {
+  return d.setsGagnants === 1 ? 1 : 2 * d.setsGagnants - 1;
 }
 
-/** Joueur d'un match isolé : nom sur sa ligne, puis gagnant, une case par set, paraphe. */
-function SinglePlayer({ line, setCount }: { line: SheetLine; setCount: number }) {
+/** Colonnes d'un bloc de poule : match, joueur, gagnant, score (ou sets + total), paraphe. */
+function blockColumns(setCount: number): string {
+  if (setCount === 1) return "13.5mm minmax(0,1fr) 9.5mm 20mm 25mm";
+  const sets = `${setCount * 11.2 + (setCount - 1) * 1.2}mm`;
+  return `12mm minmax(0,1fr) 10mm ${sets} 9mm 18mm`;
+}
+
+function CheckBox({ on }: { on?: boolean }) {
   return (
-    <div className="sheet-player">
-      <div className="sheet-player-name">
-        {line.name ? (
-          nice2(line.name)
-        ) : (
-          <span className="sheet-write">
-            <span className="sheet-hint">{line.hint}</span>
-          </span>
-        )}
+    <span className={`sheet-check ${on ? "sheet-check-on" : ""}`}>{on ? <Check /> : null}</span>
+  );
+}
+
+function ScoreBox({
+  value,
+  line,
+  small,
+}: {
+  value: number | null | undefined;
+  line: SheetLine;
+  small?: boolean;
+}) {
+  const filled = value !== null && value !== undefined;
+  const cls = filled ? (line.won ? "sheet-box-w" : line.lost ? "sheet-box-l" : "") : "";
+  return (
+    <span className={`sheet-box ${cls}`} style={small ? { height: "9mm" } : undefined}>
+      {filled ? value : ""}
+    </span>
+  );
+}
+
+function Name({ line, compact, big }: { line: SheetLine; compact?: boolean; big?: boolean }) {
+  if (!line.name)
+    return (
+      <span className="sheet-write">
+        <span className="sheet-hint">{line.hint}</span>
+      </span>
+    );
+  const weight = line.lost ? { fontWeight: 500, color: "#3c4a66" } : undefined;
+  return (
+    <>
+      {line.num ? <span className="sheet-dot">{line.num}</span> : null}
+      <span className="nm" style={weight}>
+        {compact && !big ? shortName(line.name) : nice2(line.name)}
+      </span>
+    </>
+  );
+}
+
+/** Cellules d'une ligne de joueur dans un bloc de poule (placées dans la grille du bloc). */
+function PlayerCells({ line, setCount }: { line: SheetLine; setCount: number }) {
+  const multi = setCount > 1;
+  return (
+    <>
+      <div className="sheet-name">
+        <Name line={line} compact={multi} />
       </div>
-      <div className="flex items-end gap-[2.4mm]">
-        <div className="flex flex-col items-center gap-[1mm]">
-          <span className="sheet-label">Gagnant</span>
-          <span className="sheet-check">{line.won ? "✕" : ""}</span>
-        </div>
-        <div className="flex gap-[1.6mm]">
+      <CheckBox on={line.won} />
+      {multi ? (
+        <div className="sheet-sets" style={{ gridTemplateColumns: `repeat(${setCount}, 1fr)` }}>
           {Array.from({ length: setCount }, (_, i) => (
-            <div key={i} className="flex flex-col items-center gap-[1mm]">
-              <span className="sheet-label">{setCount > 1 ? `Set ${i + 1}` : "Score"}</span>
-              <span className="sheet-box sheet-box-lg">{line.sets?.[i] ?? ""}</span>
-            </div>
+            <ScoreBox key={i} value={line.sets?.[i]} line={line} small />
           ))}
         </div>
-        <div className="flex min-w-[18mm] flex-1 flex-col gap-[1mm]">
-          <span className="sheet-label">Paraphe</span>
-          <span className="sheet-sign w-full" />
-        </div>
+      ) : (
+        <ScoreBox value={line.sets?.[0]} line={line} />
+      )}
+      {multi ? <ScoreBox value={line.setsWon} line={line} small /> : null}
+      <div className="sheet-sign" />
+    </>
+  );
+}
+
+function PouleBlocks({ data }: { data: HalfSheetData }) {
+  const setCount = setCountOf(data.distance);
+  const columns = blockColumns(setCount);
+  const multi = setCount > 1;
+  return (
+    <>
+      <div className="sheet-cols" style={{ gridTemplateColumns: columns }}>
+        <span>Match</span>
+        <span>Joueur</span>
+        <span className="c">Gagnant</span>
+        {multi ? (
+          <span className="sheet-sets" style={{ gridTemplateColumns: `repeat(${setCount}, 1fr)` }}>
+            {Array.from({ length: setCount }, (_, i) => (
+              <span key={i} className="c">
+                Set {i + 1}
+              </span>
+            ))}
+          </span>
+        ) : (
+          <span className="c">Score</span>
+        )}
+        {multi ? <span className="c">Sets</span> : null}
+        <span>Paraphe</span>
       </div>
+      <div className="sheet-blocks">
+        {data.matches.map((m) => (
+          <div
+            key={m.order}
+            className="sheet-block"
+            style={{ gridTemplateColumns: columns, gridTemplateRows: "1fr 1fr" }}
+          >
+            <div className="sheet-order" style={{ gridRow: "1 / span 2" }}>
+              <b>M{m.order}</b>
+              <span>{m.label}</span>
+            </div>
+            <PlayerCells line={m.a} setCount={setCount} />
+            <PlayerCells line={m.b} setCount={setCount} />
+          </div>
+        ))}
+      </div>
+    </>
+  );
+}
+
+/** Un match isolé : bandeau sombre (titre, billard), deux joueurs, champs du dimanche. */
+function Game({ m, d }: { m: SheetMatch; d: Distance }) {
+  const setCount = setCountOf(d);
+  const multi = setCount > 1;
+  const columns = multi
+    ? `11mm ${setCount * 13 + (setCount - 1) * 1.5}mm 12mm minmax(20mm,1fr)`
+    : "11mm 24mm minmax(30mm,48mm)";
+  const b = m.billards?.[0];
+  return (
+    <div className="sheet-game">
+      <div className="sheet-game-head">
+        <b>{m.title}</b>
+        <span>
+          {b ? (
+            <>
+              Billard <strong>{b}</strong> · {m.billardType} ·{" "}
+            </>
+          ) : null}
+          {distanceLabel(d)}
+        </span>
+      </div>
+      <div className="sheet-game-body">
+        {[m.a, m.b].map((lineData, i) => (
+          <div key={i} className="sheet-player">
+            <div className="sheet-player-name">
+              <Name line={lineData} big />
+            </div>
+            <div className="sheet-player-fields" style={{ gridTemplateColumns: columns }}>
+              <div className="sheet-field">
+                <span className="p-label">Gagnant</span>
+                <CheckBox on={lineData.won} />
+              </div>
+              {multi ? (
+                <div className="sheet-field">
+                  <div
+                    className="sheet-sets"
+                    style={{ gridTemplateColumns: `repeat(${setCount}, 1fr)` }}
+                  >
+                    {Array.from({ length: setCount }, (_, k) => (
+                      <span key={k} className="p-label">
+                        Set {k + 1}
+                      </span>
+                    ))}
+                  </div>
+                  <div
+                    className="sheet-sets"
+                    style={{ gridTemplateColumns: `repeat(${setCount}, 1fr)` }}
+                  >
+                    {Array.from({ length: setCount }, (_, k) => (
+                      <ScoreBox key={k} value={lineData.sets?.[k]} line={lineData} />
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div className="sheet-field">
+                  <span className="p-label">Score</span>
+                  <ScoreBox value={lineData.sets?.[0]} line={lineData} />
+                </div>
+              )}
+              {multi ? (
+                <div className="sheet-field">
+                  <span className="p-label">Sets</span>
+                  <ScoreBox value={lineData.setsWon} line={lineData} />
+                </div>
+              ) : null}
+              <div className="sheet-field">
+                <span className="p-label">Paraphe</span>
+                <span className="sheet-sign" />
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+      {m.fields?.length ? (
+        <div className="sheet-game-fields">
+          {m.fields.map((f) => (
+            <span key={f}>
+              {f}
+              <span className="sheet-sign" />
+            </span>
+          ))}
+        </div>
+      ) : null}
     </div>
   );
 }
 
 export function HalfSheet({ data }: { data: HalfSheetData }) {
   const d = data.distance;
-  const setCount = d.setsGagnants === 1 ? 1 : 2 * d.setsGagnants - 1;
-  const single = data.matches.length === 1;
-  const compact = setCount > 1 && !single;
-  const billards =
-    data.billards.length === 0 ? "—" : data.billards.join(data.billards.length > 1 ? " & " : "");
   return (
     <article className="sheet-half">
-      <Tricolore />
-      <div className="mt-[2.2mm] flex items-center justify-between gap-[3mm] text-[7.5pt] text-[#5b6680]">
-        <span className="inline-flex min-w-0 items-center gap-[1.6mm]">
-          <PrintLogo size={4.6} />
-          <b className="text-[8.5pt] font-extrabold text-[#0f1b33]">Pilot5Q</b>
-          <span className="truncate">· {data.tournament}</span>
-        </span>
-        <span className="shrink-0 font-semibold">{data.date}</span>
-      </div>
-
-      <div className="sheet-head">
-        <div>
-          <div className="sheet-label">{data.bigLabel}</div>
-          <div className="sheet-big">{data.bigValue || "—"}</div>
+      <PrintBanner
+        small
+        eyebrow="Feuille de match"
+        title={data.tournament}
+        sub={[data.place, data.date].filter(Boolean).join(" · ")}
+        cells={data.cells}
+      />
+      <div className="p-context">
+        <span>
+          <b>{data.phase}</b>
+          <span className="sep">·</span>
+          {distanceLabel(d)}
           {data.turn ? (
-            <div className="sheet-sub">{data.turn === "premier" ? "commence" : "joue ensuite"}</div>
+            <>
+              <span className="sep">·</span>
+              <b>{data.turn}</b>
+            </>
           ) : null}
-        </div>
-        <div>
-          <div className="sheet-label">Billard{data.billards.length > 1 ? "s" : ""}</div>
-          <div className="sheet-big">{billards}</div>
-          {data.billardType ? <div className="sheet-sub">{data.billardType}</div> : null}
-        </div>
-        <div className="text-right">
-          <div className="sheet-label">{data.phase}</div>
-          <div className="mt-[1.4mm] text-[12pt] leading-[1.15] font-extrabold text-[#0f1b33]">
-            {distanceLabel(d)}
-          </div>
-          <div className="sheet-sub">Feuille de match</div>
-        </div>
+        </span>
+        <span className="p-label">
+          {data.kind === "poule" ? `${data.matches.length} matchs` : ""}
+        </span>
       </div>
 
-      {single ? (
-        <div className="sheet-single">
-          {[data.matches[0]!.a, data.matches[0]!.b].map((line, i) => (
-            <SinglePlayer key={i} line={line} setCount={setCount} />
-          ))}
-        </div>
+      {data.kind === "poule" ? (
+        <PouleBlocks data={data} />
       ) : (
-        <div className="sheet-table">
-          <div
-            className="sheet-cols"
-            style={{ gridTemplateColumns: `14mm ${rowColumns(setCount, compact)}` }}
-          >
-            <span>Ordre</span>
-            <span>Match</span>
-            <span className="text-center">Gagnant</span>
-            <span className={setCount > 1 ? "flex gap-[1.5mm]" : "text-center"}>
-              {setCount > 1
-                ? Array.from({ length: setCount }, (_, i) => (
-                    <span key={i} className="w-[14mm] text-center">
-                      Set {i + 1}
-                    </span>
-                  ))
-                : "Score"}
-            </span>
-            <span>Paraphe</span>
-          </div>
+        <div className="sheet-single">
           {data.matches.map((m) => (
-            <div key={m.order} className="sheet-match">
-              <div className="sheet-order">
-                <b>M{m.order}</b>
-                <span>{m.label}</span>
-              </div>
-              <div className="min-w-0">
-                <PlayerRow line={m.a} setCount={setCount} compact={compact} />
-                <PlayerRow line={m.b} setCount={setCount} compact={compact} />
-              </div>
-            </div>
+            <Game key={m.order} m={m} d={d} />
           ))}
         </div>
       )}
 
-      {data.fields?.length ? (
-        <div className="mt-[5mm] grid gap-[4mm]">
-          {data.fields.map((f) => (
-            <div key={f} className="flex items-end gap-[3mm]">
-              <span className="sheet-label shrink-0">{f}</span>
-              <span className="sheet-sign flex-1" />
-            </div>
-          ))}
-        </div>
-      ) : null}
-
-      <p className="sheet-rule">{data.rule}</p>
+      <div className="sheet-foot">
+        <p className="sheet-rule">{data.rule}</p>
+        {data.qr ? (
+          <div className="sheet-qr">
+            <span className="sheet-qr-text">{data.qr.caption}</span>
+            <QrSvg text={data.qr.url} size={15} />
+          </div>
+        ) : (
+          <span className="p-foot-brand">
+            <PrintLogo size={3.6} /> Pilot5Q
+          </span>
+        )}
+      </div>
     </article>
   );
 }

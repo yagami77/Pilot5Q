@@ -9,7 +9,16 @@ import { FlowDiagram } from "@/components/FlowDiagram";
 
 import { PlayersBoard, PoulesBoard } from "./boards";
 import { PrintHeader } from "./brand";
-import { SheetPages, barrageSheets, finalSheets, pairPages, pouleSheetPages } from "./sheets";
+import {
+  SheetPages,
+  barrageSheets,
+  finalSheets,
+  pairPages,
+  pouleSheetPages,
+  singleHalves,
+} from "./sheets";
+
+import "./print.css";
 
 import { matchWinner } from "@/lib/engine";
 import { mastersRotationOf } from "@/lib/mastersRotation";
@@ -789,9 +798,9 @@ export const DOCS: DocDef[] = [
     id: "feuilles-barrages",
     label: "Feuilles de match des barrages (2 par page)",
     landscape: true,
-    pages: (s) => pairPages(barrageSheets(s)).length,
+    pages: (s) => pairPages(singleHalves(s, barrageSheets(s))).length,
     available: preqClosed,
-    render: (s) => <SheetPages pages={pairPages(barrageSheets(s))} />,
+    render: (s) => <SheetPages pages={pairPages(singleHalves(s, barrageSheets(s)))} />,
   },
   {
     id: "pointage-consolante",
@@ -863,9 +872,9 @@ export const DOCS: DocDef[] = [
     id: "feuilles-finales",
     label: "Feuilles de match des quarts, demies et finales (2 par page)",
     landscape: true,
-    pages: (s) => pairPages(finalSheets(s)).length,
+    pages: (s) => pairPages(singleHalves(s, finalSheets(s))).length,
     available: (s) => s.brackets.N.length > 0 || s.brackets.M.length > 0,
-    render: (s) => <SheetPages pages={pairPages(finalSheets(s))} />,
+    render: (s) => <SheetPages pages={pairPages(singleHalves(s, finalSheets(s)))} />,
   },
   {
     id: "primes",

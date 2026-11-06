@@ -1,0 +1,999 @@
+/*
+ * Documents imprimés Pilot5Q (docs/DESIGN.md, « Impression »).
+ * Pages aux dimensions du papier (A4, A4 paysage, A3), marges portées par la page elle-même
+ * pour un rendu identique à l'écran et sur papier. Bandeau plein bleu signature (gris foncé en
+ * noir et blanc), zébrures gris très clair, filets fins, chiffres tabulaires.
+ */
+
+@page {
+  size: A4;
+  margin: 0;
+}
+@page landscape {
+  size: A4 landscape;
+  margin: 0;
+}
+@page a3 {
+  size: A3;
+  margin: 0;
+}
+
+/* ---------- Pages ---------- */
+
+.print-page {
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: 210mm;
+  min-height: 297mm;
+  margin: 0 auto 8mm;
+  padding: 9mm 10mm 8mm;
+  background: #fff;
+  color: #0f1b33;
+  font-family: var(--font-sans);
+  font-size: 9.5pt;
+  line-height: 1.3;
+  font-feature-settings: "tnum" 1;
+  box-shadow: var(--shadow-raised);
+  break-after: page;
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+.print-page.print-landscape {
+  page: landscape;
+  width: 297mm;
+  min-height: 210mm;
+}
+/* Page à hauteur fixe (contenu paginé par le document lui-même) */
+.print-page.print-fixed {
+  height: 297mm;
+  overflow: hidden;
+}
+.print-page.print-fixed.print-landscape {
+  height: 210mm;
+}
+.print-a3 {
+  page: a3;
+  box-sizing: border-box;
+  width: 297mm;
+  height: 420mm;
+  margin: 0 auto 8mm;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: var(--shadow-raised);
+  break-after: page;
+}
+.print-a3 .print-page {
+  zoom: 1.41421;
+  margin: 0;
+  box-shadow: none;
+  break-after: auto;
+}
+
+/* ---------- Bandeau d'en-tête ---------- */
+
+.pb {
+  display: flex;
+  align-items: center;
+  gap: 5mm;
+  min-height: 23mm;
+  padding: 3.2mm 4.5mm 3.2mm 4mm;
+  border-radius: 3mm;
+  background: linear-gradient(120deg, #0b2d8f 0%, #0e37a8 55%, #1a48c8 100%);
+  color: #fff;
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+.pb-brand {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  align-items: center;
+  gap: 3.2mm;
+}
+.pb-eyebrow {
+  font-size: 6.8pt;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 0.78);
+}
+.pb-title {
+  margin-top: 0.6mm;
+  font-size: 16pt;
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.pb-title-sm {
+  font-size: 13pt;
+}
+.pb-sub {
+  margin-top: 1mm;
+  font-size: 8.2pt;
+  font-weight: 500;
+  color: rgb(255 255 255 / 0.85);
+}
+.pb-card {
+  display: flex;
+  flex-shrink: 0;
+  align-items: stretch;
+  border-radius: 2.6mm;
+  background: #fff;
+  color: #0f1b33;
+}
+.pb-cell {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 1.8mm 4mm 2mm;
+}
+.pb-cell + .pb-cell {
+  border-left: 0.3mm solid #d4dbe8;
+}
+.pb-cell-label {
+  font-size: 6.4pt;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #5b6680;
+}
+.pb-cell-value {
+  font-family: var(--font-mono);
+  font-size: 30pt;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  white-space: nowrap;
+}
+.pb-cell-value-md {
+  font-size: 20pt;
+  padding-top: 1mm;
+}
+.pb-cell-value-sm {
+  font-family: var(--font-sans);
+  font-size: 15pt;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  padding-top: 1.4mm;
+}
+.pb-cell-sub {
+  margin-top: 0.8mm;
+  font-size: 7.4pt;
+  font-weight: 600;
+  color: #3c4a66;
+  white-space: nowrap;
+}
+
+/* Ligne sous le bandeau : phase · distance · consigne */
+.p-context {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4mm;
+  margin: 2.6mm 0.5mm 0;
+  font-size: 8.4pt;
+  color: #3c4a66;
+}
+.p-context b {
+  color: #0f1b33;
+  font-weight: 800;
+}
+.p-context .sep {
+  margin: 0 1.2mm;
+  color: #a9b0bd;
+}
+
+/* Petits libellés en capitales */
+.p-label {
+  font-size: 6.6pt;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #5b6680;
+}
+
+/* Pied de page */
+.p-foot {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 5mm;
+  margin-top: auto;
+  padding-top: 2.5mm;
+  border-top: 0.25mm solid #d4dbe8;
+  font-size: 6.9pt;
+  line-height: 1.35;
+  color: #5b6680;
+}
+.p-foot-brand {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 1.4mm;
+  font-weight: 700;
+  color: #3c4a66;
+}
+
+/* ---------- Tableaux ---------- */
+
+.print-doc table,
+.pt {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 9.4pt;
+  line-height: 1.25;
+}
+.print-doc th,
+.pt th {
+  padding: 0 2mm 1.3mm;
+  border-bottom: 0.45mm solid #0f1b33;
+  text-align: left;
+  vertical-align: bottom;
+  font-size: 6.6pt;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: #5b6680;
+  white-space: nowrap;
+}
+.print-doc td,
+.pt td {
+  padding: 1.3mm 2mm;
+  border-bottom: 0.2mm solid #dfe4ee;
+  vertical-align: middle;
+}
+.print-doc tbody tr:nth-child(even) td,
+.pt tbody tr:nth-child(even) td {
+  background: #f4f6fa;
+}
+.pt .c {
+  text-align: center;
+}
+.pt .r {
+  text-align: right;
+}
+.pt .num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+.pt .muted {
+  color: #6b7480;
+}
+.pt .group th {
+  padding-top: 3mm;
+  border-bottom: 0.45mm solid #0f1b33;
+  font-size: 9pt;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  text-transform: none;
+  color: #0f1b33;
+}
+.pt .group th small {
+  margin-left: 2mm;
+  font-size: 7pt;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #5b6680;
+}
+/* Lignes à cocher au stylo */
+.pt-tall td {
+  height: 7.6mm;
+  padding-top: 0.6mm;
+  padding-bottom: 0.6mm;
+}
+.pt tr.hl td {
+  background: #fff4df !important;
+}
+.pt tr.hl td:first-child {
+  box-shadow: inset 1mm 0 0 #e89f1f;
+}
+.pt tr.hl-blue td {
+  background: #e9effc !important;
+}
+.pt tr.rule-top td {
+  border-top: 0.5mm solid #0f1b33;
+}
+.p-box {
+  display: inline-block;
+  width: 6mm;
+  height: 6mm;
+  vertical-align: middle;
+  border: 0.4mm solid #3c4a66;
+  border-radius: 1.2mm;
+  background: #fff;
+}
+.p-box-on {
+  background: #0f1b33;
+  box-shadow: inset 0 0 0 1mm #fff;
+}
+.p-tag {
+  display: inline-block;
+  margin-left: 1.6mm;
+  padding: 0.2mm 1.2mm;
+  border-radius: 1mm;
+  font-size: 6.4pt;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  vertical-align: 0.3mm;
+}
+.p-tag-gold {
+  background: #e89f1f;
+  color: #fff;
+}
+.p-tag-line {
+  border: 0.3mm solid #0f1b33;
+  color: #0f1b33;
+}
+.p-sign {
+  display: block;
+  height: 5.5mm;
+  border-bottom: 0.3mm solid #8a93a3;
+}
+
+/* Score d'un match joué : gagnant en gras vert sur fond clair, perdant en maigre rouge */
+.score {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.score-w {
+  padding: 0.3mm 1.2mm;
+  border-radius: 1mm;
+  background: #dcf2e5;
+  color: #166b45;
+  font-weight: 800;
+}
+.score-l {
+  color: #c2334c;
+  font-weight: 400;
+}
+.score-sets {
+  margin-left: 1.5mm;
+  font-size: 7.6pt;
+  color: #6b7480;
+}
+.score-ff {
+  font-size: 7.6pt;
+  font-style: italic;
+  color: #6b7480;
+}
+
+/* ---------- Tableaux d'affichage au club ---------- */
+
+.board-grid {
+  display: grid;
+  flex: 1;
+  min-height: 0;
+  gap: 3mm;
+  margin-top: 3.5mm;
+}
+.board-card {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  overflow: hidden;
+  border: 0.35mm solid #c9ced8;
+  border-radius: 3mm;
+  break-inside: avoid;
+}
+.board-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2mm;
+  padding: 1.6mm 3mm 1.4mm;
+  border-bottom: 0.35mm solid #0f1b33;
+}
+.board-poule {
+  display: flex;
+  align-items: baseline;
+  gap: 1.6mm;
+}
+.board-poule .p-label {
+  font-size: 7pt;
+}
+.board-num {
+  font-family: var(--font-mono);
+  font-size: 26pt;
+  font-weight: 700;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+}
+.board-pill {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: baseline;
+  gap: 1.2mm;
+  padding: 0.9mm 2.4mm 0.9mm 2.2mm;
+  border: 0.4mm solid #0f1b33;
+  border-radius: 999px;
+  font-size: 7pt;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.board-pill b {
+  font-family: var(--font-mono);
+  font-size: 12.5pt;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.board-pill-full {
+  background: #0f1b33;
+  color: #fff;
+}
+.board-players {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: space-evenly;
+  padding: 1.2mm 3mm 1.4mm;
+}
+.board-player {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 2mm;
+  font-size: 11.5pt;
+  font-weight: 650;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+.board-player span:last-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.board-dot {
+  display: inline-grid;
+  width: 5mm;
+  height: 5mm;
+  flex-shrink: 0;
+  place-items: center;
+  border: 0.3mm solid #5b6680;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 7.8pt;
+  font-weight: 700;
+  color: #3c4a66;
+}
+.board-grid-lg .board-num {
+  font-size: 40pt;
+}
+.board-grid-lg .board-player {
+  font-size: 15pt;
+}
+.board-grid-lg .board-dot {
+  width: 6.4mm;
+  height: 6.4mm;
+  font-size: 9.5pt;
+}
+.board-grid-lg .board-pill b {
+  font-size: 16pt;
+}
+.board-grid-md .board-num {
+  font-size: 32pt;
+}
+.board-grid-md .board-player {
+  font-size: 13pt;
+}
+
+/* Bande récapitulative « Billards » */
+.board-bills {
+  margin-top: 3.5mm;
+  padding-top: 2.4mm;
+  border-top: 0.45mm solid #0f1b33;
+}
+.board-bills-grid {
+  display: grid;
+  gap: 1.6mm 3mm;
+  margin-top: 1.6mm;
+}
+.board-bill {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 2mm;
+  padding: 1.2mm 2mm 1.2mm 1.4mm;
+  border-radius: 2mm;
+  background: #f4f6fa;
+}
+.board-bill-num {
+  display: grid;
+  width: 8.4mm;
+  height: 8.4mm;
+  flex-shrink: 0;
+  place-items: center;
+  border-radius: 2mm;
+  font-family: var(--font-mono);
+  font-size: 13pt;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+.board-bill-num-full {
+  background: #0f1b33;
+  color: #fff;
+}
+.board-bill-num-line {
+  box-shadow: inset 0 0 0 0.4mm #0f1b33;
+  color: #0f1b33;
+}
+.board-bill-text {
+  min-width: 0;
+  font-size: 8pt;
+  line-height: 1.2;
+  color: #3c4a66;
+}
+.board-bill-text b {
+  display: block;
+  font-size: 9.6pt;
+  font-weight: 800;
+  color: #0f1b33;
+  white-space: nowrap;
+}
+
+/* Liste alphabétique des joueurs (trois colonnes) */
+.players-cols {
+  column-count: 3;
+  column-gap: 7mm;
+  column-rule: 0.25mm solid #dfe4ee;
+  margin-top: 3.5mm;
+}
+.players-row {
+  display: grid;
+  grid-template-columns: 4.2mm minmax(0, 1fr) 8mm 12mm;
+  align-items: center;
+  gap: 1.4mm;
+  padding: 1.05mm 0.8mm;
+  font-size: 9.4pt;
+  break-inside: avoid;
+}
+.players-row:nth-child(even) {
+  background: #f4f6fa;
+  border-radius: 1mm;
+}
+.players-head {
+  padding-bottom: 1.2mm;
+  border-bottom: 0.45mm solid #0f1b33;
+  border-radius: 0 !important;
+  background: none !important;
+  font-size: 6.4pt;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #5b6680;
+}
+.players-letter {
+  margin-top: 1.4mm;
+}
+.players-initial {
+  font-weight: 800;
+  color: #0e37a8;
+}
+
+/* ---------- Feuilles de match : A4 paysage, deux A5 côte à côte ---------- */
+
+.print-sheet {
+  page: landscape;
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 297mm;
+  height: 210mm;
+  margin: 0 auto 8mm;
+  overflow: hidden;
+  background: #fff;
+  color: #0f1b33;
+  box-shadow: var(--shadow-raised);
+  break-after: page;
+  font-family: var(--font-sans);
+  font-feature-settings: "tnum" 1;
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+.sheet-half {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  padding: 7mm 8mm 6.5mm;
+}
+.sheet-cut {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  border-left: 0.3mm dashed #a9b0bd;
+}
+.sheet-scissors {
+  position: absolute;
+  top: 3mm;
+  left: -2.1mm;
+  display: block;
+  transform: rotate(-90deg);
+  background: #fff;
+}
+.sheet-half .pb {
+  min-height: 24mm;
+  padding: 2.6mm 3mm 2.6mm 3.6mm;
+}
+.sheet-half .pb-title {
+  font-size: 12.5pt;
+}
+.sheet-half .pb-sub {
+  font-size: 7.2pt;
+}
+.sheet-half .pb-cell {
+  padding: 1.4mm 2.8mm 1.6mm;
+}
+.sheet-half .pb-cell-value {
+  font-size: 30pt;
+}
+
+/* Entêtes de colonnes */
+.sheet-cols {
+  display: grid;
+  align-items: end;
+  column-gap: 2.5mm;
+  margin-top: 2.4mm;
+  padding: 0 0 1mm;
+  border-bottom: 0.45mm solid #0f1b33;
+  font-size: 6.4pt;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: #5b6680;
+}
+.sheet-cols .c {
+  text-align: center;
+}
+
+/* Blocs de match */
+.sheet-blocks {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  flex-direction: column;
+}
+.sheet-block {
+  display: grid;
+  flex: 1 1 0;
+  min-height: 0;
+  max-height: 34mm;
+  align-items: center;
+  column-gap: 2.5mm;
+  padding: 0.6mm 0;
+  border-bottom: 0.25mm solid #c9ced8;
+}
+.sheet-block:nth-child(even) {
+  background: #f3f5f9;
+  box-shadow:
+    -2mm 0 0 #f3f5f9,
+    2mm 0 0 #f3f5f9;
+}
+.sheet-order {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  line-height: 1.05;
+}
+.sheet-order b {
+  font-family: var(--font-mono);
+  font-size: 15pt;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+}
+.sheet-order span {
+  margin-top: 0.6mm;
+  font-size: 6.4pt;
+  font-weight: 600;
+  line-height: 1.1;
+  color: #5b6680;
+}
+.sheet-rows {
+  display: grid;
+  grid-column: 2 / -1;
+  grid-template-columns: subgrid;
+  row-gap: 0.8mm;
+}
+.sheet-row {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  align-items: center;
+  height: 10.6mm;
+}
+.sheet-name {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 1.6mm;
+  font-size: 10.5pt;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.sheet-name .nm {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sheet-dot {
+  display: inline-grid;
+  width: 4.6mm;
+  height: 4.6mm;
+  flex-shrink: 0;
+  place-items: center;
+  border: 0.3mm solid #5b6680;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 7.2pt;
+  font-weight: 700;
+  color: #3c4a66;
+}
+.sheet-write {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 9.2mm;
+  border-bottom: 0.3mm solid #8a93a3;
+}
+.sheet-hint {
+  position: absolute;
+  top: -0.2mm;
+  left: 0;
+  font-size: 6.4pt;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #8a93a3;
+  white-space: nowrap;
+}
+.sheet-check {
+  display: grid;
+  width: 7.5mm;
+  height: 7.5mm;
+  margin: 0 auto;
+  place-items: center;
+  border: 0.4mm solid #3c4a66;
+  border-radius: 1.4mm;
+  background: #fff;
+}
+.sheet-check svg {
+  width: 5.2mm;
+  height: 5.2mm;
+}
+.sheet-check-on {
+  border-color: #166b45;
+  background: #dcf2e5;
+  color: #166b45;
+}
+.sheet-box {
+  display: grid;
+  width: 100%;
+  height: 10mm;
+  place-items: center;
+  border: 0.4mm solid #3c4a66;
+  border-radius: 2mm;
+  background: #f3f5f9;
+  font-family: var(--font-mono);
+  font-size: 13pt;
+  font-weight: 500;
+  line-height: 1;
+}
+.sheet-box-w {
+  border-color: #166b45;
+  background: #dcf2e5;
+  color: #166b45;
+  font-weight: 800;
+}
+.sheet-box-l {
+  background: #fff;
+  color: #c2334c;
+}
+.sheet-sets {
+  display: grid;
+  gap: 1.2mm;
+}
+.sheet-sets .sheet-box {
+  font-size: 11pt;
+}
+.sheet-sign {
+  align-self: end;
+  height: 7.4mm;
+  margin-bottom: 1.2mm;
+  border-bottom: 0.3mm solid #8a93a3;
+}
+
+/* Un match par bloc (barrages, quarts, demies, finales) */
+.sheet-single {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  flex-direction: column;
+  gap: 3mm;
+  margin-top: 3mm;
+}
+.sheet-game {
+  display: flex;
+  flex: 1 1 0;
+  min-height: 0;
+  max-height: 86mm;
+  flex-direction: column;
+  overflow: hidden;
+  border: 0.35mm solid #c9ced8;
+  border-radius: 3mm;
+}
+.sheet-game-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 3mm;
+  padding: 1.6mm 3.5mm 1.5mm;
+  background: #0f1b33;
+  color: #fff;
+}
+.sheet-game-head b {
+  font-size: 11pt;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+.sheet-game-head span {
+  font-size: 7.6pt;
+  font-weight: 600;
+  color: rgb(255 255 255 / 0.85);
+  white-space: nowrap;
+}
+.sheet-game-head span strong {
+  font-family: var(--font-mono);
+  font-size: 11pt;
+  font-weight: 700;
+  color: #fff;
+}
+.sheet-game-body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  flex-direction: column;
+  justify-content: space-evenly;
+  overflow: hidden;
+  padding: 1mm 3.5mm 1.2mm;
+}
+.sheet-player {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2mm;
+  padding: 1.2mm 0 1.4mm;
+}
+.sheet-player + .sheet-player {
+  border-top: 0.25mm solid #dfe4ee;
+}
+.sheet-player-name {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  font-size: 13pt;
+  font-weight: 800;
+  letter-spacing: -0.015em;
+}
+.sheet-player-name .nm {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sheet-player-name .sheet-write {
+  height: 9mm;
+}
+.sheet-player-fields {
+  display: grid;
+  align-items: end;
+  column-gap: 3mm;
+}
+.sheet-player-fields .sheet-box {
+  height: 11mm;
+  font-size: 14pt;
+}
+.sheet-player-fields .sheet-check {
+  width: 9mm;
+  height: 9mm;
+}
+.sheet-player-fields .sheet-check svg {
+  width: 6mm;
+  height: 6mm;
+}
+.sheet-field {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.9mm;
+}
+.sheet-field .p-label {
+  text-align: center;
+  font-size: 5.8pt;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+}
+.sheet-field .sheet-sign {
+  align-self: stretch;
+  height: 9mm;
+  margin-bottom: 0;
+}
+.sheet-game-fields {
+  display: flex;
+  flex-shrink: 0;
+  gap: 4mm;
+  padding: 0.6mm 3.5mm 2mm;
+  border-top: 0.25mm solid #dfe4ee;
+  font-size: 6.8pt;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #5b6680;
+}
+.sheet-game-fields > span {
+  display: flex;
+  flex: 1;
+  align-items: flex-end;
+  gap: 2mm;
+  white-space: nowrap;
+}
+.sheet-game-fields .sheet-sign {
+  flex: 1;
+  height: 6mm;
+  margin-bottom: 0;
+}
+
+/* Pied de feuille : rappel et QR code */
+.sheet-foot {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 4mm;
+  margin-top: 2.2mm;
+  padding-top: 2mm;
+  border-top: 0.25mm solid #d4dbe8;
+}
+.sheet-rule {
+  flex: 1;
+  font-size: 6.6pt;
+  line-height: 1.38;
+  color: #5b6680;
+}
+.sheet-rule b {
+  color: #3c4a66;
+  font-weight: 800;
+}
+.sheet-qr {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 2mm;
+}
+.sheet-qr-text {
+  max-width: 24mm;
+  text-align: right;
+  font-size: 6pt;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #5b6680;
+}
+.sheet-qr svg {
+  width: 15mm;
+  height: 15mm;
+}
+
+/* ---------- Impression ---------- */
+
+@media print {
+  .print-page,
+  .print-sheet,
+  .print-a3 {
+    margin: 0 !important;
+    box-shadow: none !important;
+  }
+}
