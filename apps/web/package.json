@@ -15,7 +15,10 @@
   "dependencies": {
     "@pilot5q/domain": "workspace:*",
     "canvas-confetti": "1.9.3",
+    "fflate": "0.8.3",
     "idb-keyval": "6.3.0",
+    "jspdf": "4.2.1",
+    "jspdf-autotable": "5.0.9",
     "lucide-react": "1.69.0",
     "motion": "14.9.1",
     "react": "19.3.1",

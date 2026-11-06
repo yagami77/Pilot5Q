@@ -42,6 +42,7 @@ import { Avatar, Banner, Button, Card, Chip, PageHead, Tile, cx } from "@/compon
 import { clubShort, dateRange, nice, plural } from "@/lib/format";
 import { useNotifications } from "@/lib/notifications";
 
+import { AttachmentsBar } from "./Attachments";
 import { ClosureSection } from "./Closure";
 import {
   clubConvocation,
@@ -385,7 +386,12 @@ function StageView({
           onIntegrate={setIntegrated}
           onWaitStatus={setWaitStatus}
         />
-        <ConvocationsStep stage={stage} accepted={acceptance.accepted} placement={placement} />
+        <ConvocationsStep
+          stage={stage}
+          accepted={acceptance.accepted}
+          waiting={acceptance.waiting}
+          placement={placement}
+        />
         <Step
           n={4}
           title="Paramètres du TN : consolante, U21, horaires"
@@ -769,7 +775,7 @@ function WaitingList({
             ? `Capacité dépassée de ${-free}`
             : free === 0
               ? "Aucune place libre"
-              : `${free} place${free > 1 ? "s" : ""} libre${free > 1 ? "s" : ""}`}
+              : `${free} place${free > 1 ? "s" : ""} ${waiting.length > 0 ? "libre" : "encore disponible"}${free > 1 ? "s" : ""}`}
         </Chip>
       </div>
       {free > 0 && waiting.length > 0 && !locked ? (
@@ -1026,10 +1032,12 @@ function PlayerRow({
 function ConvocationsStep({
   stage,
   accepted,
+  waiting,
   placement,
 }: {
   stage: Stage;
   accepted: Player[];
+  waiting: Player[];
   placement: Placement;
 }) {
   const doc = useSeasonDoc();
@@ -1072,7 +1080,7 @@ function ConvocationsStep({
       n={3}
       title="Convocations"
       done={false}
-      help="Les mails sont prêts à copier ou à exporter : l'envoi direct arrivera avec le serveur. Horaires et canevas : ceux de la saison (Paramètres), ou ceux propres à ce TN (étape 4)."
+      help="Les mails sont prêts à copier (mise en forme conservée) ou à exporter, avec leurs pièces jointes à télécharger : l'envoi direct arrivera avec le serveur. Horaires et canevas : ceux de la saison (Paramètres), ou ceux propres à ce TN (étape 4)."
       aside={
         <>
           {(["joueurs", "club", "dj"] as const).map((t) => (
@@ -1138,6 +1146,7 @@ function ConvocationsStep({
                 </div>
               ) : null}
               <MailBody text={current.body} className="mt-2 max-h-[300px] overflow-auto" />
+              <AttachmentsBar doc={doc} stage={stage} accepted={accepted} waiting={waiting} />
               <div className="mt-2 flex flex-wrap gap-2">
                 <Button
                   size="sm"
