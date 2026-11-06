@@ -20,6 +20,7 @@ import {
   currentPlaces,
   finalRanking,
   lastKnownPlaces,
+  markLegacyIntegrations,
   rankingRows,
   updatePlayerBase,
   type Acceptance,
@@ -55,6 +56,34 @@ export function stageAcceptance(doc: SeasonDocument, stage: Stage): Acceptance {
     lastKnownPlaces(doc.players),
     doc.settings.waitlistPriority,
   );
+}
+
+/**
+ * Données enregistrées avant la liste d'attente manuelle (un forfait y intégrait automatiquement
+ * le premier en attente) : ces intégrations sont marquées pour que les acceptés ne changent pas.
+ */
+export function migrateSeason(doc: SeasonDocument): SeasonDocument {
+  let changed = false;
+  const registrations = { ...doc.registrations };
+  for (const [id, regs] of Object.entries(doc.registrations)) {
+    if (regs.manualWaitlist) continue;
+    changed = true;
+    const stage = doc.stages.find((s) => s.id === id);
+    registrations[id] = {
+      ...regs,
+      manualWaitlist: true,
+      registrations: stage
+        ? markLegacyIntegrations(
+            stageRegistrations(doc, stage),
+            stageCapacity(doc, stage),
+            currentPlaces(doc.players),
+            lastKnownPlaces(doc.players),
+            doc.settings.waitlistPriority,
+          ).map((r, i) => ({ ...r, junior: regs.registrations[i]?.junior ?? r.junior }))
+        : regs.registrations,
+    };
+  }
+  return changed ? { ...doc, registrations } : doc;
 }
 
 /**

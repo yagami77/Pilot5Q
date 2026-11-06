@@ -179,6 +179,7 @@ export function demoSeason(registrationOrder: DemoInscription[]): SeasonDocument
             importedAt: now,
             fileName: "inscriptions-tn2-exemple.csv",
             registrations,
+            manualWaitlist: true,
           },
         }
       : {},

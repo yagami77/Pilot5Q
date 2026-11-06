@@ -33,7 +33,14 @@ export {
   currentPlaces,
   searchPlayers,
 } from "./players.js";
-export { capacityFor, toPlayer, acceptRegistrations, acceptedListCsv } from "./registration.js";
+export {
+  capacityFor,
+  toPlayer,
+  acceptRegistrations,
+  markLegacyIntegrations,
+  acceptedListCsv,
+  WAIT_STATUS_LABELS,
+} from "./registration.js";
 export type { Acceptance } from "./registration.js";
 export type { MailSegment } from "./convocation.js";
 export {

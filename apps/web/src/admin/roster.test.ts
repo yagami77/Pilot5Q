@@ -14,7 +14,7 @@ import {
   wednesdayBefore,
   type RosterIO,
 } from "./roster";
-import { openingEvents, stageAcceptance } from "./stage";
+import { migrateSeason, openingEvents, stageAcceptance } from "./stage";
 
 const order = (inscriptions as { registrations: DemoInscription[] }).registrations;
 
@@ -60,22 +60,84 @@ describe("répercussion des inscrits après ouverture", () => {
     expect(a.waiting).toHaveLength(4);
   });
 
-  it("un forfait fait entrer le premier de la liste d'attente, dans le journal et pour le DJ", async () => {
+  it("un forfait sort le joueur sans intégrer personne : journal et notification du DJ", async () => {
     const { doc, stage, a, events, notes, io, forfait } = setup();
     const out = a.accepted[30]!;
     const next = forfait(doc, out.licence);
-    const accepted = stageAcceptance(next, stage).accepted;
-    const res = await syncRoster("t1", accepted, io, new Set([out.licence]));
+    const after = stageAcceptance(next, stage);
+    expect(after.free).toBe(1);
+    expect(after.suggested).toBe(a.waiting[0]!.licence);
+    const res = await syncRoster("t1", after.accepted, io, new Set([out.licence]));
     expect(res.status).toBe("synced");
     const last = events[events.length - 1]!;
     expect(last.type).toBe("players.imported");
     if (last.type !== "players.imported") return;
-    expect(last.payload.players).toHaveLength(72);
+    expect(last.payload.players).toHaveLength(71);
     expect(last.payload.players.some((p) => p.licence === out.licence)).toBe(false);
-    expect(last.payload.players.some((p) => p.licence === a.waiting[0]!.licence)).toBe(true);
+    expect(last.payload.players.some((p) => p.licence === a.waiting[0]!.licence)).toBe(false);
     expect(notes).toHaveLength(1);
     expect(notes[0]!.kind).toBe("forfait");
-    expect(notes[0]!.impact).toMatch(/\(forfait\) remplacé par .+ \(liste d'attente\)/);
+    expect(notes[0]!.impact).toMatch(/forfait : place libérée/);
+  });
+
+  it("l'intégration choisie depuis la liste d'attente est répercutée et notifiée", async () => {
+    const { doc, stage, a, events, notes, io, forfait } = setup();
+    const out = a.accepted[30]!;
+    const afterForfait = forfait(doc, out.licence);
+    await syncRoster(
+      "t1",
+      stageAcceptance(afterForfait, stage).accepted,
+      io,
+      new Set([out.licence]),
+    );
+    // Le responsable choisit le 3e de la liste d'attente plutôt que le suggéré.
+    const chosen = a.waiting[2]!;
+    const regs = afterForfait.registrations[stage.id]!;
+    const integrated: SeasonDocument = {
+      ...afterForfait,
+      registrations: {
+        ...afterForfait.registrations,
+        [stage.id]: {
+          ...regs,
+          registrations: regs.registrations.map((r) =>
+            r.licence === chosen.licence ? { ...r, integrated: true } : r,
+          ),
+        },
+      },
+    };
+    const after = stageAcceptance(integrated, stage);
+    expect(after.free).toBe(0);
+    expect(after.integrated).toEqual([chosen.licence]);
+    const res = await syncRoster("t1", after.accepted, io, new Set([out.licence]));
+    expect(res.status).toBe("synced");
+    const last = events[events.length - 1]!;
+    if (last.type !== "players.imported") throw new Error("players.imported attendu");
+    expect(last.payload.players).toHaveLength(72);
+    expect(last.payload.players.some((p) => p.licence === chosen.licence)).toBe(true);
+    expect(notes).toHaveLength(2);
+    expect(notes[1]!.kind).toBe("inscription");
+    expect(notes[1]!.title).toContain("Intégration de");
+    expect(notes[1]!.impact).toMatch(/intégré \(liste d'attente\)/);
+  });
+
+  it("les données enregistrées avant gardent l'intégration automatique d'un forfait", () => {
+    const { doc, stage, a, forfait } = setup();
+    const out = a.accepted[30]!;
+    const legacy = forfait(doc, out.licence);
+    const regs = legacy.registrations[stage.id]!;
+    const old: SeasonDocument = {
+      ...legacy,
+      registrations: {
+        ...legacy.registrations,
+        [stage.id]: { ...regs, manualWaitlist: undefined },
+      },
+    };
+    const migrated = migrateSeason(old);
+    const after = stageAcceptance(migrated, stage);
+    expect(after.accepted).toHaveLength(72);
+    expect(after.integrated).toEqual([a.waiting[0]!.licence]);
+    expect(migrated.registrations[stage.id]!.manualWaitlist).toBe(true);
+    expect(migrateSeason(migrated)).toBe(migrated);
   });
 
   it("le forfait d'un préqualifié Masters fait entrer le 9e parmi les Masters", () => {

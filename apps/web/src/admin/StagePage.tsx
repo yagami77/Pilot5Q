@@ -3,13 +3,16 @@
  * avec U21 et forfaits, liste d'attente, convocations, ouverture pour le directeur de jeu.
  */
 import {
+  WAIT_STATUS_LABELS,
   acceptedListCsv,
   consolanteCheck,
   parseInscritsCsv,
   recipients,
+  type Acceptance,
   type Player,
   type Registration,
   type Stage,
+  type WaitStatus,
 } from "@pilot5q/domain";
 import {
   Check,
@@ -24,6 +27,8 @@ import {
   BellRing,
   Lock,
   Radio,
+  Sparkles,
+  Undo2,
   Upload,
   UserPlus,
   UserX,
@@ -230,7 +235,7 @@ function StageView({
         ...d,
         registrations: {
           ...d.registrations,
-          [stage.id]: { ...cur, registrations: fn(cur.registrations) },
+          [stage.id]: { ...cur, manualWaitlist: true, registrations: fn(cur.registrations) },
         },
       };
     }, reinstated);
@@ -241,11 +246,61 @@ function StageView({
         ? d.juniors.filter((l) => l !== licence)
         : [...d.juniors, licence],
     }));
-  const setForfait = (licence: string, forfait: boolean) =>
+  const nameOf = (licence: string) => nice(regs.find((r) => r.licence === licence)?.name ?? "");
+  /** Forfait : le joueur sort aussitôt, sans confirmation ; sa place reste libre. */
+  const setForfait = (licence: string, forfait: boolean) => {
+    if (lock) {
+      toast(lock);
+      return;
+    }
     setRegs(
       (rs) => rs.map((r) => (r.licence === licence ? { ...r, forfait } : r)),
       forfait ? [] : [licence],
     );
+    toast(
+      forfait
+        ? `${nameOf(licence)} forfait : place libérée, à attribuer depuis la liste d'attente`
+        : `Forfait de ${nameOf(licence)} annulé`,
+    );
+  };
+  /** Intégration choisie par le responsable depuis la liste d'attente (ou retour en attente). */
+  const setIntegrated = (licence: string, integrated: boolean) => {
+    if (lock) {
+      toast(lock);
+      return;
+    }
+    setRegs((rs) =>
+      rs.map((r) =>
+        r.licence === licence
+          ? { ...r, integrated, waitStatus: integrated ? "confirme" : r.waitStatus }
+          : r,
+      ),
+    );
+    toast(
+      integrated
+        ? `${nameOf(licence)} intégré à la liste des participants`
+        : `${nameOf(licence)} remis en liste d'attente`,
+    );
+  };
+  /** Suivi des appels : enregistré sans répercussion (la liste des acceptés ne change pas). */
+  const setWaitStatus = (licence: string, waitStatus: WaitStatus) =>
+    update((d) => {
+      const cur = d.registrations[stage.id];
+      if (!cur) return d;
+      return {
+        ...d,
+        registrations: {
+          ...d.registrations,
+          [stage.id]: {
+            ...cur,
+            manualWaitlist: true,
+            registrations: cur.registrations.map((r) =>
+              r.licence === licence ? { ...r, waitStatus } : r,
+            ),
+          },
+        },
+      };
+    });
 
   return (
     <>
@@ -265,7 +320,7 @@ function StageView({
           <Button size="sm">Modifier l'étape</Button>
         </Link>
       </PageHead>
-      <div className="mb-4 grid grid-cols-2 gap-3 md:grid-cols-5">
+      <div className="mb-4 grid grid-cols-2 gap-3 md:grid-cols-6">
         <Tile
           label="Inscrits"
           value={regs.filter((r) => !r.forfait).length}
@@ -281,6 +336,20 @@ function StageView({
           value={acceptance.accepted.length}
           tone="blue"
           detail="8 Masters + serpentin"
+        />
+        <Tile
+          label="Places libres"
+          value={Math.max(0, acceptance.free)}
+          tone={acceptance.free > 0 ? "blue" : undefined}
+          detail={
+            acceptance.free < 0
+              ? `capacité dépassée de ${-acceptance.free}`
+              : acceptance.free > 0
+                ? acceptance.waiting.length > 0
+                  ? "à attribuer depuis l'attente"
+                  : "inscriptions encore possibles"
+                : "liste complète"
+          }
         />
         <Tile
           label="En attente"
@@ -305,14 +374,16 @@ function StageView({
         />
         <OrderedStep
           stage={stage}
-          accepted={acceptance.accepted}
-          waiting={acceptance.waiting}
-          forfaits={acceptance.forfaits}
+          acceptance={acceptance}
+          regs={regs}
+          priority={doc.settings.waitlistPriority}
           juniors={juniors}
           lock={lock}
           opened={opened}
           onJunior={toggleJunior}
           onForfait={setForfait}
+          onIntegrate={setIntegrated}
+          onWaitStatus={setWaitStatus}
         />
         <ConvocationsStep stage={stage} accepted={acceptance.accepted} placement={placement} />
         <Step
@@ -374,16 +445,31 @@ function ImportStep({
         const previous = new Map(
           (d.registrations[stage.id]?.registrations ?? []).map((r) => [r.licence, r]),
         );
-        const registrations: Registration[] = players.map((p) => ({
-          licence: p.licence,
-          name: p.name,
-          club: p.club,
-          email: p.email ?? "",
-          order: p.seed,
-          registeredAt: previous.get(p.licence)?.registeredAt ?? "",
-          junior: previous.get(p.licence)?.junior ?? false,
-          forfait: previous.get(p.licence)?.forfait ?? false,
-        }));
+        const registrations: Registration[] = players.map((p) => {
+          const prev = previous.get(p.licence);
+          const r: Registration = {
+            licence: p.licence,
+            name: p.name,
+            club: p.club,
+            email: p.email ?? "",
+            order: p.seed,
+            registeredAt: prev?.registeredAt ?? "",
+            junior: prev?.junior ?? false,
+            forfait: prev?.forfait ?? false,
+          };
+          if (prev?.integrated) r.integrated = true;
+          if (prev?.waitStatus) r.waitStatus = prev.waitStatus;
+          return r;
+        });
+        // Un accepté absent du nouveau fichier (désinscrit sur le site) devient forfait : sa place
+        // reste libre, personne n'est intégré sans l'accord du responsable.
+        const kept = new Set(registrations.map((r) => r.licence));
+        const wasAccepted = new Set(stageAcceptance(d, stage).accepted.map((p) => p.licence));
+        for (const r of previous.values()) {
+          if (!kept.has(r.licence) && wasAccepted.has(r.licence)) {
+            registrations.push({ ...r, forfait: true });
+          }
+        }
         return {
           ...d,
           registrations: {
@@ -393,6 +479,7 @@ function ImportStep({
               importedAt: new Date().toISOString(),
               fileName: file.name,
               registrations,
+              manualWaitlist: true,
             },
           },
         };
@@ -413,7 +500,7 @@ function ImportStep({
       n={1}
       title="Inscrits (CSV du site fédéral)"
       done={regs.length > 0}
-      help="Séparateur « ; », colonnes du site fédéral. Les inscriptions annulées ou forfait sur le site sont ignorées ; l'ordre d'inscription vient de l'horodatage. Un nouvel import conserve les drapeaux U21 et les forfaits saisis ici."
+      help="Séparateur « ; », colonnes du site fédéral. Les inscriptions annulées ou forfait sur le site sont ignorées ; l'ordre d'inscription vient de l'horodatage. Un nouvel import conserve les drapeaux U21, les forfaits et les intégrations saisis ici ; un accepté absent du nouveau fichier est compté forfait."
       aside={
         regs.length > 0 ? (
           <Button
@@ -483,34 +570,40 @@ function ImportStep({
 
 function OrderedStep({
   stage,
-  accepted,
-  waiting,
-  forfaits,
+  acceptance,
+  regs,
+  priority,
   juniors,
   lock,
   opened,
   onJunior,
   onForfait,
+  onIntegrate,
+  onWaitStatus,
 }: {
   stage: Stage;
-  accepted: Player[];
-  waiting: Player[];
-  forfaits: Player[];
+  acceptance: Acceptance;
+  regs: Registration[];
+  priority: number;
   juniors: Set<string>;
   lock: string | null;
   opened: boolean;
   onJunior: (licence: string) => void;
   onForfait: (licence: string, forfait: boolean) => void;
+  onIntegrate: (licence: string, integrated: boolean) => void;
+  onWaitStatus: (licence: string, status: WaitStatus) => void;
 }) {
+  const { accepted, forfaits } = acceptance;
   const locked = Boolean(lock);
   const [showAll, setShowAll] = useState(false);
   const list = showAll ? accepted : accepted.slice(0, 24);
+  const integrated = new Set(acceptance.integrated);
   return (
     <Step
       n={2}
       title="Liste ordonnée des acceptés"
       done={accepted.length > 0}
-      help="Place au classement glissant en cours ; sinon dernier classement connu (9 si ≤ 8, sinon P + 0,5) ; sinon nouveau joueur, dans l'ordre d'inscription (SPEC §2). Les 8 premiers sont préqualifiés Masters. Cocher U21 pour les juniors (le CSV ne le donne pas). Un forfait avant le tirage fait entrer le premier de la liste d'attente."
+      help="Place au classement glissant en cours ; sinon dernier classement connu (9 si ≤ 8, sinon P + 0,5) ; sinon nouveau joueur, dans l'ordre d'inscription (SPEC §2). Les 8 premiers sont préqualifiés Masters. Cocher U21 pour les juniors (le CSV ne le donne pas). Un forfait sort le joueur aussitôt et libère sa place : vous choisissez qui intégrer depuis la liste d'attente."
       aside={
         accepted.length > 0 ? (
           <>
@@ -537,7 +630,7 @@ function OrderedStep({
         ) : null
       }
     >
-      {accepted.length === 0 ? (
+      {accepted.length === 0 && acceptance.waiting.length === 0 ? (
         <Empty icon={FileText}>Importez le CSV des inscrits pour obtenir la liste ordonnée.</Empty>
       ) : (
         <>
@@ -548,18 +641,32 @@ function OrderedStep({
                 key={p.licence}
                 p={p}
                 junior={juniors.has(p.licence) || Boolean(p.junior)}
+                integrated={integrated.has(p.licence)}
                 locked={locked}
                 onJunior={() => onJunior(p.licence)}
                 action={
                   locked ? null : (
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      icon={UserX}
-                      onClick={() => onForfait(p.licence, true)}
-                    >
-                      Forfait
-                    </Button>
+                    <span className="flex items-center justify-end gap-1">
+                      {integrated.has(p.licence) ? (
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          icon={Undo2}
+                          title="Remettre en liste d'attente"
+                          aria-label={`Remettre ${nice(p.name)} en liste d'attente`}
+                          onClick={() => onIntegrate(p.licence, false)}
+                        />
+                      ) : null}
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        icon={UserX}
+                        aria-label={`Forfait de ${nice(p.name)}`}
+                        onClick={() => onForfait(p.licence, true)}
+                      >
+                        Forfait
+                      </Button>
+                    </span>
                   )
                 }
               />
@@ -572,59 +679,47 @@ function OrderedStep({
               </Button>
             </div>
           ) : null}
-          <div className="mt-4 grid gap-4 md:grid-cols-2">
-            <div>
-              <div className="eyebrow mb-1.5">Liste d'attente · {waiting.length}</div>
-              {waiting.length === 0 ? (
-                <p className="text-ink-muted text-[12.5px]">Tous les inscrits sont acceptés.</p>
-              ) : (
-                <Table head={["#", "Joueur", "Club", "Place"]} dense>
-                  {waiting.map((p, i) => (
-                    <Row key={p.licence}>
-                      <td>
-                        <Num>{i + 1}</Num>
-                      </td>
-                      <td className="font-semibold">
-                        {nice(p.name)}
-                        {i === 0 && !locked ? (
-                          <span className="text-brand-ink ml-2 text-[11px] font-semibold">
-                            entre au prochain forfait
-                          </span>
-                        ) : null}
-                      </td>
-                      <td className="text-ink-muted">{clubShort(p.club)}</td>
-                      <td>
-                        <Num>{p.place ?? "nouveau"}</Num>
-                      </td>
-                    </Row>
-                  ))}
-                </Table>
-              )}
-            </div>
+          <div className="mt-4 grid gap-4 xl:grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)]">
+            <WaitingList
+              acceptance={acceptance}
+              regs={regs}
+              priority={priority}
+              locked={locked}
+              onIntegrate={(l) => onIntegrate(l, true)}
+              onWaitStatus={onWaitStatus}
+            />
             <div>
               <div className="eyebrow mb-1.5">Forfaits avant tirage · {forfaits.length}</div>
               {forfaits.length === 0 ? (
                 <p className="text-ink-muted text-[12.5px]">Aucun forfait déclaré.</p>
               ) : (
                 <Table head={["Joueur", "Club", ""]} dense>
-                  {forfaits.map((p) => (
-                    <Row key={p.licence} muted>
-                      <td className="font-semibold line-through">{nice(p.name)}</td>
-                      <td>{clubShort(p.club)}</td>
-                      <td>
-                        {locked ? null : (
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            icon={RotateCcw}
-                            onClick={() => onForfait(p.licence, false)}
-                          >
-                            Annuler
-                          </Button>
-                        )}
-                      </td>
-                    </Row>
-                  ))}
+                  <AnimatePresence initial={false}>
+                    {forfaits.map((p) => (
+                      <motion.tr
+                        key={p.licence}
+                        layout
+                        initial={{ opacity: 0, x: -12 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        className="border-line text-ink-muted border-b last:border-b-0 [&>td]:px-3 [&>td]:py-1.5 [&>td:first-child]:pl-3.5"
+                      >
+                        <td className="font-semibold line-through">{nice(p.name)}</td>
+                        <td>{clubShort(p.club)}</td>
+                        <td className="text-right">
+                          {locked ? null : (
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              icon={RotateCcw}
+                              onClick={() => onForfait(p.licence, false)}
+                            >
+                              Annuler
+                            </Button>
+                          )}
+                        </td>
+                      </motion.tr>
+                    ))}
+                  </AnimatePresence>
                 </Table>
               )}
             </div>
@@ -633,6 +728,152 @@ function OrderedStep({
         </>
       )}
     </Step>
+  );
+}
+
+const WAIT_TONES: Record<WaitStatus, string> = {
+  "a-contacter": "border-line bg-surface text-ink-secondary",
+  confirme: "border-transparent bg-ok-soft text-ok-ink",
+  indisponible: "border-transparent bg-alert-soft text-alert-ink",
+};
+
+/**
+ * Liste d'attente : un bouton « Intégrer » par joueur, le prioritaire (SPEC §2 : 34 premiers du
+ * classement, puis ordre d'inscription) signalé comme suggestion, suivi des appels par joueur.
+ */
+function WaitingList({
+  acceptance,
+  regs,
+  priority,
+  locked,
+  onIntegrate,
+  onWaitStatus,
+}: {
+  acceptance: Acceptance;
+  regs: Registration[];
+  priority: number;
+  locked: boolean;
+  onIntegrate: (licence: string) => void;
+  onWaitStatus: (licence: string, status: WaitStatus) => void;
+}) {
+  const { waiting, free, suggested } = acceptance;
+  const byLicence = new Map(regs.map((r) => [r.licence, r]));
+  const top = new Set(acceptance.topRanked);
+  const suggestedName = waiting.find((p) => p.licence === suggested)?.name;
+  return (
+    <div>
+      <div className="mb-1.5 flex flex-wrap items-center gap-2">
+        <span className="eyebrow">Liste d'attente · {waiting.length}</span>
+        <Chip tone={free > 0 && waiting.length > 0 ? "blue" : free < 0 ? "red" : "grey"}>
+          {free < 0
+            ? `Capacité dépassée de ${-free}`
+            : free === 0
+              ? "Aucune place libre"
+              : `${free} place${free > 1 ? "s" : ""} libre${free > 1 ? "s" : ""}`}
+        </Chip>
+      </div>
+      {free > 0 && waiting.length > 0 && !locked ? (
+        <Banner icon={Sparkles} tone="blue" className="mt-0 mb-2">
+          {free > 1 ? `${free} places libérées` : "Une place libérée"} : intégrez le joueur de votre
+          choix.
+          {suggestedName
+            ? ` Suggestion selon la priorité (${priority} premiers du classement, puis ordre d'inscription) : ${nice(suggestedName)}.`
+            : ""}
+        </Banner>
+      ) : null}
+      {free < 0 && !locked ? (
+        <Banner icon={UserX} tone="gold" className="mt-0 mb-2">
+          Plus d'acceptés que de places : remettez en attente un joueur intégré (bouton{" "}
+          <Undo2 className="inline size-3.5" aria-label="remettre en attente" />) ou déclarez un
+          forfait.
+        </Banner>
+      ) : null}
+      {waiting.length === 0 ? (
+        <p className="text-ink-muted text-[12.5px]">Tous les inscrits sont acceptés.</p>
+      ) : (
+        <Table head={["#", "Joueur", "Club", "Priorité", "Suivi", ""]} dense>
+          <AnimatePresence initial={false}>
+            {waiting.map((p, i) => {
+              const status = byLicence.get(p.licence)?.waitStatus ?? "a-contacter";
+              const isSuggested = p.licence === suggested;
+              return (
+                <motion.tr
+                  key={p.licence}
+                  layout
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className={cx(
+                    "border-line border-b last:border-b-0 [&>td]:px-3 [&>td]:py-1.5 [&>td]:align-middle [&>td:first-child]:pl-3.5",
+                    isSuggested && free > 0 && "bg-brand-soft/60",
+                    status === "indisponible" && "text-ink-muted",
+                  )}
+                >
+                  <td>
+                    <Num>{i + 1}</Num>
+                  </td>
+                  <td className="font-semibold">
+                    <span className="flex flex-wrap items-center gap-1.5">
+                      {nice(p.name)}
+                      {isSuggested ? (
+                        <Chip tone="blue" icon={Sparkles} className="px-2 py-[2px] text-[11px]">
+                          suggéré
+                        </Chip>
+                      ) : null}
+                    </span>
+                  </td>
+                  <td className="text-ink-muted">{clubShort(p.club)}</td>
+                  <td className="text-ink-muted whitespace-nowrap">
+                    {top.has(p.licence) ? (
+                      <span className="text-gold-ink font-semibold">
+                        top {priority} · place <Num>{p.place}</Num>
+                      </span>
+                    ) : (
+                      <>
+                        inscription n° <Num>{byLicence.get(p.licence)?.order ?? "–"}</Num>
+                      </>
+                    )}
+                  </td>
+                  <td>
+                    <select
+                      value={status}
+                      onChange={(e) => onWaitStatus(p.licence, e.target.value as WaitStatus)}
+                      aria-label={`Suivi de ${nice(p.name)}`}
+                      className={cx(
+                        "rounded-full border px-2 py-[3px] text-[11.5px] font-semibold",
+                        WAIT_TONES[status],
+                      )}
+                    >
+                      {(Object.keys(WAIT_STATUS_LABELS) as WaitStatus[]).map((k) => (
+                        <option key={k} value={k}>
+                          {WAIT_STATUS_LABELS[k]}
+                        </option>
+                      ))}
+                    </select>
+                  </td>
+                  <td className="text-right">
+                    {locked ? null : (
+                      <Button
+                        size="sm"
+                        variant={isSuggested && free > 0 ? "primary" : "default"}
+                        icon={UserPlus}
+                        disabled={free <= 0}
+                        title={
+                          free <= 0 ? "Aucune place libre : déclarez d'abord un forfait" : undefined
+                        }
+                        aria-label={`Intégrer ${nice(p.name)}`}
+                        onClick={() => onIntegrate(p.licence)}
+                      >
+                        Intégrer
+                      </Button>
+                    )}
+                  </td>
+                </motion.tr>
+              );
+            })}
+          </AnimatePresence>
+        </Table>
+      )}
+    </div>
   );
 }
 
@@ -723,12 +964,14 @@ function RosterLog({ tournamentId }: { tournamentId: string }) {
 function PlayerRow({
   p,
   junior,
+  integrated,
   locked,
   onJunior,
   action,
 }: {
   p: Player;
   junior: boolean;
+  integrated: boolean;
   locked: boolean;
   onJunior: () => void;
   action: ReactNode;
@@ -753,11 +996,18 @@ function PlayerRow({
         <Num>{p.place === null ? "nouveau" : String(p.place).replace(".", ",")}</Num>
       </td>
       <td>
-        {master ? (
-          <Chip tone="gold" icon={Crown}>
-            Masters
-          </Chip>
-        ) : null}
+        <span className="flex flex-wrap gap-1">
+          {master ? (
+            <Chip tone="gold" icon={Crown}>
+              Masters
+            </Chip>
+          ) : null}
+          {integrated ? (
+            <Chip tone="blue" icon={UserPlus}>
+              intégré
+            </Chip>
+          ) : null}
+        </span>
       </td>
       <td>
         <input

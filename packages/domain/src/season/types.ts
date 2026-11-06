@@ -195,6 +195,9 @@ export interface SeasonSettings {
   mailTemplate: string;
 }
 
+/** Suivi d'un joueur en liste d'attente (appels du responsable avant de l'intégrer). */
+export type WaitStatus = "a-contacter" | "confirme" | "indisponible";
+
 /** Inscription d'un joueur à une étape (ligne du CSV fédéral enrichie). */
 export interface Registration {
   licence: string;
@@ -207,6 +210,10 @@ export interface Registration {
   junior: boolean;
   /** Forfait déclaré avant le tirage. */
   forfait: boolean;
+  /** Intégré par le responsable depuis la liste d'attente (place libérée par un forfait). */
+  integrated?: boolean;
+  /** Suivi en liste d'attente (absent : « à contacter »). */
+  waitStatus?: WaitStatus;
 }
 
 /** État des inscriptions d'une étape (base d'un futur `registrations` en base de données). */
@@ -215,6 +222,11 @@ export interface StageRegistrations {
   importedAt: string | null;
   fileName: string;
   registrations: Registration[];
+  /**
+   * Liste d'attente gérée à la main (un forfait libère une place sans intégrer personne). Absent
+   * sur les données enregistrées avant ce fonctionnement : voir `markLegacyIntegrations`.
+   */
+  manualWaitlist?: boolean;
 }
 
 /** Statut d'une étape, dérivé des dates et de l'ouverture/clôture du tournoi. */

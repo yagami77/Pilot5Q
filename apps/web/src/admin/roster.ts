@@ -3,7 +3,8 @@
  * « Responsable national ») :
  *
  * - jusqu'au mercredi, et en pratique jusqu'au tirage des poules du vendredi, le responsable gère
- *   les forfaits et l'intégration depuis la liste d'attente ;
+ *   les forfaits et l'intégration depuis la liste d'attente (RETOURS-2026-11-06 : un forfait
+ *   libère une place sans intégrer personne ; le responsable choisit qui intégrer) ;
  * - chaque modification est répercutée dans le tournoi du cockpit (événement `players.imported`
  *   sur le journal) et crée une notification pour le DJ, avec l'impact ;
  * - une fois les poules du vendredi tirées, seul le DJ gère les forfaits de dernière minute
@@ -100,7 +101,11 @@ export function rosterNotification(
     );
   }
   for (const p of d.removed.slice(n)) {
-    lines.push(`${name(p)} ${forfaits.has(p.licence) ? "forfait" : "retiré"}, non remplacé`);
+    lines.push(
+      forfaits.has(p.licence)
+        ? `${name(p)} forfait : place libérée, intégration au choix du responsable`
+        : `${name(p)} retiré, non remplacé`,
+    );
   }
   for (const p of d.added.slice(n)) lines.push(`${name(p)} intégré (${origin(p)})`);
   for (const p of d.mastersIn) lines.push(`${name(p)} entre dans les préqualifiés Masters`);
@@ -124,7 +129,9 @@ export function rosterNotification(
         ? `Forfait de ${name(d.removed[0]!)}`
         : `${d.removed.length} forfaits`
       : d.added.length > 0
-        ? "Nouvel inscrit intégré"
+        ? d.added.length === 1
+          ? `Intégration de ${name(d.added[0]!)}`
+          : `${d.added.length} joueurs intégrés`
         : "Liste des participants mise à jour";
   return {
     tournamentId,

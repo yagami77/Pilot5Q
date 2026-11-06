@@ -21,6 +21,7 @@ import {
   saveSeason,
   type SeasonDocument,
 } from "./persistence";
+import { migrateSeason } from "./stage";
 
 export interface SeasonStore {
   ready: boolean;
@@ -62,7 +63,7 @@ export function SeasonProvider({
       if (id) {
         const loaded = await loadSeason(id);
         if (cancelled) return;
-        if (loaded) setDoc(loaded);
+        if (loaded) setDoc(migrateSeason(loaded));
       }
       setReady(true);
     })();

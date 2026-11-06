@@ -14,6 +14,7 @@ import { describe, expect, it } from "vitest";
 import {
   DEFAULT_SEASON_SETTINGS,
   acceptRegistrations,
+  markLegacyIntegrations,
   applyTournament,
   awardPoints,
   awardsFromRanking,
@@ -374,16 +375,56 @@ describe("inscriptions, capacité et liste d'attente", () => {
     expect(a.accepted.slice(5).map((p) => p.licence)).toEqual(["L4", "L5", "L6", "L7", "L8"]);
   });
 
-  it("intègre le premier de la liste d'attente après un forfait", () => {
+  it("un forfait libère une place sans intégrer personne ; le prioritaire est suggéré", () => {
     const withForfait = registrations.map((r) =>
       r.licence === "L14" ? { ...r, forfait: true } : r,
     );
     const a = acceptRegistrations(withForfait, 10, ranking, lastKnown, 34);
     expect(a.forfaits.map((p) => p.licence)).toEqual(["L14"]);
-    expect(a.accepted).toHaveLength(10);
-    expect(a.accepted.map((p) => p.licence)).toContain("L9");
+    expect(a.accepted).toHaveLength(9);
+    expect(a.free).toBe(1);
     expect(a.accepted.map((p) => p.licence)).not.toContain("L14");
-    expect(a.waiting.map((p) => p.licence)).toEqual(["L11", "L12", "L13"]);
+    expect(a.accepted.map((p) => p.licence)).not.toContain("L9");
+    expect(a.waiting.map((p) => p.licence)).toEqual(["L9", "L11", "L12", "L13"]);
+    expect(a.suggested).toBe("L9");
+    // Le responsable intègre L12 plutôt que le suggéré : la place est prise.
+    const chosen = withForfait.map((r) => (r.licence === "L12" ? { ...r, integrated: true } : r));
+    const b = acceptRegistrations(chosen, 10, ranking, lastKnown, 34);
+    expect(b.accepted).toHaveLength(10);
+    expect(b.free).toBe(0);
+    expect(b.accepted.map((p) => p.licence)).toContain("L12");
+    expect(b.integrated).toEqual(["L12"]);
+    expect(b.waiting.map((p) => p.licence)).toEqual(["L9", "L11", "L13"]);
+  });
+
+  it("le suggéré saute les joueurs indisponibles", () => {
+    const regs = registrations.map((r) =>
+      r.licence === "L14"
+        ? { ...r, forfait: true }
+        : r.licence === "L9"
+          ? { ...r, waitStatus: "indisponible" as const }
+          : r,
+    );
+    expect(acceptRegistrations(regs, 10, ranking, lastKnown, 34).suggested).toBe("L11");
+  });
+
+  it("annuler un forfait après une intégration dépasse la capacité (signalé)", () => {
+    const regs = registrations.map((r) => (r.licence === "L9" ? { ...r, integrated: true } : r));
+    const a = acceptRegistrations(regs, 10, ranking, lastKnown, 34);
+    expect(a.accepted).toHaveLength(11);
+    expect(a.free).toBe(-1);
+  });
+
+  it("garde les intégrations automatiques des données enregistrées auparavant", () => {
+    const withForfait = registrations.map((r) =>
+      r.licence === "L14" ? { ...r, forfait: true } : r,
+    );
+    const migrated = markLegacyIntegrations(withForfait, 10, ranking, lastKnown, 34);
+    expect(migrated.filter((r) => r.integrated).map((r) => r.licence)).toEqual(["L9"]);
+    const a = acceptRegistrations(migrated, 10, ranking, lastKnown, 34);
+    expect(a.accepted.map((p) => p.licence)).toContain("L9");
+    expect(a.free).toBe(0);
+    expect(markLegacyIntegrations(registrations, 10, ranking, lastKnown, 34)).toBe(registrations);
   });
 });
 
