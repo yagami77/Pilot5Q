@@ -1,10 +1,19 @@
-/** Carte d'une poule : joueurs, billard, progression des matchs, classement une fois terminée. */
+/**
+ * Carte d'une poule.
+ *
+ * - Sans `view` (jeudi) : joueurs, billard, progression des matchs, classement une fois terminée.
+ * - Avec `view` (grilles de saisie du vendredi et du samedi) : carte compressée (nom de la poule
+ *   et points d'avancement des matchs), rallongée en feuille de match compacte (« scores ») ou en
+ *   tableau de classement (« classement »). L'agrandissement est animé par le layout de motion ;
+ *   les numéros 1 à 4 ne figurent pas sur ces cartes (ils restent sur les feuilles de match).
+ */
 import type { Distance, Poule, TournamentState } from "@pilot5q/domain";
 
 import type { Match } from "@pilot5q/domain";
+import { AnimatePresence, motion } from "motion/react";
 
 import { forfaitsOf, isValidScore, matchWinner } from "@/lib/engine";
-import { ordinal } from "@/lib/format";
+import { moy, ordinal, shortName } from "@/lib/format";
 import {
   billardType,
   matchTouched,
@@ -32,9 +41,277 @@ export interface PouleCardProps {
   onSelectPlayer?: (name: string) => void;
   showPlace?: boolean;
   day?: Day;
+  /** Mode des grilles de saisie (absent : carte complète du jeudi). */
+  view?: PouleView;
+  /** Puce du billard (masquée au vendredi, la vue billards étant au-dessus). */
+  showBillard?: boolean;
 }
 
-export function PouleCard({
+/** Modes d'affichage des cartes dans les grilles de saisie. */
+export type PouleView = "compact" | "scores" | "classement";
+
+const LAYOUT = { duration: 0.42, ease: [0.2, 0.8, 0.2, 1] } as const;
+
+export function PouleCard(props: PouleCardProps) {
+  return props.view ? <GridCard {...props} view={props.view} /> : <FullCard {...props} />;
+}
+
+/** États des points d'avancement d'une poule (validé, en cours, incohérent, à jouer). */
+function matchDots(
+  poule: Poule,
+  distance: Distance,
+  forfaits: Set<string> = new Set(),
+): ("ok" | "ko" | "half" | "none")[] {
+  return poule.matches.map((m) => {
+    // Un match contre un joueur forfait ne se joue pas : il compte comme réglé
+    if (isValidScore(m, distance) || m.forfait || forfaits.has(m.a) || forfaits.has(m.b))
+      return "ok" as const;
+    if (!matchTouched(m)) return "none" as const;
+    const bothSet = m.sa !== null && m.sb !== null;
+    if (distance.setsGagnants === 1 && bothSet) return "ko" as const;
+    return "half" as const;
+  });
+}
+
+/* ---------- Carte des grilles de saisie ---------- */
+
+function GridCard({
+  state,
+  phase,
+  poule,
+  distance,
+  active,
+  onOpen,
+  conflict,
+  view,
+  showBillard = true,
+}: PouleCardProps & { view: PouleView }) {
+  const r = pouleState(state, phase, poule);
+  const forfaits = new Set(forfaitsOf(state, phase));
+  const dots = matchDots(poule, distance, forfaits);
+  const done = dots.filter((x) => x === "ok").length;
+  const live = !r.complete && dots.some((x) => x !== "none");
+  const bills = pouleBillards(state, phase, poule);
+  const type = billardType(state, bills[0]);
+  const three = poule.players.length === 3;
+  const Wrapper = onOpen ? motion.button : motion.div;
+  return (
+    <Wrapper
+      layout
+      transition={{ layout: LAYOUT }}
+      type={onOpen ? "button" : undefined}
+      onClick={onOpen ? () => onOpen(poule.num) : undefined}
+      aria-label={onOpen ? `Ouvrir la saisie de la poule ${poule.num}` : undefined}
+      data-poule={poule.num}
+      style={{ borderRadius: 14 }}
+      className={cx(
+        "card flex min-w-0 flex-col overflow-hidden p-0 text-left transition-[box-shadow,border-color] duration-200",
+        onOpen && "hover:shadow-raised hover:border-line-2",
+        three && "border-dashed",
+        r.complete && "border-[#bfe6d2]",
+        live && "live-card border-brand-light shadow-[0_0_0_3px_var(--color-brand-soft)]",
+        active && "border-brand shadow-[0_0_0_3px_var(--color-brand-soft),var(--shadow-raised)]",
+        conflict && "border-alert",
+      )}
+    >
+      <motion.div
+        layout="position"
+        transition={{ layout: LAYOUT }}
+        className="flex items-center gap-2 px-3 py-2.5"
+      >
+        <b className="flex min-w-0 items-center gap-1.5 text-[13.5px] whitespace-nowrap">
+          {live ? (
+            <span
+              className="bg-brand-light animate-live-pulse size-2 shrink-0 rounded-full"
+              aria-hidden="true"
+            />
+          ) : r.complete ? (
+            <span className="bg-ok size-2 shrink-0 rounded-full" aria-hidden="true" />
+          ) : null}
+          Poule {poule.num}
+        </b>
+        {showBillard && bills.length ? (
+          <span
+            className={cx(
+              "rounded-[6px] px-1.5 py-[1px] font-mono text-[10.5px] font-semibold",
+              type === "3m10" ? "bg-brand-soft text-brand-ink" : "bg-surface-2 text-ink-muted",
+            )}
+          >
+            B{bills.join("·")}
+          </span>
+        ) : null}
+        <span
+          className="ml-auto flex items-center gap-2"
+          aria-label={`${done} matchs sur ${poule.matches.length}`}
+        >
+          <Dots states={dots} />
+          <span
+            className={cx(
+              "w-[26px] text-right font-mono text-[10.5px] font-bold tabular-nums",
+              r.complete ? "text-ok" : live ? "text-brand-light" : "text-ink-muted",
+            )}
+          >
+            {done}/{poule.matches.length}
+          </span>
+        </span>
+      </motion.div>
+      <AnimatePresence initial={false} mode="popLayout">
+        {view === "scores" ? (
+          <motion.div
+            key="scores"
+            layout="position"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1, transition: { duration: 0.3, delay: 0.12 } }}
+            exit={{ opacity: 0, transition: { duration: 0.12 } }}
+            className="border-line border-t border-dashed px-3 pt-1.5 pb-2.5"
+          >
+            <MatchSheet poule={poule} distance={distance} forfaits={forfaits} />
+          </motion.div>
+        ) : view === "classement" ? (
+          <motion.div
+            key="classement"
+            layout="position"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1, transition: { duration: 0.3, delay: 0.12 } }}
+            exit={{ opacity: 0, transition: { duration: 0.12 } }}
+            className="border-line border-t border-dashed px-2 pt-1 pb-2"
+          >
+            <RankTable rows={r.rows} complete={r.complete} forfaits={forfaits} />
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
+    </Wrapper>
+  );
+}
+
+/** Feuille de match compacte : les matchs dans l'ordre du code sportif, gagnant en gras. */
+function MatchSheet({
+  poule,
+  distance,
+  forfaits,
+}: {
+  poule: Poule;
+  distance: Distance;
+  forfaits: Set<string>;
+}) {
+  const multi = distance.setsGagnants > 1;
+  return (
+    <div className="flex flex-col" aria-label="Feuille de match">
+      {orderedMatches(poule, distance).map((om) => {
+        const m = om.match;
+        const valid = isValidScore(m, distance) || Boolean(m.forfait);
+        const w = valid ? matchWinner(m, distance) : null;
+        const ff = forfaits.has(m.a) || forfaits.has(m.b);
+        const name = (n: string) => (
+          <span
+            className={cx(
+              "min-w-0 truncate",
+              w === n ? "text-ink font-bold" : w ? "text-ink-muted" : "text-ink-secondary",
+              forfaits.has(n) && "line-through",
+            )}
+          >
+            {shortName(n)}
+          </span>
+        );
+        const score = (side: "a" | "b") =>
+          m.forfait === side ? "ff" : String((side === "a" ? m.sa : m.sb) ?? "");
+        return (
+          <div
+            key={m.id}
+            className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-1.5 py-[3px] text-[11.5px] leading-tight"
+            title={
+              multi && m.setsA && m.setsB
+                ? m.setsA.map((a, i) => `${a}-${m.setsB?.[i] ?? ""}`).join(" · ")
+                : undefined
+            }
+          >
+            <span className="flex justify-end">{name(m.a)}</span>
+            <span
+              className={cx(
+                "min-w-[52px] rounded-[5px] px-1 text-center font-mono text-[11px] tabular-nums",
+                valid ? "bg-surface-2" : "text-ink-muted",
+              )}
+            >
+              {valid || m.sa !== null || m.sb !== null ? (
+                <>
+                  <span className={cx(w === m.a && "text-ink font-bold")}>{score("a")}</span>
+                  <span className="text-ink-muted">–</span>
+                  <span className={cx(w === m.b && "text-ink font-bold")}>{score("b")}</span>
+                </>
+              ) : ff ? (
+                "ff"
+              ) : (
+                "–"
+              )}
+            </span>
+            {name(m.b)}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/** Classement compact d'une poule : rang, joueur, Pm, Ps, moyenne (réordonné en direct). */
+function RankTable({
+  rows,
+  complete,
+  forfaits,
+}: {
+  rows: ReturnType<typeof pouleState>["rows"];
+  complete: boolean;
+  forfaits: Set<string>;
+}) {
+  return (
+    <div className="text-[11.5px]" aria-label="Classement de la poule">
+      <div className="text-ink-muted grid grid-cols-[18px_minmax(0,1fr)_24px_24px_40px] gap-1.5 px-1 py-1 text-[9.5px] font-bold tracking-[0.06em] uppercase">
+        <span>#</span>
+        <span>Joueur</span>
+        <span className="text-right">Pm</span>
+        <span className="text-right">Ps</span>
+        <span className="text-right">Moy.</span>
+      </div>
+      {rows.map((x, i) => (
+        <motion.div
+          key={x.name}
+          layout="position"
+          transition={{ layout: LAYOUT }}
+          className={cx(
+            "grid grid-cols-[18px_minmax(0,1fr)_24px_24px_40px] items-center gap-1.5 rounded-[6px] px-1 py-[3px]",
+            complete && i === 0 && "bg-gold-soft/60",
+            complete && i === 1 && "bg-ok-soft/50",
+          )}
+        >
+          <span
+            className={cx(
+              "font-mono font-bold",
+              complete ? (i === 0 ? "text-gold-ink" : "text-ink-secondary") : "text-ink-muted",
+            )}
+          >
+            {forfaits.has(x.name) ? "ff" : complete ? i + 1 : "–"}
+          </span>
+          <span
+            className={cx(
+              "min-w-0 truncate font-semibold",
+              forfaits.has(x.name) && "text-ink-muted line-through",
+            )}
+          >
+            {shortName(x.name)}
+          </span>
+          <span className="text-right font-mono font-bold tabular-nums">{x.ptm}</span>
+          <span className="text-ink-secondary text-right font-mono tabular-nums">{x.pts}</span>
+          <span className="text-ink-muted text-right font-mono tabular-nums">
+            {x.joues > 0 ? moy(x.moy) : "–"}
+          </span>
+        </motion.div>
+      ))}
+    </div>
+  );
+}
+
+/* ---------- Carte complète (jeudi) ---------- */
+
+function FullCard({
   state,
   phase,
   poule,
@@ -51,14 +328,8 @@ export function PouleCard({
   const forfaits = new Set(forfaitsOf(state, phase));
   const rec = new Map(r.rows.map((x) => [x.name, x]));
   const done = poule.matches.filter((m) => isValidScore(m, distance)).length;
-  const dots = poule.matches.map((m) => {
-    if (isValidScore(m, distance)) return "ok" as const;
-    if (!matchTouched(m)) return "none" as const;
-    // Un set : les deux scores saisis mais incohérents → rouge ; sinon en cours → bleu
-    const bothSet = m.sa !== null && m.sb !== null;
-    if (distance.setsGagnants === 1 && bothSet) return "ko" as const;
-    return "half" as const;
-  });
+  // Un set : les deux scores saisis mais incohérents → rouge ; sinon en cours → bleu
+  const dots = matchDots(poule, distance);
   const bills = pouleBillards(state, phase, poule);
   const type = billardType(state, bills[0]);
   const live = !r.complete && dots.some((x) => x !== "none");

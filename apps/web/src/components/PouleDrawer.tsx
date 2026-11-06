@@ -1,17 +1,18 @@
 /**
- * Tiroir de saisie d'une poule (560 px à droite) : matchs dans l'ordre du code sportif,
- * arbitre indiqué, saisie clavier, classement de la poule réordonné en direct (FLIP),
- * forfait ou abandon d'un joueur.
+ * Tiroir de saisie d'une poule (560 px à droite) : matchs dans l'ordre du code sportif en lignes
+ * compactes (les six matchs tiennent sans défilement à 900 px de haut), arbitre indiqué, saisie
+ * clavier (Espace = distance, Tab, Échap), poule précédente / suivante, forfait ou abandon d'un
+ * joueur. Le classement n'y figure plus : il est dans la grille (mode « Classement »). Les
+ * numéros 1 à 4 restent, comme sur les feuilles de match papier dont on recopie les scores.
  */
 import type { Match } from "@pilot5q/domain";
 import { Check, ChevronLeft, ChevronRight, UserX, X } from "lucide-react";
 import { AnimatePresence, LayoutGroup, motion } from "motion/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
-import { forfaitsOf, isValidScore, matchOutcome, rankPouleInPhase } from "@/lib/engine";
-import { moy, nice, shortName } from "@/lib/format";
+import { forfaitsOf, isValidScore, matchOutcome, matchWinner } from "@/lib/engine";
+import { nice, shortName } from "@/lib/format";
 import {
-  arriveeOf,
   billardType,
   distanceLabel,
   orderedMatches,
@@ -28,9 +29,8 @@ import {
   scoreOf,
   type ScoreDraft,
 } from "./ScoreEditor";
-import { RollingNumber } from "./RollingNumber";
 import { useToast } from "./Toast";
-import { Button, NumBadge, PlayerLine, cx } from "./ui";
+import { Button, NumBadge, cx } from "./ui";
 
 export function PouleDrawer({
   phase,
@@ -138,7 +138,6 @@ function DrawerBody({
 
   const bills = pouleBillards(state, phase, poule);
   const ordered = orderedMatches(merged, d);
-  const rank = rankPouleInPhase(merged, d, arriveeOf(state), [...forfaits]);
   const idx = poules.findIndex((p) => p.num === pouleNum);
   const prev = poules[(idx - 1 + poules.length) % poules.length];
   const next = poules[(idx + 1) % poules.length];
@@ -179,12 +178,14 @@ function DrawerBody({
 
   return (
     <div ref={rootRef} data-score-root className="flex h-full flex-col">
-      <div className="border-line flex items-center gap-3 border-b px-5 py-4">
-        <span className="bg-brand text-white grid size-[44px] shrink-0 place-items-center rounded-[12px] font-mono text-[19px] font-extrabold shadow-[0_8px_18px_-10px_rgb(14_55_168/0.7)]">
+      <div className="border-line flex items-center gap-3 border-b px-4 py-3">
+        <span className="bg-brand grid size-[40px] shrink-0 place-items-center rounded-[11px] font-mono text-[18px] font-extrabold text-white shadow-[0_8px_18px_-10px_rgb(14_55_168/0.7)]">
           {pouleNum}
         </span>
         <div className="min-w-0">
-          <h3 className="text-[18px] font-extrabold tracking-[-0.02em]">Poule {pouleNum}</h3>
+          <h3 className="text-[17px] leading-tight font-extrabold tracking-[-0.02em]">
+            Poule {pouleNum}
+          </h3>
           <div className="text-ink-muted text-[12px]">
             Billard {bills.join(" & ")} · {billardType(state, bills[0])} · {distanceLabel(d)}
             {locked ? " · phase classée (lecture seule)" : ""}
@@ -200,174 +201,136 @@ function DrawerBody({
         </button>
       </div>
 
-      <div className="flex flex-1 flex-col gap-4 overflow-auto px-5 pt-4 pb-6">
-        <div className="text-ink-muted flex flex-wrap items-center gap-2.5 text-[12px]">
+      <div className="flex flex-1 flex-col gap-2.5 overflow-auto px-4 pt-3 pb-4">
+        <div className="text-ink-muted flex flex-wrap items-center gap-2 text-[11.5px]">
           <span className="kbd">Espace</span> met {d.pointsParSet} au joueur
           <span className="kbd">Tab</span> case suivante
           <span className="kbd">Échap</span> fermer
         </div>
 
-        <div className="flex flex-col gap-2.5">
-          {ordered.map((om, i) => {
-            const m = om.match;
-            const base = poule.matches.find((x) => x.id === m.id) ?? m;
-            const draft = drafts[m.id] ?? draftOf(base, d);
-            const valid = isValidScore(m, d);
-            const touched = m.sa !== null || m.sb !== null;
-            const bothSet = m.sa !== null && m.sb !== null;
-            const ff = forfaits.has(m.a) || forfaits.has(m.b);
-            const multi = d.setsGagnants > 1;
-            const line = (name: string, who: "a" | "b") => (
-              <div
-                className={cx(
-                  "grid items-center gap-2.5 px-3 py-[7px]",
-                  multi ? "grid-cols-[24px_1fr]" : "grid-cols-[24px_1fr_72px]",
-                  who === "b" && "border-line border-t border-dashed",
-                )}
-              >
-                <NumBadge n={poule.players.indexOf(name) + 1} />
+        <LayoutGroup id={`dr-${phase}-${pouleNum}`}>
+          <div className="flex flex-col gap-1.5">
+            {ordered.map((om, i) => {
+              const m = om.match;
+              const base = poule.matches.find((x) => x.id === m.id) ?? m;
+              const draft = drafts[m.id] ?? draftOf(base, d);
+              const valid = isValidScore(m, d);
+              const touched = m.sa !== null || m.sb !== null;
+              const bothSet = m.sa !== null && m.sb !== null;
+              const ff = forfaits.has(m.a) || forfaits.has(m.b);
+              const multi = d.setsGagnants > 1;
+              const w = valid ? matchWinner(m, d) : null;
+              const name = (n: string, right: boolean) => (
                 <div
                   className={cx(
-                    "min-w-0 truncate text-[13.5px] font-semibold",
-                    forfaits.has(name) && "text-ink-muted line-through",
+                    "flex min-w-0 items-center gap-1.5",
+                    right && "flex-row-reverse text-right",
                   )}
                 >
-                  {nice(name)}
-                </div>
-                {!multi ? (
-                  <ScoreCell
-                    who={who}
-                    match={base}
-                    draft={draft}
-                    onDraft={(nd) => setDrafts({ ...drafts, [m.id]: nd })}
-                    onCommit={(nd) => commit(base, nd)}
-                    disabled={locked || ff}
-                    idBase={`m-${m.id}`}
-                    d={d}
-                  />
-                ) : null}
-              </div>
-            );
-            return (
-              <div
-                key={m.id}
-                className={cx(
-                  "border-line bg-surface overflow-hidden rounded-[12px] border transition-[border-color,box-shadow] duration-300",
-                  valid && !ff && "border-[#bfe6d2] bg-[linear-gradient(180deg,#fff,#f3fbf6)]",
-                  touched && bothSet && !valid && "border-[#f5bfc9]",
-                  ff && "opacity-70",
-                )}
-              >
-                <div className="bg-surface-2 text-ink-muted flex items-center gap-2 px-3 py-[7px] text-[11px] font-bold tracking-[0.06em] uppercase">
-                  Match {i + 1}
-                  <span className="font-semibold normal-case tracking-normal">· {om.label}</span>
-                  <span className="ml-auto font-medium normal-case tracking-normal">
-                    {ff
-                      ? "Forfait · adversaire vainqueur"
-                      : om.arbitre
-                        ? `Arbitre : ${shortName(om.arbitre)}`
-                        : ""}
+                  <NumBadge n={poule.players.indexOf(n) + 1} tone={w === n ? "gold" : "default"} />
+                  <span
+                    className={cx(
+                      "min-w-0 truncate text-[13px]",
+                      w === n ? "font-bold" : "font-semibold",
+                      w && w !== n && "text-ink-muted",
+                      forfaits.has(n) && "text-ink-muted line-through",
+                    )}
+                  >
+                    {nice(n)}
                   </span>
                 </div>
-                {line(m.a, "a")}
-                {line(m.b, "b")}
-                {multi ? (
-                  <div className="border-line border-t border-dashed px-3 py-2">
-                    <ScoreEditor
-                      match={base}
-                      distance={d}
-                      draft={draft}
-                      onDraft={(nd) => setDrafts({ ...drafts, [m.id]: nd })}
-                      onCommit={(nd) => commit(base, nd)}
-                      disabled={locked || ff}
-                      idBase={`m-${m.id}`}
-                    />
+              );
+              const cell = (who: "a" | "b") => (
+                <ScoreCell
+                  who={who}
+                  match={base}
+                  draft={draft}
+                  onDraft={(nd) => setDrafts({ ...drafts, [m.id]: nd })}
+                  onCommit={(nd) => commit(base, nd)}
+                  disabled={locked || ff}
+                  idBase={`m-${m.id}`}
+                  d={d}
+                  size="sm"
+                />
+              );
+              return (
+                <motion.div
+                  key={m.id}
+                  layout="position"
+                  transition={{ layout: { duration: 0.36, ease: [0.2, 0.8, 0.2, 1] } }}
+                  className={cx(
+                    "border-line bg-surface rounded-[11px] border transition-[border-color,box-shadow,background-color] duration-300",
+                    valid && !ff && "border-[#bfe6d2] bg-[linear-gradient(180deg,#fff,#f3fbf6)]",
+                    touched && bothSet && !valid && "border-[#f5bfc9]",
+                    ff && "opacity-70",
+                  )}
+                  data-match-row={m.id}
+                >
+                  <div className="text-ink-muted flex items-center gap-1.5 px-2.5 pt-[5px] text-[10.5px] leading-none font-bold tracking-[0.05em] uppercase">
+                    Match {i + 1}
+                    <span className="font-semibold tracking-normal normal-case">· {om.label}</span>
+                    <span className="ml-auto truncate font-medium tracking-normal normal-case">
+                      {ff
+                        ? "Forfait · adversaire vainqueur"
+                        : om.arbitre
+                          ? `Arbitre : ${shortName(om.arbitre)}`
+                          : ""}
+                    </span>
                   </div>
-                ) : null}
-              </div>
-            );
-          })}
-        </div>
-
-        <div>
-          <div className="text-ink-secondary mb-1.5 text-[12px] font-bold">
-            Classement de la poule
+                  {multi ? (
+                    <div className="px-2.5 pt-1 pb-1.5">
+                      <ScoreEditor
+                        match={base}
+                        distance={d}
+                        draft={draft}
+                        onDraft={(nd) => setDrafts({ ...drafts, [m.id]: nd })}
+                        onCommit={(nd) => commit(base, nd)}
+                        disabled={locked || ff}
+                        idBase={`m-${m.id}`}
+                        layout="inline"
+                        size="sm"
+                        compact
+                        renderLabel={(who) => name(who === "a" ? m.a : m.b, false)}
+                      />
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2 px-2.5 pt-1 pb-[7px]">
+                      {name(m.a, false)}
+                      <div data-match={m.id} className="flex items-center gap-1">
+                        {cell("a")}
+                        <span className="text-ink-muted text-[10px] font-bold">–</span>
+                        {cell("b")}
+                      </div>
+                      {name(m.b, true)}
+                    </div>
+                  )}
+                </motion.div>
+              );
+            })}
           </div>
-          <div className="border-line overflow-hidden rounded-[12px] border">
-            <table className="w-full border-collapse text-[12.5px]">
-              <thead>
-                <tr className="bg-surface-2 text-ink-muted text-left text-[10.5px] tracking-[0.06em] uppercase">
-                  <th className="px-2.5 py-2">#</th>
-                  <th className="px-2.5 py-2">Joueur</th>
-                  <th className="px-2.5 py-2 text-right">Pm</th>
-                  <th className="px-2.5 py-2 text-right">Ps</th>
-                  <th className="px-2.5 py-2 text-right">Faits</th>
-                  <th className="px-2.5 py-2 text-right">Subis</th>
-                  <th className="px-2.5 py-2 text-right">Moy.</th>
-                </tr>
-              </thead>
-              <LayoutGroup id={`rk-${phase}-${pouleNum}`}>
-                <tbody>
-                  {rank.rows.map((r, i) => (
-                    <motion.tr
-                      key={r.name}
-                      layout
-                      transition={{ duration: 0.42, ease: [0.2, 0.8, 0.2, 1] }}
-                      className={cx(
-                        "border-line border-t",
-                        rank.complete && i === 0 && "shadow-[inset_3px_0_0_var(--color-gold)]",
-                      )}
-                    >
-                      <td className="text-ink-secondary px-2.5 py-[7px] font-mono font-extrabold">
-                        {rank.complete ? i + 1 : "–"}
-                      </td>
-                      <td className="px-2.5 py-[7px]">
-                        <PlayerLine
-                          name={r.name}
-                          num={poule.players.indexOf(r.name) + 1}
-                          muted={forfaits.has(r.name)}
-                        />
-                      </td>
-                      <td className="px-2.5 py-[7px] text-right font-mono">
-                        <RollingNumber value={r.ptm} />
-                      </td>
-                      <td className="px-2.5 py-[7px] text-right font-mono">
-                        <RollingNumber value={r.pts} />
-                      </td>
-                      <td className="px-2.5 py-[7px] text-right font-mono">
-                        <RollingNumber value={r.faits} />
-                      </td>
-                      <td className="px-2.5 py-[7px] text-right font-mono">
-                        <RollingNumber value={r.subis} />
-                      </td>
-                      <td className="px-2.5 py-[7px] text-right font-mono">{moy(r.moy)}</td>
-                    </motion.tr>
-                  ))}
-                </tbody>
-              </LayoutGroup>
-            </table>
-          </div>
-        </div>
+        </LayoutGroup>
 
         {!locked ? (
-          <div>
-            <div className="text-ink-secondary mb-1.5 text-[12px] font-bold">
-              Forfait ou abandon
-            </div>
-            <div className="flex flex-wrap gap-1.5">
-              {poule.players
-                .filter((n) => !forfaits.has(n))
-                .map((n) => (
-                  <Button key={n} size="sm" icon={UserX} onClick={() => declareForfait(n)}>
-                    {shortName(n)}
-                  </Button>
-                ))}
-            </div>
+          <div className="text-ink-muted mt-0.5 flex flex-wrap items-center gap-1.5 text-[11.5px]">
+            <span className="font-semibold">Forfait ou abandon :</span>
+            {poule.players
+              .filter((n) => !forfaits.has(n))
+              .map((n) => (
+                <button
+                  key={n}
+                  type="button"
+                  onClick={() => declareForfait(n)}
+                  className="border-line-2 hover:border-alert/50 hover:text-alert-ink inline-flex items-center gap-1 rounded-[7px] border px-1.5 py-[2px] font-semibold transition-colors"
+                >
+                  <UserX className="size-3" aria-hidden="true" />
+                  {shortName(n)}
+                </button>
+              ))}
           </div>
         ) : null}
       </div>
 
-      <div className="border-line bg-surface-2 flex items-center gap-2.5 border-t px-5 py-3">
+      <div className="border-line bg-surface-2 flex items-center gap-2.5 border-t px-4 py-2.5">
         <Button
           icon={ChevronLeft}
           onClick={() => {

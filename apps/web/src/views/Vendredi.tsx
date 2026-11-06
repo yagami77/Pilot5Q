@@ -1,13 +1,12 @@
 /** Vendredi : saisie des préqualifications, classement de phase, barrages, qualifiés. */
 import type { Match } from "@pilot5q/domain";
-import { ArrowRight, Check, Printer, RotateCcw, Trophy, UserX, WandSparkles } from "lucide-react";
+import { Check, Printer, RotateCcw, Trophy, UserX, WandSparkles } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { useProgressiveFill } from "@/lib/fill";
-import { useNavigate } from "react-router";
 
 import { DayTasks } from "@/components/DayTasks";
-import { PouleCard } from "@/components/PouleCard";
+import { PouleGrid, PouleViewToggle, usePouleView } from "@/components/PouleGrid";
 import { LateForfaits } from "@/dj/LateForfaits";
 import { preqStarted } from "@/lib/forfaits";
 import { PouleDrawer } from "@/components/PouleDrawer";
@@ -58,6 +57,7 @@ function Saisie() {
   const fill = useProgressiveFill();
   const [open, setOpen] = useState<number | null>(null);
   const [printOpen, setPrintOpen] = useState(false);
+  const [view, setView] = usePouleView();
   const d = phaseDistance(state, "PREQ");
   const pr = poulesProgress(state, "PREQ");
   const complete = phaseComplete(state, "PREQ");
@@ -140,22 +140,27 @@ function Saisie() {
         </div>
       ) : null}
 
-      <div
-        id="poules"
-        className="grid scroll-mt-4 grid-cols-[repeat(auto-fill,minmax(230px,1fr))] gap-3"
-      >
-        {state.poules.PREQ.map((p) => (
-          <PouleCard
-            key={p.num}
-            state={state}
-            phase="PREQ"
-            poule={p}
-            distance={d}
-            active={open === p.num}
-            onOpen={setOpen}
-          />
-        ))}
+      <div className="mb-2.5 flex flex-wrap items-center gap-2.5">
+        <h3 className="text-[14px] font-bold">Poules</h3>
+        <span className="text-ink-muted text-[12px]">
+          {pr.valid}/{pr.total} matchs validés · cliquez sur une poule pour saisir
+        </span>
+        <span className="ml-auto">
+          <PouleViewToggle value={view} onChange={setView} />
+        </span>
       </div>
+      <PouleGrid
+        id="poules"
+        className="scroll-mt-4"
+        state={state}
+        phase="PREQ"
+        poules={state.poules.PREQ}
+        distance={d}
+        view={view}
+        open={open}
+        onOpen={setOpen}
+        showBillard={false}
+      />
 
       <PouleDrawer
         phase="PREQ"
@@ -173,7 +178,6 @@ function Saisie() {
 function Resultats() {
   const { state, dispatch, dispatchMany } = useTournament();
   const toast = useToast();
-  const navigate = useNavigate();
   const [printOpen, setPrintOpen] = useState(false);
   const ranking = useMemo(() => preqRanking(state), [state]);
   const size = state.rules.barrageSize;
@@ -350,9 +354,7 @@ function Resultats() {
         </div>
       </div>
 
-      {bClosed ? (
-        <Qualifies onNext={() => navigate("/tournoi/samedi")} onPrint={() => setPrintOpen(true)} />
-      ) : null}
+      {bClosed ? <Qualifies onPrint={() => setPrintOpen(true)} /> : null}
 
       <PrintCenter day="vendredi" open={printOpen} onClose={() => setPrintOpen(false)} />
     </section>
@@ -432,7 +434,7 @@ function BarrageRow({
   );
 }
 
-function Qualifies({ onNext, onPrint }: { onNext: () => void; onPrint: () => void }) {
+function Qualifies({ onPrint }: { onPrint: () => void }) {
   const { state, dispatch } = useTournament();
   const toast = useToast();
   const q = useMemo(() => qualifiers(state), [state]);
@@ -550,10 +552,7 @@ function Qualifies({ onNext, onPrint }: { onNext: () => void; onPrint: () => voi
         <Button icon={Printer} onClick={onPrint}>
           Imprimer les tableaux du samedi
         </Button>
-        {/* TODO jour suivant : bouton désormais dans la barre des tâches */}
-        <Button variant="primary" size="lg" iconRight={ArrowRight} onClick={onNext}>
-          Préparer le samedi
-        </Button>
+        {/* « Préparer le samedi » : dans la barre des tâches du jour */}
       </div>
     </div>
   );

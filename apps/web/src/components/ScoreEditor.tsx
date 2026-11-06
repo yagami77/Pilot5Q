@@ -4,7 +4,7 @@
  * (case verte quand le score est cohérent, vibration rouge sinon).
  */
 import type { Distance, Match } from "@pilot5q/domain";
-import { useEffect, useRef, useState, type KeyboardEvent } from "react";
+import { useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 
 import { isValidScore } from "@/lib/engine";
 
@@ -83,6 +83,12 @@ export interface ScoreEditorProps {
   /** Identifiant de base pour les champs (accessibilité). */
   idBase: string;
   size?: "md" | "sm";
+  /**
+   * Plusieurs sets, version dense (tiroir de saisie) : pas de ligne d'en-tête, le libellé de
+   * chaque joueur est rendu par `renderLabel` et occupe la largeur restante.
+   */
+  compact?: boolean;
+  renderLabel?: (who: "a" | "b") => ReactNode;
 }
 
 export function ScoreEditor({
@@ -95,6 +101,8 @@ export function ScoreEditor({
   layout = "stacked",
   idBase,
   size = "md",
+  compact = false,
+  renderLabel,
 }: ScoreEditorProps) {
   disabled = useEditLock() || disabled;
   const multi = d.setsGagnants > 1;
@@ -122,6 +130,7 @@ export function ScoreEditor({
     "score-input",
     size === "sm" && "h-[34px] w-[52px] rounded-[8px] text-[14px]",
     multi && "w-[52px]",
+    compact && "h-[30px] w-[46px] rounded-[8px] text-[13.5px]",
   );
 
   const focusNext = (el: HTMLInputElement, preferSibling: boolean) => {
@@ -246,23 +255,29 @@ export function ScoreEditor({
   return (
     <div
       data-match={match.id}
-      className={cx("flex flex-col gap-1", shake && "animate-shake")}
+      className={cx("flex flex-col", compact ? "gap-[3px]" : "gap-1", shake && "animate-shake")}
       style={{ gridColumn: layout === "inline" ? undefined : "1 / -1" }}
     >
-      <div className="text-ink-muted flex items-center gap-1 text-[10px] font-bold tracking-[0.06em] uppercase">
-        <span className="w-10">Sets</span>
-        {Array.from({ length: n }, (_, i) => (
-          <span key={i} className="w-[52px] text-center">
-            S{i + 1}
-          </span>
-        ))}
-        <span className="ml-2">Gagnés</span>
-      </div>
+      {compact ? null : (
+        <div className="text-ink-muted flex items-center gap-1 text-[10px] font-bold tracking-[0.06em] uppercase">
+          <span className="w-10">Sets</span>
+          {Array.from({ length: n }, (_, i) => (
+            <span key={i} className="w-[52px] text-center">
+              S{i + 1}
+            </span>
+          ))}
+          <span className="ml-2">Gagnés</span>
+        </div>
+      )}
       {(["a", "b"] as const).map((who) => (
         <div key={who} className="flex items-center gap-1">
-          <span className="text-ink-secondary w-10 truncate text-[11px] font-semibold">
-            {who === "a" ? match.a.split(" ")[0] : match.b.split(" ")[0]}
-          </span>
+          {renderLabel ? (
+            <div className="min-w-0 flex-1">{renderLabel(who)}</div>
+          ) : (
+            <span className="text-ink-secondary w-10 truncate text-[11px] font-semibold">
+              {who === "a" ? match.a.split(" ")[0] : match.b.split(" ")[0]}
+            </span>
+          )}
           {Array.from({ length: n }, (_, i) => (
             <span key={i} className={cx(i >= decidedAt && "opacity-30")}>
               {i >= decidedAt ? (
@@ -274,7 +289,8 @@ export function ScoreEditor({
           ))}
           <span
             className={cx(
-              "ml-2 font-mono text-[15px] font-bold tabular-nums",
+              "ml-2 font-mono font-bold tabular-nums",
+              compact ? "w-4 text-center text-[14px]" : "text-[15px]",
               valid ? "text-ok-ink" : "text-ink-muted",
             )}
           >

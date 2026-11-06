@@ -1,11 +1,11 @@
 /** Samedi : poules Masters et National, huitièmes National, consolante. */
-import { ArrowLeft, ArrowRight, Check, Printer, TriangleAlert, WandSparkles } from "lucide-react";
+import { ArrowLeft, Check, Printer, TriangleAlert, WandSparkles } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router";
 
 import { Bracket } from "@/components/Bracket";
 import { DayTasks } from "@/components/DayTasks";
-import { PouleCard } from "@/components/PouleCard";
+import { PouleGrid, PouleViewToggle, usePouleView } from "@/components/PouleGrid";
 import { PouleDrawer } from "@/components/PouleDrawer";
 import { PrintCenter } from "@/components/PrintCenter";
 import { useToast } from "@/components/Toast";
@@ -40,6 +40,7 @@ export function Samedi() {
   const navigate = useNavigate();
   const [open, setOpen] = useState<{ phase: "QM" | "QN"; num: number } | null>(null);
   const [printOpen, setPrintOpen] = useState(false);
+  const [view, setView] = usePouleView();
   const dM = phaseDistance(state, "QM");
   const dN = phaseDistance(state, "QN");
   const prM = poulesProgress(state, "QM");
@@ -142,6 +143,10 @@ export function Samedi() {
         </Button>
       </PageHead>
 
+      <div className="mb-2.5 flex justify-end">
+        <PouleViewToggle value={view} onChange={setView} />
+      </div>
+
       <div className="flex flex-col gap-3.5">
         <Card
           id="masters"
@@ -170,20 +175,17 @@ export function Samedi() {
             </>
           }
         >
-          <div className="grid grid-cols-[repeat(auto-fill,minmax(230px,1fr))] gap-3 px-4 pt-1 pb-4">
-            {state.poules.QM.map((p) => (
-              <PouleCard
-                key={p.num}
-                state={state}
-                phase="QM"
-                poule={p}
-                distance={dM}
-                active={open?.phase === "QM" && open.num === p.num}
-                onOpen={(num) => setOpen({ phase: "QM", num })}
-                conflict={conflicts.includes(p.num)}
-              />
-            ))}
-          </div>
+          <PouleGrid
+            className="px-4 pt-1 pb-4"
+            state={state}
+            phase="QM"
+            poules={state.poules.QM}
+            distance={dM}
+            view={view}
+            open={open?.phase === "QM" ? open.num : null}
+            onOpen={(num) => setOpen({ phase: "QM", num })}
+            conflicts={conflicts}
+          />
         </Card>
 
         <Card
@@ -208,19 +210,16 @@ export function Samedi() {
             </>
           }
         >
-          <div className="grid grid-cols-[repeat(auto-fill,minmax(230px,1fr))] gap-3 px-4 pt-1 pb-4">
-            {state.poules.QN.map((p) => (
-              <PouleCard
-                key={p.num}
-                state={state}
-                phase="QN"
-                poule={p}
-                distance={dN}
-                active={open?.phase === "QN" && open.num === p.num}
-                onOpen={(num) => setOpen({ phase: "QN", num })}
-              />
-            ))}
-          </div>
+          <PouleGrid
+            className="px-4 pt-1 pb-4"
+            state={state}
+            phase="QN"
+            poules={state.poules.QN}
+            distance={dN}
+            view={view}
+            open={open?.phase === "QN" ? open.num : null}
+            onOpen={(num) => setOpen({ phase: "QN", num })}
+          />
           <div id="huitiemes" className="border-line scroll-mt-4 border-t">
             <div className="flex flex-wrap items-center gap-2 px-4 pt-3">
               <h4 className="text-[13.5px] font-bold">Huitièmes de finale</h4>
@@ -316,20 +315,9 @@ export function Samedi() {
           )}
         </Card>
 
-        {/* TODO jour suivant : bouton désormais dans la barre des tâches */}
+        {/* « Passer au dimanche » : dans la barre des tâches du jour */}
         {closedM && closedN ? (
-          <Banner
-            icon={Check}
-            actions={
-              <Button
-                variant="primary"
-                iconRight={ArrowRight}
-                onClick={() => navigate("/tournoi/dimanche")}
-              >
-                Passer au dimanche
-              </Button>
-            }
-          >
+          <Banner icon={Check}>
             Masters et National classés · quarts de finale constitués
             {hasCls && !closedCLS ? " · la consolante peut continuer" : ""}
           </Banner>
