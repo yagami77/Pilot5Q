@@ -32,7 +32,7 @@ import { addNotification } from "@/lib/notifications";
 import { loadEvents } from "@/store/persistence";
 import { useTournament } from "@/store/tournament";
 
-import { isAfterReference } from "./Ranking";
+import { isAfterReference } from "./reference";
 import { isExampleTournament, realWeekendEvents } from "./realWeekend";
 import { useSeason, useSeasonDoc } from "./store";
 import { closeStage, reopenStage, tournamentAwards, tournamentFinished } from "./stage";

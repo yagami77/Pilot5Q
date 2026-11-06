@@ -6,7 +6,7 @@ import inscriptions from "@/data/tn-exemple-inscriptions.json";
 import { DEMO } from "@/lib/demo";
 
 import { SEASON_FIXTURE, demoSeason, type DemoInscription } from "./demo";
-import { compareWithReference, isAfterReference } from "./Ranking";
+import { compareWithReference, isAfterReference } from "./reference";
 import { realWeekendEvents } from "./realWeekend";
 import {
   closeStage,
