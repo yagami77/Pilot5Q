@@ -6,10 +6,13 @@
  */
 import type { BracketMatch, BracketRound, Distance } from "@pilot5q/domain";
 import { Pencil, Trophy, X } from "lucide-react";
-import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import { motion } from "motion/react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import { createPortal } from "react-dom";
 
 import { isValidScore, matchWinner } from "@/lib/engine";
-import { nice } from "@/lib/format";
+import { findByLicence, useKnownPeople, type KnownPerson } from "@/lib/arbitres";
+import { nice, shortName } from "@/lib/format";
 import { celebrate, prefersReducedMotion } from "@/lib/motion";
 import {
   distanceLabel,
@@ -20,6 +23,7 @@ import {
 } from "@/lib/tournament";
 import { useEditLock, useTournament } from "@/store/tournament";
 
+import { ArbitreField } from "./ArbitreField";
 import { RollingNumber } from "./RollingNumber";
 import { ScoreCell, ScoreEditor, draftOf, scoreOf, type ScoreDraft } from "./ScoreEditor";
 import { Avatar, Button, Chip, cx } from "./ui";
@@ -76,6 +80,7 @@ export function Bracket({
 }: BracketProps) {
   const { state } = useTournament();
   const editLock = useEditLock();
+  const people = useKnownPeople(state);
   const all = state.brackets[phase];
   const shown = (rounds ?? ALL_ROUNDS).filter((r) => all.some((m) => m.round === r));
   const locked = Boolean(state.closed[phase]);
@@ -91,7 +96,8 @@ export function Bracket({
       all.filter((m) => m.round === r).sort((x, y) => x.slot - y.slot),
     );
     const n0 = byRound[0]?.length ?? 0;
-    const rowH = n0 > 8 ? 124 : 132;
+    // Avec arbitres, une ligne sous chaque carte : un peu plus d'air entre les cartes
+    const rowH = (n0 > 8 ? 124 : 132) + (withArbitre ? 14 : 0);
     const totalH = n0 * rowH;
     const pos = new Map<string, { x: number; y: number }>();
     byRound.forEach((ms, ri) => {
@@ -125,7 +131,7 @@ export function Bracket({
       width: shown.length * W + (shown.length - 1) * GAP,
       height: totalH + 36,
     };
-  }, [all, shown]);
+  }, [all, shown, withArbitre]);
 
   /* ---------- vainqueurs qui voyagent ---------- */
   const doneRef = useRef<Set<string> | null>(null);
@@ -210,6 +216,7 @@ export function Bracket({
         glow={Boolean(championKey) && r === "F"}
         refEl={r === "F" ? finalRef : undefined}
         delay={layout === "grid" ? m.slot * 40 : ri * 60}
+        people={people}
       />
     );
   };
@@ -372,6 +379,7 @@ function MatchCard({
   glow,
   refEl,
   delay,
+  people,
 }: {
   phase: Phase;
   match: BracketMatch;
@@ -386,13 +394,24 @@ function MatchCard({
   glow: boolean;
   refEl?: React.RefObject<HTMLDivElement | null>;
   delay: number;
+  people: KnownPerson[];
 }) {
   const { state, dispatch } = useTournament();
   const photoOf = (n: string) => state.players.find((p) => p.name === n)?.photoUrl ?? null;
   const multi = d.setsGagnants > 1;
   const [draft, setDraft] = useState<ScoreDraft>(() => draftOf(match, d));
   const [open, setOpen] = useState(false);
-  const [arbitre, setArbitre] = useState(match.arbitre ?? "");
+  const rootRef = useRef<HTMLDivElement | null>(null);
+  const setRoot = (el: HTMLDivElement | null) => {
+    rootRef.current = el;
+    if (refEl) refEl.current = el;
+  };
+  const arbitreNames = [match.arbitre, match.arbitre2]
+    .filter((l): l is string => Boolean(l))
+    .map((l) => {
+      const p = findByLicence(people, l);
+      return p ? shortName(p.name) : l;
+    });
   const key = `${match.id}:${match.a}:${match.b}:${match.sa}:${match.sb}:${JSON.stringify(match.setsA ?? null)}`;
   const last = useRef(key);
   useEffect(() => {
@@ -514,10 +533,10 @@ function MatchCard({
 
   return (
     <div
-      ref={refEl}
+      ref={setRoot}
       style={{ ...style, animationDelay: `${delay}ms` }}
       className={cx(
-        "bg-surface border-line rounded-[14px] border shadow-[var(--shadow-card)] transition-[border-color,box-shadow] duration-300",
+        "bg-surface border-line relative rounded-[14px] border shadow-[var(--shadow-card)] transition-[border-color,box-shadow] duration-300",
         !open && "animate-pop",
         live &&
           "border-brand-light shadow-[0_0_0_3px_var(--color-brand-soft),var(--shadow-raised)]",
@@ -565,9 +584,9 @@ function MatchCard({
       {slot("a")}
       {slot("b")}
       {open ? (
-        <div className="bg-surface border-brand-light shadow-raised absolute top-full left-0 z-30 mt-1.5 w-[380px] rounded-[14px] border p-3">
-          <div className="mb-2 flex items-center justify-between">
-            <span className="text-[12px] font-bold">
+        <SaisiePopover anchor={rootRef} onClose={() => setOpen(false)}>
+          <div className="mb-2 flex items-center justify-between gap-2">
+            <span className="text-[12.5px] font-bold">
               {matchLabel(match)} · {distanceLabel(d)}
             </span>
             <button
@@ -590,37 +609,110 @@ function MatchCard({
             size="sm"
           />
           {withArbitre ? (
-            <label className="text-ink-muted mt-2 flex items-center gap-1.5 text-[10.5px] font-semibold">
-              Arbitre
-              <input
-                className="field h-7 flex-1 px-1.5 py-0 font-mono text-[11px]"
-                placeholder="n° de licence"
-                aria-label={`Licence de l'arbitre · ${roundLabel(match.round)} ${match.slot}`}
-                value={arbitre}
-                onChange={(e) => setArbitre(e.target.value)}
-                onBlur={() => {
-                  const v = arbitre.trim();
-                  if (v && v !== (match.arbitre ?? ""))
+            <div className="border-line mt-2.5 flex flex-col gap-1.5 border-t border-dashed pt-2.5">
+              {([1, 2] as const).map((slot) => (
+                <ArbitreField
+                  key={slot}
+                  label={`Arbitre ${slot}`}
+                  value={slot === 1 ? match.arbitre : match.arbitre2}
+                  people={people}
+                  onCommit={(licence) =>
                     dispatch({
                       type: "arbitre.set",
-                      payload: { phase, matchId: match.id, licence: v },
-                    });
-                }}
-              />
-            </label>
+                      payload: { phase, matchId: match.id, licence, slot },
+                    })
+                  }
+                />
+              ))}
+            </div>
           ) : null}
-          <div className="mt-2 flex justify-end">
+          <div className="mt-2.5 flex justify-end">
             <Button size="sm" variant="primary" onClick={() => setOpen(false)}>
               Valider
             </Button>
           </div>
-        </div>
+        </SaisiePopover>
       ) : null}
-      {withArbitre && match.arbitre && !open ? (
-        <div className="text-ink-muted border-line border-t px-[11px] py-1 text-[10px]">
-          Arbitre <span className="font-mono">{match.arbitre}</span>
+      {withArbitre && (match.arbitre || match.arbitre2) ? (
+        // Sous la carte, hors de sa hauteur : le tableau garde sa géométrie
+        <div
+          className="text-ink-muted pointer-events-none absolute top-full right-[11px] left-[11px] mt-[2px] truncate text-[10.5px] leading-[14px]"
+          title={arbitreNames.join(" · ")}
+        >
+          <span className="font-semibold">
+            {arbitreNames.length > 1 ? "Arbitres" : "Arbitre"} :
+          </span>{" "}
+          {arbitreNames.join(" · ")}
         </div>
       ) : null}
     </div>
+  );
+}
+
+/* ---------- Fenêtre de saisie flottante ---------- */
+
+/**
+ * Fenêtre de saisie d'un match, rendue dans `body` en position fixe sous la carte (au-dessus si
+ * la place manque), toujours dans l'écran : elle ne déborde plus du tableau ni ne le décale.
+ */
+function SaisiePopover({
+  anchor,
+  onClose,
+  children,
+}: {
+  anchor: React.RefObject<HTMLDivElement | null>;
+  onClose: () => void;
+  children: React.ReactNode;
+}) {
+  const boxRef = useRef<HTMLDivElement>(null);
+  const [pos, setPos] = useState<{ top: number; left: number } | null>(null);
+  useLayoutEffect(() => {
+    const place = () => {
+      const r = anchor.current?.getBoundingClientRect();
+      const box = boxRef.current;
+      if (!r || !box) return;
+      const w = box.offsetWidth;
+      const h = box.offsetHeight;
+      const left = Math.min(Math.max(8, r.left), window.innerWidth - w - 8);
+      let top = r.bottom + 6;
+      if (top + h > window.innerHeight - 8) top = Math.max(8, r.top - h - 6);
+      setPos((p) => (p && p.top === top && p.left === left ? p : { top, left }));
+    };
+    place();
+    const ro = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(place);
+    if (boxRef.current) ro?.observe(boxRef.current);
+    window.addEventListener("scroll", place, true);
+    window.addEventListener("resize", place);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      ro?.disconnect();
+      window.removeEventListener("scroll", place, true);
+      window.removeEventListener("resize", place);
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [anchor, onClose]);
+  return createPortal(
+    <motion.div
+      ref={boxRef}
+      role="dialog"
+      aria-label="Saisie du match"
+      data-score-root
+      initial={{ opacity: 0, y: -6, scale: 0.98 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 0.2, ease: [0.2, 0.8, 0.2, 1] }}
+      style={{
+        position: "fixed",
+        top: pos?.top ?? -9999,
+        left: pos?.left ?? -9999,
+        visibility: pos ? "visible" : "hidden",
+      }}
+      className="bg-surface border-brand-light shadow-raised no-print z-[70] w-[400px] max-w-[calc(100vw-16px)] rounded-[14px] border p-3"
+    >
+      {children}
+    </motion.div>,
+    document.body,
   );
 }

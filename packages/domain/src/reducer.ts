@@ -37,7 +37,8 @@
  *   suit les scores).
  * - `consolante.created` : `brackets.CLS` (au plus `rules.consolanteMax` joueurs, les suivants
  *   sont ignorés).
- * - `arbitre.set` : numéro de licence de l'arbitre sur le match.
+ * - `arbitre.set` : numéro de licence de l'arbitre 1 (`arbitre`) ou 2 (`arbitre2`, `slot: 2`) sur
+ *   le match ; sans `slot` (anciens journaux), l'arbitre 1 ; une licence vide efface l'arbitre.
  *
  * Sélecteurs dérivés : `phaseRanking` (classement d'une phase de poules, l'ordre d'arrivée
  * étant l'ordre d'entrée dans la phase, cf. `entryArrivee`), `barrageRanking`, `bracketRanking`
@@ -755,8 +756,11 @@ export function reduce(state: TournamentState, event: TournamentEvent): Tourname
       };
     }
     case "arbitre.set": {
-      const { phase, matchId, licence } = event.payload;
-      return updateMatch(state, phase, matchId, (m) => ({ ...m, arbitre: licence }));
+      const { phase, matchId, licence, slot } = event.payload;
+      const value = licence.trim() === "" ? null : licence.trim();
+      return updateMatch(state, phase, matchId, (m) =>
+        slot === 2 ? { ...m, arbitre2: value } : { ...m, arbitre: value },
+      );
     }
     default:
       return state;

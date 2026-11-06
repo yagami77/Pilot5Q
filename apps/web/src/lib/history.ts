@@ -77,7 +77,7 @@ export function describeEvent(e: TournamentEvent): string {
     case "consolante.created":
       return `Création de la consolante (${e.payload.players.length} joueurs)`;
     case "arbitre.set":
-      return `Arbitre · ${matchPlace(e.payload.phase, e.payload.matchId)}`;
+      return `Arbitre ${e.payload.slot ?? 1} · ${matchPlace(e.payload.phase, e.payload.matchId)}`;
     default:
       return "Action";
   }

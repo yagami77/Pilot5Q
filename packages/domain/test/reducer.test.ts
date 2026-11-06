@@ -240,6 +240,25 @@ describe("réducteur : vendredi", () => {
       payload: { phase: "N", matchId: "N-F", licence: "123456A" },
     });
     expect(s.brackets.N.find((m) => m.id === "N-F")?.arbitre).toBe("123456A");
+    // Deux arbitres par match (slot 2), licence vide = effacement ; sans slot = arbitre 1.
+    s = reduce(s, {
+      type: "arbitre.set",
+      at,
+      payload: { phase: "N", matchId: "N-F", licence: " 654321B ", slot: 2 },
+    });
+    expect(s.brackets.N.find((m) => m.id === "N-F")).toMatchObject({
+      arbitre: "123456A",
+      arbitre2: "654321B",
+    });
+    const cleared = reduce(s, {
+      type: "arbitre.set",
+      at,
+      payload: { phase: "N", matchId: "N-F", licence: "", slot: 1 },
+    });
+    expect(cleared.brackets.N.find((m) => m.id === "N-F")).toMatchObject({
+      arbitre: null,
+      arbitre2: "654321B",
+    });
 
     // Consolante : places ≥ 41 volontaires.
     const volunteers = phaseRanking(s, "PREQ")

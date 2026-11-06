@@ -41,7 +41,10 @@ export interface Match {
   setsA?: number[];
   setsB?: number[];
   billard?: number | null;
+  /** Licence de l'arbitre 1 (dimanche : quarts, demies, finales). */
   arbitre?: string | null;
+  /** Licence de l'arbitre 2. */
+  arbitre2?: string | null;
   forfait?: "a" | "b" | null;
 }
 
@@ -213,7 +216,11 @@ export type TournamentEvent =
   | {
       type: "arbitre.set";
       at: string;
-      payload: { phase: PhaseId; matchId: string; licence: string };
+      /**
+       * Licence de l'arbitre d'un match ; `slot` 1 (par défaut, anciens journaux) ou 2 ; une
+       * licence vide efface l'arbitre.
+       */
+      payload: { phase: PhaseId; matchId: string; licence: string; slot?: 1 | 2 };
     };
 
 /** État complet du tournoi, obtenu par rejeu des événements. */

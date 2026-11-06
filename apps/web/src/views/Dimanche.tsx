@@ -99,7 +99,7 @@ export function Dimanche() {
       <PageHead
         eyebrow={longDate(dayDate(state, "dimanche"))}
         title={finished && !showTables ? "Tournoi terminé" : "Phases finales"}
-        help="Arbitrage fourni par le club : l'arbitre de chaque match est renseigné avec son numéro de licence. Trente minutes de pause minimum entre deux paliers pour un même joueur."
+        help="Arbitrage fourni par le club : deux arbitres par match, saisis par leur numéro de licence (le nom est retrouvé dans les joueurs connus). Trente minutes de pause minimum entre deux paliers pour un même joueur."
       >
         <Chip tone="gold" icon={Trophy}>
           Primes : <RollingNumber value={euros(prizes.cagnotte)} />
