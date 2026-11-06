@@ -2,7 +2,13 @@ import type { Billard } from "@pilot5q/domain";
 import { describe, expect, it } from "vitest";
 
 import { checkPlan, planToAssignments } from "./assign";
-import { optimizeBillards, planLoads, pouleMatches, type PouleSize } from "./billardsOptimizer";
+import {
+  optimizeBillards,
+  planLoads,
+  pouleMatches,
+  threesOnBigTarget,
+  type PouleSize,
+} from "./billardsOptimizer";
 
 const tables = (big: number, small: number): Billard[] => [
   ...Array.from({ length: big }, (_, i) => ({ num: i + 1, type: "3m10" as const })),
@@ -54,19 +60,54 @@ describe("optimiseur des billards du vendredi", () => {
     expect(res.linkedGroups).toBe(0);
   });
 
-  it("15 poules de 4 et 3 de 3 sur 10 billards : 4 + 3 sur les premiers billards", () => {
+  it("3 poules de 3, 4 × 3m10 et 6 × 2m80 (1,5 fois plus de 2m80) : une sur 3m10, deux sur 2m80", () => {
     const ps = poules(15, 3);
     const billards = tables(4, 6);
     const res = expectValid(ps, billards, 7);
     expect(res.loads.every((l) => l.matches > 0)).toBe(true);
     expect(res.maxLoad).toBe(12);
-    expect(res.mixedTables).toBe(3);
+    expect(res.threesOnBigTarget).toBe(1);
+    expect(res.threesOnBig).toBe(1);
+    expect(res.threesOnSmall).toBe(2);
+    // chaque poule de 3 allège un billard partagé avec une poule de 4 (9 matchs)
     const size = new Map(ps.map((p) => [p.num, p.size]));
-    for (const b of [1, 2, 3]) {
-      const sizes = (res.plan.place[b] ?? []).map((n) => size.get(n)).sort();
-      expect(sizes).toEqual([3, 4]);
-      expect(res.loads[b - 1]?.matches).toBe(9);
+    for (const [anchor, list] of Object.entries(res.plan.place)) {
+      if (list.some((n) => size.get(n) === 3)) {
+        expect(res.loads[Number(anchor) - 1]?.matches).toBe(9);
+      }
     }
+  });
+
+  it("3 poules de 3, 4 × 3m10 et 4 × 2m80 (formats comparables) : deux sur 3m10, une sur 2m80", () => {
+    const res = expectValid(poules(13, 3), tables(4, 4), 2);
+    expect(res.threesOnBigTarget).toBe(2);
+    expect(res.threesOnBig).toBe(2);
+    expect(res.threesOnSmall).toBe(1);
+  });
+
+  it("2 poules de 3 : une sur 3m10, une sur 2m80", () => {
+    const res = expectValid(poules(14, 2), tables(3, 5), 4);
+    expect(res.threesOnBigTarget).toBe(1);
+    expect(res.threesOnBig).toBe(1);
+    expect(res.threesOnSmall).toBe(1);
+  });
+
+  it("1 poule de 3 : de préférence sur un 3m10", () => {
+    const res = expectValid(poules(15, 1), tables(4, 4), 5);
+    expect(res.threesOnBigTarget).toBe(1);
+    expect(res.threesOnBig).toBe(1);
+  });
+
+  it("répartition visée des poules de 3 (règle du client)", () => {
+    expect(threesOnBigTarget(0, 4, 7)).toBe(0);
+    expect(threesOnBigTarget(1, 4, 7)).toBe(1);
+    expect(threesOnBigTarget(2, 4, 7)).toBe(1);
+    expect(threesOnBigTarget(3, 4, 4)).toBe(2);
+    expect(threesOnBigTarget(3, 4, 5)).toBe(2);
+    expect(threesOnBigTarget(3, 4, 6)).toBe(1);
+    expect(threesOnBigTarget(3, 4, 7)).toBe(1);
+    expect(threesOnBigTarget(2, 0, 8)).toBe(0);
+    expect(threesOnBigTarget(2, 8, 0)).toBe(2);
   });
 
   it("des billards liés baissent la charge maximale quand c'est possible", () => {
@@ -75,16 +116,17 @@ describe("optimiseur des billards du vendredi", () => {
     expect(res.maxLoad).toBe(9);
   });
 
-  it("16 poules de 4 et 1 de 3 sur 11 billards : 9 matchs au plus, la 4 + 3 sur le billard resté seul", () => {
+  it("16 poules de 4 et 1 de 3 sur 11 billards : 9 matchs au plus, la poule de 3 avec une poule de 4", () => {
     const ps = poules(16, 1);
     const res = expectValid(ps, tables(4, 7));
     expect(res.maxLoad).toBe(9);
     expect(res.linkedGroups).toBe(5);
-    expect(res.mixedTables).toBe(1);
-    // 3m10 : 1+2 et 3+4 liés ; 2m80 : trois paires et un billard pour la poule de 4 + 3
-    const mixed = Object.entries(res.plan.place).find(([, l]) => l.includes(17));
-    expect(mixed?.[1]).toHaveLength(2);
-    expect(Number(mixed?.[0])).toBeGreaterThanOrEqual(5);
+    // la charge prime : les 3m10 forment deux paires liées, la poule de 3 partage un 2m80
+    // avec une poule de 4 (acceptable : « on peut la mettre sur un 2m80 »)
+    const shared = Object.entries(res.plan.place).find(([, l]) => l.includes(17));
+    expect(shared?.[1]).toHaveLength(2);
+    expect(Number(shared?.[0])).toBeGreaterThanOrEqual(5);
+    expect(res.threesOnSmall).toBe(1);
   });
 
   it("moins de poules que de billards : une poule par billard", () => {
