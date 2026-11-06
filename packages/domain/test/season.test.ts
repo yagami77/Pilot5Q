@@ -25,6 +25,7 @@ import {
   decimalPoints,
   hostCapable,
   lastKnownPlaces,
+  leftStage,
   rankingCsv,
   rankingRows,
   renderTemplate,
@@ -37,6 +38,7 @@ import {
   stageStatus,
   sundayOf,
   updatePlayerBase,
+  windowResults,
   windowScore,
   windowStages,
 } from "../src/index.js";
@@ -212,12 +214,40 @@ describe("classement glissant « APRES TN2 2026-2027 »", () => {
       );
   });
 
-  it("fait glisser la fenêtre : le TN le plus ancien sort à la clôture suivante", () => {
+  it("fait glisser la fenêtre : le TN sorti reste dans l'historique mais ne compte plus", () => {
     const next = applyTournament(after, [], { season: fx.season, tn: 3 });
-    for (const e of next) {
-      for (const r of e.results)
-        expect(stageIndex(r.season, r.tn)).toBeGreaterThan(stageIndex("2025-2026", 3));
+    const stage = { season: fx.season, tn: 3 };
+    const nextRows = rankingRows(next, { stage });
+    // Tout l'historique est conservé : le TN 3 2025-2026 est encore dans `results`…
+    const kept = next.filter((e) => e.results.some((r) => r.season === "2025-2026" && r.tn === 3));
+    expect(kept.length).toBeGreaterThan(0);
+    // … mais il ne compte plus : score, nombre de TN et moyenne se calculent sur la fenêtre.
+    for (const row of nextRows) {
+      const inWindow = windowResults(row.results, stage);
+      expect(inWindow.every((r) => stageIndex(r.season, r.tn) > stageIndex("2025-2026", 3))).toBe(
+        true,
+      );
+      expect(row.count).toBe(inWindow.length);
+      expect(row.pts).toBeCloseTo(windowScore(inWindow).pts, 9);
+      expect(row.window.map((w) => `${w.season}#${w.tn}`)).toEqual([
+        "2025-2026#4",
+        "2025-2026#5",
+        "2026-2027#1",
+        "2026-2027#2",
+        "2026-2027#3",
+      ]);
+      expect(row.left).toMatchObject({ season: "2025-2026", tn: 3 });
+      const leftRes = row.results.find((r) => r.season === "2025-2026" && r.tn === 3);
+      expect(row.left.pts).toBe(leftRes ? leftRes.pts : null);
     }
+    // Un joueur dont le seul TN était le TN 3 2025-2026 disparaît du classement.
+    const onlyTn3 = after.filter(
+      (e) =>
+        e.results.length === 1 && e.results[0]?.season === "2025-2026" && e.results[0]?.tn === 3,
+    );
+    expect(onlyTn3.length).toBeGreaterThan(0);
+    for (const e of onlyTn3) expect(nextRows.find((r) => r.name === e.name)).toBeUndefined();
+    expect(nextRows.length).toBe(rows.length - onlyTn3.length);
     expect(windowStages("2026-2027", 3)).toEqual([
       { season: "2025-2026", tn: 4 },
       { season: "2025-2026", tn: 5 },
@@ -232,6 +262,130 @@ describe("classement glissant « APRES TN2 2026-2027 »", () => {
       "2026-2027#5",
       "2027-2028#1",
     ]);
+    expect(leftStage("2027-2028", 1)).toEqual({ season: "2026-2027", tn: 1 });
+  });
+
+  it("signale le TN sorti, le TN qui sortira et le résultat non compté de chaque ligne", () => {
+    const first = rows[0];
+    expect(first).toBeDefined();
+    if (!first) return;
+    expect(first.window).toHaveLength(5);
+    expect(first.window.map((w) => `TN${w.tn} ${w.season}`)).toEqual([
+      "TN3 2025-2026",
+      "TN4 2025-2026",
+      "TN5 2025-2026",
+      "TN1 2026-2027",
+      "TN2 2026-2027",
+    ]);
+    // Le TN 2 2025-2026 vient de sortir : la fixture ne le contient pas, ses points sont inconnus.
+    expect(first.left).toEqual({ season: "2025-2026", tn: 2, pts: null });
+    expect(first.leavingNext).toMatchObject({ season: "2025-2026", tn: 3 });
+    // 5 TN joués : le plus faible est retiré et sa case est marquée « non comptée ».
+    expect(first.count).toBe(5);
+    expect(first.dropped).not.toBeNull();
+    const min = Math.min(...first.results.map((r) => r.pts));
+    expect(first.dropped?.pts).toBe(min);
+    const uncounted = first.window.filter((w) => w.pts !== null && !w.counted);
+    expect(uncounted).toHaveLength(1);
+    expect(uncounted[0]?.pts).toBe(min);
+    expect(first.window.filter((w) => w.counted)).toHaveLength(4);
+    // Moins de 5 TN : rien n'est retiré, toutes les cases jouées comptent.
+    const four = rows.find((r) => r.count === 4);
+    expect(four?.dropped).toBeNull();
+    expect(four?.window.filter((w) => w.pts !== null && !w.counted)).toHaveLength(0);
+    expect(four?.window.filter((w) => w.pts === null)).toHaveLength(1);
+    // Sans classement précédent, l'évolution est inconnue.
+    expect(first.delta).toBeNull();
+  });
+
+  it("calcule l'évolution des places depuis le classement précédent", () => {
+    const withDelta = rankingRows(after, { previous: fx.windowBefore });
+    const before = new Map(rankingRows(fx.windowBefore).map((r) => [r.licence, r.position]));
+    for (const r of withDelta) {
+      const prev = before.get(r.licence);
+      expect(r.delta).toBe(prev === undefined ? null : prev - r.position);
+    }
+    expect(withDelta.some((r) => r.delta !== null && r.delta > 0)).toBe(true);
+    expect(withDelta.some((r) => r.delta !== null && r.delta < 0)).toBe(true);
+    expect(withDelta.some((r) => r.delta === null)).toBe(true);
+    // L'ordre et les scores ne changent pas.
+    expect(withDelta.map((r) => r.name)).toEqual(rows.map((r) => r.name));
+  });
+
+  it("gère une fenêtre à cheval sur deux saisons avec un historique long", () => {
+    const res = (season: string, tn: number, pts: number): TnResult => ({
+      season,
+      tn,
+      pts,
+      faits: 100,
+      subis: 80,
+    });
+    const entries: RankingEntry[] = [
+      {
+        licence: "A",
+        name: "ANCIEN ALPHA",
+        club: "C1",
+        results: [
+          res("2024-2025", 5, 80),
+          res("2025-2026", 1, 54),
+          res("2025-2026", 2, 7),
+          res("2025-2026", 3, 26),
+          res("2025-2026", 4, 38),
+          res("2025-2026", 5, 18),
+          res("2026-2027", 1, 25),
+        ],
+      },
+      {
+        licence: "B",
+        name: "BETA BRUNO",
+        club: "C2",
+        results: [res("2024-2025", 5, 80), res("2025-2026", 1, 80)],
+      },
+    ];
+    // Fenêtre TN 2 2025-2026 → TN 1 2026-2027 : le TN 1 2025-2026 vient de sortir.
+    const rows1 = rankingRows(entries);
+    expect(rows1.map((r) => r.licence)).toEqual(["A"]);
+    const a = rows1[0];
+    expect(a?.left).toEqual({ season: "2025-2026", tn: 1, pts: 54 });
+    expect(a?.leavingNext).toMatchObject({ season: "2025-2026", tn: 2, pts: 7, counted: false });
+    expect(a?.dropped).toEqual({ season: "2025-2026", tn: 2, pts: 7 });
+    expect(a?.pts).toBe(26 + 38 + 18 + 25);
+    expect(a?.count).toBe(5);
+    expect(a?.results).toHaveLength(7);
+    // Une clôture plus tard (TN 2 2026-2027) : B n'a plus rien dans la fenêtre, A perd le TN 2.
+    const later = applyTournament(
+      entries,
+      [
+        {
+          name: "BETA BRUNO",
+          licence: "B",
+          club: "C2",
+          points: 80,
+          decimal: 0.02,
+          faits: 500,
+          subis: 400,
+          abandon: false,
+          origin: "M",
+        },
+      ],
+      { season: "2026-2027", tn: 2 },
+    );
+    const rows2 = rankingRows(later, { previous: entries });
+    expect(rows2.map((r) => r.licence)).toEqual(["A", "B"]);
+    expect(rows2[0]?.pts).toBe(26 + 38 + 18 + 25);
+    expect(rows2[0]?.count).toBe(4);
+    expect(rows2[0]?.dropped).toBeNull();
+    expect(rows2[0]?.left).toEqual({ season: "2025-2026", tn: 2, pts: 7 });
+    expect(rows2[0]?.delta).toBe(0);
+    expect(rows2[1]?.pts).toBeCloseTo(80.02, 9);
+    expect(rows2[1]?.delta).toBeNull();
+    expect(rows2[1]?.left).toEqual({ season: "2025-2026", tn: 2, pts: null });
+    // L'historique complet de B est conservé.
+    expect(later.find((e) => e.licence === "B")?.results).toHaveLength(3);
+    // Le classement « tel qu'il était » à une fenêtre antérieure se recalcule depuis l'historique.
+    const old = rankingRows(later, { stage: { season: "2025-2026", tn: 2 } });
+    expect(old.map((r) => r.licence)).toEqual(["B", "A"]);
+    expect(old[0]?.pts).toBe(160);
   });
 
   it("calcule score, nombre de TN et moyenne d'une fenêtre", () => {
@@ -255,9 +409,14 @@ describe("classement glissant « APRES TN2 2026-2027 »", () => {
     const csv = rankingCsv(rows.slice(0, 2), windowStages(fx.season, 2));
     const lines = csv.split("\n");
     expect(lines[0]).toContain(
-      "TN3 2025-2026;TN4 2025-2026;TN5 2025-2026;TN1 2026-2027;TN2 2026-2027",
+      "TN2 2025-2026 (sorti, ne compte plus);TN3 2025-2026;TN4 2025-2026;TN5 2025-2026;TN1 2026-2027;TN2 2026-2027",
     );
     expect(lines[1]?.startsWith(`1;${rows[0]?.name}`)).toBe(true);
+    // Le résultat non compté porte un astérisque ; la colonne du TN sorti est vide (inconnu).
+    const cells = lines[1]?.split(";") ?? [];
+    expect(cells[7]).toBe("");
+    expect(cells.slice(8).filter((c) => c.endsWith("*"))).toHaveLength(1);
+    expect(rankingCsv(rows.slice(0, 2)).split("\n")[0]).toBe(lines[0]);
   });
 });
 

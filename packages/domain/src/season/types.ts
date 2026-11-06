@@ -108,12 +108,28 @@ export interface TnResult {
   subis: number;
 }
 
-/** Fenêtre glissante d'un joueur : ses résultats sur les 5 derniers TN. */
+/** Désignation d'un TN sur l'axe des saisons. */
+export interface StageRef {
+  season: SeasonId;
+  tn: number;
+}
+
+/**
+ * Résultats d'un joueur, TN par TN. Tout l'historique est conservé : le classement ne retient
+ * que les 5 derniers TN (la fenêtre), les autres restent visibles mais ne comptent plus.
+ */
 export interface RankingEntry {
   licence: string;
   name: string;
   club: string;
   results: TnResult[];
+}
+
+/** Case d'un TN de la fenêtre pour un joueur : ses points, ou null s'il ne l'a pas joué. */
+export interface WindowCell extends StageRef {
+  pts: number | null;
+  /** Faux pour le résultat retiré par la règle des 4 meilleurs sur 5 (ou un TN non joué). */
+  counted: boolean;
 }
 
 /** Ligne du classement glissant. */
@@ -125,6 +141,16 @@ export interface RankingRow extends RankingEntry {
   moy: number;
   /** Nombre de TN joués dans la fenêtre. */
   count: number;
+  /** Les 5 TN de la fenêtre, du plus ancien au plus récent. */
+  window: WindowCell[];
+  /** Le TN qui vient de sortir de la fenêtre à la dernière clôture (ses points ne comptent plus). */
+  left: StageRef & { pts: number | null };
+  /** Le plus ancien TN de la fenêtre : il sortira à la prochaine clôture. */
+  leavingNext: WindowCell;
+  /** Le résultat le plus faible, non compté (règle des 4 meilleurs sur 5), si 5 TN joués. */
+  dropped: (StageRef & { pts: number }) | null;
+  /** Évolution de place depuis le classement précédent (> 0 : monte) ; null si inconnue ou nouveau. */
+  delta: number | null;
 }
 
 /** Points attribués à un joueur à l'issue d'un TN (entrée du classement glissant). */

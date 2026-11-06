@@ -18,13 +18,18 @@ export {
   stageIndex,
   stageOfIndex,
   windowStages,
+  leftStage,
   latestStage,
+  windowResults,
+  resultAt,
+  entryKey,
   windowScore,
   rankingRows,
   applyTournament,
   rankingPlaces,
   rankingCsv,
 } from "./glissant.js";
+export type { RankingOptions } from "./glissant.js";
 export {
   normalizeLicence,
   normalizeName,
