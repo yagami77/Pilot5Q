@@ -27,6 +27,8 @@ export interface Player {
   lastSeason?: number | null;
   junior?: boolean;
   email?: string;
+  /** Photo du joueur, fournie par l'application 5 Quilles (reliée par la licence). */
+  photoUrl?: string;
 }
 
 /** Match entre deux joueurs. `sa`/`sb` = score (points ou sets selon la distance). */

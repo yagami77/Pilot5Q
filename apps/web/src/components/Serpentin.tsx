@@ -9,7 +9,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { nice } from "@/lib/format";
 import { prefersReducedMotion } from "@/lib/motion";
 
-import { Avatar, cx } from "./ui";
+import { cx } from "./ui";
 
 const CELL_W = 74;
 const CELL_H = 52;
@@ -177,11 +177,13 @@ export function Serpentin({
                 >
                   {on && name ? (
                     <>
-                      <span className="animate-pop">
-                        <Avatar name={name} size="sm" className="size-[22px] text-[9px]" />
-                      </span>
-                      <span className="text-ink-secondary max-w-[66px] truncate text-[9.5px] font-bold">
-                        {nice(name).split(" ")[0]}
+                      <span className="animate-pop flex max-w-[66px] flex-col items-center leading-[1.15]">
+                        <span className="text-ink max-w-full truncate text-[10.5px] font-extrabold">
+                          {nice(name).split(" ")[0]}
+                        </span>
+                        <span className="text-ink-muted max-w-full truncate text-[9px] font-semibold">
+                          {nice(name).split(" ").slice(1).join(" ")}
+                        </span>
                       </span>
                       {row === 0 ? (
                         <span className="bg-gold absolute -top-1.5 -right-1 rounded-[5px] px-1 text-[8px] font-extrabold text-white">

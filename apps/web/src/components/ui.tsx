@@ -1,8 +1,8 @@
 /** Briques d'interface : boutons, puces, cartes, tuiles, avatars, en-têtes. */
 import type { LucideIcon } from "lucide-react";
-import type { ButtonHTMLAttributes, ReactNode } from "react";
+import { useState, type ButtonHTMLAttributes, type ReactNode } from "react";
 
-import { clubShort, hue, initials, nice } from "@/lib/format";
+import { clubShort, nice } from "@/lib/format";
 
 import { useEditLock } from "@/store/tournament";
 
@@ -200,49 +200,51 @@ export function PageHead({
   );
 }
 
-/* ---------- Avatar à initiales ---------- */
+/* ---------- Avatar (photo du joueur) ---------- */
 
 type AvatarSize = "xs" | "sm" | "md" | "lg" | "xl";
 const AVATAR_SIZES: Record<AvatarSize, string> = {
-  xs: "size-[22px] text-[9px]",
-  sm: "size-[26px] text-[10px]",
-  md: "size-[34px] text-[12px]",
-  lg: "size-[44px] text-[14px]",
-  xl: "size-[56px] text-[17px]",
+  xs: "size-[22px]",
+  sm: "size-[26px]",
+  md: "size-[34px]",
+  lg: "size-[44px]",
+  xl: "size-[56px]",
 };
 
+/**
+ * Photo ronde du joueur (retours du 6 novembre : plus de pastilles à initiales). Les photos
+ * viendront de l'application 5 Quilles, reliée par la licence ; sans photo, rien n'est affiché
+ * (le nom seul suffit).
+ */
 export function Avatar({
   name,
+  photoUrl,
   size = "md",
-  crown = false,
   className,
 }: {
   name: string;
+  photoUrl?: string | null;
   size?: AvatarSize;
+  /** Obsolète (l'étoile du mieux classé est retirée) : ignoré. */
   crown?: boolean;
   className?: string;
 }) {
-  const h = hue(name);
+  // Photo introuvable : on n'affiche rien plutôt qu'une image cassée
+  const [failed, setFailed] = useState<string | null>(null);
+  if (!photoUrl || failed === photoUrl) return null;
   return (
-    <span
+    <img
+      src={photoUrl}
+      alt=""
+      title={nice(name)}
+      loading="lazy"
+      onError={() => setFailed(photoUrl)}
       className={cx(
-        "relative grid shrink-0 place-items-center rounded-full font-bold tracking-[0.02em] text-white shadow-[inset_0_-6px_12px_rgb(0_0_0/0.08),0_1px_0_rgb(255_255_255/0.6)]",
+        "border-surface shrink-0 rounded-full border-2 object-cover shadow-[0_1px_3px_rgb(15_27_51/0.18)]",
         AVATAR_SIZES[size],
         className,
       )}
-      style={{
-        background: `linear-gradient(145deg, hsl(${h} 62% 58%), hsl(${(h + 30) % 360} 70% 42%))`,
-      }}
-      title={nice(name)}
-      aria-hidden="true"
-    >
-      {initials(name)}
-      {crown ? (
-        <span className="bg-gold absolute -top-[5px] -right-1 grid size-4 place-items-center rounded-full border-2 border-white text-[9px]">
-          ★
-        </span>
-      ) : null}
-    </span>
+    />
   );
 }
 
@@ -289,8 +291,11 @@ export function PlayerLine({
   className,
   crown,
   muted,
+  photoUrl,
 }: {
   name: string;
+  /** Photo du joueur (application 5 Quilles) ; sans photo, le nom seul. */
+  photoUrl?: string | null;
   /** Affiché seulement si fourni (le DJ n'en a pas besoin dans les listes). */
   club?: string;
   /** Numéro dans la poule : remplace l'avatar (listes denses). */
@@ -308,7 +313,7 @@ export function PlayerLine({
       {num !== undefined ? (
         <NumBadge n={num} tone={crown ? "gold" : "default"} />
       ) : (
-        <Avatar name={name} size={size} crown={crown} />
+        <Avatar name={name} photoUrl={photoUrl} size={size} />
       )}
       <div className="min-w-0 flex-1">
         <div

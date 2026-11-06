@@ -154,22 +154,29 @@ export function Jeudi() {
         />
       </div>
 
-      <Card className="mt-3.5" title="Têtes de série · qualifiés directs Masters">
-        <div className="grid grid-cols-2 gap-2.5 px-4 pt-1 pb-4 sm:grid-cols-4 lg:grid-cols-8">
+      <Card
+        className="mt-3.5"
+        title="Têtes de série · qualifiés directs Masters"
+        aside={<Chip tone="grey">Place au classement glissant</Chip>}
+      >
+        <ol className="grid grid-cols-2 gap-2 px-4 pt-1 pb-4 sm:grid-cols-4">
           {masters.map((p, i) => (
-            <div
+            <li
               key={p.licence}
-              className="bg-surface-2 border-line animate-pop flex min-w-0 flex-col items-center gap-1.5 rounded-[12px] border px-1.5 py-3 text-center"
+              className="bg-surface-2 border-line animate-pop flex min-w-0 items-center gap-3 rounded-[12px] border py-2.5 pr-3 pl-3.5"
               style={{ animationDelay: `${i * 50}ms` }}
             >
-              <Avatar name={p.name} size="lg" crown={i === 0} />
-              <span className="text-brand font-mono text-[10.5px] font-semibold">
-                #{p.place ?? "–"}
+              <span
+                className="text-gold-ink min-w-[2ch] text-right font-mono text-[28px] leading-none font-bold tracking-[-0.04em] tabular-nums"
+                aria-label={`Place ${p.place ?? "non classé"}`}
+              >
+                {p.place ?? "–"}
               </span>
-              <span className="text-[12px] leading-[1.2] font-bold">{nice(p.name)}</span>
-            </div>
+              <Avatar name={p.name} photoUrl={p.photoUrl} size="md" />
+              <span className="min-w-0 text-[13px] leading-[1.2] font-bold">{nice(p.name)}</span>
+            </li>
           ))}
-        </div>
+        </ol>
       </Card>
 
       <BillardStructure

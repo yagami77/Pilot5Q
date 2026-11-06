@@ -1,5 +1,5 @@
 /** Barre haute : marque, tournoi, état d'enregistrement, annulation, utilisateur. */
-import { Coins, Home, Info, Waypoints } from "lucide-react";
+import { Coins, Home, Info, UserRound, Waypoints } from "lucide-react";
 import { Link, useLocation } from "react-router";
 
 import { ROLE_LABELS, useRole } from "@/admin/role";
@@ -9,7 +9,7 @@ import { useTournament } from "@/store/tournament";
 
 import { NotificationBell } from "./NotificationBell";
 
-import { Avatar, cx } from "./ui";
+import { cx } from "./ui";
 import { UndoMenu } from "./UndoMenu";
 
 export function BrandMark({ className }: { className?: string }) {
@@ -142,12 +142,12 @@ export function TopBar() {
                 {role === "responsable" ? "FFB · 5-Quilles" : (info?.club ?? "Club hôte")}
               </span>
             </div>
-            <Avatar
-              name={
-                role === "responsable" ? "Responsable National" : (info?.club ?? "Directeur Jeu")
-              }
-              size="md"
-            />
+            <span
+              className="bg-brand-soft text-brand grid size-[34px] place-items-center rounded-full"
+              aria-hidden="true"
+            >
+              <UserRound className="size-[18px]" />
+            </span>
           </div>
         </div>
       </div>
