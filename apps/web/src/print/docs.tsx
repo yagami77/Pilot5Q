@@ -2,7 +2,7 @@
  * Documents imprimables (A4, noir sur blanc). Chaque document est une fonction de l'état
  * qui rend une ou plusieurs pages `.print-page`.
  */
-import type { Match, Poule, TournamentState } from "@pilot5q/domain";
+import type { BracketRound, Match, Poule, TournamentState } from "@pilot5q/domain";
 import type { ReactNode } from "react";
 
 import { FlowDiagram } from "@/components/FlowDiagram";
@@ -12,6 +12,7 @@ import { PrintHeader } from "./brand";
 import { SheetPages, barrageSheets, finalSheets, pairPages, pouleSheetPages } from "./sheets";
 
 import { matchWinner } from "@/lib/engine";
+import { mastersRotationOf } from "@/lib/mastersRotation";
 import { clubShort, euros, longDate, nice, shortName } from "@/lib/format";
 import { progressivePrimes } from "@/lib/primes";
 import {
@@ -453,57 +454,106 @@ function PointageConsolante({ state }: { state: TournamentState }) {
   );
 }
 
+/**
+ * Tours de jeu Masters (livret) : liste ordonnée des matchs. Avec 3 billards 3m10, les poules
+ * 1 à 3 commencent et le premier billard libéré prend le match suivant de la liste.
+ */
 function ToursMasters({ state }: { state: TournamentState }) {
   const d = phaseDistance(state, "QM");
-  const big = state.billards.filter((b) => b.type === "3m10");
+  const rot = mastersRotationOf(state);
+  const n = Math.max(1, Math.min(rot.billards.length, state.poules.QM.length));
   return (
     <Page>
       <DocHeader
         state={state}
         title="TOURS DE JEU · MASTERS"
-        subtitle={`${longDate(dayDate(state, "samedi"), true)} · ${distanceLabel(d)} · ${big.length} billards 3m10`}
+        subtitle={`${longDate(dayDate(state, "samedi"), true)} · ${distanceLabel(d)}`}
+        right={`${rot.billards.length} billards 3m10`}
+        rightSub={rot.needed ? "rotation des poules" : "un billard par poule"}
       />
-      <table>
+      <table className="tours-masters">
         <thead>
           <tr>
-            <th className="w-10">Tour</th>
-            {big.map((b) => (
-              <th key={b.num}>Billard {b.num}</th>
-            ))}
+            <th className="w-12">Heure</th>
+            <th className="w-7 text-center">#</th>
+            <th className="w-9 text-center">Joué</th>
+            <th className="w-11 text-center">Billard</th>
+            <th className="w-10 text-center">Poule</th>
+            <th className="w-10 text-center">Match</th>
+            <th>Joueur 1</th>
+            <th>Joueur 2</th>
+            <th className="w-[21%]">Arbitre</th>
           </tr>
         </thead>
         <tbody>
-          {[0, 1, 2, 3, 4, 5].map((round) => (
-            <tr key={round} className="h-9">
-              <td className="text-center font-bold">{round + 1}</td>
-              {big.map((b) => {
-                const poules = state.poules.QM.filter((p) =>
-                  pouleBillards(state, "QM", p).includes(b.num),
-                );
-                return (
-                  <td key={b.num}>
-                    {poules.map((p) => {
-                      const om = orderedMatches(p, d)[round];
-                      return om ? (
-                        <div key={p.num}>
-                          <span className="text-[9px] text-[#555]">P{p.num} · </span>
-                          {shortName(om.match.a)} – {shortName(om.match.b)}
-                        </div>
-                      ) : null;
-                    })}
-                  </td>
-                );
-              })}
+          {rot.rows.map((r) => (
+            <tr
+              key={r.order}
+              className="h-[8.4mm]"
+              style={
+                r.order > 1 && (r.order - 1) % n === 0
+                  ? { borderTop: "0.5mm solid #0f1b33" }
+                  : undefined
+              }
+            >
+              <td />
+              <td className="text-center font-mono font-bold">{r.order}</td>
+              <td className="text-center text-[13px]">{r.played ? "☑" : BOX}</td>
+              <td className="text-center font-mono font-bold">{r.billard ?? ""}</td>
+              <td className="text-center font-mono font-bold">{r.poule}</td>
+              <td className="text-center font-mono">{r.match}</td>
+              <td className={r.aIsName ? "font-semibold" : "text-[9px] text-[#555] italic"}>
+                {r.aIsName ? nice(r.a) : r.a}
+              </td>
+              <td className={r.bIsName ? "font-semibold" : "text-[9px] text-[#555] italic"}>
+                {r.bIsName ? nice(r.b) : r.b}
+              </td>
+              <td className="text-[10px] italic">{r.arbitre ? nice(r.arbitre) : ""}</td>
             </tr>
           ))}
         </tbody>
       </table>
       <Foot>
-        Quand deux poules partagent un billard, elles alternent leurs tours. Le tableau suit l'ordre
-        du code sportif : 2–3, 1–4, perdants, gagnants, dernier de 4, dernier de 1.
+        {rot.needed
+          ? `Les poules 1 à ${n} commencent sur les billards indiqués. Dès qu'un billard se libère, il prend le match suivant de la liste, dans l'ordre ; noter le billard et l'heure, cocher « Joué » à la fin du match.`
+          : "Chaque poule enchaîne ses matchs sur son billard ; cocher « Joué » à la fin de chaque match."}{" "}
+        Les deux joueurs qui ne jouent pas arbitrent et marquent ; les joueurs des matchs 3 à 6
+        dépendent des résultats des deux premiers.
       </Foot>
     </Page>
   );
+}
+
+/** Libellé d'attente lisible : « Vainqueur R32-2 » → « Vainqueur S2 ». */
+function waitingLabel(label: string | undefined): string {
+  return (label ?? "").replace(
+    /\b(R64|R32|R16|QF|SF)-?(\d+)/g,
+    (_, r: BracketRound, n: string) => `${roundShort(r)}${n}`,
+  );
+}
+
+const BRACKET_ROUNDS: BracketRound[] = ["R64", "R32", "R16", "QF", "SF", "F"];
+
+/** Tours d'un tableau répartis en pages A4 (≈ 33 lignes de 7,4 mm par page, en-têtes compris). */
+function bracketPages(state: TournamentState, phase: "N" | "M" | "CLS"): BracketRound[][] {
+  const b = state.brackets[phase];
+  const pages: BracketRound[][] = [];
+  let current: BracketRound[] = [];
+  let used = 0;
+  for (const r of BRACKET_ROUNDS) {
+    const rows = b.filter((m) => m.round === r).length;
+    if (rows === 0) continue;
+    const cost = rows + 1.1;
+    if (current.length && used + cost > 33) {
+      pages.push(current);
+      current = [];
+      used = 0;
+    }
+    current.push(r);
+    used += cost;
+  }
+  if (current.length) pages.push(current);
+  return pages;
 }
 
 function BracketTable({
@@ -516,47 +566,65 @@ function BracketTable({
   title: string;
 }) {
   const b = state.brackets[phase];
-  const rounds = (["R16", "QF", "SF", "F"] as const).filter((r) => b.some((m) => m.round === r));
+  // Tous les tours présents, premier tour compris (barrages et seizièmes de la consolante)
+  const pages = bracketPages(state, phase);
   return (
-    <Page>
-      <DocHeader
-        state={state}
-        title={title}
-        subtitle={longDate(dayDate(state, phase === "CLS" ? "samedi" : "dimanche"), true)}
-      />
-      {rounds.map((r) => {
-        const d = phaseDistance(state, phase, r);
-        return (
-          <table key={r} className="mb-2">
-            <thead>
-              <tr>
-                <th colSpan={5}>
-                  {roundLabel(r)} · {distanceLabel(d)}
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {b
-                .filter((m) => m.round === r)
-                .map((m) => (
-                  <tr key={m.id} className="h-7">
-                    <td className="w-10 font-bold">
-                      {roundShort(r)}
-                      {m.slot}
-                    </td>
-                    <td className="w-14 text-center">{m.billard ? `B${m.billard}` : ""}</td>
-                    <td>{m.a ? nice(m.a) : <span className="text-[#555]">{m.labelA}</span>}</td>
-                    <td className="w-28 text-center font-mono">
-                      {scoreText(m, d.setsGagnants > 1)}
-                    </td>
-                    <td>{m.b ? nice(m.b) : <span className="text-[#555]">{m.labelB}</span>}</td>
+    <>
+      {pages.map((rounds, k) => (
+        <Page key={rounds.join("-")}>
+          <DocHeader
+            state={state}
+            title={title}
+            subtitle={longDate(dayDate(state, phase === "CLS" ? "samedi" : "dimanche"), true)}
+            {...(pages.length > 1 ? { right: `${k + 1}/${pages.length}` } : {})}
+          />
+          {rounds.map((r) => {
+            const d = phaseDistance(state, phase, r);
+            return (
+              <table key={r} className="mb-2">
+                <thead>
+                  <tr>
+                    <th colSpan={5}>
+                      {roundLabel(r)} · {distanceLabel(d)}
+                    </th>
                   </tr>
-                ))}
-            </tbody>
-          </table>
-        );
-      })}
-    </Page>
+                </thead>
+                <tbody>
+                  {b
+                    .filter((m) => m.round === r)
+                    .map((m) => (
+                      <tr key={m.id} className="h-7">
+                        <td className="w-10 font-bold">
+                          {roundShort(r)}
+                          {m.slot}
+                        </td>
+                        <td className="w-14 text-center">{m.billard ? `B${m.billard}` : ""}</td>
+                        <td>
+                          {m.a ? (
+                            nice(m.a)
+                          ) : (
+                            <span className="text-[#555]">{waitingLabel(m.labelA)}</span>
+                          )}
+                        </td>
+                        <td className="w-28 text-center font-mono">
+                          {scoreText(m, d.setsGagnants > 1)}
+                        </td>
+                        <td>
+                          {m.b ? (
+                            nice(m.b)
+                          ) : (
+                            <span className="text-[#555]">{waitingLabel(m.labelB)}</span>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            );
+          })}
+        </Page>
+      ))}
+    </>
   );
 }
 
@@ -771,14 +839,14 @@ export const DOCS: DocDef[] = [
   {
     id: "tableau-consolante",
     label: "Tableau de la consolante",
-    pages: () => 1,
+    pages: (s) => bracketPages(s, "CLS").length,
     available: (s) => s.brackets.CLS.length > 0,
     render: (s) => <BracketTable state={s} phase="CLS" title="CONSOLANTE" />,
   },
   {
     id: "tableaux-finaux",
     label: "Tableaux National et Masters",
-    pages: () => 2,
+    pages: (s) => bracketPages(s, "M").length + bracketPages(s, "N").length,
     available: (s) => s.brackets.N.length > 0 || s.brackets.M.length > 0,
     render: (s) => (
       <>
