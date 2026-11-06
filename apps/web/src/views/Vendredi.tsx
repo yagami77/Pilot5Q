@@ -8,6 +8,7 @@ import { useProgressiveFill } from "@/lib/fill";
 import { DayTasks } from "@/components/DayTasks";
 import { PouleGrid, PouleViewToggle, usePouleView } from "@/components/PouleGrid";
 import { LateForfaits } from "@/dj/LateForfaits";
+import { LiveBillards } from "@/dj/LiveBillards";
 import { preqStarted } from "@/lib/forfaits";
 import { PouleDrawer } from "@/components/PouleDrawer";
 import { PrintCenter } from "@/components/PrintCenter";
@@ -139,6 +140,8 @@ function Saisie() {
           {forfaits.map(nice).join(", ")} · classés derniers de leur poule, sans point.
         </div>
       ) : null}
+
+      <LiveBillards onOpen={setOpen} />
 
       <div className="mb-2.5 flex flex-wrap items-center gap-2.5">
         <h3 className="text-[14px] font-bold">Poules</h3>

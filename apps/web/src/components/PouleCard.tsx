@@ -98,6 +98,7 @@ function GridCard({
   return (
     <Wrapper
       layout
+      layoutDependency={view}
       transition={{ layout: LAYOUT }}
       type={onOpen ? "button" : undefined}
       onClick={onOpen ? () => onOpen(poule.num) : undefined}
@@ -116,6 +117,7 @@ function GridCard({
     >
       <motion.div
         layout="position"
+        layoutDependency={view}
         transition={{ layout: LAYOUT }}
         className="flex items-center gap-2 px-3 py-2.5"
       >
@@ -160,6 +162,7 @@ function GridCard({
           <motion.div
             key="scores"
             layout="position"
+            layoutDependency={view}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1, transition: { duration: 0.3, delay: 0.12 } }}
             exit={{ opacity: 0, transition: { duration: 0.12 } }}
@@ -171,6 +174,7 @@ function GridCard({
           <motion.div
             key="classement"
             layout="position"
+            layoutDependency={view}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1, transition: { duration: 0.3, delay: 0.12 } }}
             exit={{ opacity: 0, transition: { duration: 0.12 } }}
@@ -275,6 +279,7 @@ function RankTable({
         <motion.div
           key={x.name}
           layout="position"
+          layoutDependency={i}
           transition={{ layout: LAYOUT }}
           className={cx(
             "grid grid-cols-[18px_minmax(0,1fr)_24px_24px_40px] items-center gap-1.5 rounded-[6px] px-1 py-[3px]",

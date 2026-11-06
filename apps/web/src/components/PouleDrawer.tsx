@@ -257,6 +257,7 @@ function DrawerBody({
                 <motion.div
                   key={m.id}
                   layout="position"
+                  layoutDependency={i}
                   transition={{ layout: { duration: 0.36, ease: [0.2, 0.8, 0.2, 1] } }}
                   className={cx(
                     "border-line bg-surface rounded-[11px] border transition-[border-color,box-shadow,background-color] duration-300",

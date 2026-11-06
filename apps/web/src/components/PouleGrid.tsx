@@ -77,6 +77,7 @@ export function PouleViewToggle({
             {on ? (
               <motion.span
                 layoutId={`${id}-pill`}
+                layoutDependency={value}
                 className="bg-surface absolute inset-0 rounded-[8px] shadow-[0_1px_3px_rgb(15_27_51/0.12)]"
                 transition={{ type: "spring", stiffness: 520, damping: 38 }}
                 aria-hidden="true"
