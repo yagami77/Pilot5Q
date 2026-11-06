@@ -1,7 +1,7 @@
 /**
- * Affichage au club : tableau des poules (lisible à deux mètres) et liste alphabétique des
- * joueurs avec poule et billard (très compacte). Sans club ni numéros 1 à 4 (ils restent sur
- * les feuilles de match, où ils servent).
+ * Affichage au club : tableau des poules (toutes les poules sur une page, lisible à deux
+ * mètres, bande récapitulative des billards) et liste alphabétique des joueurs avec poule et
+ * billard. Sans club : il reste sur la liste de pointage.
  */
 import type { Poule, TournamentState } from "@pilot5q/domain";
 
@@ -15,7 +15,7 @@ import {
   type Day,
 } from "@/lib/tournament";
 
-import { PrintFoot, PrintHeader } from "./brand";
+import { DocBanner, PrintFoot } from "./brand";
 
 const PHASE_DAY: Record<"PREQ" | "QN" | "QM", string> = {
   PREQ: "Préqualifications",
@@ -23,54 +23,47 @@ const PHASE_DAY: Record<"PREQ" | "QN" | "QM", string> = {
   QM: "Qualification Masters",
 };
 
-function PouleTile({
+/** Colonnes de la grille selon le nombre de poules (4 colonnes à partir de 13 poules). */
+export function boardColumns(count: number): number {
+  return count <= 8 ? 2 : count <= 18 ? 3 : 4;
+}
+
+/** Pastille d'un billard : pleine pour un 3m10, contour pour un 2m80. */
+function BillardPill({ state, billards }: { state: TournamentState; billards: number[] }) {
+  const type = billardType(state, billards[0]);
+  const full = type === "3m10";
+  return (
+    <span className={`board-pill ${full ? "board-pill-full" : ""}`}>
+      Billard{billards.length > 1 ? "s" : ""} <b>{billards.length ? billards.join(" & ") : "—"}</b>
+      <span>· {type}</span>
+    </span>
+  );
+}
+
+function PouleCard({
   state,
   phase,
   poule,
-  large,
-  medium = false,
 }: {
   state: TournamentState;
   phase: "PREQ" | "QN" | "QM";
   poule: Poule;
-  large: boolean;
-  medium?: boolean;
 }) {
   const bills = pouleBillards(state, phase, poule);
   return (
-    <div className="board-tile">
-      <div className="flex items-baseline justify-between gap-[2mm] border-b-[0.35mm] border-[#0f1b33] pb-[1.2mm]">
-        <span className="flex items-baseline gap-[1.6mm]">
-          <span className="sheet-label">Poule</span>
-          <span className={large || medium ? "board-num board-num-lg" : "board-num"}>
-            {poule.num}
-          </span>
+    <div className="board-card">
+      <div className="board-card-head">
+        <span className="board-poule">
+          <span className="p-label">Poule</span>
+          <span className="board-num">{poule.num}</span>
         </span>
-        <span className="flex items-baseline gap-[1.6mm]">
-          <span className="sheet-label">
-            Billard{bills.length > 1 ? "s" : ""}
-            <span className="block text-right tracking-normal normal-case">
-              {billardType(state, bills[0])}
-            </span>
-          </span>
-          <span className={large || medium ? "board-bill board-bill-lg" : "board-bill"}>
-            {bills.join(" & ") || "—"}
-          </span>
-        </span>
+        <BillardPill state={state} billards={bills} />
       </div>
-      <ol className="mt-[1.4mm] flex flex-col">
-        {poule.players.map((n) => (
-          <li
-            key={n}
-            className={
-              large
-                ? "board-player board-player-lg"
-                : medium
-                  ? "board-player board-player-md"
-                  : "board-player"
-            }
-          >
-            <span className="truncate">{nice(n)}</span>
+      <ol className="board-players">
+        {poule.players.map((n, i) => (
+          <li key={n} className="board-player">
+            <span className="board-dot">{i + 1}</span>
+            <span>{nice(n)}</span>
           </li>
         ))}
       </ol>
@@ -78,7 +71,54 @@ function PouleTile({
   );
 }
 
-/** Tableau des poules d'une phase, A4 paysage. */
+/** Pour chaque billard : ses poules, celle qui commence en premier. */
+export function billardPlan(
+  state: TournamentState,
+  phase: "PREQ" | "QN" | "QM",
+): { num: number; type: string; poules: number[] }[] {
+  return state.billards.map((b) => ({
+    num: b.num,
+    type: b.type,
+    poules: state.poules[phase]
+      .filter((p) => pouleBillards(state, phase, p).includes(b.num))
+      .map((p) => p.num)
+      .sort((x, y) => y - x),
+  }));
+}
+
+function BillardsBand({ state, phase }: { state: TournamentState; phase: "PREQ" | "QN" | "QM" }) {
+  const plan = billardPlan(state, phase).filter((b) => b.poules.length > 0);
+  if (plan.length === 0) return null;
+  const cols = plan.length <= 4 ? plan.length : 4;
+  return (
+    <div className="board-bills">
+      <div className="flex items-baseline justify-between">
+        <span className="p-label">Billards · qui commence</span>
+        <span className="p-label">Pastille pleine : 3m10 · contour : 2m80</span>
+      </div>
+      <div
+        className="board-bills-grid"
+        style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}
+      >
+        {plan.map((b) => (
+          <div key={b.num} className="board-bill">
+            <span
+              className={`board-bill-num ${b.type === "3m10" ? "board-bill-num-full" : "board-bill-num-line"}`}
+            >
+              {b.num}
+            </span>
+            <span className="board-bill-text">
+              <b>Poule {b.poules[0]}</b>
+              {b.poules.length > 1 ? `commence · puis ${b.poules.slice(1).join(", ")}` : b.type}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/** Tableau des poules d'une phase sur une seule page A4 portrait (A3 par simple échelle). */
 export function PoulesBoard({
   state,
   phase,
@@ -91,38 +131,43 @@ export function PoulesBoard({
   day: Day;
 }) {
   const poules = state.poules[phase];
-  const cols = poules.length > 8 ? 3 : 2;
-  const large = poules.length <= 4;
-  const medium = !large && poules.length <= 8;
+  const cols = boardColumns(poules.length);
+  const size =
+    poules.length <= 4
+      ? "board-grid-lg"
+      : poules.length <= 8
+        ? "board-grid-md"
+        : cols === 4
+          ? "board-grid-sm"
+          : "";
+  const d = phaseDistance(state, phase);
   return (
-    <section className="print-page print-board">
-      <PrintHeader
+    <section className="print-page print-fixed">
+      <DocBanner
         state={state}
         title={title}
         date={longDate(dayDate(state, day), true)}
-        day={PHASE_DAY[phase]}
-        right={distanceLabel(phaseDistance(state, phase))}
-        rightSub={`${poules.length} poules`}
+        sub={`${PHASE_DAY[phase]} · ${poules.length} poules · joueurs dans l'ordre du tirage`}
+        cells={[
+          { label: "Distance", value: distanceLabel(d), size: "sm" },
+          { label: "Poules", value: String(poules.length) },
+        ]}
       />
       <div
-        className="grid gap-[3mm]"
-        style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}
+        className={`board-grid ${size}`}
+        style={{
+          gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`,
+          gridAutoRows: "minmax(0, 1fr)",
+        }}
       >
         {poules.map((p) => (
-          <PouleTile
-            key={p.num}
-            state={state}
-            phase={phase}
-            poule={p}
-            large={large}
-            medium={medium}
-          />
+          <PouleCard key={p.num} state={state} phase={phase} poule={p} />
         ))}
       </div>
+      <BillardsBand state={state} phase={phase} />
       <PrintFoot>
-        Joueurs dans l'ordre du tirage, tête de poule en premier. L'ordre des matchs et les arbitres
-        figurent sur les feuilles de match. Sur un billard partagé, la poule au numéro le plus élevé
-        commence.
+        Sur un billard partagé, la poule au numéro le plus élevé commence. L'ordre des matchs et les
+        arbitres figurent sur les feuilles de match.
       </PrintFoot>
     </section>
   );
@@ -136,14 +181,16 @@ export function PlayersBoard({ state }: { state: TournamentState }) {
   const list = [...state.players].sort((a, b) => a.name.localeCompare(b.name, "fr"));
   let letter = "";
   return (
-    <section className="print-page print-board">
-      <PrintHeader
+    <section className="print-page">
+      <DocBanner
         state={state}
         title="Joueurs · poule et billard"
         date={longDate(dayDate(state, "vendredi"), true)}
-        day="Convocation 10h30"
-        right={`${list.length}`}
-        rightSub="joueurs, par ordre alphabétique"
+        sub="Liste alphabétique · convocation 10h30"
+        cells={[
+          { label: "Joueurs", value: String(list.length) },
+          { label: "Masters", value: String(masters.size), sub: "entrent samedi" },
+        ]}
       />
       <div className="players-cols">
         <div className="players-row players-head">
