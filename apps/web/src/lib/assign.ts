@@ -7,8 +7,6 @@
  */
 import type { Billard } from "@pilot5q/domain";
 
-import { shuffle } from "./draw";
-
 export const MAX_POULES_PER_TABLE = 3;
 
 /** Plan d'affectation : poules posées sur chaque billard (sur le premier d'une paire liée). */
@@ -135,60 +133,4 @@ export function checkPlan(plan: TablePlan, pouleCount: number, billards: Billard
     mixedLinks,
     ok: unplaced.length === 0 && duplicated.length === 0 && overloaded.length === 0,
   };
-}
-
-/**
- * Affectation de départ : 2 poules par billard ; un nombre impair de poules donne un groupe de
- * 3 poules sur 2 billards liés du même format (voisins si possible). Tirage aléatoire, sans
- * priorité des poules fortes sur les 3m10 (SPEC §3). S'il n'y a pas assez de billards, certains
- * en reçoivent 3.
- */
-export function proposePlan(
-  pouleCount: number,
-  billards: Billard[],
-  random: () => number = Math.random,
-): TablePlan {
-  const plan = emptyPlan();
-  if (pouleCount <= 0 || billards.length === 0) return plan;
-  const poules = shuffle(
-    Array.from({ length: pouleCount }, (_, i) => i + 1),
-    random,
-  );
-  const tables = shuffle(billards, random);
-  const pairs = pouleCount % 2 === 1 && pouleCount >= 3;
-  let link: [number, number] | null = null;
-  if (pairs) {
-    // Deux billards voisins du même format, choisis au hasard
-    const sorted = [...billards].sort((a, b) => a.num - b.num);
-    const candidates: [number, number][] = [];
-    for (let i = 0; i + 1 < sorted.length; i++) {
-      const x = sorted[i]!;
-      const y = sorted[i + 1]!;
-      if (x.type === y.type) candidates.push([x.num, y.num]);
-    }
-    link = candidates.length ? candidates[Math.floor(random() * candidates.length)]! : null;
-  }
-  const slots: { anchor: number; size: number }[] = [];
-  if (link) {
-    plan.links[link[0]] = link[1];
-    plan.links[link[1]] = link[0];
-    slots.push({ anchor: link[0], size: 3 });
-  }
-  const free = tables.filter((t) => !link || !link.includes(t.num));
-  const remaining = pouleCount - (link ? 3 : 0);
-  const needed = Math.ceil(remaining / 2);
-  const singles = free.slice(0, Math.min(free.length, needed));
-  // 2 poules par billard ; 3 si les billards manquent
-  const per = singles.map((_, i) => Math.max(0, Math.min(2, remaining - 2 * i)));
-  let leftover = remaining - per.reduce((x, y) => x + y, 0);
-  for (let i = 0; leftover > 0 && i < per.length; i++, leftover--) per[i]!++;
-  singles.forEach((t, i) => slots.push({ anchor: t.num, size: per[i]! }));
-  let p = 0;
-  for (const s of slots) {
-    for (let i = 0; i < s.size && p < poules.length; i++) {
-      (plan.place[s.anchor] ??= []).push(poules[p++]!);
-    }
-    plan.place[s.anchor]?.sort((a, b) => a - b);
-  }
-  return plan;
 }

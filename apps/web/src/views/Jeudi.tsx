@@ -10,7 +10,8 @@ import { PrintCenter } from "@/components/PrintCenter";
 import { useToast } from "@/components/Toast";
 import { Avatar, Banner, Button, Card, Chip, PageHead, Select, Tile, cx } from "@/components/ui";
 import { BillardAssignment } from "@/dj/BillardAssignment";
-import { planToAssignments, proposePlan } from "@/lib/assign";
+import { planToAssignments } from "@/lib/assign";
+import { optimizeBillards } from "@/lib/billardsOptimizer";
 import { drawFridayPoules } from "@/lib/forfaits";
 import { pouleSizes } from "@/lib/engine";
 import { longDate, nice, plural } from "@/lib/format";
@@ -172,13 +173,16 @@ export function Jeudi() {
         locked={drawn || ro}
         onChange={(billards) => {
           amendBillards(billards);
-          const count = preqPouleCount(state);
+          const proposal = optimizeBillards(
+            sizes.map((size, i) => ({ num: i + 1, size })),
+            billards,
+          );
           dispatchMany([
             {
               type: "billards.assigned",
               payload: {
                 phase: "PREQ",
-                assignments: planToAssignments(proposePlan(count, billards)),
+                assignments: proposal.ok ? planToAssignments(proposal.plan) : {},
               },
             },
             ...drawLaterPhaseEvents(billards),
