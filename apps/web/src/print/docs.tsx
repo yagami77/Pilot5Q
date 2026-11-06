@@ -4,7 +4,7 @@
  * cases à cocher de 6 mm, scores des matchs joués (gagnant en vert gras, perdant en rouge
  * maigre, lisibles en noir et blanc), pagination explicite avec numéro de page.
  */
-import type { BracketRound, Match, Poule, TournamentState } from "@pilot5q/domain";
+import type { BracketRound, Poule, TournamentState } from "@pilot5q/domain";
 import type { ReactNode } from "react";
 
 import { FlowDiagram } from "@/components/FlowDiagram";
