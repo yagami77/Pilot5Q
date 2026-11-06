@@ -43,9 +43,11 @@ import {
   convocationsCsv,
   djConvocation,
   djLoginLink,
+  placementOf,
   playerConvocations,
   recipientList,
   type Convocation,
+  type Placement,
 } from "./convocations";
 import { StageStatusChip } from "./Dashboard";
 import { StageSettingsSection } from "./StageSettings";
@@ -55,7 +57,19 @@ import type { SeasonDocument } from "./persistence";
 import { deadlineLabel, preqDrawn, syncRoster, wednesdayBefore } from "./roster";
 import { stageAcceptance, stageCapacity, withStageDerived } from "./stage";
 import { useStageTournament } from "./stageTournament";
-import { Empty, Field, Input, Num, Row, Table, copyText, downloadText, frDateTime } from "./ui";
+import {
+  Empty,
+  Field,
+  Input,
+  MailBody,
+  Num,
+  Row,
+  Table,
+  copyMail,
+  copyText,
+  downloadText,
+  frDateTime,
+} from "./ui";
 
 /** Numéro d'étape et titre d'une section. */
 function Step({
@@ -166,6 +180,7 @@ function StageView({
   const toast = useToast();
   const linked = useStageTournament(stage);
   const drawn = linked.state ? preqDrawn(linked.state) : false;
+  const placement = useMemo(() => placementOf(linked.state), [linked.state]);
   // Inscrits modifiables : avant l'ouverture, puis jusqu'au tirage des poules du vendredi.
   const lock: string | null = !opened
     ? null
@@ -299,7 +314,7 @@ function StageView({
           onJunior={toggleJunior}
           onForfait={setForfait}
         />
-        <ConvocationsStep stage={stage} accepted={acceptance.accepted} />
+        <ConvocationsStep stage={stage} accepted={acceptance.accepted} placement={placement} />
         <Step
           n={4}
           title="Paramètres du TN : consolante, U21, horaires"
@@ -758,7 +773,15 @@ function PlayerRow({
   );
 }
 
-function ConvocationsStep({ stage, accepted }: { stage: Stage; accepted: Player[] }) {
+function ConvocationsStep({
+  stage,
+  accepted,
+  placement,
+}: {
+  stage: Stage;
+  accepted: Player[];
+  placement: Placement;
+}) {
   const doc = useSeasonDoc();
   const toast = useToast();
   const [tab, setTab] = useState<"joueurs" | "club" | "dj">("joueurs");
@@ -766,7 +789,10 @@ function ConvocationsStep({ stage, accepted }: { stage: Stage; accepted: Player[
   const djRecord = doc.players.find((p) => p.licence === stage.djLicence);
   const djName = stage.dj?.name || djRecord?.name || "";
   const djEmail = stage.dj?.email || djRecord?.email || "";
-  const players = useMemo(() => playerConvocations(doc, stage, accepted), [doc, stage, accepted]);
+  const players = useMemo(
+    () => playerConvocations(doc, stage, accepted, placement),
+    [doc, stage, accepted, placement],
+  );
   const club = clubConvocation(doc, stage, accepted, djName ? nice(djName) : "");
   const appUrl = djLoginLink(window.location.origin, import.meta.env.BASE_URL, djEmail);
   const dj = djConvocation(
@@ -781,6 +807,16 @@ function ConvocationsStep({ stage, accepted }: { stage: Stage; accepted: Player[
     tab === "joueurs" ? players[index] : tab === "club" ? club : dj;
   const copy = async (text: string, what: string) =>
     toast((await copyText(text)) ? `${what} copié` : "Copie impossible dans ce navigateur");
+  const copyBody = async (text: string) => {
+    const done = await copyMail(text);
+    toast(
+      done === "html"
+        ? "Email copié (mise en forme conservée au collage)"
+        : done === "text"
+          ? "Texte copié (texte brut)"
+          : "Copie impossible dans ce navigateur",
+    );
+  };
   return (
     <Step
       n={3}
@@ -851,17 +887,15 @@ function ConvocationsStep({ stage, accepted }: { stage: Stage; accepted: Player[
                   {cc.length > 0 ? cc.join(", ") : "club hôte et DJ (emails à compléter)"}
                 </div>
               ) : null}
-              <pre className="bg-surface-2 border-line mt-2 max-h-[300px] overflow-auto rounded-[10px] border px-3 py-2 font-sans text-[12.5px] whitespace-pre-wrap">
-                {current.body}
-              </pre>
+              <MailBody text={current.body} className="mt-2 max-h-[300px] overflow-auto" />
               <div className="mt-2 flex flex-wrap gap-2">
                 <Button
                   size="sm"
                   variant="primary"
                   icon={Copy}
-                  onClick={() => void copy(current.body, "Texte")}
+                  onClick={() => void copyBody(current.body)}
                 >
-                  Copier le texte
+                  Copier l'email
                 </Button>
                 {tab === "joueurs" ? (
                   <>

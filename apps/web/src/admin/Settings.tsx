@@ -1,5 +1,6 @@
 /** Paramétrage des TN : billards minimum, capacité, consolante, primes, droits, horaires, canevas du mail. */
 import {
+  DEFAULT_MAIL_TEMPLATE,
   DEFAULT_SEASON_SETTINGS,
   baremeTable,
   otherPointsTable,
@@ -13,8 +14,9 @@ import { useToast } from "@/components/Toast";
 import { Button, Card, PageHead } from "@/components/ui";
 
 import { AccountsCard } from "./Accounts";
+import { hourText } from "./convocations";
 import { useSeason, useSeasonDoc } from "./store";
-import { Field, Input, Num, Row, Table, TextArea } from "./ui";
+import { Field, Input, MailBody, Num, Row, Table, TextArea } from "./ui";
 
 const DIST_LABELS: Record<keyof SeasonSettings["distances"], string> = {
   preq: "Poules du vendredi",
@@ -44,13 +46,14 @@ export function Settings() {
     club: "BC Exemple",
     tournoi: "TN 2 2026-2027",
     lieu: "BC Ronchin (Ronchin)",
-    dates: "30 oct. – 1er nov. 2026",
-    heure: `vendredi ${s.convocationFriday}`,
-    poule: " Poule 7, billard 4.",
+    dates: "30 octobre au 1er novembre 2026",
+    heure: `vendredi 30 octobre à ${hourText(s.convocationFriday)}`,
+    poule: " Poule communiquée après le tirage.",
     billard: "4",
     adresse: "Salle de billard, 59790 Ronchin",
     url: "https://…",
   });
+  const customTemplate = s.mailTemplate !== DEFAULT_MAIL_TEMPLATE;
   return (
     <>
       <PageHead
@@ -276,19 +279,41 @@ export function Settings() {
               url
             </span>
           }
-          bodyClassName="grid gap-3 px-4 pb-4 md:grid-cols-2 lg:col-span-2"
+          className="lg:col-span-2"
+          bodyClassName="grid gap-3 px-4 pb-4 md:grid-cols-2"
         >
-          <Field label="Canevas">
-            <TextArea
-              rows={12}
-              value={s.mailTemplate}
-              onChange={(e) => set({ mailTemplate: e.target.value })}
-            />
-          </Field>
-          <Field label="Aperçu">
-            <pre className="bg-surface-2 border-line min-h-[120px] rounded-[8px] border px-3 py-2 font-sans text-[12.5px] whitespace-pre-wrap">
-              {preview}
-            </pre>
+          <div className="flex min-w-0 flex-col gap-2">
+            <Field label="Canevas">
+              <TextArea
+                rows={12}
+                value={s.mailTemplate}
+                onChange={(e) => set({ mailTemplate: e.target.value })}
+              />
+            </Field>
+            <div className="flex flex-wrap items-center gap-2">
+              <Button
+                size="sm"
+                icon={RotateCcw}
+                disabled={!customTemplate}
+                onClick={() => {
+                  set({ mailTemplate: DEFAULT_MAIL_TEMPLATE });
+                  toast("Canevas par défaut rétabli");
+                }}
+              >
+                Revenir au canevas par défaut
+              </Button>
+              <span className="text-ink-muted text-[12px]">
+                {customTemplate
+                  ? "Canevas propre à cette saison (différent du canevas par défaut)."
+                  : "Canevas par défaut."}
+              </span>
+            </div>
+          </div>
+          <Field
+            label="Aperçu"
+            hint="La phrase « En cas de forfait… » est en rouge dans l'email copié en HTML ; le texte brut reste inchangé."
+          >
+            <MailBody text={preview} className="min-h-[120px]" />
           </Field>
         </Card>
       </div>

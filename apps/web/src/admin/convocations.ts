@@ -1,5 +1,5 @@
 /** Convocations d'une étape : mails des joueurs, du club hôte et du directeur de jeu. */
-import type { Player, Stage } from "@pilot5q/domain";
+import type { Player, Stage, TournamentState } from "@pilot5q/domain";
 import {
   convocationTime,
   recipients,
@@ -28,17 +28,46 @@ function lieu(doc: SeasonDocument, stage: Stage): { lieu: string; adresse: strin
   };
 }
 
+/** Poule et billard d'un joueur, par nom (connus une fois les poules du vendredi tirées). */
+export type Placement = Record<string, { poule: number; billard: number | null }>;
+
+/** Placement des joueurs d'après le tournoi du DJ (poules du vendredi, premier billard). */
+export function placementOf(state: TournamentState | null): Placement {
+  const out: Placement = {};
+  for (const poule of state?.poules.PREQ ?? []) {
+    for (const name of poule.players) {
+      out[name] = { poule: poule.num, billard: poule.billards[0] ?? null };
+    }
+  }
+  return out;
+}
+
+/** « 08:30 » → « 8h30 », « 10:30 » → « 10h30 ». */
+export function hourText(time: string): string {
+  return time.replace(/^0(\d)/, "$1").replace(":", "h");
+}
+
+/** Texte de `{{poule}}` quand la poule n'est pas encore connue (avant le tirage du jeudi). */
+export const POULE_UNKNOWN = " Poule communiquée après le tirage.";
+
+/** « 30 octobre au 1er novembre 2026 » (lu après « du » dans le canevas). */
+export function datesText(start: string, end: string): string {
+  if (!start || !end) return "";
+  const dm = (iso: string) => longDate(iso).split(" ").slice(1).join(" ");
+  return `${dm(start)} au ${dm(end)} ${end.slice(0, 4)}`;
+}
+
 /** Mails de convocation des joueurs acceptés (Masters convoqués le samedi). */
 export function playerConvocations(
   doc: SeasonDocument,
   stage: Stage,
   accepted: Player[],
-  placement: Record<string, { poule: number; billard: number | null }> = {},
+  placement: Placement = {},
 ): Convocation[] {
   const { lieu: where, adresse } = lieu(doc, stage);
   // Horaires et canevas : ceux de l'étape s'ils sont surchargés, sinon ceux de la saison.
   const settings = stageSettings(doc.settings, stage);
-  const dates = stage.start && stage.end ? dateRange(stage.start, stage.end) : "";
+  const dates = datesText(stage.start, stage.end);
   const masters = 8;
   const tournoi = `${stage.name} ${stage.season}`;
   return accepted.map((p) => {
@@ -46,13 +75,13 @@ export function playerConvocations(
     const isMaster = p.seed <= masters;
     const day = isMaster ? "samedi" : "vendredi";
     const date = stage.start ? longDate(isMaster ? addOne(stage.start) : stage.start) : day;
-    const heure = `${date} à ${convocationTime(day, stage.big, settings).replace(":", "h")}`;
+    const heure = `${date} à ${hourText(convocationTime(day, stage.big, settings))}`;
     const pl = placement[p.name];
     const poule = pl
       ? ` Poule ${pl.poule}${pl.billard !== null ? `, billard ${pl.billard}` : ""}.`
       : isMaster
         ? " Préqualifié(e) Masters : poules du samedi."
-        : "";
+        : POULE_UNKNOWN;
     const body = renderTemplate(settings.mailTemplate, {
       prenom,
       nom,

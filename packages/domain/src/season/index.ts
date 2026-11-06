@@ -35,8 +35,13 @@ export {
 } from "./players.js";
 export { capacityFor, toPlayer, acceptRegistrations, acceptedListCsv } from "./registration.js";
 export type { Acceptance } from "./registration.js";
+export type { MailSegment } from "./convocation.js";
 export {
   DEFAULT_MAIL_TEMPLATE,
+  MAIL_ALERT_STARTS,
+  MAIL_ALERT_COLOR,
+  mailSegments,
+  mailHtml,
   renderTemplate,
   splitName,
   convocationTime,

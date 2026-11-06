@@ -27,6 +27,9 @@ import {
   rankingCsv,
   rankingRows,
   renderTemplate,
+  DEFAULT_MAIL_TEMPLATE,
+  mailHtml,
+  mailSegments,
   searchPlayers,
   splitName,
   stageIndex,
@@ -396,6 +399,24 @@ describe("convocations et calendrier", () => {
     expect(convocationTime("vendredi", 4, DEFAULT_SEASON_SETTINGS)).toBe("10:30");
     expect(convocationTime("samedi", 3, DEFAULT_SEASON_SETTINGS)).toBe("08:00");
     expect(convocationTime("dimanche", 4, DEFAULT_SEASON_SETTINGS)).toBe("08:30");
+  });
+
+  it("met en évidence la phrase « En cas de forfait… » du canevas par défaut", () => {
+    const alerts = mailSegments(DEFAULT_MAIL_TEMPLATE).filter((x) => x.alert);
+    expect(alerts.map((x) => x.text)).toEqual([
+      "En cas de forfait merci de prévenir au plus vite par retour de mail.",
+    ]);
+    expect(
+      mailSegments(DEFAULT_MAIL_TEMPLATE)
+        .map((x) => x.text)
+        .join(""),
+    ).toBe(DEFAULT_MAIL_TEMPLATE);
+    const html = mailHtml("Bonjour <Jean> & co,\nEn cas de forfait, prévenez.\nMerci");
+    expect(html).toContain("Bonjour &lt;Jean&gt; &amp; co,<br>");
+    expect(html).toContain(
+      '<span style="color:#DC3F5A;font-weight:600">En cas de forfait, prévenez.</span>',
+    );
+    expect(mailSegments("Rien à signaler.")).toEqual([{ text: "Rien à signaler.", alert: false }]);
   });
 
   it("dérive le statut d'une étape", () => {

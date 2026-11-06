@@ -1,4 +1,5 @@
 /** Briques propres à l'espace du responsable : champs de formulaire, tableaux, actions. */
+import { mailHtml, mailSegments } from "@pilot5q/domain";
 import type { LucideIcon } from "lucide-react";
 import type {
   InputHTMLAttributes,
@@ -140,6 +141,49 @@ export async function copyText(text: string): Promise<boolean> {
   } catch {
     return false;
   }
+}
+
+/**
+ * Copie un mail en HTML (phrases d'alerte en rouge) avec sa version texte brut ; repli sur le
+ * texte brut si le navigateur ne gère pas `ClipboardItem`. Retourne le format copié, ou null.
+ */
+export async function copyMail(text: string): Promise<"html" | "text" | null> {
+  try {
+    if (typeof ClipboardItem !== "undefined" && navigator.clipboard?.write) {
+      await navigator.clipboard.write([
+        new ClipboardItem({
+          "text/html": new Blob([mailHtml(text)], { type: "text/html" }),
+          "text/plain": new Blob([text], { type: "text/plain" }),
+        }),
+      ]);
+      return "html";
+    }
+  } catch {
+    /* repli texte brut ci-dessous */
+  }
+  return (await copyText(text)) ? "text" : null;
+}
+
+/** Corps d'un mail tel qu'il sera lu : sauts de ligne conservés, phrases d'alerte en rouge. */
+export function MailBody({ text, className }: { text: string; className?: string }) {
+  return (
+    <div
+      className={cx(
+        "bg-surface border-line rounded-[10px] border px-3.5 py-2.5 text-[12.5px] leading-[1.55] whitespace-pre-wrap",
+        className,
+      )}
+    >
+      {mailSegments(text).map((s, i) =>
+        s.alert ? (
+          <strong key={i} className="text-alert font-semibold">
+            {s.text}
+          </strong>
+        ) : (
+          <span key={i}>{s.text}</span>
+        ),
+      )}
+    </div>
+  );
 }
 
 /** Télécharge un fichier texte (CSV, TXT). */
