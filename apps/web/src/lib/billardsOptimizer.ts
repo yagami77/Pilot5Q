@@ -7,7 +7,7 @@
  *    poule de 3 = 3 matchs ; un groupe de 3 poules sur 2 billards liés partage sa charge) ;
  * 3. équilibrer les charges (somme des carrés minimale), puis le moins de billards liés possible ;
  * 4. une poule de 4 et une poule de 3 ensemble sur les premiers billards (livret, « Tirage au
- *    sort des billards ») ;
+ *    sort des billards »), décalés seulement si cela empêche de lier des billards voisins ;
  * 5. les groupes de 3 poules sur 2 billards liés du même format et voisins (numéros consécutifs) ;
  * 6. aucune priorité aux poules fortes sur les 3m10 (SPEC §3) : numéros de poule tirés au sort.
  *
@@ -193,6 +193,29 @@ function maxDisjointPairs(billards: Billard[]): number {
   return n;
 }
 
+/**
+ * Billards des poules « 4 + 3 » : les premiers numéros (livret), sauf s'ils empêchent de former
+ * les paires voisines nécessaires ; on prend alors la combinaison de plus petits numéros qui les
+ * laisse possibles. Null si aucune ne convient.
+ */
+function mixedTables(sorted: Billard[], k: number, pairs: number): Billard[] | null {
+  if (k === 0) return pairs <= maxDisjointPairs(sorted) ? [] : null;
+  const idx = Array.from({ length: k }, (_, i) => i);
+  const n = sorted.length;
+  if (k > n) return null;
+  // Combinaisons dans l'ordre lexicographique : les plus petits numéros d'abord
+  for (;;) {
+    const chosen = new Set(idx);
+    if (maxDisjointPairs(sorted.filter((_, i) => !chosen.has(i))) >= pairs)
+      return idx.map((i) => sorted[i]!);
+    let j = k - 1;
+    while (j >= 0 && idx[j] === n - k + j) j--;
+    if (j < 0) return null;
+    idx[j]!++;
+    for (let t = j + 1; t < k; t++) idx[t] = idx[t - 1]! + 1;
+  }
+}
+
 /** Choisit `count` paires disjointes au hasard (repli : glouton de gauche à droite). */
 function pickPairs(billards: Billard[], count: number, random: () => number): [Billard, Billard][] {
   if (count === 0) return [];
@@ -246,8 +269,8 @@ export function optimizeBillards(poules: PouleSize[], billards: Billard[], seed 
       const slots = compose(s, fours, threes);
       if (!slots) continue;
       const mixed = slots.filter((sl) => sl.kind === "mixed").length;
-      // Les premiers billards accueillent les poules de 4 + 3 ; les paires se forment après
-      if (x > maxDisjointPairs(sorted.slice(mixed))) continue;
+      // Les premiers billards accueillent les poules de 4 + 3 si les paires restent possibles
+      if (!mixedTables(sorted, mixed, x)) continue;
       const loads = slotLoads(slots);
       const score = [Math.max(...loads), loads.reduce((n, l) => n + l * l, 0), x, w];
       if (!best || compareScores(score, best.score) < 0) best = { s, slots, score };
@@ -265,11 +288,13 @@ export function optimizeBillards(poules: PouleSize[], billards: Billard[], seed 
   const mixedSlots = best.slots.filter((s) => s.kind === "mixed");
   const linkedSlots = best.slots.filter((s) => s.kind === "linked");
   const restSlots = best.slots.filter((s) => s.kind !== "mixed" && s.kind !== "linked");
-  const firstTables = sorted.slice(0, mixedSlots.length);
-  const pairs = pickPairs(sorted.slice(mixedSlots.length), linkedSlots.length, random);
+  const firstTables = mixedTables(sorted, mixedSlots.length, linkedSlots.length) ?? [];
+  const firstNums = new Set(firstTables.map((b) => b.num));
+  const others = sorted.filter((b) => !firstNums.has(b.num));
+  const pairs = pickPairs(others, linkedSlots.length, random);
   const inPairs = new Set(pairs.flat().map((b) => b.num));
   const freeTables = shuffle(
-    sorted.slice(mixedSlots.length).filter((b) => !inPairs.has(b.num)),
+    others.filter((b) => !inPairs.has(b.num)),
     random,
   );
   const fourNums = shuffle(

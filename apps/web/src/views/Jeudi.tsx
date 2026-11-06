@@ -25,7 +25,7 @@ import { JEUDI_DOCS } from "@/lib/dayTasks";
 import { useDjMeta } from "@/lib/djMeta";
 import { drawFridayPoules } from "@/lib/forfaits";
 import { docsFor } from "@/print/docs";
-import { pouleSizes } from "@/lib/engine";
+import { forfaitsOf, pouleSizes } from "@/lib/engine";
 import { longDate, nice, plural } from "@/lib/format";
 import { drawLaterPhaseEvents, preqPouleCount } from "@/lib/setup";
 import {
@@ -306,6 +306,7 @@ export function Jeudi() {
 function PoulesTable({ conflicts }: { conflicts: Set<number> }) {
   const { state } = useTournament();
   const poules = state.poules.PREQ;
+  const ff = new Set(forfaitsOf(state, "PREQ"));
   const width = Math.max(4, ...poules.map((p) => p.players.length));
   return (
     <Card
@@ -339,7 +340,7 @@ function PoulesTable({ conflicts }: { conflicts: Set<number> }) {
               >
                 <td className="py-[5px] pr-2 font-mono text-[13px] font-bold tabular-nums">
                   {p.num}
-                  {p.players.length < 4 ? (
+                  {p.players.filter((n) => !ff.has(n)).length < 4 ? (
                     <span className="text-ink-muted ml-1 font-sans text-[10px] font-semibold">
                       ·3
                     </span>
@@ -366,7 +367,17 @@ function PoulesTable({ conflicts }: { conflicts: Set<number> }) {
                         conflict && "text-alert-ink",
                       )}
                     >
-                      {name ? nice(name) : <span className="text-ink-muted">—</span>}
+                      {name ? (
+                        ff.has(name) ? (
+                          <span className="text-ink-muted line-through" title="Forfait">
+                            {nice(name)}
+                          </span>
+                        ) : (
+                          nice(name)
+                        )
+                      ) : (
+                        <span className="text-ink-muted">—</span>
+                      )}
                     </td>
                   );
                 })}

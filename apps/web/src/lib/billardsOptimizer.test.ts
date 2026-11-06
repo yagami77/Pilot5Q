@@ -75,6 +75,18 @@ describe("optimiseur des billards du vendredi", () => {
     expect(res.maxLoad).toBe(9);
   });
 
+  it("16 poules de 4 et 1 de 3 sur 11 billards : 9 matchs au plus, la 4 + 3 sur le billard resté seul", () => {
+    const ps = poules(16, 1);
+    const res = expectValid(ps, tables(4, 7));
+    expect(res.maxLoad).toBe(9);
+    expect(res.linkedGroups).toBe(5);
+    expect(res.mixedTables).toBe(1);
+    // 3m10 : 1+2 et 3+4 liés ; 2m80 : trois paires et un billard pour la poule de 4 + 3
+    const mixed = Object.entries(res.plan.place).find(([, l]) => l.includes(17));
+    expect(mixed?.[1]).toHaveLength(2);
+    expect(Number(mixed?.[0])).toBeGreaterThanOrEqual(5);
+  });
+
   it("moins de poules que de billards : une poule par billard", () => {
     const res = expectValid(poules(5, 1), tables(3, 5));
     expect(Object.values(res.plan.place).every((p) => p.length === 1)).toBe(true);

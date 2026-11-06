@@ -11,7 +11,7 @@
  */
 import type { Billard, Distance, Poule, TournamentState } from "@pilot5q/domain";
 
-import { isValidScore, matchLabels, matchWinner } from "./engine";
+import { forfaitsOf, isValidScore, matchLabels, matchWinner } from "./engine";
 import { orderedMatches, phaseDistance, pouleBillards } from "./tournament";
 
 export interface RotationRow {
@@ -163,8 +163,19 @@ export function mastersRotation(
 
 /** Rotation des poules Masters d'un tournoi (billards affectés, sinon 3m10 du club). */
 export function mastersRotationOf(state: TournamentState): Rotation {
+  // Un forfait avant le début fait d'une poule de 4 une poule de 3 (ses matchs sortent)
+  const ff = new Set(forfaitsOf(state, "QM"));
+  const poules = state.poules.QM.map((p) =>
+    p.players.some((n) => ff.has(n))
+      ? {
+          ...p,
+          players: p.players.filter((n) => !ff.has(n)),
+          matches: p.matches.filter((m) => !ff.has(m.a) && !ff.has(m.b)),
+        }
+      : p,
+  );
   return mastersRotation(
-    state.poules.QM,
+    poules,
     (p) => pouleBillards(state, "QM", p),
     state.billards.filter((b) => b.type === "3m10"),
     phaseDistance(state, "QM"),

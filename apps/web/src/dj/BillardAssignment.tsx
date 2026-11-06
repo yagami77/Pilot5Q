@@ -46,7 +46,7 @@ import {
   type BillardLoad,
   type PouleSize,
 } from "@/lib/billardsOptimizer";
-import { pouleSizes } from "@/lib/engine";
+import { forfaitsOf, pouleSizes } from "@/lib/engine";
 import { plural } from "@/lib/format";
 import { useTournament } from "@/store/tournament";
 
@@ -85,15 +85,20 @@ export function BillardAssignment({
 
   // Taille des poules : réelle après le tirage, prévue (poules de 3 en dernier) avant
   const sizes = useMemo<PouleSize[]>(() => {
+    // Un forfait déclaré fait d'une poule de 4 une poule de 3
+    const ff = new Set(forfaitsOf(state, "PREQ"));
     if (state.poules.PREQ.length)
-      return state.poules.PREQ.map((p) => ({ num: p.num, size: p.players.length }));
+      return state.poules.PREQ.map((p) => ({
+        num: p.num,
+        size: p.players.filter((n) => !ff.has(n)).length,
+      }));
     const n = Math.max(0, state.players.length - state.rules.mastersPrequalified);
     try {
       return pouleSizes(n, state.rules.maxPoulesOf3).map((size, i) => ({ num: i + 1, size }));
     } catch {
       return Array.from({ length: pouleCount }, (_, i) => ({ num: i + 1, size: 4 }));
     }
-  }, [state.poules.PREQ, state.players.length, state.rules, pouleCount]);
+  }, [state, pouleCount]);
   const sizeOf = useMemo(() => new Map(sizes.map((p) => [p.num, p.size])), [sizes]);
   const loads = useMemo(
     () => planLoads(plan, sizes, state.billards),
