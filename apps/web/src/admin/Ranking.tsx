@@ -27,48 +27,19 @@ import {
 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { Link } from "react-router";
 
 import { Button, Card, Chip, PageHead, cx } from "@/components/ui";
 import { clubShort, nice, ordinal } from "@/lib/format";
 
+import { downloadBlob } from "./attachments";
+import { bandOf, type Band } from "./bands";
 import { DEMO_LEFT_STAGE, SEASON_FIXTURE } from "./demo";
+import { rankingFileName, rankingPdf } from "./rankingPdf";
 import { compareWithReference, type ReferenceComparison } from "./reference";
 import { useSeasonDoc } from "./store";
 import { Empty, dec, downloadText } from "./ui";
 
 const MAX_TN_POINTS = 80;
-
-/** Bandes de qualification (badges de l'application 5 Quilles). */
-export interface Band {
-  from: number;
-  to: number;
-  /** Nom court (puce). */
-  label: string;
-  /** Titre de la bande dans le tableau. */
-  title: string;
-  tone: "gold" | "blue" | "green";
-}
-export const BANDS: Band[] = [
-  {
-    from: 1,
-    to: 8,
-    label: "Masters directs",
-    title: "Masters directs · places 1 à 8",
-    tone: "gold",
-  },
-  { from: 9, to: 16, label: "Places 9 à 16", title: "Places 9 à 16", tone: "blue" },
-  {
-    from: 17,
-    to: 34,
-    label: "Finales nationales",
-    title: "Finales nationales · places 17 à 34",
-    tone: "green",
-  },
-];
-export function bandOf(position: number): Band | null {
-  return BANDS.find((b) => position >= b.from && position <= b.to) ?? null;
-}
 
 const BAND_ROW: Record<Band["tone"], string> = {
   gold: "bg-gold-soft text-gold-ink",
@@ -694,6 +665,7 @@ export function Ranking() {
   const [query, setQuery] = useState("");
   const [club, setClub] = useState("");
   const [selected, setSelected] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
   const lastClosure = useMemo(() => {
     const list = Object.values(doc.closures).sort((a, b) => a.closedAt.localeCompare(b.closedAt));
     return list[list.length - 1];
@@ -754,11 +726,20 @@ export function Ranking() {
         >
           Export CSV
         </Button>
-        <Link to="/responsable/imprimer/classement?pdf=1">
-          <Button variant="primary" icon={FileDown} disabled={rows.length === 0}>
-            Télécharger le PDF
-          </Button>
-        </Link>
+        <Button
+          variant="primary"
+          icon={FileDown}
+          disabled={rows.length === 0 || !last || busy}
+          onClick={() => {
+            if (!last) return;
+            setBusy(true);
+            void rankingPdf(rows, last)
+              .then((blob) => downloadBlob(rankingFileName(last), blob))
+              .finally(() => setBusy(false));
+          }}
+        >
+          {busy ? "Préparation…" : "Télécharger le PDF"}
+        </Button>
       </PageHead>
 
       {rows.length === 0 || !last || !left ? (

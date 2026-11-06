@@ -1,11 +1,11 @@
-/** Documents imprimables (A4) de l'espace du responsable : liste ordonnée, classement glissant, points d'un TN. */
-import { latestStage, rankingRows, windowStages, type Stage } from "@pilot5q/domain";
+/** Documents imprimables (A4) de l'espace du responsable : liste ordonnée, points d'un TN (le classement glissant est un PDF, voir `rankingPdf`). */
+import type { Stage } from "@pilot5q/domain";
 import { ArrowLeft, FileDown, Printer } from "lucide-react";
 import { useEffect, useRef, type ReactNode } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router";
 
 import { Button } from "@/components/ui";
-import { clubShort, dateRange } from "@/lib/format";
+import { dateRange } from "@/lib/format";
 
 import { SeasonProvider, useSeason } from "./store";
 import { stageAcceptance } from "./stage";
@@ -107,69 +107,6 @@ export function OrderedListDoc({ doc, stage }: { doc: SeasonDocument; stage: Sta
   );
 }
 
-/** Classement glissant, A4. */
-export function RankingDoc({ doc }: { doc: SeasonDocument }) {
-  const rows = rankingRows(doc.ranking);
-  const last = latestStage(doc.ranking);
-  const stages = last ? windowStages(last.season, last.tn) : [];
-  const pages = chunk(rows, 46);
-  const title = last
-    ? `CLASSEMENT GLISSANT 5 QUILLES APRÈS TN${last.tn} ${last.season}`
-    : "CLASSEMENT GLISSANT 5 QUILLES";
-  return (
-    <>
-      {pages.map((part, k) => (
-        <Page key={k}>
-          <Head
-            title={title}
-            sub="4 meilleurs résultats sur les 5 derniers TN (somme simple sinon) · départage : moyenne"
-            right={`page ${k + 1}/${pages.length}`}
-          />
-          <table className="text-[9.5px] [&_td]:whitespace-nowrap">
-            <thead>
-              <tr>
-                <th>Pos.</th>
-                <th>Nom</th>
-                <th>Club</th>
-                <th>Licence</th>
-                <th>Points</th>
-                <th>Moy.</th>
-                <th>Nb</th>
-                {stages.map((s) => (
-                  <th key={`${s.season}${s.tn}`}>
-                    TN{s.tn} {s.season.slice(2, 4)}-{s.season.slice(7, 9)}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {part.map((r) => (
-                <tr key={r.licence || r.name}>
-                  <td className="font-mono">{r.position}</td>
-                  <td>{r.name}</td>
-                  <td>{clubShort(r.club)}</td>
-                  <td className="font-mono">{r.licence}</td>
-                  <td className="font-mono font-bold">{dec(r.pts, 3)}</td>
-                  <td className="font-mono">{dec(r.moy, 3)}</td>
-                  <td className="font-mono">{r.count}</td>
-                  {stages.map((s) => {
-                    const res = r.results.find((x) => x.season === s.season && x.tn === s.tn);
-                    return (
-                      <td key={`${s.season}${s.tn}`} className="font-mono">
-                        {res ? dec(res.pts, 2) : ""}
-                      </td>
-                    );
-                  })}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </Page>
-      ))}
-    </>
-  );
-}
-
 /** Points attribués à l'issue d'un TN (classement final du tournoi). */
 export function PointsDoc({ doc, stage }: { doc: SeasonDocument; stage: Stage }) {
   const closure = doc.closures[stage.id];
@@ -220,13 +157,8 @@ export function PointsDoc({ doc, stage }: { doc: SeasonDocument; stage: Stage })
 }
 
 /** Nom de fichier proposé par « Enregistrer au format PDF » (titre du document). */
-export function pdfTitle(kind: string | undefined, stage: Stage | undefined, season: string) {
-  const what =
-    kind === "classement"
-      ? `Classement glissant ${season}`
-      : kind === "liste"
-        ? "Liste des participants"
-        : "Points du tournoi";
+export function pdfTitle(kind: string | undefined, stage: Stage | undefined) {
+  const what = kind === "liste" ? "Liste des participants" : "Points du tournoi";
   return stage ? `${what} - ${stage.name} ${stage.season} ${stage.city}` : what;
 }
 
@@ -236,7 +168,7 @@ function PrintShell() {
   const [params] = useSearchParams();
   const navigate = useNavigate();
   const stageForTitle = doc?.stages.find((s) => s.id === stageId);
-  const title = pdfTitle(kind, stageForTitle, doc?.id ?? "");
+  const title = pdfTitle(kind, stageForTitle);
   const auto = params.get("pdf") === "1";
   const printed = useRef(false);
 
@@ -268,21 +200,14 @@ function PrintShell() {
     );
   const stage = doc.stages.find((s) => s.id === stageId);
   const content =
-    kind === "classement" ? (
-      <RankingDoc doc={doc} />
-    ) : kind === "liste" && stage ? (
+    kind === "liste" && stage ? (
       <OrderedListDoc doc={doc} stage={stage} />
     ) : kind === "points" && stage ? (
       <PointsDoc doc={doc} stage={stage} />
     ) : (
       <p className="text-ink-muted text-center">Document introuvable.</p>
     );
-  const label =
-    kind === "classement"
-      ? "Classement glissant"
-      : kind === "liste"
-        ? "Liste ordonnée"
-        : "Points du tournoi";
+  const label = kind === "liste" ? "Liste ordonnée" : "Points du tournoi";
   return (
     <div className="min-h-screen bg-[#e9edf5] print:bg-white">
       <div className="no-print bg-surface border-line sticky top-0 z-10 border-b">

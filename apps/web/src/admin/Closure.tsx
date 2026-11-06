@@ -4,6 +4,7 @@
  * secrétariat. La clôture peut être annulée pour corriger.
  */
 import {
+  latestStage,
   rankingRows,
   replay,
   type Stage,
@@ -13,6 +14,7 @@ import {
 import {
   Check,
   Copy,
+  FileDown,
   FileText,
   Lock,
   Play,
@@ -32,6 +34,8 @@ import { addNotification } from "@/lib/notifications";
 import { loadEvents } from "@/store/persistence";
 import { useTournament } from "@/store/tournament";
 
+import { downloadBlob } from "./attachments";
+import { rankingFileName, rankingPdf } from "./rankingPdf";
 import { isAfterReference } from "./reference";
 import { isExampleTournament, realWeekendEvents } from "./realWeekend";
 import { useSeason, useSeasonDoc } from "./store";
@@ -253,11 +257,19 @@ export function ClosureSection({ stage }: { stage: Stage }) {
             <div className="mt-4 grid gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)]">
               <div className="flex flex-col gap-2">
                 <div className="eyebrow">Documents</div>
-                <Link to="/responsable/imprimer/classement">
-                  <Button icon={Printer} className="w-full justify-start">
-                    Classement glissant (A4, enregistrer en PDF)
-                  </Button>
-                </Link>
+                <Button
+                  icon={FileDown}
+                  className="w-full justify-start"
+                  onClick={() => {
+                    const last = latestStage(doc.ranking);
+                    if (!last) return;
+                    void rankingPdf(rows, last).then((blob) =>
+                      downloadBlob(rankingFileName(last), blob),
+                    );
+                  }}
+                >
+                  Classement glissant (PDF)
+                </Button>
                 <Link to={`/responsable/imprimer/points/${stage.id}`}>
                   <Button icon={Printer} className="w-full justify-start">
                     Classement final du TN et points attribués
