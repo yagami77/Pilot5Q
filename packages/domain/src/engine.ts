@@ -49,6 +49,8 @@ export {
   composeNational,
   toPoules,
   nationalR16,
+  syncNationalR16,
+  NATIONAL_R16_PAIRS,
   mastersQF,
   advanceBracket,
   consolanteBracket,

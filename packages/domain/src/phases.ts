@@ -11,11 +11,13 @@
  * - National (§5) : perdants de barrage (dans l'ordre fourni) puis classement de `from` à `to`,
  *   serpentin en 8 poules de 4, sans contrainte club.
  * - Huitièmes National (§5) : les huit croisements de SPEC (`1er P1–2e P8, 2e P1–1er P8, 1er
- *   P2–2e P7, …`), placés dans l'ordre du tableau réel de l'outil Excel (plage MATCHS_HUITIEMES) :
+ *   P2–2e P7, …`), placés dans l'ordre du tableau réel de l'outil Excel (plage MATCHS_HUITIEMES,
+ *   `NATIONAL_R16_PAIRS`) :
  *   `H1 = 1er P1–2e P8, H2 = 1er P7–2e P2, H3 = 1er P4–2e P5, H4 = 1er P6–2e P3, H5 = 1er P8–2e P1,
  *   H6 = 1er P2–2e P7, H7 = 1er P5–2e P4, H8 = 1er P3–2e P6`, ids `N-R16-1..8`, puis quarts
  *   `H1–H2, H3–H4, H5–H6, H7–H8` et demies `Q1–Q2, Q3–Q4` : les deux qualifiés d'une même poule
- *   sont dans des moitiés opposées et ne peuvent se retrouver qu'en finale.
+ *   sont dans des moitiés opposées et ne peuvent se retrouver qu'en finale. Les huitièmes se
+ *   remplissent progressivement, paire de poules par paire de poules (`syncNationalR16`).
  * - Quarts Masters (§5) : `Q1 = 1er P1 vs 2e P4`, `Q2 = 1er P3 vs 2e P2`, `Q3 = 1er P4 vs 2e P1`,
  *   `Q4 = 1er P2 vs 2e P3`, ids `M-QF1..4` ; demies `Q1–Q2`, `Q3–Q4`.
  * - Avancement d'un tableau : les vainqueurs du tour `t` alimentent le tour `t+1` (slots
@@ -156,6 +158,21 @@ function bracketMatch(
   return { id, round, slot, a, b, sa: null, sb: null, labelA, labelB };
 }
 
+/**
+ * Croisements des huitièmes National dans l'ordre du tableau réel (H1..H8) :
+ * `[poule du 1er, poule du 2e]` (numéros d'ordre des poules, 1 à 8).
+ */
+export const NATIONAL_R16_PAIRS: readonly (readonly [number, number])[] = [
+  [1, 8],
+  [7, 2],
+  [4, 5],
+  [6, 3],
+  [8, 1],
+  [2, 7],
+  [5, 4],
+  [3, 6],
+];
+
 /** Huitièmes de finale National prédéfinis (SPEC §5). */
 export function nationalR16(
   poulesQN: Poule[],
@@ -171,20 +188,76 @@ export function nationalR16(
       label: `${ordinal(rank)} P${pouleNum}`,
     };
   };
-  const pairs: [number, 1 | 2, number, 1 | 2][] = [
-    [1, 1, 8, 2],
-    [7, 1, 2, 2],
-    [4, 1, 5, 2],
-    [6, 1, 3, 2],
-    [8, 1, 1, 2],
-    [2, 1, 7, 2],
-    [5, 1, 4, 2],
-    [3, 1, 6, 2],
-  ];
-  return pairs.map(([pa, ra, pb, rb], i) => {
-    const a = pick(pa, ra);
-    const b = pick(pb, rb);
+  return NATIONAL_R16_PAIRS.map(([pa, pb], i) => {
+    const a = pick(pa, 1);
+    const b = pick(pb, 2);
     return bracketMatch(`N-R16-${i + 1}`, "R16", i + 1, a.name, b.name, a.label, b.label);
+  });
+}
+
+/**
+ * Huitièmes National progressifs (retours du 6 novembre) : un huitième reçoit ses joueurs dès
+ * que ses deux poules couplées (1 et 8, 2 et 7, 3 et 6, 4 et 5) sont complètes, sans attendre la
+ * clôture du National. `existing` = huitièmes déjà dérivés (scores conservés).
+ *
+ * - Poules complètes, mêmes joueurs : le huitième est gardé tel quel (score compris) et n'est
+ *   plus à vérifier.
+ * - Poules complètes, joueurs différents (score de poule corrigé) : les joueurs sont remplacés ;
+ *   si le huitième avait déjà un score, celui-ci est effacé et le match est signalé à vérifier
+ *   (`needsReview`).
+ * - Poules redevenues incomplètes : un huitième non joué perd ses joueurs ; un huitième déjà
+ *   joué est gardé mais signalé à vérifier.
+ */
+export function syncNationalR16(
+  poulesQN: Poule[],
+  d: Distance,
+  forfaits: string[] = [],
+  existing: BracketMatch[] = [],
+): BracketMatch[] {
+  const complete = poulesQN.map((p) => rankPouleInPhase(p, d, undefined, forfaits).complete);
+  const fresh = nationalR16(poulesQN, d, forfaits);
+  return fresh.map((f, i) => {
+    const [pa, pb] = NATIONAL_R16_PAIRS[i] ?? [0, 0];
+    const ready = Boolean(complete[pa - 1] && complete[pb - 1]);
+    const old = existing.find((m) => m.round === "R16" && m.slot === f.slot);
+    const played =
+      old !== undefined &&
+      (old.sa !== null || old.sb !== null || Boolean(old.forfait) || Boolean(old.setsA?.length));
+    const blank: BracketMatch = { ...f, a: "", b: "" };
+    if (!old) return ready ? f : blank;
+    const keep: BracketMatch = { ...old, labelA: f.labelA, labelB: f.labelB };
+    if (!ready) {
+      if (!played) {
+        const out = { ...keep, a: "", b: "" };
+        delete out.needsReview;
+        return out;
+      }
+      return keep.a && keep.b ? { ...keep, needsReview: true } : keep;
+    }
+    if (old.a === f.a && old.b === f.b) {
+      const out = { ...keep };
+      delete out.needsReview;
+      return out;
+    }
+    if (!played || (old.a === "" && old.b === "")) {
+      const out: BracketMatch = { ...keep, a: f.a, b: f.b, sa: null, sb: null, forfait: null };
+      delete out.setsA;
+      delete out.setsB;
+      delete out.needsReview;
+      return out;
+    }
+    const out: BracketMatch = {
+      ...keep,
+      a: f.a,
+      b: f.b,
+      sa: null,
+      sb: null,
+      forfait: null,
+      needsReview: true,
+    };
+    delete out.setsA;
+    delete out.setsB;
+    return out;
   });
 }
 

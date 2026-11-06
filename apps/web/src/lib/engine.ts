@@ -27,6 +27,7 @@ export {
   matchOutcome,
   matchWinner,
   nationalR16,
+  NATIONAL_R16_PAIRS,
   orderParticipants,
   parseInscritsCsv,
   phaseComplete,

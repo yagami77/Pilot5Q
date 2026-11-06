@@ -10,7 +10,16 @@
  *   appliqués aux structures dérivées plus tard.
  * - `poules.drawn` : remplace les poules de la phase (les matchs manquants sont générés).
  * - `score.entered` : modifie le match dans la bonne phase (poules PREQ/QN/QM, `barrages`,
- *   `brackets` N/M/CLS) ; sur un tableau, les vainqueurs avancent (`advanceBracket`).
+ *   `brackets` N/M/CLS) ; sur un tableau, les vainqueurs avancent (`advanceBracket`) et le
+ *   signalement « à vérifier » du match est levé. Un score QN met à jour les huitièmes National
+ *   (`syncNational`).
+ * - Huitièmes National progressifs (retours du 6 novembre) : `brackets.N` est dérivé à chaque
+ *   `score.entered`, `forfait.declared` ou `poules.drawn` QN, sans attendre `phase.closed` QN :
+ *   dès que deux poules couplées (1 et 8, 2 et 7, 3 et 6, 4 et 5) sont complètes, leurs deux
+ *   huitièmes reçoivent les joueurs (`syncNationalR16`, ordre réel du tableau conservé). Un
+ *   score de poule corrigé après coup recalcule les huitièmes concernés ; un huitième déjà joué
+ *   dont les joueurs changent (ou ne sont plus certains) est signalé `needsReview`. Le tableau
+ *   n'est créé qu'à partir de la première paire de poules complète.
  * - `forfait.declared` : enregistre le forfait ; pour un barrage ou un tableau, le match en
  *   attente du joueur est marqué `forfait` et ses points sont écrits comme le fait l'outil Excel
  *   (SPEC §5) : la distance pour l'adversaire, et pour le forfait la moyenne des points subis par
@@ -18,12 +27,14 @@
  *   Dans une phase de poules, le même barème est fourni à `rankPhase` (`forfaitSubisOf`).
  * - `phase.closed` : `closed[phase] = true` et dérivation : PREQ → `barrages` (rankPhase +
  *   barragePairs) ; B → `poules.QM` (composeMasters) et `poules.QN` (composeNational, perdants
- *   ordonnés par le classement cumulé des barrages, puis places 17 à 40) ; QN → `brackets.N`
- *   (nationalR16 puis advanceBracket) ; QM → `brackets.M` (mastersQF puis advanceBracket) ;
+ *   ordonnés par le classement cumulé des barrages, puis places 17 à 40) ; QN → verrouille la
+ *   saisie, `brackets.N` étant déjà dérivé progressivement (`syncNational`) ; QM → `brackets.M`
+ *   (mastersQF puis advanceBracket) ;
  *   CLS → `brackets.CLS` est laissé tel quel. Fermer une phase déjà fermée ne fait rien.
  * - `phase.reopened` : efface `closed[phase]` et les structures dérivées en aval (PREQ →
- *   barrages, poules QN/QM, tableaux N/M ; B → poules QN/QM et tableaux N/M ; QN → tableau N ;
- *   QM → tableau M), ainsi que leurs fermetures.
+ *   barrages, poules QN/QM, tableaux N/M ; B → poules QN/QM et tableaux N/M ; QM → tableau M),
+ *   ainsi que leurs fermetures. Rouvrir QN ne fait que déverrouiller la saisie (le tableau N
+ *   suit les scores).
  * - `consolante.created` : `brackets.CLS` (au plus `rules.consolanteMax` joueurs, les suivants
  *   sont ignorés).
  * - `arbitre.set` : numéro de licence de l'arbitre sur le match.
@@ -47,7 +58,7 @@ import {
   composeNational,
   consolanteBracket,
   mastersQF,
-  nationalR16,
+  syncNationalR16,
 } from "./phases.js";
 import { primesTable, rankTournamentPhase, tournamentRanking } from "./results.js";
 import { cloneRules, DEFAULT_RULES } from "./rules.js";
@@ -514,8 +525,6 @@ function clearDownstream(state: TournamentState, phase: PhaseId): TournamentStat
     clearSaturday();
   } else if (phase === "B") {
     clearSaturday();
-  } else if (phase === "QN") {
-    clearBracket("N");
   } else if (phase === "QM") {
     clearBracket("M");
   }
@@ -559,21 +568,7 @@ function deriveNext(state: TournamentState, phase: PhaseId): TournamentState {
       },
     };
   }
-  if (phase === "QN") {
-    const N = derive(
-      () =>
-        advance(
-          rules,
-          "N",
-          nationalR16(state.poules.QN, rules.distances.qn, forfaitsOf(state, "QN")),
-        ),
-      [],
-    );
-    return {
-      ...state,
-      brackets: { ...state.brackets, N: assignMatches(N, state.billardAssignments.N) },
-    };
-  }
+  if (phase === "QN") return syncNational(state);
   if (phase === "QM") {
     const M = derive(
       () =>
@@ -590,6 +585,29 @@ function deriveNext(state: TournamentState, phase: PhaseId): TournamentState {
     };
   }
   return state;
+}
+
+/**
+ * Huitièmes National progressifs : met à jour `brackets.N` à partir des poules QN (paires de
+ * poules complètes), en gardant les scores déjà saisis (cf. `syncNationalR16`).
+ */
+function syncNational(state: TournamentState): TournamentState {
+  const { rules } = state;
+  if (state.poules.QN.length === 0) return state;
+  const existing = state.brackets.N.filter((m) => m.round === "R16");
+  const r16 = derive(
+    () => syncNationalR16(state.poules.QN, rules.distances.qn, forfaitsOf(state, "QN"), existing),
+    null,
+  );
+  if (!r16) return state;
+  if (existing.length === 0 && r16.every((m) => m.a === "" && m.b === "")) return state;
+  const rest = state.brackets.N.filter((m) => m.round !== "R16");
+  const N = derive(() => advance(rules, "N", [...r16, ...rest]), null);
+  if (!N) return state;
+  return {
+    ...state,
+    brackets: { ...state.brackets, N: assignMatches(N, state.billardAssignments.N) },
+  };
 }
 
 /** Match en attente d'un joueur dans une liste (sans résultat). */
@@ -649,18 +667,21 @@ export function reduce(state: TournamentState, event: TournamentEvent): Tourname
         event.payload.poules.map(copyPoule),
         state.billardAssignments[phase],
       );
-      return { ...state, poules: { ...state.poules, [phase]: poules } };
+      const next = { ...state, poules: { ...state.poules, [phase]: poules } };
+      return phase === "QN" ? syncNational(next) : next;
     }
     case "score.entered": {
       const { phase, matchId, sa, sb, setsA, setsB } = event.payload;
-      return updateMatch(state, phase, matchId, (m) => {
+      const next = updateMatch(state, phase, matchId, (m) => {
         const out = { ...m, sa, sb, forfait: null };
         if (setsA) out.setsA = [...setsA];
         else delete out.setsA;
         if (setsB) out.setsB = [...setsB];
         else delete out.setsB;
+        delete (out as { needsReview?: boolean }).needsReview;
         return out;
       });
+      return phase === "QN" ? syncNational(next) : next;
     }
     case "forfait.declared": {
       const { phase, player, kind } = event.payload;
@@ -704,6 +725,8 @@ export function reduce(state: TournamentState, event: TournamentEvent): Tourname
           const d = bracketDistance(state.rules, phase, m.round);
           next = updateMatch(next, phase, m.id, (x) => walkover(x, d));
         }
+      } else if (phase === "QN") {
+        next = syncNational(next);
       }
       return next;
     }
@@ -718,7 +741,7 @@ export function reduce(state: TournamentState, event: TournamentEvent): Tourname
       const next = clearDownstream(state, phase);
       const closed = { ...next.closed };
       delete closed[phase];
-      return { ...next, closed };
+      return phase === "QN" ? syncNational({ ...next, closed }) : { ...next, closed };
     }
     case "consolante.created": {
       const players = event.payload.players.slice(0, state.rules.consolanteMax);

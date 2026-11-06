@@ -149,6 +149,11 @@ export interface BracketMatch extends Match {
   slot: number;
   labelA?: string;
   labelB?: string;
+  /**
+   * Huitième National à vérifier : un score de poule a été corrigé après coup et les qualifiés
+   * ont changé (score effacé) ou ne sont plus certains. Effacé à la saisie suivante du match.
+   */
+  needsReview?: boolean;
 }
 
 /** Paramètres du tournoi (valeurs par défaut : SPEC §8). */

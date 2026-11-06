@@ -44,7 +44,8 @@ export function dayDate(state: TournamentState, day: Day): string {
 export function dayStatuses(state: TournamentState): Record<Day, DayStatus> {
   const drawn = state.poules.PREQ.length > 0;
   const bClosed = Boolean(state.closed.B);
-  const satClosed = Boolean(state.closed.QN && state.closed.QM);
+  // Le National n'a plus de clôture explicite : il est terminé quand ses huitièmes le sont
+  const satClosed = Boolean(state.closed.QM) && nationalDone(state);
   const sunClosed = Boolean(state.closed.N && state.closed.M);
   return {
     jeudi: {
@@ -72,6 +73,31 @@ export function dayStatuses(state: TournamentState): Record<Day, DayStatus> {
       sub: "Phases finales",
     },
   };
+}
+
+/** Huitièmes National : prêts (deux joueurs connus), terminés et à vérifier, sur 8. */
+export function r16Progress(state: TournamentState): {
+  ready: number;
+  done: number;
+  review: number;
+  total: number;
+} {
+  const d = distanceFor(state.rules, "N", "R16");
+  const r16 = state.brackets.N.filter((m) => m.round === "R16");
+  const ready = r16.filter((m) => m.a && m.b);
+  return {
+    ready: ready.length,
+    done: ready.filter((m) => matchWinner(m, d) !== null).length,
+    review: r16.filter((m) => m.needsReview).length,
+    total: Math.max(8, r16.length),
+  };
+}
+
+/** National du samedi terminé : huit huitièmes joués (ou National classé, anciens journaux). */
+export function nationalDone(state: TournamentState): boolean {
+  if (state.closed.QN) return true;
+  const p = r16Progress(state);
+  return p.done === p.total && p.review === 0;
 }
 
 export function playerByName(state: TournamentState): Map<string, Player> {

@@ -654,7 +654,7 @@ describe("fixture tn-exemple : rejeu complet par le réducteur", () => {
     );
   });
 
-  it("samedi : scores QN/QM → classements Excel, clôture → huitièmes et quarts réels", () => {
+  it("samedi : scores QN/QM → classements Excel, huitièmes réels sans clôture du National, clôture Masters → quarts réels", () => {
     state = push(
       ...pouleScores(state, "QN", fixture.saturday.QN.poules),
       ...pouleScores(state, "QM", fixture.saturday.QM.poules),
@@ -667,10 +667,10 @@ describe("fixture tn-exemple : rejeu complet par le réducteur", () => {
     expect(phaseRanking(state, "QM").map((r) => r.name)).toEqual(
       fixture.saturday.QM.expectedRanking.map((r) => r.name),
     );
-    state = push(
-      { type: "phase.closed", at, payload: { phase: "QN" } },
-      { type: "phase.closed", at, payload: { phase: "QM" } },
-    );
+    // Les huitièmes National se remplissent dès que les poules couplées sont complètes : pas de
+    // clôture du National (retours du 6 novembre).
+    expect(state.closed.QN).toBeUndefined();
+    state = push({ type: "phase.closed", at, payload: { phase: "QM" } });
     expect(state.brackets.N.filter((m) => m.round === "R16").map((m) => [m.a, m.b])).toEqual(
       realN.filter((m) => m.round === "R16").map((m) => [m.a, m.b]),
     );

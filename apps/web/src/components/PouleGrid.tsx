@@ -95,7 +95,7 @@ export function PouleViewToggle({
 /** Classe de grille selon le mode (les cartes compactes sont plus étroites). */
 export function pouleGridClass(view: PouleView): string {
   return view === "compact"
-    ? "grid grid-cols-[repeat(auto-fill,minmax(190px,1fr))] items-start gap-2.5"
+    ? "grid grid-cols-[repeat(auto-fill,minmax(215px,1fr))] items-start gap-2.5"
     : "grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] items-start gap-3";
 }
 
@@ -110,6 +110,8 @@ export interface PouleGridProps {
   showBillard?: boolean;
   conflicts?: number[];
   className?: string;
+  /** Classes de grille (remplacent celles du mode). */
+  gridClassName?: string;
   id?: string;
   children?: ReactNode;
 }
@@ -126,11 +128,12 @@ export function PouleGrid({
   showBillard = true,
   conflicts,
   className,
+  gridClassName,
   id,
 }: PouleGridProps) {
   return (
     <LayoutGroup id={`grid-${phase}`}>
-      <div id={id} className={cx(pouleGridClass(view), className)}>
+      <div id={id} className={cx(gridClassName ?? pouleGridClass(view), className)}>
         {poules.map((p) => (
           <PouleCard
             key={p.num}

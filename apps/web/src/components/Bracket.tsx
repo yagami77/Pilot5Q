@@ -45,6 +45,10 @@ export interface BracketProps {
   zoomable?: boolean;
   /** Complément affiché sous le nom du champion (« vainqueur Masters · 586 € »). */
   championNote?: string;
+  /** Grille : seulement ces matchs (ids), dans cet ordre. */
+  only?: string[];
+  /** Grille : classes de la grille (remplacent la grille par défaut). */
+  gridClassName?: string;
 }
 
 function matchLabel(m: BracketMatch): string {
@@ -67,6 +71,8 @@ export function Bracket({
   layout = "tree",
   zoomable = false,
   championNote,
+  only,
+  gridClassName,
 }: BracketProps) {
   const { state } = useTournament();
   const editLock = useEditLock();
@@ -209,10 +215,14 @@ export function Bracket({
   };
 
   if (layout === "grid") {
-    const ms = geo.byRound[0] ?? [];
+    const ms = only
+      ? only.map((id) => all.find((m) => m.id === id)).filter((m): m is BracketMatch => !!m)
+      : (geo.byRound[0] ?? []);
     return (
       <div
-        className="grid grid-cols-1 gap-3 px-4 pt-3 pb-4 sm:grid-cols-2 xl:grid-cols-4"
+        className={
+          gridClassName ?? "grid grid-cols-1 gap-3 px-4 pt-3 pb-4 sm:grid-cols-2 xl:grid-cols-4"
+        }
         data-score-root
       >
         {ms.map((m) => card(m, { position: "relative", width: "100%" }))}
@@ -377,7 +387,8 @@ function MatchCard({
   refEl?: React.RefObject<HTMLDivElement | null>;
   delay: number;
 }) {
-  const { dispatch } = useTournament();
+  const { state, dispatch } = useTournament();
+  const photoOf = (n: string) => state.players.find((p) => p.name === n)?.photoUrl ?? null;
   const multi = d.setsGagnants > 1;
   const [draft, setDraft] = useState<ScoreDraft>(() => draftOf(match, d));
   const [open, setOpen] = useState(false);
@@ -417,7 +428,7 @@ function MatchCard({
     return (
       <div
         className={cx(
-          "grid min-h-[44px] grid-cols-[28px_1fr_auto] items-center gap-[9px] px-[11px] py-[6px] transition-[background-color] duration-300",
+          "grid min-h-[44px] grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-[9px] px-[11px] py-[6px] transition-[background-color] duration-300",
           who === "b" && "border-line border-t border-dashed",
           isWin &&
             !(champion && isWin) &&
@@ -429,9 +440,20 @@ function MatchCard({
         data-side={who}
       >
         {name ? (
-          <Avatar name={name} size="sm" crown={champion && isWin} className="size-7 text-[10px]" />
+          // Photo du joueur si elle existe (application 5 Quilles), sinon un simple repère
+          photoOf(name) ? (
+            <Avatar name={name} photoUrl={photoOf(name)} size="sm" className="size-7" />
+          ) : (
+            <span
+              className={cx(
+                "h-6 w-[3px] rounded-full transition-colors duration-300",
+                isWin ? (champion ? "bg-gold" : "bg-ok") : "bg-line-2",
+              )}
+              aria-hidden="true"
+            />
+          )
         ) : (
-          <span className="border-line-2 size-7 rounded-full border-[1.5px] border-dashed" />
+          <span className="border-line-2 h-6 w-[3px] rounded-full border border-dashed" />
         )}
         <div className="min-w-0">
           {name ? (
@@ -499,6 +521,7 @@ function MatchCard({
         !open && "animate-pop",
         live &&
           "border-brand-light shadow-[0_0_0_3px_var(--color-brand-soft),var(--shadow-raised)]",
+        match.needsReview && "border-alert shadow-[0_0_0_3px_var(--color-alert-soft)]",
         isFinal && !champion && "border-[#f2d48a]",
         champion && "border-gold",
         glow && "animate-glow-gold",
@@ -515,6 +538,14 @@ function MatchCard({
           aria-hidden="true"
         />
         {matchLabel(match)}
+        {match.needsReview ? (
+          <span
+            className="bg-alert-soft text-alert-ink rounded-[5px] px-1.5 py-[1px] font-sans text-[10px] font-bold tracking-normal normal-case"
+            title="Un score de poule a été corrigé après ce match : vérifiez les joueurs et ressaisissez le score."
+          >
+            À vérifier
+          </span>
+        ) : null}
         <span className="text-ink-secondary ml-auto font-mono font-semibold tracking-normal normal-case">
           {match.billard ? `Billard ${match.billard}` : ""}
         </span>

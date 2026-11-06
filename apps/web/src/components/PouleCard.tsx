@@ -121,7 +121,7 @@ function GridCard({
         transition={{ layout: LAYOUT }}
         className="flex items-center gap-2 px-3 py-2.5"
       >
-        <b className="flex min-w-0 items-center gap-1.5 text-[13.5px] whitespace-nowrap">
+        <b className="flex shrink-0 items-center gap-1.5 text-[13.5px] whitespace-nowrap">
           {live ? (
             <span
               className="bg-brand-light animate-live-pulse size-2 shrink-0 rounded-full"

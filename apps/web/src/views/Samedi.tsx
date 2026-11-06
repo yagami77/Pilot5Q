@@ -1,21 +1,24 @@
 /** Samedi : poules Masters et National, huitièmes National, consolante. */
 import { ArrowLeft, Check, Printer, TriangleAlert, WandSparkles } from "lucide-react";
+import { motion } from "motion/react";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router";
 
 import { Bracket } from "@/components/Bracket";
 import { DayTasks } from "@/components/DayTasks";
-import { PouleGrid, PouleViewToggle, usePouleView } from "@/components/PouleGrid";
+import { PouleGrid, PouleViewToggle, usePouleView, type PouleView } from "@/components/PouleGrid";
+import { RollingNumber } from "@/components/RollingNumber";
 import { PouleDrawer } from "@/components/PouleDrawer";
 import { PrintCenter } from "@/components/PrintCenter";
 import { useToast } from "@/components/Toast";
-import { Banner, Button, Card, Chip, GaugeButton, PageHead, PlayerLine, cx } from "@/components/ui";
+import { Banner, Button, Card, Chip, GaugeButton, PageHead, cx } from "@/components/ui";
 import {
   clubOf,
   forfaitsOf,
   isValidScore,
   mastersClubConflicts,
-  nationalR16,
+  matchWinner,
+  NATIONAL_R16_PAIRS,
   phaseComplete,
 } from "@/lib/engine";
 import { pendingOf, useAutoFill } from "@/lib/fill";
@@ -26,10 +29,12 @@ import {
   consolanteAllowed,
   dayDate,
   distanceLabel,
+  nationalDone,
   phaseDistance,
   pouleState,
   poulesProgress,
   qualifiers,
+  r16Progress,
 } from "@/lib/tournament";
 import { useEditLock, useTournament } from "@/store/tournament";
 
@@ -44,11 +49,8 @@ export function Samedi() {
   const dM = phaseDistance(state, "QM");
   const dN = phaseDistance(state, "QN");
   const prM = poulesProgress(state, "QM");
-  const prN = poulesProgress(state, "QN");
   const doneM = phaseComplete(state, "QM");
-  const doneN = phaseComplete(state, "QN");
   const closedM = Boolean(state.closed.QM);
-  const closedN = Boolean(state.closed.QN);
   const closedCLS = Boolean(state.closed.CLS);
   const cls = state.brackets.CLS;
   const hasCls = cls.length > 0;
@@ -74,8 +76,8 @@ export function Samedi() {
           );
       }
       if (hasCls && !closedCLS) out.push(...pendingOf("CLS", cls, phaseDistance(state, "CLS")));
-      // Huitièmes National : dès que les poules sont classées
-      if (closedN && !state.closed.N)
+      // Huitièmes National : dès que leurs deux poules couplées sont terminées
+      if (!state.closed.N)
         out.push(
           ...pendingOf(
             "N",
@@ -97,25 +99,10 @@ export function Samedi() {
     toast(`${label} classé`);
   };
 
-  // Huitièmes « en direct » : les noms apparaissent dès que deux poules croisées sont terminées
-  const liveR16 = useMemo(
-    () => (closedN ? [] : nationalR16(state.poules.QN, dN, forfaitsOf(state, "QN"))),
-    [state, closedN, dN],
+  const r16Pending = state.brackets.N.some(
+    (m) => m.round === "R16" && m.a && m.b && !isValidScore(m, phaseDistance(state, "N", "R16")),
   );
-  // Noms seulement quand les deux poules concernées sont terminées (« 1er poule 1 – 2e poule 8 »)
-  const qnComplete = useMemo(
-    () =>
-      new Set(state.poules.QN.filter((p) => pouleState(state, "QN", p).complete).map((p) => p.num)),
-    [state],
-  );
-  const r16Known = (m: { labelA?: string; labelB?: string }) =>
-    [m.labelA, m.labelB].every((l) => qnComplete.has(pouleOfLabel(l)));
-  const liveReady = liveR16.filter((m) => m.a && m.b && r16Known(m)).length;
-  const r16Pending =
-    closedN &&
-    state.brackets.N.some(
-      (m) => m.round === "R16" && m.a && m.b && !isValidScore(m, phaseDistance(state, "N", "R16")),
-    );
+  const natDone = nationalDone(state);
 
   return (
     <section className="cascade">
@@ -128,7 +115,7 @@ export function Samedi() {
         <Chip>
           Convocations : {state.poules.QM.length * 4} + {state.poules.QN.length * 4} joueurs
         </Chip>
-        {!ro && !(closedM && closedN && !r16Pending) ? (
+        {!ro && !(closedM && natDone && !r16Pending) ? (
           <Button
             icon={WandSparkles}
             onClick={fill.start}
@@ -193,76 +180,28 @@ export function Samedi() {
           title={`Qualification National · ${plural(state.poules.QN.length, "poule")} de 4`}
           aside={
             <>
-              <Chip tone="green">{distanceLabel(dN)} · huitièmes dans la foulée</Chip>
-              {closedN ? (
-                <Chip tone="green" icon={Check}>
-                  Classés · huitièmes ouverts
-                </Chip>
-              ) : (
-                <GaugeButton
-                  done={prN.valid}
-                  total={prN.total}
-                  label="Classer le National"
-                  onClick={() => close("QN", "National")}
-                  disabled={!doneN}
-                />
-              )}
+              <Chip tone="green">
+                {distanceLabel(dN)} · huitièmes dès que deux poules couplées sont terminées
+              </Chip>
+              <R16Indicator />
             </>
           }
         >
-          <PouleGrid
-            className="px-4 pt-1 pb-4"
-            state={state}
-            phase="QN"
-            poules={state.poules.QN}
-            distance={dN}
-            view={view}
-            open={open?.phase === "QN" ? open.num : null}
-            onOpen={(num) => setOpen({ phase: "QN", num })}
-          />
-          <div id="huitiemes" className="border-line scroll-mt-4 border-t">
-            <div className="flex flex-wrap items-center gap-2 px-4 pt-3">
-              <h4 className="text-[13.5px] font-bold">Huitièmes de finale</h4>
-              <Chip tone="grey">
-                {closedN
-                  ? `${plural(state.brackets.N.filter((m) => m.round === "R16" && m.a && m.b).length, "match")} · ${distanceLabel(phaseDistance(state, "N", "R16"))}`
-                  : `${liveReady}/8 appariements connus · saisie après le classement des poules`}
-              </Chip>
-            </div>
-            {closedN ? (
-              <Bracket phase="N" rounds={["R16"]} layout="grid" />
-            ) : (
-              <div className="grid grid-cols-2 gap-2 px-4 pt-3 pb-4 md:grid-cols-4">
-                {liveR16.map((m, i) => (
-                  <div
-                    key={m.id}
-                    className={cx(
-                      "border-line bg-surface-2 animate-pop flex flex-col gap-1.5 rounded-[10px] border px-2.5 py-2",
-                      m.a && m.b && r16Known(m) && "border-[#bfe6d2]",
-                    )}
-                    style={{ animationDelay: `${i * 40}ms` }}
-                  >
-                    <span className="text-ink-muted font-mono text-[10px] font-bold">
-                      H{m.slot}
-                    </span>
-                    {(
-                      [
-                        ["a", m.a, m.labelA],
-                        ["b", m.b, m.labelB],
-                      ] as const
-                    ).map(([k, n, label]) => (
-                      <div key={k} className="flex items-center gap-2 text-[12px]">
-                        {n && r16Known(m) ? (
-                          <PlayerLine name={n} size="xs" />
-                        ) : (
-                          <span className="text-ink-muted font-medium">{longLabel(label)}</span>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                ))}
-              </div>
-            )}
+          <div
+            id="huitiemes"
+            className="grid scroll-mt-4 items-start gap-3 px-4 pt-1 pb-4 xl:grid-cols-2"
+          >
+            {nationalPairs(state.poules.QN.length).map(([x, y], i) => (
+              <NationalPair
+                key={`${x}-${y}`}
+                index={i}
+                first={x}
+                second={y}
+                view={view}
+                open={open?.phase === "QN" ? open.num : null}
+                onOpen={(num) => setOpen({ phase: "QN", num })}
+              />
+            ))}
           </div>
         </Card>
 
@@ -316,9 +255,9 @@ export function Samedi() {
         </Card>
 
         {/* « Passer au dimanche » : dans la barre des tâches du jour */}
-        {closedM && closedN ? (
+        {closedM && natDone ? (
           <Banner icon={Check}>
-            Masters et National classés · quarts de finale constitués
+            Masters classés et huitièmes National joués · quarts de finale constitués
             {hasCls && !closedCLS ? " · la consolante peut continuer" : ""}
           </Banner>
         ) : null}
@@ -335,13 +274,164 @@ export function Samedi() {
   );
 }
 
-/** Numéro de poule d'un libellé « 1er P3 ». */
-function pouleOfLabel(label: string | undefined): number {
-  const m = /P(\d+)/.exec(label ?? "");
-  return m ? Number(m[1]) : -1;
+/** Paires de poules National affichées côte à côte : 1 et 8, 2 et 7, 3 et 6, 4 et 5. */
+function nationalPairs(count: number): [number, number][] {
+  const n = count || 8;
+  return Array.from({ length: Math.floor(n / 2) }, (_, i) => [i + 1, n - i]);
 }
 
-/** « 1er P3 » → « 1er poule 3 ». */
-function longLabel(label: string | undefined): string {
-  return (label ?? "").replace(/P(\d+)/, "poule $1");
+/** Huitièmes d'une paire de poules (ids), celui du 1er de la première poule d'abord. */
+function pairR16(first: number, second: number): string[] {
+  const ids = NATIONAL_R16_PAIRS.map(([a, b], i) => ({ a, b, id: `N-R16-${i + 1}` })).filter(
+    (x) => (x.a === first && x.b === second) || (x.a === second && x.b === first),
+  );
+  return ids.sort((x, y) => Number(y.a === first) - Number(x.a === first)).map((x) => x.id);
+}
+
+/** « Huitièmes terminés X/8 » : remplace « Classer le National ». */
+function R16Indicator() {
+  const { state } = useTournament();
+  const p = r16Progress(state);
+  const all = p.done === p.total && p.review === 0;
+  return (
+    <span
+      className={cx(
+        "relative inline-flex h-[34px] items-center gap-2 overflow-hidden rounded-[11px] border px-3 text-[12.5px] font-bold",
+        all ? "border-[#bfe6d2] text-ok-ink" : "border-line-2 text-ink-secondary",
+      )}
+      aria-label={`Huitièmes terminés ${p.done} sur ${p.total}`}
+    >
+      <motion.span
+        aria-hidden="true"
+        className={cx("absolute inset-y-0 left-0", all ? "bg-ok-soft" : "bg-brand-soft")}
+        initial={false}
+        animate={{ width: `${(p.done / p.total) * 100}%` }}
+        transition={{ duration: 0.6, ease: [0.2, 0.8, 0.2, 1] }}
+      />
+      {all ? <Check className="relative size-4" aria-hidden="true" /> : null}
+      <span className="relative">Huitièmes terminés</span>
+      <span className="relative font-mono tabular-nums">
+        <RollingNumber value={p.done} />/{p.total}
+      </span>
+      {p.review ? (
+        <span className="bg-alert text-white relative rounded-[6px] px-1.5 text-[10.5px]">
+          {p.review} à vérifier
+        </span>
+      ) : null}
+    </span>
+  );
+}
+
+/** Deux poules couplées côte à côte et, dessous, leurs deux huitièmes. */
+function NationalPair({
+  index,
+  first,
+  second,
+  view,
+  open,
+  onOpen,
+}: {
+  index: number;
+  first: number;
+  second: number;
+  view: PouleView;
+  open: number | null;
+  onOpen: (num: number) => void;
+}) {
+  const { state } = useTournament();
+  const d = phaseDistance(state, "QN");
+  const dR16 = phaseDistance(state, "N", "R16");
+  const poules = [first, second]
+    .map((n) => state.poules.QN[n - 1])
+    .filter((p): p is NonNullable<typeof p> => p !== undefined);
+  const complete = poules.map((p) => pouleState(state, "QN", p).complete);
+  const ids = pairR16(first, second);
+  const matches = ids.map((id) => state.brackets.N.find((m) => m.id === id));
+  const ready = matches.every((m) => m && m.a && m.b);
+  const done = ready && matches.every((m) => m && matchWinner(m, dR16));
+  const review = matches.some((m) => m?.needsReview);
+  const numOf = (i: number) => poules[i]?.num ?? (i === 0 ? first : second);
+  const status = review
+    ? { label: "À vérifier", cls: "bg-alert-soft text-alert-ink" }
+    : done
+      ? { label: "Huitièmes joués", cls: "bg-ok-soft text-ok-ink" }
+      : ready
+        ? { label: "Huitièmes à lancer", cls: "bg-brand text-white" }
+        : {
+            label: `En attente de ${complete.every((c) => !c) ? "deux poules" : "la poule " + numOf(complete[0] ? 1 : 0)}`,
+            cls: "bg-surface text-ink-muted border-line border",
+          };
+  return (
+    <motion.section
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay: index * 0.06, ease: [0.2, 0.8, 0.2, 1] }}
+      className={cx(
+        "rounded-[16px] border p-3 transition-[border-color,background-color] duration-500",
+        ready && !done
+          ? "border-brand-light bg-brand-soft/40"
+          : done
+            ? "border-[#bfe6d2] bg-ok-soft/30"
+            : "border-line bg-surface-2/70",
+      )}
+      aria-label={`Poules ${numOf(0)} et ${numOf(1)}`}
+    >
+      <div className="mb-2 flex flex-wrap items-center gap-2">
+        <b className="text-[13px]">
+          Poules {numOf(0)} et {numOf(1)}
+        </b>
+        <span className="text-ink-muted font-mono text-[11px]">
+          → {ids.map((id) => `H${id.split("-").pop()}`).join(" et ")}
+        </span>
+        <span
+          className={cx(
+            "ml-auto rounded-[7px] px-2 py-[3px] text-[11px] font-bold",
+            status.cls,
+            ready && !done && !review && "animate-pop",
+          )}
+        >
+          {status.label}
+        </span>
+      </div>
+      <PouleGrid
+        state={state}
+        phase="QN"
+        poules={poules}
+        distance={d}
+        view={view}
+        open={open}
+        onOpen={onOpen}
+        gridClassName="grid grid-cols-1 items-start gap-2.5 sm:grid-cols-2"
+      />
+      <div className="text-ink-muted mt-3 mb-1.5 text-[10.5px] font-bold tracking-[0.08em] uppercase">
+        Huitièmes · {distanceLabel(dR16)}
+      </div>
+      {state.brackets.N.some((m) => m.round === "R16") ? (
+        <Bracket
+          phase="N"
+          rounds={["R16"]}
+          layout="grid"
+          only={ids}
+          gridClassName="grid grid-cols-1 gap-2.5 sm:grid-cols-2"
+        />
+      ) : (
+        <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+          {pairR16(first, second).map((id) => {
+            const i = Number(id.split("-").pop()) - 1;
+            const [pa, pb] = NATIONAL_R16_PAIRS[i] ?? [first, second];
+            return (
+              <div
+                key={id}
+                className="border-line-2 text-ink-muted flex flex-col gap-1 rounded-[14px] border border-dashed px-3 py-2.5 text-[12px]"
+              >
+                <span className="font-mono text-[10.5px] font-bold">H{i + 1}</span>
+                <span className="font-medium">1er poule {numOf(pa === first ? 0 : 1)}</span>
+                <span className="font-medium">2e poule {numOf(pb === first ? 0 : 1)}</span>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </motion.section>
+  );
 }

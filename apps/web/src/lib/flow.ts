@@ -85,14 +85,13 @@ export function buildFlow(state: TournamentState): FlowModel {
   const preqClosed = Boolean(state.closed.PREQ);
   const bClosed = Boolean(state.closed.B);
   const qmClosed = Boolean(state.closed.QM);
-  const qnClosed = Boolean(state.closed.QN);
   const qfmDone =
     qmClosed &&
     state.brackets.M.filter((m) => m.round === "QF").every(
       (m) => m.a && m.b && matchWinner(m, dFinal),
     );
   const r16Done =
-    qnClosed &&
+    state.brackets.N.some((m) => m.round === "R16") &&
     state.brackets.N.filter((m) => m.round === "R16").every(
       (m) => m.a && m.b && isValidScore(m, dR16),
     );
