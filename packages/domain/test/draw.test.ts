@@ -19,25 +19,36 @@ describe("serpentin", () => {
     expect(p[16]).toEqual(["J17", "J18", "J51", "J52"]);
   });
 
-  it("67 → 16×4 + 1×3, la poule de 3 en dernier", () => {
+  it("67 → 1×3 + 16×4, la poule de 3 en premier (poule 1, comme l'Excel)", () => {
     const p = serpentin(names(67), 3);
-    expect(p.map((x) => x.length)).toEqual([...Array<number>(16).fill(4), 3]);
-    expect(p[16]).toEqual(["J17", "J18", "J51"]);
-    expect(p[15]).toEqual(["J16", "J19", "J50", "J52"]);
+    expect(p.map((x) => x.length)).toEqual([3, ...Array<number>(16).fill(4)]);
+    // la poule 1 garde sa tête de série et ses 2e/3e passages ; c'est le dernier joueur qui manque
+    expect(p[0]).toEqual(["J1", "J34", "J35"]);
+    expect(p[1]).toEqual(["J2", "J33", "J36", "J67"]);
+    expect(p[16]).toEqual(["J17", "J18", "J51", "J52"]);
+  });
+
+  it("61 → les poules 1, 2, 3 sont à 3 joueurs : les plus faibles du tirage manquent", () => {
+    const p = serpentin(names(61), 3);
+    expect(p[0]).toEqual(["J1", "J32", "J33"]);
+    expect(p[1]).toEqual(["J2", "J31", "J34"]);
+    expect(p[2]).toEqual(["J3", "J30", "J35"]);
+    expect(p[3]).toEqual(["J4", "J29", "J36", "J61"]);
+    expect(p[15]).toEqual(["J16", "J17", "J48", "J49"]);
   });
 
   it("61 → 13×4 + 3×3 ; 65 → 14×4 + 3×3 ; 60 → 15×4", () => {
     expect(serpentin(names(61), 3).map((x) => x.length)).toEqual([
+      3,
+      3,
+      3,
       ...Array<number>(13).fill(4),
-      3,
-      3,
-      3,
     ]);
     expect(serpentin(names(65), 3).map((x) => x.length)).toEqual([
+      3,
+      3,
+      3,
       ...Array<number>(14).fill(4),
-      3,
-      3,
-      3,
     ]);
     expect(serpentin(names(60), 3).map((x) => x.length)).toEqual(Array<number>(15).fill(4));
   });

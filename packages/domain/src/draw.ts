@@ -5,8 +5,11 @@
  * - Serpentin (§1, §3) : joueurs déjà ordonnés, répartis en zigzag (1→n, n→1, 1→n, n→1) dans
  *   des poules de 4, avec au plus `maxPoulesOf3` poules de 3. Le nombre de poules de 3 est le
  *   plus petit possible ((4 − n mod 4) mod 4) ; s'il dépasse le maximum, une erreur explicite
- *   est levée. Les poules de 3 sont les dernières (règle par défaut de SPEC §3) : lors du
- *   dernier passage (n→1), elles sont simplement sautées.
+ *   est levée. Les poules de 3 sont les PREMIÈRES (poules 1 à k3), comme dans l'outil Excel de
+ *   référence (VBA : une poule est de 3 si son numéro ≤ POULES_3_NB) et le livret (« les poules
+ *   de 4 commenceront nécessairement avant les poules de 3 ») : au dernier passage (n→1), les
+ *   poules 1 à k3 sont sautées, ce sont donc les joueurs les plus faibles du tirage qui manquent,
+ *   et les têtes de série 1 à k3 jouent un match de moins.
  * - Contrainte club (§3) : jamais 3 joueurs du même club dans une poule. Résolution : on
  *   reconstitue la liste linéaire du serpentin, on décale d'un cran vers le bas le moins bien
  *   classé des joueurs en conflit (échange avec son suivant), on recalcule le serpentin et on
@@ -43,7 +46,7 @@ export function serpentinWithSizes(players: string[], sizes: number[]): string[]
   return poules;
 }
 
-/** Tailles des poules pour `n` joueurs : poules de 4, au plus `maxPoulesOf3` poules de 3. */
+/** Tailles des poules pour `n` joueurs : poules de 4, au plus `maxPoulesOf3` poules de 3, placées en premier. */
 export function pouleSizes(n: number, maxPoulesOf3: number): number[] {
   if (!Number.isInteger(n) || n < 3) {
     throw new Error(`Impossible de former des poules avec ${n} joueur(s)`);
@@ -55,7 +58,7 @@ export function pouleSizes(n: number, maxPoulesOf3: number): number[] {
       `${n} joueurs : il faudrait ${k3} poule(s) de 3 (maximum ${Math.min(maxPoulesOf3, k)}) ; ajuster le nombre de joueurs`,
     );
   }
-  return Array.from({ length: k }, (_, i) => (i >= k - k3 ? 3 : 4));
+  return Array.from({ length: k }, (_, i) => (i < k3 ? 3 : 4));
 }
 
 /** Répartition en serpentin, poules de 4 et au plus `maxPoulesOf3` poules de 3 (SPEC §3). */
