@@ -1,18 +1,30 @@
 /** Jeudi : structure des billards, tirages, création des poules du vendredi, documents. */
 import type { Billard } from "@pilot5q/domain";
-import { Check, Pencil, Play, Plus, Printer, Shuffle, Trash2, TriangleAlert } from "lucide-react";
-import { useMemo, useState } from "react";
+import {
+  Check,
+  FileText,
+  Pencil,
+  Play,
+  Plus,
+  Printer,
+  Shuffle,
+  Trash2,
+  TriangleAlert,
+} from "lucide-react";
+import { useMemo, useRef, useState } from "react";
 
 import { DayTasks } from "@/components/DayTasks";
-import { PouleCard } from "@/components/PouleCard";
-import { Serpentin } from "@/components/Serpentin";
+import { SerpentinPanel } from "@/components/Serpentin";
 import { PrintCenter } from "@/components/PrintCenter";
 import { useToast } from "@/components/Toast";
 import { Avatar, Banner, Button, Card, Chip, PageHead, Select, Tile, cx } from "@/components/ui";
 import { BillardAssignment } from "@/dj/BillardAssignment";
 import { planToAssignments } from "@/lib/assign";
 import { optimizeBillards } from "@/lib/billardsOptimizer";
+import { JEUDI_DOCS } from "@/lib/dayTasks";
+import { useDjMeta } from "@/lib/djMeta";
 import { drawFridayPoules } from "@/lib/forfaits";
+import { docsFor } from "@/print/docs";
 import { pouleSizes } from "@/lib/engine";
 import { longDate, nice, plural } from "@/lib/format";
 import { drawLaterPhaseEvents, preqPouleCount } from "@/lib/setup";
@@ -33,6 +45,9 @@ export function Jeudi() {
   const [printOpen, setPrintOpen] = useState(false);
   const [drawSeq, setDrawSeq] = useState(0);
   const [serpDone, setSerpDone] = useState(true);
+  // Serpentin : déplié pendant l'animation du tirage, puis replié (replié au rechargement)
+  const [serpOpen, setSerpOpen] = useState(false);
+  const autoCollapse = useRef(false);
   const [unresolved, setUnresolved] = useState<number[]>([]);
 
   const ro = useEditLock();
@@ -58,6 +73,8 @@ export function Jeudi() {
     setUnresolved(res.unresolved);
     setDrawSeq((n) => n + 1);
     setSerpDone(false);
+    autoCollapse.current = true;
+    setSerpOpen(true);
     dispatch({ type: "poules.drawn", payload: { phase: "PREQ", poules } });
     window.setTimeout(
       () =>
@@ -222,31 +239,36 @@ export function Jeudi() {
         <div id="tirage" className="mt-4 scroll-mt-4">
           <div className="mb-3 flex flex-wrap items-end justify-between gap-3">
             <div>
-              <div className="eyebrow">Serpentin</div>
+              <div className="eyebrow">Tirage</div>
               <h2 className="text-[18px]">Poules du vendredi</h2>
             </div>
-            <div className="flex flex-wrap items-center gap-2">
-              <Chip tone="grey">Têtes de poule en haut · place au classement à droite</Chip>
-              {!locked ? (
-                <Button size="sm" icon={Shuffle} onClick={redraw}>
-                  Refaire le tirage
-                </Button>
-              ) : null}
-            </div>
+            {!locked ? (
+              <Button size="sm" icon={Shuffle} onClick={redraw}>
+                Refaire le tirage
+              </Button>
+            ) : null}
           </div>
-          <Card
-            id="serpentin"
-            className="mb-3.5"
-            title="Le serpentin du tirage"
-            aside={<Chip tone="gold">TS = tête de poule</Chip>}
-          >
-            <Serpentin
-              poules={state.poules.PREQ}
-              animate={drawSeq}
-              conflicts={conflictSet}
-              onDone={() => setSerpDone(true)}
-            />
-          </Card>
+          <SerpentinPanel
+            open={serpOpen}
+            onToggle={() => {
+              autoCollapse.current = false;
+              setSerpDone(true);
+              setSerpOpen((v) => !v);
+            }}
+            poules={state.poules.PREQ}
+            animate={serpOpen && autoCollapse.current ? drawSeq : 0}
+            conflicts={conflictSet}
+            onDone={() => {
+              setSerpDone(true);
+              // Après l'animation du tirage, le serpentin se replie en une ligne
+              if (autoCollapse.current) {
+                window.setTimeout(() => {
+                  if (autoCollapse.current) setSerpOpen(false);
+                  autoCollapse.current = false;
+                }, 1500);
+              }
+            }}
+          />
           {serpDone ? (
             conflictSet.size > 0 ? (
               <Banner tone="red" icon={TriangleAlert} className="mt-0 mb-3.5">
@@ -255,39 +277,156 @@ export function Jeudi() {
                 peut pas résoudre : à signaler au responsable national.
               </Banner>
             ) : (
-              <Banner
-                icon={Check}
-                className="mt-0 mb-3.5"
-                actions={
-                  <Button icon={Printer} onClick={() => setPrintOpen(true)}>
-                    Imprimer listes et feuilles de match
-                  </Button>
-                }
-              >
+              <Banner icon={Check} className="mt-0 mb-3.5">
                 {plural(state.poules.PREQ.length, "poule créée", "poules créées")} · aucune poule
                 avec trois joueurs du même club · têtes de poule en première ligne ·{" "}
                 {plural(totalMatches, "match")} à jouer
               </Banner>
             )
           ) : null}
-          <div className="grid grid-cols-[repeat(auto-fill,minmax(230px,1fr))] gap-3">
-            {state.poules.PREQ.map((p) => (
-              <PouleCard
-                key={p.num}
-                state={state}
-                phase="PREQ"
-                poule={p}
-                distance={d}
-                conflict={conflictSet.has(p.num)}
-                showPlace
-              />
-            ))}
+          <div className="grid items-start gap-3.5 lg:grid-cols-[minmax(0,1fr)_300px]">
+            <PoulesTable conflicts={conflictSet} />
+            <DocumentsPanel onOpen={() => setPrintOpen(true)} />
           </div>
         </div>
       )}
 
       <PrintCenter day="jeudi" open={printOpen} onClose={() => setPrintOpen(false)} />
     </section>
+  );
+}
+
+/* ---------- Liste des poules (statique) ---------- */
+
+/**
+ * Tableau compact des poules issues du tirage : poule, billard(s), joueurs dans l'ordre du
+ * serpentin, sans numéros 1 à 4 ni club. Volontairement statique : les scores se suivent le
+ * vendredi.
+ */
+function PoulesTable({ conflicts }: { conflicts: Set<number> }) {
+  const { state } = useTournament();
+  const poules = state.poules.PREQ;
+  const width = Math.max(4, ...poules.map((p) => p.players.length));
+  return (
+    <Card
+      id="liste-poules"
+      title="Liste des poules"
+      aside={<Chip tone="grey">Tête de poule en premier</Chip>}
+      bodyClassName="overflow-x-auto px-4 pb-4"
+    >
+      <table className="w-full min-w-[620px] border-collapse text-[12.5px]">
+        <thead>
+          <tr className="text-ink-muted text-left text-[10.5px] tracking-[0.06em] uppercase">
+            <th className="w-[64px] py-1.5 pr-2 font-bold">Poule</th>
+            <th className="w-[84px] py-1.5 pr-2 font-bold">Billard</th>
+            <th className="py-1.5 font-bold" colSpan={width}>
+              Joueurs
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {poules.map((p, i) => {
+            const bills = pouleBillards(state, "PREQ", p);
+            const conflict = conflicts.has(p.num);
+            return (
+              <tr
+                key={p.num}
+                className={cx(
+                  "border-line animate-fade-up border-t",
+                  conflict ? "bg-alert-soft/60" : i % 2 === 1 && "bg-surface-2/60",
+                )}
+                style={{ animationDelay: `${Math.min(i, 20) * 18}ms` }}
+              >
+                <td className="py-[5px] pr-2 font-mono text-[13px] font-bold tabular-nums">
+                  {p.num}
+                  {p.players.length < 4 ? (
+                    <span className="text-ink-muted ml-1 font-sans text-[10px] font-semibold">
+                      ·3
+                    </span>
+                  ) : null}
+                </td>
+                <td className="py-[5px] pr-2 whitespace-nowrap">
+                  <span className="font-mono font-bold tabular-nums">
+                    {bills.join(" & ") || "—"}
+                  </span>
+                  {bills.length ? (
+                    <span className="text-ink-muted ml-1 text-[10px] font-semibold">
+                      {state.billards.find((b) => b.num === bills[0])?.type}
+                    </span>
+                  ) : null}
+                </td>
+                {Array.from({ length: width }, (_, k) => {
+                  const name = p.players[k];
+                  return (
+                    <td
+                      key={k}
+                      className={cx(
+                        "truncate py-[5px] pr-3",
+                        k === 0 ? "font-bold" : "text-ink-secondary font-semibold",
+                        conflict && "text-alert-ink",
+                      )}
+                    >
+                      {name ? nice(name) : <span className="text-ink-muted">—</span>}
+                    </td>
+                  );
+                })}
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </Card>
+  );
+}
+
+/* ---------- Documents à imprimer ---------- */
+
+function DocumentsPanel({ onOpen }: { onOpen: () => void }) {
+  const { state, id } = useTournament();
+  const [meta] = useDjMeta(id);
+  const docs = docsFor("jeudi", state).filter((d) => JEUDI_DOCS.includes(d.id));
+  const done = docs.filter((d) => meta.printed[d.id]).length;
+  return (
+    <Card
+      id="documents"
+      title="Documents à imprimer"
+      aside={
+        <span className="text-ink-muted font-mono text-[11.5px] font-bold tabular-nums">
+          {done}/{docs.length}
+        </span>
+      }
+      className="lg:sticky lg:top-[76px]"
+    >
+      <ul className="flex flex-col gap-1 px-3 pb-2">
+        {docs.map((d) => {
+          const printed = Boolean(meta.printed[d.id]);
+          return (
+            <li key={d.id}>
+              <button
+                type="button"
+                onClick={onOpen}
+                className="hover:bg-brand-soft flex w-full items-start gap-2 rounded-[9px] px-1.5 py-[5px] text-left text-[12.5px] leading-[1.3] transition-colors"
+              >
+                {printed ? (
+                  <span className="bg-ok mt-px grid size-4 shrink-0 place-items-center rounded-full text-white">
+                    <Check className="size-2.5" strokeWidth={3.5} aria-hidden="true" />
+                  </span>
+                ) : (
+                  <FileText className="text-ink-muted mt-px size-4 shrink-0" aria-hidden="true" />
+                )}
+                <span className={printed ? "text-ink-secondary" : "font-semibold"}>{d.label}</span>
+                <span className="sr-only">{printed ? " (imprimé)" : " (à imprimer)"}</span>
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+      <div className="px-3 pb-3">
+        <Button variant="primary" icon={Printer} className="w-full" onClick={onOpen}>
+          Imprimer les documents
+        </Button>
+      </div>
+    </Card>
   );
 }
 

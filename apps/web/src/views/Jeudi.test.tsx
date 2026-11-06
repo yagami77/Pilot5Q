@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
 import { describe, expect, it } from "vitest";
 
@@ -31,7 +31,11 @@ describe("vue Jeudi", () => {
     expect(screen.getByText("Barre Patrick")).toBeInTheDocument();
     expect(screen.getByText("Hubert Michel")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Lancer le tirage" }));
-    expect(screen.getAllByText("Poule 17").length).toBeGreaterThan(0);
+    expect(screen.getByRole("heading", { name: "Serpentin du tirage" })).toBeInTheDocument();
+    // Liste statique des poules : une ligne par poule, sans numéros 1 à 4
+    const table = screen.getByRole("table");
+    expect(within(table).getAllByRole("row")).toHaveLength(18);
+    expect(screen.getByRole("heading", { name: "Documents à imprimer" })).toBeInTheDocument();
     expect(screen.getByText(/17 poules créées/)).toBeInTheDocument();
     // Bouton du jour suivant dans la barre des tâches : désactivé tant que tout n'est pas fait
     const next = screen.getByRole("button", { name: /Passer au vendredi/ });

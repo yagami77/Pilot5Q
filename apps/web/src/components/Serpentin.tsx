@@ -2,14 +2,18 @@
  * Serpentin du tirage : grille poules × lignes, chemin en zigzag qui se trace en SVG avec
  * une tête lumineuse, joueurs qui se posent un par un dans l'ordre du serpentin
  * (≈ 2,6 s au total), têtes de poule marquées, cellules en conflit de club en rouge.
+ * `SerpentinPanel` l'enveloppe : déplié pendant le tirage, replié ensuite en une ligne
+ * « Serpentin du tirage » qu'on peut rouvrir (retours du 6 novembre).
  */
 import type { Poule } from "@pilot5q/domain";
+import { ChevronDown, ChevronUp, Spline } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
-import { nice } from "@/lib/format";
+import { nice, plural } from "@/lib/format";
 import { prefersReducedMotion } from "@/lib/motion";
 
-import { cx } from "./ui";
+import { Button, Chip, cx } from "./ui";
 
 const CELL_W = 74;
 const CELL_H = 52;
@@ -199,5 +203,65 @@ export function Serpentin({
         ))}
       </div>
     </div>
+  );
+}
+
+/** Serpentin repliable : une ligne quand il est replié, la grille animée quand il est déplié. */
+export function SerpentinPanel({
+  open,
+  onToggle,
+  poules,
+  animate,
+  conflicts,
+  onDone,
+}: {
+  open: boolean;
+  onToggle: () => void;
+  poules: Poule[];
+  animate: number;
+  conflicts?: Set<number>;
+  onDone?: () => void;
+}) {
+  const players = poules.reduce((n, p) => n + p.players.length, 0);
+  return (
+    <section id="serpentin" className="card mb-3.5 scroll-mt-20 overflow-hidden">
+      <header className="flex flex-wrap items-center gap-x-3 gap-y-1.5 px-4 py-2.5">
+        <span className="bg-brand-soft text-brand grid size-7 shrink-0 place-items-center rounded-[9px]">
+          <Spline className="size-4" aria-hidden="true" />
+        </span>
+        <h3 className="text-[14px] font-bold">Serpentin du tirage</h3>
+        <span className="text-ink-muted text-[12px]">
+          {plural(players, "joueur")} répartis en zigzag dans {plural(poules.length, "poule")}
+        </span>
+        <span className="ml-auto flex items-center gap-2">
+          {open ? <Chip tone="gold">TS = tête de poule</Chip> : null}
+          <Button
+            size="sm"
+            variant="ghost"
+            iconRight={open ? ChevronUp : ChevronDown}
+            onClick={onToggle}
+            aria-expanded={open}
+            aria-controls="serpentin-grille"
+          >
+            {open ? "Replier" : "Rouvrir"}
+          </Button>
+        </span>
+      </header>
+      <AnimatePresence initial={false}>
+        {open ? (
+          <motion.div
+            id="serpentin-grille"
+            key="grille"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.45, ease: [0.2, 0.8, 0.2, 1] }}
+            className="border-line border-t"
+          >
+            <Serpentin poules={poules} animate={animate} conflicts={conflicts} onDone={onDone} />
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
+    </section>
   );
 }

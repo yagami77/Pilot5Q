@@ -1,6 +1,7 @@
 /**
  * Affichage au club : tableau des poules (lisible à deux mètres) et liste alphabétique des
- * joueurs avec poule et billard (très compacte). Sans club.
+ * joueurs avec poule et billard (très compacte). Sans club ni numéros 1 à 4 (ils restent sur
+ * les feuilles de match, où ils servent).
  */
 import type { Poule, TournamentState } from "@pilot5q/domain";
 
@@ -58,7 +59,7 @@ function PouleTile({
         </span>
       </div>
       <ol className="mt-[1.4mm] flex flex-col">
-        {poule.players.map((n, i) => (
+        {poule.players.map((n) => (
           <li
             key={n}
             className={
@@ -69,7 +70,6 @@ function PouleTile({
                   : "board-player"
             }
           >
-            <span className="board-dot">{i + 1}</span>
             <span className="truncate">{nice(n)}</span>
           </li>
         ))}
@@ -120,8 +120,9 @@ export function PoulesBoard({
         ))}
       </div>
       <PrintFoot>
-        Ordre des matchs : 2 contre 3, 1 contre 4, perdants, gagnants, dernier match du 4, dernier
-        match du 1. La poule au numéro le plus élevé commence sur un billard partagé.
+        Joueurs dans l'ordre du tirage, tête de poule en premier. L'ordre des matchs et les arbitres
+        figurent sur les feuilles de match. Sur un billard partagé, la poule au numéro le plus élevé
+        commence.
       </PrintFoot>
     </section>
   );
