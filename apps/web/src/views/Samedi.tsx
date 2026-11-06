@@ -6,6 +6,7 @@ import { useNavigate } from "react-router";
 
 import { Bracket } from "@/components/Bracket";
 import { DayTasks } from "@/components/DayTasks";
+import { MastersRotation } from "@/components/MastersRotation";
 import { PouleGrid, PouleViewToggle, usePouleView, type PouleView } from "@/components/PouleGrid";
 import { RollingNumber } from "@/components/RollingNumber";
 import { PouleDrawer } from "@/components/PouleDrawer";
@@ -174,6 +175,9 @@ export function Samedi() {
             conflicts={conflicts}
           />
         </Card>
+
+        {/* Tours de jeu Masters : seulement s'il n'y a que 3 billards 3m10 */}
+        <MastersRotation />
 
         <Card
           id="national"
