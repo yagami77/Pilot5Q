@@ -192,6 +192,7 @@ export function ScoreEditor({
       className={cx(
         inputClass,
         win && valid && "win",
+        !win && valid && "lose",
         (value !== null && (value < 0 || value > d.pointsParSet)) || bad ? "err" : "",
       )}
       onChange={(e) => onDraft(update(parse(e.target.value)))}
@@ -291,7 +292,11 @@ export function ScoreEditor({
             className={cx(
               "ml-2 font-mono font-bold tabular-nums",
               compact ? "w-4 text-center text-[14px]" : "text-[15px]",
-              valid ? "text-ok-ink" : "text-ink-muted",
+              valid
+                ? (who === "a" ? current.sa : current.sb) === d.setsGagnants
+                  ? "text-ok-ink"
+                  : "text-alert-ink"
+                : "text-ink-muted",
             )}
           >
             {who === "a" ? (current.sa ?? "–") : (current.sb ?? "–")}
@@ -347,6 +352,7 @@ export function ScoreCell({
           "score-input",
           size === "sm" && "h-[32px] w-[48px] rounded-[8px] text-[14px]",
           value === d.pointsParSet && valid && "win",
+          value !== null && value !== d.pointsParSet && valid && "lose",
           (value !== null && (value < 0 || value > d.pointsParSet)) || bad ? "err" : "",
           bad && "animate-shake",
         )}

@@ -238,9 +238,13 @@ function MatchSheet({
             >
               {valid || m.sa !== null || m.sb !== null ? (
                 <>
-                  <span className={cx(w === m.a && "text-ink font-bold")}>{score("a")}</span>
+                  <span className={cx(w && (w === m.a ? "text-ok-ink font-bold" : "text-alert-ink"))}>
+                    {score("a")}
+                  </span>
                   <span className="text-ink-muted">–</span>
-                  <span className={cx(w === m.b && "text-ink font-bold")}>{score("b")}</span>
+                  <span className={cx(w && (w === m.b ? "text-ok-ink font-bold" : "text-alert-ink"))}>
+                    {score("b")}
+                  </span>
                 </>
               ) : ff ? (
                 "ff"
@@ -519,9 +523,13 @@ function MatchScore({
       }
     >
       {num(match.a)}
-      <span className={cx(w === match.a ? "text-ink font-bold" : "text-ink-muted")}>{left}</span>
+      <span className={cx(w === match.a ? "text-ok-ink font-bold" : w ? "text-alert-ink" : "text-ink-muted")}>
+        {left}
+      </span>
       <span className="text-ink-muted">–</span>
-      <span className={cx(w === match.b ? "text-ink font-bold" : "text-ink-muted")}>{right}</span>
+      <span className={cx(w === match.b ? "text-ok-ink font-bold" : w ? "text-alert-ink" : "text-ink-muted")}>
+        {right}
+      </span>
       {num(match.b)}
     </span>
   );

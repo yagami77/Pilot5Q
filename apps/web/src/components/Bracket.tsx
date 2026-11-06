@@ -521,7 +521,7 @@ function MatchCard({
                 value={name && (score !== null || match.forfait) ? (score ?? 0) : name ? "–" : ""}
                 className={cx(
                   "min-w-[26px] justify-end font-mono text-[20px] font-bold",
-                  isWin ? (champion ? "text-gold" : "text-ok") : "text-ink-secondary",
+                  isWin ? (champion ? "text-gold" : "text-ok") : isLose ? "text-alert" : "text-ink-secondary",
                 )}
               />
             </>

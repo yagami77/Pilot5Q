@@ -205,6 +205,9 @@
   .score-input.win {
     @apply bg-ok-soft text-ok-ink border-[#9fddba];
   }
+  .score-input.lose {
+    @apply bg-alert-soft/60 text-alert-ink border-[#f0b8c3];
+  }
   .score-input.err {
     @apply bg-alert-soft text-alert-ink border-alert;
   }
