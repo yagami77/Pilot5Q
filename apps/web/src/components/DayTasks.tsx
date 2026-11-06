@@ -1,10 +1,10 @@
 /**
  * Tâches du jour, en tête de chaque journée : état de chaque tâche (à faire, en cours avec
  * compteur, faite), clic = défilement vers sa zone, « Modifier » quand elle est faite, et
- * « Passer au jour suivant » quand tout est fait.
+ * « Passer au jour suivant » toujours au même endroit (actif quand tout est fait).
  */
 import { ArrowRight, Flag, Pencil } from "lucide-react";
-import { AnimatePresence, motion } from "motion/react";
+import { motion } from "motion/react";
 import { useMemo } from "react";
 import { useNavigate } from "react-router";
 
@@ -98,11 +98,9 @@ export function DayTasks({
 }) {
   const { state, id } = useTournament();
   const [meta] = useDjMeta(id);
-  const navigate = useNavigate();
   const tasks = useMemo(() => dayTasks(state, day, meta), [state, day, meta]);
   const done = tasks.filter((t) => t.status === "done").length;
   const all = done === tasks.length;
-  const next = NEXT_DAY[day];
   const pct = tasks.length ? done / tasks.length : 0;
 
   const open = (t: DayTask) => {
@@ -183,35 +181,86 @@ export function DayTasks({
         ))}
       </ol>
 
-      <AnimatePresence>
-        {all ? (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9, x: 8 }}
-            animate={{ opacity: 1, scale: 1, x: 0 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.35, ease: [0.2, 0.8, 0.2, 1] }}
-            className="ml-auto"
-          >
-            {next ? (
-              <Button
-                variant="primary"
-                iconRight={ArrowRight}
-                onClick={() => {
-                  void navigate(`/tournoi/${next}`);
-                  window.scrollTo({ top: 0 });
-                }}
-              >
-                Passer au {DAY_LABEL[next]}
-              </Button>
-            ) : (
-              <span className="bg-gold-soft text-gold-ink inline-flex items-center gap-2 rounded-[12px] px-3.5 py-2 text-[13px] font-bold">
-                <Flag className="size-4" aria-hidden="true" />
-                Tournoi clôturé
-              </span>
-            )}
-          </motion.div>
-        ) : null}
-      </AnimatePresence>
+      <NextDay day={day} tasks={tasks} />
     </section>
+  );
+}
+
+/**
+ * Bouton « Passer au jour suivant », toujours au même endroit (à droite de la barre des tâches)
+ * pour les quatre journées : actif quand toutes les tâches sont faites, sinon désactivé avec la
+ * raison en infobulle. Le dimanche, il mène à la clôture puis devient « Tournoi clôturé ».
+ */
+function NextDay({ day, tasks }: { day: Day; tasks: DayTask[] }) {
+  const navigate = useNavigate();
+  const next = NEXT_DAY[day];
+  const remaining = tasks.filter((t) => t.status !== "done");
+  const all = remaining.length === 0;
+  // Dimanche : la clôture est la dernière tâche ; le bouton y mène dès que le reste est fait
+  const beforeClosure = remaining.filter((t) => t.id !== "cloture");
+  const ready = next ? all : beforeClosure.length === 0;
+  const reason = ready
+    ? undefined
+    : `Reste à faire : ${(next ? remaining : beforeClosure).map((t) => t.label).join(" · ")}`;
+  const reasonId = `next-day-reason-${day}`;
+
+  if (!next && all) {
+    return (
+      <motion.span
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.35, ease: [0.2, 0.8, 0.2, 1] }}
+        className="bg-gold-soft text-gold-ink ml-auto inline-flex items-center gap-2 rounded-[12px] px-3.5 py-2 text-[13px] font-bold"
+      >
+        <Flag className="size-4" aria-hidden="true" />
+        Tournoi clôturé
+      </motion.span>
+    );
+  }
+
+  return (
+    <span className="ml-auto inline-flex" title={reason}>
+      <motion.span
+        key={ready ? "ready" : "wait"}
+        initial={ready ? { scale: 0.92, opacity: 0.6 } : false}
+        animate={
+          ready
+            ? {
+                scale: 1,
+                opacity: 1,
+                // Halo bref quand le bouton devient actif
+                boxShadow: ["0 0 0 0 rgb(30 79 216 / 0.45)", "0 0 0 12px rgb(30 79 216 / 0)"],
+              }
+            : { scale: 1, opacity: 1 }
+        }
+        transition={{
+          type: "spring",
+          stiffness: 420,
+          damping: 22,
+          boxShadow: { duration: 1.1, ease: "easeOut" },
+        }}
+        className="inline-flex rounded-[12px]"
+      >
+        <Button
+          variant={ready ? "primary" : "default"}
+          iconRight={next ? ArrowRight : Flag}
+          disabled={!ready}
+          aria-describedby={reason ? reasonId : undefined}
+          onClick={() => {
+            if (next) {
+              void navigate(`/tournoi/${next}`);
+              window.scrollTo({ top: 0 });
+            } else focusZone("cloture");
+          }}
+        >
+          {next ? `Passer au ${DAY_LABEL[next]}` : "Clôturer le tournoi"}
+        </Button>
+      </motion.span>
+      {reason ? (
+        <span id={reasonId} className="sr-only">
+          {reason}
+        </span>
+      ) : null}
+    </span>
   );
 }

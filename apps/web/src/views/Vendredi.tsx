@@ -550,6 +550,7 @@ function Qualifies({ onNext, onPrint }: { onNext: () => void; onPrint: () => voi
         <Button icon={Printer} onClick={onPrint}>
           Imprimer les tableaux du samedi
         </Button>
+        {/* TODO jour suivant : bouton désormais dans la barre des tâches */}
         <Button variant="primary" size="lg" iconRight={ArrowRight} onClick={onNext}>
           Préparer le samedi
         </Button>

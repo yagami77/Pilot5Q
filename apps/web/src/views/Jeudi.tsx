@@ -1,18 +1,7 @@
 /** Jeudi : structure des billards, tirages, création des poules du vendredi, documents. */
 import type { Billard } from "@pilot5q/domain";
-import {
-  ArrowRight,
-  Check,
-  Pencil,
-  Play,
-  Plus,
-  Printer,
-  Shuffle,
-  Trash2,
-  TriangleAlert,
-} from "lucide-react";
+import { Check, Pencil, Play, Plus, Printer, Shuffle, Trash2, TriangleAlert } from "lucide-react";
 import { useMemo, useState } from "react";
-import { useNavigate } from "react-router";
 
 import { DayTasks } from "@/components/DayTasks";
 import { PouleCard } from "@/components/PouleCard";
@@ -40,7 +29,6 @@ import { useEditLock, useTournament } from "@/store/tournament";
 export function Jeudi() {
   const { state, dispatch, dispatchMany, amendBillards } = useTournament();
   const toast = useToast();
-  const navigate = useNavigate();
   const [printOpen, setPrintOpen] = useState(false);
   const [drawSeq, setDrawSeq] = useState(0);
   const [serpDone, setSerpDone] = useState(true);
@@ -267,18 +255,9 @@ export function Jeudi() {
                 icon={Check}
                 className="mt-0 mb-3.5"
                 actions={
-                  <>
-                    <Button icon={Printer} onClick={() => setPrintOpen(true)}>
-                      Imprimer listes et feuilles de match
-                    </Button>
-                    <Button
-                      variant="primary"
-                      iconRight={ArrowRight}
-                      onClick={() => navigate("/tournoi/vendredi")}
-                    >
-                      Passer au vendredi
-                    </Button>
-                  </>
+                  <Button icon={Printer} onClick={() => setPrintOpen(true)}>
+                    Imprimer listes et feuilles de match
+                  </Button>
                 }
               >
                 {plural(state.poules.PREQ.length, "poule créée", "poules créées")} · aucune poule

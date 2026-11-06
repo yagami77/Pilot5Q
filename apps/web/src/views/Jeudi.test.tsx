@@ -33,6 +33,12 @@ describe("vue Jeudi", () => {
     fireEvent.click(screen.getByRole("button", { name: "Lancer le tirage" }));
     expect(screen.getAllByText("Poule 17").length).toBeGreaterThan(0);
     expect(screen.getByText(/17 poules créées/)).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /Passer au vendredi/ })).toBeInTheDocument();
+    // Bouton du jour suivant dans la barre des tâches : désactivé tant que tout n'est pas fait
+    const next = screen.getByRole("button", { name: /Passer au vendredi/ });
+    expect(next).toBeDisabled();
+    expect(next.parentElement?.parentElement).toHaveAttribute(
+      "title",
+      expect.stringMatching(/Reste à faire : .*Documents imprimés/),
+    );
   });
 });
