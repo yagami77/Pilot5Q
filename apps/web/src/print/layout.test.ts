@@ -5,7 +5,7 @@ import { replay } from "@/lib/engine";
 import { pouleMatches } from "@/lib/engine";
 import type { TournamentEvent } from "@pilot5q/domain";
 
-import { groupByBillard, paginateHalves } from "./layout";
+import { chunk, groupByBillard, paginateHalves } from "./layout";
 import { barrageSheets, finalSheets, pouleSheet, pouleSheetPages, singleHalves } from "./sheets";
 
 const it2 = (item: string, billards: number[]) => ({ item, billards });
@@ -34,6 +34,13 @@ describe("mise en page des feuilles de match", () => {
       ["P3", "P4"],
       ["P5", "P6"],
     ]);
+  });
+});
+
+describe("pagination des listes", () => {
+  it("découpe en pages de taille fixe, au moins une page", () => {
+    expect(chunk([1, 2, 3, 4, 5], 2)).toEqual([[1, 2], [3, 4], [5]]);
+    expect(chunk([], 30)).toEqual([[]]);
   });
 });
 

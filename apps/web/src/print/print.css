@@ -219,14 +219,12 @@
 
 /* ---------- Tableaux ---------- */
 
-.print-doc table,
 .pt {
   width: 100%;
   border-collapse: collapse;
   font-size: 9.4pt;
   line-height: 1.25;
 }
-.print-doc th,
 .pt th {
   padding: 0 2mm 1.3mm;
   border-bottom: 0.45mm solid #0f1b33;
@@ -239,13 +237,11 @@
   color: #5b6680;
   white-space: nowrap;
 }
-.print-doc td,
 .pt td {
-  padding: 1.3mm 2mm;
+  padding: 1.15mm 2mm;
   border-bottom: 0.2mm solid #dfe4ee;
   vertical-align: middle;
 }
-.print-doc tbody tr:nth-child(even) td,
 .pt tbody tr:nth-child(even) td {
   background: #f4f6fa;
 }
@@ -278,6 +274,34 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: #5b6680;
+}
+.pt-compact td {
+  padding-top: 0.7mm;
+  padding-bottom: 0.7mm;
+}
+.pt .nowrap {
+  white-space: nowrap;
+}
+/* Tableaux simples de l'espace du responsable (liste ordonnée, points d'un TN) */
+.print-doc table:not(.pt) {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 8.5pt;
+}
+.print-doc table:not(.pt) th,
+.print-doc table:not(.pt) td {
+  padding: 0.8mm 1.5mm;
+  border: 0.2mm solid #aab2c0;
+  text-align: left;
+  vertical-align: middle;
+}
+.print-doc table:not(.pt) th {
+  background: #f2f4f7;
+  font-size: 7pt;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #3c4a66;
 }
 /* Lignes à cocher au stylo */
 .pt-tall td {

@@ -242,30 +242,3 @@ export function QrSvg({ text, size = 15 }: { text: string; size?: number }) {
     </svg>
   );
 }
-
-/** Compatibilité : en-tête de document = bandeau avec une cellule de droite. */
-export function PrintHeader({
-  state,
-  title,
-  date,
-  day,
-  right,
-  rightSub,
-}: {
-  state: TournamentState;
-  title: ReactNode;
-  date?: string;
-  day?: string;
-  right?: ReactNode;
-  rightSub?: ReactNode;
-}) {
-  return (
-    <DocBanner
-      state={state}
-      title={title}
-      {...(date ? { date } : {})}
-      {...(day ? { sub: day } : {})}
-      {...(right ? { cells: [{ label: "", value: right, size: "sm", sub: rightSub }] } : {})}
-    />
-  );
-}

@@ -55,3 +55,10 @@ export function pairs<T>(items: T[]): T[][] {
   for (let i = 0; i < items.length; i += 2) out.push(items.slice(i, i + 2));
   return out;
 }
+
+/** Découpe une liste en pages de `size` lignes (au moins une page, éventuellement vide). */
+export function chunk<T>(items: T[], size: number): T[][] {
+  const out: T[][] = [];
+  for (let i = 0; i < items.length; i += size) out.push(items.slice(i, i + size));
+  return out.length ? out : [[]];
+}

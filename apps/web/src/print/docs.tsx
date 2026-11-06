@@ -1,6 +1,8 @@
 /**
- * Documents imprimables (A4, noir sur blanc). Chaque document est une fonction de l'état
- * qui rend une ou plusieurs pages `.print-page`.
+ * Documents imprimables (A4). Chaque document est une fonction de l'état qui rend une ou
+ * plusieurs pages `.print-page` : bandeau d'en-tête commun, tableaux zébrés aux filets fins,
+ * cases à cocher de 6 mm, scores des matchs joués (gagnant en vert gras, perdant en rouge
+ * maigre, lisibles en noir et blanc), pagination explicite avec numéro de page.
  */
 import type { BracketRound, Match, Poule, TournamentState } from "@pilot5q/domain";
 import type { ReactNode } from "react";
@@ -8,7 +10,8 @@ import type { ReactNode } from "react";
 import { FlowDiagram } from "@/components/FlowDiagram";
 
 import { PlayersBoard, PoulesBoard } from "./boards";
-import { PrintHeader } from "./brand";
+import { DocBanner, PrintFoot, Score, winClass, type BannerCell } from "./brand";
+import { chunk } from "./layout";
 import {
   SheetPages,
   barrageSheets,
@@ -22,7 +25,7 @@ import "./print.css";
 
 import { matchWinner } from "@/lib/engine";
 import { mastersRotationOf } from "@/lib/mastersRotation";
-import { clubShort, euros, longDate, nice, shortName } from "@/lib/format";
+import { clubShort, dateRange, euros, longDate, nice, shortName } from "@/lib/format";
 import { progressivePrimes } from "@/lib/primes";
 import {
   billardType,
@@ -64,7 +67,7 @@ export type DocId =
 export interface DocDef {
   id: DocId;
   label: string;
-  /** Page A4 en paysage. */
+  /** Page large (A4 paysage, ou A3 portrait). */
   landscape?: boolean;
   pages: (state: TournamentState) => number;
   available: (state: TournamentState) => boolean;
@@ -73,56 +76,27 @@ export interface DocDef {
 
 /* ---------- Briques ---------- */
 
-function Page({ children }: { children: ReactNode }) {
-  return <section className="print-page print-doc">{children}</section>;
-}
+/** Lignes par page des listes paginées (cases à cocher de 6 mm : lignes de 7,6 mm). */
+export const ROWS = { pointage: 30, classement: 34, consolante: 30, poulesParPage: 6 } as const;
 
-/** Titre en minuscules accentuées (« POULES MASTERS » → « Poules Masters »). */
-function sentence(title: string): string {
-  const low = title.toLowerCase();
-  return (low.charAt(0).toUpperCase() + low.slice(1))
-    .replace(/\bmasters\b/g, "Masters")
-    .replace(/\bnational\b/g, "National")
-    .replace(/\btn\b/g, "TN")
-    .replace(/ · ([a-zà-ÿ])/g, (_, c: string) => ` · ${c.toUpperCase()}`);
-}
-
-function DocHeader({
-  state,
-  title,
-  subtitle,
-  right,
-  rightSub,
-}: {
-  state: TournamentState;
-  title: string;
-  subtitle?: string;
-  right?: string;
-  rightSub?: string;
-}) {
+function Page({ children, fixed = true }: { children: ReactNode; fixed?: boolean }) {
   return (
-    <PrintHeader
-      state={state}
-      title={sentence(title)}
-      {...(subtitle ? { date: subtitle } : {})}
-      right={right}
-      rightSub={rightSub}
-    />
+    <section className={`print-page print-doc ${fixed ? "print-fixed" : ""}`}>{children}</section>
   );
 }
 
-function Foot({ children }: { children: ReactNode }) {
-  return <div className="mt-2 text-[9.5px] text-[#555]">{children}</div>;
+/** Case à cocher au stylo (6 mm), éventuellement déjà cochée. */
+function Box({ on = false }: { on?: boolean }) {
+  return <span className={`p-box ${on ? "p-box-on" : ""}`} aria-hidden="true" />;
 }
 
-const BOX = "☐";
+/** Numéro de page « 2/3 » (vide pour un document d'une page). */
+function pageOf(i: number, n: number): string | undefined {
+  return n > 1 ? `${i + 1}/${n}` : undefined;
+}
 
-function scoreText(m: Match, multi: boolean): string {
-  if (m.forfait) return m.forfait === "a" ? "forfait – V" : "V – forfait";
-  if (m.sa === null || m.sb === null) return "";
-  if (multi && m.setsA && m.setsB)
-    return `${m.sa}–${m.sb} (${m.setsA.map((a, i) => `${a}-${m.setsB?.[i] ?? ""}`).join(", ")})`;
-  return `${m.sa} – ${m.sb}`;
+function Foot({ children, page }: { children?: ReactNode; page?: string }) {
+  return <PrintFoot {...(page ? { page } : {})}>{children}</PrintFoot>;
 }
 
 /* ---------- Documents ---------- */
@@ -141,65 +115,70 @@ function Pointage({ state }: { state: TournamentState }) {
   const list = [...state.players].sort((a, b) => sortFr(a.name, b.name));
   const fee = state.rules.inscriptionFee;
   const juniors = list.filter((p) => p.junior).length;
+  const pages = chunk(list, ROWS.pointage);
+  const cells: BannerCell[] = [
+    { label: "Droit", value: `${fee} €`, size: "md", sub: "U21 exemptés" },
+    { label: "Joueurs", value: String(list.length) },
+  ];
   return (
-    <Page>
-      <DocHeader
-        state={state}
-        title="POINTAGE DES DROITS D'INSCRIPTION"
-        subtitle={`${longDate(dayDate(state, "vendredi"), true)} · liste alphabétique`}
-        right={`${fee} €`}
-        rightSub="U21 exemptés"
-      />
-      <table>
-        <thead>
-          <tr>
-            <th className="w-7">Payé</th>
-            <th>Joueur</th>
-            <th className="w-20">Licence</th>
-            <th>Club</th>
-            <th className="w-24">Poule · billard</th>
-            <th className="w-14">Droit</th>
-          </tr>
-        </thead>
-        <tbody>
-          {list.map((p) => {
-            const m = masters.has(p.name);
-            const po = pouleOf.get(p.name);
-            return (
-              <tr key={p.licence} className={m ? "bg-[#fff1c9]" : undefined}>
-                <td className="text-center text-[13px]">{BOX}</td>
-                <td className="font-semibold">
-                  {nice(p.name)}
-                  {m ? (
-                    <b className="ml-1.5 text-[8.5px] text-[#8a5a08] uppercase">Masters · samedi</b>
-                  ) : null}
-                  {p.junior ? (
-                    <b className="ml-1.5 rounded-sm border border-black px-1 text-[8.5px] uppercase">
-                      U21
-                    </b>
-                  ) : null}
-                </td>
-                <td className="font-mono">{p.licence}</td>
-                <td>{clubShort(p.club)}</td>
-                <td>
-                  {m
-                    ? "Masters"
-                    : po
-                      ? `P${po.num} · B${pouleBillards(state, "PREQ", po).join("/")}`
-                      : "—"}
-                </td>
-                <td className="text-center">{p.junior ? "exempté" : `${fee} €`}</td>
+    <>
+      {pages.map((rows, pi) => (
+        <Page key={pi}>
+          <DocBanner
+            state={state}
+            title="Pointage des droits d'inscription"
+            date={longDate(dayDate(state, "vendredi"), true)}
+            sub="Liste alphabétique · cocher à l'encaissement · Masters convoqués le samedi"
+            cells={cells}
+          />
+          <table className="pt pt-tall mt-[3.5mm]">
+            <thead>
+              <tr>
+                <th className="w-[9mm]">Payé</th>
+                <th>Joueur</th>
+                <th className="w-[20mm]">Licence</th>
+                <th>Club</th>
+                <th className="w-[24mm]">Poule · billard</th>
+                <th className="w-[14mm] c">Droit</th>
               </tr>
-            );
-          })}
-        </tbody>
-      </table>
-      <Foot>
-        Fond jaune : Masters préqualifiés, convoqués le samedi (ils règlent leur inscription le
-        samedi). U21 : exemptés du droit d'inscription ({juniors} signalé{juniors > 1 ? "s" : ""}).
-        Total attendu : {euros(fee * (list.length - juniors))}.
-      </Foot>
-    </Page>
+            </thead>
+            <tbody>
+              {rows.map((p) => {
+                const m = masters.has(p.name);
+                const po = pouleOf.get(p.name);
+                return (
+                  <tr key={p.licence} className={m ? "hl" : undefined}>
+                    <td className="c">
+                      <Box />
+                    </td>
+                    <td className="font-bold">
+                      {nice(p.name)}
+                      {m ? <span className="p-tag p-tag-gold">Masters · samedi</span> : null}
+                      {p.junior ? <span className="p-tag p-tag-line">U21</span> : null}
+                    </td>
+                    <td className="num">{p.licence}</td>
+                    <td className="muted">{clubShort(p.club)}</td>
+                    <td className="num">
+                      {m
+                        ? "Masters"
+                        : po
+                          ? `P${po.num} · B${pouleBillards(state, "PREQ", po).join("/")}`
+                          : "—"}
+                    </td>
+                    <td className="c num">{p.junior ? "exempté" : `${fee} €`}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+          <Foot page={pageOf(pi, pages.length)}>
+            Fond doré : Masters préqualifiés, convoqués le samedi (ils règlent leur inscription le
+            samedi). U21 : exemptés ({juniors} signalé{juniors > 1 ? "s" : ""}). Total attendu :{" "}
+            {euros(fee * (list.length - juniors))}.
+          </Foot>
+        </Page>
+      ))}
+    </>
   );
 }
 
@@ -207,19 +186,24 @@ function PremiersMatchs({ state }: { state: TournamentState }) {
   const d = phaseDistance(state, "PREQ");
   return (
     <Page>
-      <DocHeader
+      <DocBanner
         state={state}
-        title="PREMIERS MATCHS PAR BILLARD"
-        subtitle={`${longDate(dayDate(state, "vendredi"), true)} · la poule au numéro le plus élevé commence`}
+        title="Premiers matchs par billard"
+        date={longDate(dayDate(state, "vendredi"), true)}
+        sub="Sur un billard partagé, la poule au numéro le plus élevé commence · match 1 : 2 contre 3"
+        cells={[
+          { label: "Distance", value: distanceLabel(d), size: "sm" },
+          { label: "Billards", value: String(state.billards.length) },
+        ]}
       />
-      <table>
+      <table className="pt pt-tall mt-[3.5mm]">
         <thead>
           <tr>
-            <th className="w-16">Billard</th>
-            <th className="w-16">Poule</th>
-            <th>Premier match (2 contre 3)</th>
-            <th className="w-32">Arbitre</th>
-            <th>Poule suivante</th>
+            <th className="w-[16mm]">Billard</th>
+            <th className="w-[16mm]">Poule</th>
+            <th>Premier match</th>
+            <th className="w-[34mm]">Arbitre</th>
+            <th className="w-[30mm]">Puis</th>
           </tr>
         </thead>
         <tbody>
@@ -231,13 +215,22 @@ function PremiersMatchs({ state }: { state: TournamentState }) {
             const om = first ? orderedMatches(first, d)[0] : undefined;
             return (
               <tr key={b.num}>
-                <td className="font-bold">
-                  {b.num} <span className="font-normal text-[#555]">{b.type}</span>
-                </td>
-                <td>{first ? `Poule ${first.num}` : "—"}</td>
-                <td>{om ? `${nice(om.match.a)} – ${nice(om.match.b)}` : "libre"}</td>
-                <td>{om?.arbitre ? shortName(om.arbitre) : ""}</td>
                 <td>
+                  <span className="num text-[13pt] font-bold">{b.num}</span>
+                  <span className="muted ml-[1.5mm] text-[7.5pt]">{b.type}</span>
+                </td>
+                <td className="num font-bold">{first ? `P${first.num}` : "—"}</td>
+                <td className="font-semibold">
+                  {om ? (
+                    <>
+                      {nice(om.match.a)} <span className="muted">contre</span> {nice(om.match.b)}
+                    </>
+                  ) : (
+                    <span className="muted">libre</span>
+                  )}
+                </td>
+                <td>{om?.arbitre ? nice(om.arbitre) : ""}</td>
+                <td className="muted">
                   {poules
                     .slice(1)
                     .map((p) => `Poule ${p.num}`)
@@ -248,6 +241,7 @@ function PremiersMatchs({ state }: { state: TournamentState }) {
           })}
         </tbody>
       </table>
+      <Foot>Les joueurs de la poule qui ne jouent pas arbitrent et marquent.</Foot>
     </Page>
   );
 }
@@ -256,51 +250,62 @@ function ClassementPreq({ state }: { state: TournamentState }) {
   const ranking = preqRanking(state);
   const size = state.rules.barrageSize;
   const natTo = size + state.rules.nationalSize - size / 2;
+  const pages = chunk(ranking, ROWS.classement);
   return (
-    <Page>
-      <DocHeader
-        state={state}
-        title="CLASSEMENT DES PRÉQUALIFICATIONS"
-        subtitle={longDate(dayDate(state, "vendredi"), true)}
-        right={`${ranking.length} classés`}
-      />
-      <table>
-        <thead>
-          <tr>
-            <th className="w-8">Place</th>
-            <th>Joueur</th>
-            <th className="w-12">Poule</th>
-            <th className="w-8">Rang</th>
-            <th className="w-8">Pm</th>
-            <th className="w-8">Ps</th>
-            <th className="w-12">Faits</th>
-            <th className="w-12">Subis</th>
-            <th className="w-12">Moy.</th>
-            <th className="w-20">Suite</th>
-          </tr>
-        </thead>
-        <tbody>
-          {ranking.map((r) => (
-            <tr key={r.name} className={r.place <= size ? "bg-[#eef2fb]" : undefined}>
-              <td className="text-center font-bold">{r.place}</td>
-              <td className="font-semibold">{nice(r.name)}</td>
-              <td className="text-center">{r.poule}</td>
-              <td className="text-center">{r.rang ?? "–"}</td>
-              <td className="text-center font-mono">{r.ptm}</td>
-              <td className="text-center font-mono">{r.pts}</td>
-              <td className="text-center font-mono">{r.faits}</td>
-              <td className="text-center font-mono">{r.subis}</td>
-              <td className="text-center font-mono">{r.moy.toFixed(3)}</td>
-              <td>{r.place <= size ? "Barrage" : r.place <= natTo ? "National" : "Consolante*"}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <Foot>
-        Classement : rang dans la poule, points de match, points de set, moyenne, ordre d'arrivée.
-        Poules de 3 : +2 Pm et +1 Ps. * Consolante sur volontariat.
-      </Foot>
-    </Page>
+    <>
+      {pages.map((rows, pi) => (
+        <Page key={pi}>
+          <DocBanner
+            state={state}
+            title="Classement des préqualifications"
+            date={longDate(dayDate(state, "vendredi"), true)}
+            sub={`Places 1 à ${size} : barrages · ${size + 1} à ${natTo} : National · au-delà : consolante sur volontariat`}
+            cells={[
+              { label: "Classés", value: String(ranking.length) },
+              { label: "Barrages", value: String(size), sub: `places 1 à ${size}` },
+            ]}
+          />
+          <table className="pt mt-[3.5mm]">
+            <thead>
+              <tr>
+                <th className="w-[11mm] c">Place</th>
+                <th>Joueur</th>
+                <th className="w-[12mm] c">Poule</th>
+                <th className="w-[11mm] c">Rang</th>
+                <th className="w-[11mm] c">Pm</th>
+                <th className="w-[11mm] c">Ps</th>
+                <th className="w-[13mm] c">Faits</th>
+                <th className="w-[13mm] c">Subis</th>
+                <th className="w-[15mm] c">Moy.</th>
+                <th className="w-[22mm]">Suite</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((r) => (
+                <tr key={r.name} className={r.place <= size ? "hl-blue" : undefined}>
+                  <td className="c num font-bold">{r.place}</td>
+                  <td className="font-semibold">{nice(r.name)}</td>
+                  <td className="c num">{r.poule}</td>
+                  <td className="c num">{r.rang ?? "–"}</td>
+                  <td className="c num font-bold">{r.ptm}</td>
+                  <td className="c num">{r.pts}</td>
+                  <td className="c num">{r.faits}</td>
+                  <td className="c num">{r.subis}</td>
+                  <td className="c num">{r.moy.toFixed(3)}</td>
+                  <td className={r.place <= size ? "font-bold" : "muted"}>
+                    {r.place <= size ? "Barrage" : r.place <= natTo ? "National" : "Consolante*"}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <Foot page={pageOf(pi, pages.length)}>
+            Classement : rang dans la poule, points de match, points de set, moyenne, ordre
+            d'arrivée. Poules de 3 : +2 Pm et +1 Ps. * Consolante sur volontariat.
+          </Foot>
+        </Page>
+      ))}
+    </>
   );
 }
 
@@ -314,54 +319,75 @@ function ResultatsPoules({
   title: string;
 }) {
   const d = phaseDistance(state, phase);
-  const multi = d.setsGagnants > 1;
   const poules = state.poules[phase];
-  const chunks: Poule[][] = [];
-  for (let i = 0; i < poules.length; i += 6) chunks.push(poules.slice(i, i + 6));
+  const pages = chunk(poules, ROWS.poulesParPage);
+  const day: Day = phase === "PREQ" ? "vendredi" : "samedi";
   return (
     <>
-      {chunks.map((chunk, ci) => (
-        <Page key={ci}>
-          <DocHeader state={state} title={title} subtitle={`page ${ci + 1}/${chunks.length}`} />
-          <div className="grid grid-cols-2 gap-2">
-            {chunk.map((p) => {
-              const rows = pouleState(state, phase, p).rows;
+      {pages.map((rows, pi) => (
+        <Page key={pi}>
+          <DocBanner
+            state={state}
+            title={title}
+            date={longDate(dayDate(state, day), true)}
+            sub={`${phase === "PREQ" ? "Préqualifications" : phase === "QM" ? "Qualification Masters" : "Qualification National"} · classement de chaque poule, puis ses matchs dans l'ordre du code sportif`}
+            cells={[
+              { label: "Distance", value: distanceLabel(d), size: "sm" },
+              { label: "Poules", value: String(poules.length) },
+            ]}
+          />
+          <div className="mt-[3.5mm] grid grid-cols-2 gap-x-[6mm] gap-y-[4mm]">
+            {rows.map((p) => {
+              const r = pouleState(state, phase, p).rows;
+              const bills = pouleBillards(state, phase, p);
               return (
                 <div key={p.num}>
-                  <table>
+                  <table className="pt">
                     <thead>
-                      <tr>
-                        <th colSpan={5}>Poule {p.num}</th>
+                      <tr className="group">
+                        <th colSpan={5}>
+                          Poule {p.num}
+                          <small>
+                            Billard{bills.length > 1 ? "s" : ""} {bills.join(" & ")}
+                          </small>
+                        </th>
                       </tr>
                       <tr>
-                        <th className="w-5">#</th>
+                        <th className="w-[7mm] c">Rg</th>
                         <th>Joueur</th>
-                        <th className="w-7">Pm</th>
-                        <th className="w-7">Ps</th>
-                        <th className="w-12">Moy.</th>
+                        <th className="w-[9mm] c">Pm</th>
+                        <th className="w-[9mm] c">Ps</th>
+                        <th className="w-[13mm] c">Moy.</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {rows.map((r) => (
-                        <tr key={r.name}>
-                          <td className="text-center">{r.rang ?? "–"}</td>
-                          <td className="font-semibold">{nice(r.name)}</td>
-                          <td className="text-center font-mono">{r.ptm}</td>
-                          <td className="text-center font-mono">{r.pts}</td>
-                          <td className="text-center font-mono">{r.moy.toFixed(3)}</td>
+                      {r.map((row) => (
+                        <tr key={row.name}>
+                          <td className="c num font-bold">{row.rang ?? "–"}</td>
+                          <td className="font-semibold">{nice(row.name)}</td>
+                          <td className="c num font-bold">{row.ptm}</td>
+                          <td className="c num">{row.pts}</td>
+                          <td className="c num">{row.moy.toFixed(3)}</td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
-                  <table className="mt-1">
+                  <table className="pt pt-compact mt-[1.5mm] text-[8.6pt]">
                     <tbody>
-                      {orderedMatches(p, d).map((om) => (
+                      {orderedMatches(p, d).map((om, i) => (
                         <tr key={om.match.id}>
+                          <td className="num muted w-[8mm]">M{i + 1}</td>
                           <td>
-                            {shortName(om.match.a)} – {shortName(om.match.b)}
+                            <span className={winClass(om.match, d, om.match.a)}>
+                              {shortName(om.match.a)}
+                            </span>
+                            <span className="muted"> – </span>
+                            <span className={winClass(om.match, d, om.match.b)}>
+                              {shortName(om.match.b)}
+                            </span>
                           </td>
-                          <td className="w-28 text-right font-mono">
-                            {scoreText(om.match, multi)}
+                          <td className="r w-[30mm]">
+                            <Score m={om.match} d={d} />
                           </td>
                         </tr>
                       ))}
@@ -371,6 +397,10 @@ function ResultatsPoules({
               );
             })}
           </div>
+          <Foot page={pageOf(pi, pages.length)}>
+            Classement d'une poule : points de match, puis match direct (égalité à deux), points de
+            set, moyenne, ordre d'arrivée.
+          </Foot>
         </Page>
       ))}
     </>
@@ -383,48 +413,55 @@ function TableauBarrages({ state }: { state: TournamentState }) {
   const d = state.rules.distances.barrage;
   return (
     <Page>
-      <DocHeader
+      <DocBanner
         state={state}
-        title="BARRAGES"
-        subtitle={`${longDate(dayDate(state, "vendredi"), true)} · vainqueurs → Masters, perdants → National`}
-        right={distanceLabel(d)}
+        title="Barrages"
+        date={longDate(dayDate(state, "vendredi"), true)}
+        sub="Places 1 à 16 des préqualifications : 1–16, 2–15… 8–9 · vainqueurs → Masters, perdants → National"
+        cells={[
+          { label: "Distance", value: distanceLabel(d), size: "sm" },
+          { label: "Matchs", value: String(state.barrages.length) },
+        ]}
       />
-      <table>
+      <table className="pt pt-tall mt-[3.5mm]">
         <thead>
           <tr>
-            <th className="w-10">Match</th>
-            <th className="w-14">Billard</th>
+            <th className="w-[14mm]">Match</th>
+            <th className="w-[18mm]">Billard</th>
             <th>Joueur A (place)</th>
-            <th className="w-20">Score</th>
+            <th className="w-[24mm] c">Score</th>
             <th>Joueur B (place)</th>
-            <th>Vainqueur</th>
+            <th className="w-[36mm]">Vainqueur → Masters</th>
           </tr>
         </thead>
         <tbody>
           {state.barrages.map((m) => {
             const w = matchWinner(m, d);
             return (
-              <tr key={m.id} className="h-8">
-                <td className="font-bold">{m.id}</td>
-                <td className="text-center">
-                  {m.billard ?? "—"}
-                  <div className="text-[8.5px] text-[#555]">
+              <tr key={m.id}>
+                <td className="num font-bold">{m.id}</td>
+                <td>
+                  <span className="num text-[12pt] font-bold">{m.billard ?? "—"}</span>
+                  <span className="muted ml-[1.5mm] text-[7.5pt]">
                     {m.billard ? billardType(state, m.billard) : ""}
-                  </div>
+                  </span>
                 </td>
-                <td>
-                  <b>{nice(m.a)}</b> ({placeOf.get(m.a) ?? "–"})
+                <td className={winClass(m, d, m.a)}>
+                  {nice(m.a)} <span className="muted num">({placeOf.get(m.a) ?? "–"})</span>
                 </td>
-                <td className="text-center font-mono">{scoreText(m, false)}</td>
-                <td>
-                  <b>{nice(m.b)}</b> ({placeOf.get(m.b) ?? "–"})
+                <td className="c">
+                  <Score m={m} d={d} />
                 </td>
-                <td className="font-semibold">{w ? nice(w) : ""}</td>
+                <td className={winClass(m, d, m.b)}>
+                  {nice(m.b)} <span className="muted num">({placeOf.get(m.b) ?? "–"})</span>
+                </td>
+                <td className="font-extrabold">{w ? nice(w) : <span className="p-sign" />}</td>
               </tr>
             );
           })}
         </tbody>
       </table>
+      <Foot>Les perdants rejoignent le National avec les places 17 à 40.</Foot>
     </Page>
   );
 }
@@ -433,34 +470,48 @@ function PointageConsolante({ state }: { state: TournamentState }) {
   const q = qualifiers(state);
   const ranking = preqRanking(state);
   const placeOf = new Map(ranking.map((r) => [r.name, r.place]));
+  const pages = chunk(q.consolante, ROWS.consolante);
   return (
-    <Page>
-      <DocHeader
-        state={state}
-        title="CONSOLANTE · VOLONTAIRES"
-        subtitle={`${longDate(dayDate(state, "samedi"), true)} · ${distanceLabel(state.rules.distances.cls)} · maximum ${state.rules.consolanteMax} joueurs`}
-        right={`${q.consolante.length} éligibles`}
-      />
-      <table>
-        <thead>
-          <tr>
-            <th className="w-10">Joue</th>
-            <th className="w-10">Place</th>
-            <th>Joueur</th>
-          </tr>
-        </thead>
-        <tbody>
-          {q.consolante.map((n) => (
-            <tr key={n}>
-              <td className="text-center text-[13px]">{BOX}</td>
-              <td className="text-center">{placeOf.get(n) ?? "–"}</td>
-              <td className="font-semibold">{nice(n)}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <Foot>Tableau à élimination directe dans l'ordre du classement de sortie des poules.</Foot>
-    </Page>
+    <>
+      {pages.map((rows, pi) => (
+        <Page key={pi}>
+          <DocBanner
+            state={state}
+            title="Consolante · volontaires"
+            date={longDate(dayDate(state, "samedi"), true)}
+            sub={`${distanceLabel(state.rules.distances.cls)} · maximum ${state.rules.consolanteMax} joueurs · tableau à élimination directe dans l'ordre du classement`}
+            cells={[{ label: "Éligibles", value: String(q.consolante.length) }]}
+          />
+          <table className="pt pt-tall mt-[3.5mm]">
+            <thead>
+              <tr>
+                <th className="w-[12mm]">Joue</th>
+                <th className="w-[14mm] c">Place</th>
+                <th>Joueur</th>
+                <th className="w-[50mm]">Paraphe</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((n) => (
+                <tr key={n}>
+                  <td className="c">
+                    <Box />
+                  </td>
+                  <td className="c num font-bold">{placeOf.get(n) ?? "–"}</td>
+                  <td className="font-semibold">{nice(n)}</td>
+                  <td>
+                    <span className="p-sign" />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <Foot page={pageOf(pi, pages.length)}>
+            Places 41 et suivantes des préqualifications, sur volontariat.
+          </Foot>
+        </Page>
+      ))}
+    </>
   );
 }
 
@@ -474,59 +525,65 @@ function ToursMasters({ state }: { state: TournamentState }) {
   const n = Math.max(1, Math.min(rot.billards.length, state.poules.QM.length));
   return (
     <Page>
-      <DocHeader
+      <DocBanner
         state={state}
-        title="TOURS DE JEU · MASTERS"
-        subtitle={`${longDate(dayDate(state, "samedi"), true)} · ${distanceLabel(d)}`}
-        right={`${rot.billards.length} billards 3m10`}
-        rightSub={rot.needed ? "rotation des poules" : "un billard par poule"}
+        title="Tours de jeu · Masters"
+        date={longDate(dayDate(state, "samedi"), true)}
+        sub={
+          rot.needed
+            ? `Rotation : les poules 1 à ${n} commencent, le premier billard libéré prend le match suivant`
+            : "Chaque poule enchaîne ses matchs sur son billard"
+        }
+        cells={[
+          { label: "Distance", value: distanceLabel(d), size: "sm" },
+          { label: "3m10", value: String(rot.billards.length), sub: "billards" },
+        ]}
       />
-      <table className="tours-masters">
+      <table className="pt pt-tall mt-[3.5mm]">
         <thead>
           <tr>
-            <th className="w-12">Heure</th>
-            <th className="w-7 text-center">#</th>
-            <th className="w-9 text-center">Joué</th>
-            <th className="w-11 text-center">Billard</th>
-            <th className="w-10 text-center">Poule</th>
-            <th className="w-10 text-center">Match</th>
+            <th className="w-[14mm]">Heure</th>
+            <th className="w-[8mm] c">#</th>
+            <th className="w-[9mm] c">Joué</th>
+            <th className="w-[13mm] c">Billard</th>
+            <th className="w-[11mm] c">Poule</th>
+            <th className="w-[11mm] c">Match</th>
             <th>Joueur 1</th>
             <th>Joueur 2</th>
-            <th className="w-[21%]">Arbitre</th>
+            <th className="w-[30mm]">Arbitre</th>
           </tr>
         </thead>
         <tbody>
           {rot.rows.map((r) => (
             <tr
               key={r.order}
-              className="h-[8.4mm]"
-              style={
-                r.order > 1 && (r.order - 1) % n === 0
-                  ? { borderTop: "0.5mm solid #0f1b33" }
-                  : undefined
-              }
+              className={r.order > 1 && (r.order - 1) % n === 0 ? "rule-top" : undefined}
             >
-              <td />
-              <td className="text-center font-mono font-bold">{r.order}</td>
-              <td className="text-center text-[13px]">{r.played ? "☑" : BOX}</td>
-              <td className="text-center font-mono font-bold">{r.billard ?? ""}</td>
-              <td className="text-center font-mono font-bold">{r.poule}</td>
-              <td className="text-center font-mono">{r.match}</td>
-              <td className={r.aIsName ? "font-semibold" : "text-[9px] text-[#555] italic"}>
+              <td>
+                <span className="p-sign" />
+              </td>
+              <td className="c num font-bold">{r.order}</td>
+              <td className="c">
+                <Box on={r.played} />
+              </td>
+              <td className="c num text-[12pt] font-bold">{r.billard ?? ""}</td>
+              <td className="c num font-bold">{r.poule}</td>
+              <td className="c num">M{r.match}</td>
+              <td className={r.aIsName ? "font-semibold" : "muted text-[8pt] italic"}>
                 {r.aIsName ? nice(r.a) : r.a}
               </td>
-              <td className={r.bIsName ? "font-semibold" : "text-[9px] text-[#555] italic"}>
+              <td className={r.bIsName ? "font-semibold" : "muted text-[8pt] italic"}>
                 {r.bIsName ? nice(r.b) : r.b}
               </td>
-              <td className="text-[10px] italic">{r.arbitre ? nice(r.arbitre) : ""}</td>
+              <td className="text-[8.5pt] italic">{r.arbitre ? nice(r.arbitre) : ""}</td>
             </tr>
           ))}
         </tbody>
       </table>
       <Foot>
         {rot.needed
-          ? `Les poules 1 à ${n} commencent sur les billards indiqués. Dès qu'un billard se libère, il prend le match suivant de la liste, dans l'ordre ; noter le billard et l'heure, cocher « Joué » à la fin du match.`
-          : "Chaque poule enchaîne ses matchs sur son billard ; cocher « Joué » à la fin de chaque match."}{" "}
+          ? "Noter le billard et l'heure, cocher « Joué » à la fin du match. "
+          : "Cocher « Joué » à la fin de chaque match. "}
         Les deux joueurs qui ne jouent pas arbitrent et marquent ; les joueurs des matchs 3 à 6
         dépendent des résultats des deux premiers.
       </Foot>
@@ -544,8 +601,8 @@ function waitingLabel(label: string | undefined): string {
 
 const BRACKET_ROUNDS: BracketRound[] = ["R64", "R32", "R16", "QF", "SF", "F"];
 
-/** Tours d'un tableau répartis en pages A4 (≈ 33 lignes de 7,4 mm par page, en-têtes compris). */
-function bracketPages(state: TournamentState, phase: "N" | "M" | "CLS"): BracketRound[][] {
+/** Tours d'un tableau répartis en pages A4 (≈ 32 lignes de 6,5 mm par page, en-têtes compris). */
+export function bracketPages(state: TournamentState, phase: "N" | "M" | "CLS"): BracketRound[][] {
   const b = state.brackets[phase];
   const pages: BracketRound[][] = [];
   let current: BracketRound[] = [];
@@ -553,8 +610,8 @@ function bracketPages(state: TournamentState, phase: "N" | "M" | "CLS"): Bracket
   for (const r of BRACKET_ROUNDS) {
     const rows = b.filter((m) => m.round === r).length;
     if (rows === 0) continue;
-    const cost = rows + 1.1;
-    if (current.length && used + cost > 33) {
+    const cost = rows + 1.6;
+    if (current.length && used + cost > 32) {
       pages.push(current);
       current = [];
       used = 0;
@@ -578,60 +635,60 @@ function BracketTable({
   const b = state.brackets[phase];
   // Tous les tours présents, premier tour compris (barrages et seizièmes de la consolante)
   const pages = bracketPages(state, phase);
+  const played = b.filter((m) => matchWinner(m, phaseDistance(state, phase, m.round))).length;
   return (
     <>
       {pages.map((rounds, k) => (
         <Page key={rounds.join("-")}>
-          <DocHeader
+          <DocBanner
             state={state}
             title={title}
-            subtitle={longDate(dayDate(state, phase === "CLS" ? "samedi" : "dimanche"), true)}
-            {...(pages.length > 1 ? { right: `${k + 1}/${pages.length}` } : {})}
+            date={longDate(dayDate(state, phase === "CLS" ? "samedi" : "dimanche"), true)}
+            sub="Élimination directe · le vainqueur de chaque match passe au tour suivant"
+            cells={[
+              { label: "Matchs", value: String(b.length) },
+              { label: "Joués", value: String(played) },
+            ]}
           />
-          {rounds.map((r) => {
-            const d = phaseDistance(state, phase, r);
-            return (
-              <table key={r} className="mb-2">
-                <thead>
-                  <tr>
+          <table className="pt mt-[3.5mm]">
+            {rounds.map((r) => {
+              const d = phaseDistance(state, phase, r);
+              return (
+                <tbody key={r}>
+                  <tr className="group">
                     <th colSpan={5}>
-                      {roundLabel(r)} · {distanceLabel(d)}
+                      {roundLabel(r)}
+                      <small>{distanceLabel(d)}</small>
                     </th>
                   </tr>
-                </thead>
-                <tbody>
                   {b
                     .filter((m) => m.round === r)
                     .map((m) => (
-                      <tr key={m.id} className="h-7">
-                        <td className="w-10 font-bold">
+                      <tr key={m.id}>
+                        <td className="num w-[12mm] font-bold">
                           {roundShort(r)}
                           {m.slot}
                         </td>
-                        <td className="w-14 text-center">{m.billard ? `B${m.billard}` : ""}</td>
-                        <td>
-                          {m.a ? (
-                            nice(m.a)
-                          ) : (
-                            <span className="text-[#555]">{waitingLabel(m.labelA)}</span>
-                          )}
+                        <td className="num muted w-[14mm] c">{m.billard ? `B${m.billard}` : ""}</td>
+                        <td className={m.a ? winClass(m, d, m.a) : "muted"}>
+                          {m.a ? nice(m.a) : waitingLabel(m.labelA)}
                         </td>
-                        <td className="w-28 text-center font-mono">
-                          {scoreText(m, d.setsGagnants > 1)}
+                        <td className="w-[34mm] c">
+                          <Score m={m} d={d} />
                         </td>
-                        <td>
-                          {m.b ? (
-                            nice(m.b)
-                          ) : (
-                            <span className="text-[#555]">{waitingLabel(m.labelB)}</span>
-                          )}
+                        <td className={m.b ? winClass(m, d, m.b) : "muted"}>
+                          {m.b ? nice(m.b) : waitingLabel(m.labelB)}
                         </td>
                       </tr>
                     ))}
                 </tbody>
-              </table>
-            );
-          })}
+              );
+            })}
+          </table>
+          <Foot page={pageOf(k, pages.length)}>
+            Score : gagnant en gras, perdant en maigre. Les joueurs en attente sont désignés par le
+            match qui les qualifie.
+          </Foot>
         </Page>
       ))}
     </>
@@ -646,58 +703,60 @@ function Primes({ state }: { state: TournamentState }) {
     const lines = p.lines.filter((l) => l.phase === phase);
     const total = lines.reduce((t, l) => t + l.amount, 0);
     return (
-      <table className="mb-3">
-        <thead>
-          <tr>
-            <th colSpan={6}>
-              {title} · {money(total)}
-            </th>
+      <tbody>
+        <tr className="group">
+          <th colSpan={6}>
+            {title}
+            <small>{money(total)}</small>
+          </th>
+        </tr>
+        {lines.map((l) => (
+          <tr key={l.key}>
+            <td className="nowrap">
+              <b>{l.label}</b> <span className="muted text-[8pt]">{l.detail}</span>
+            </td>
+            <td className="font-semibold">{l.name ? nice(l.name) : <span className="p-sign" />}</td>
+            <td className="r num font-bold">{money(l.amount)}</td>
+            <td>
+              <span className="p-sign" />
+            </td>
+            <td className="c">
+              <Box />
+            </td>
+            <td>
+              <span className="p-sign" />
+            </td>
           </tr>
-          <tr>
-            <th>Palier</th>
-            <th>Bénéficiaire</th>
-            <th className="w-20 text-right">Montant</th>
-            <th className="w-24">Chèque n°</th>
-            <th className="w-10 text-center">Remis</th>
-            <th className="w-28">Signature</th>
-          </tr>
-        </thead>
-        <tbody>
-          {lines.map((l) => (
-            <tr key={l.key} className="h-7">
-              <td>
-                <b>{l.label}</b> <span className="text-[9px] text-[#5b6680]">{l.detail}</span>
-              </td>
-              <td className="font-semibold">{l.name ? nice(l.name) : ""}</td>
-              <td className="text-right font-mono">{money(l.amount)}</td>
-              <td />
-              <td className="text-center text-[13px]">{BOX}</td>
-              <td />
-            </tr>
-          ))}
-        </tbody>
-      </table>
+        ))}
+      </tbody>
     );
   };
   return (
     <Page>
-      <DocHeader
+      <DocBanner
         state={state}
-        title="PRIMES · PRÉPARATION DES CHÈQUES"
-        subtitle={`${longDate(dayDate(state, "samedi"), true)} → ${longDate(dayDate(state, "dimanche"), true)}`}
-        right={money(p.total)}
-        rightSub="cagnotte"
+        title="Primes · préparation des chèques"
+        date={dateRange(dayDate(state, "samedi"), dayDate(state, "dimanche"))}
+        sub={`Cagnotte : ${state.rules.inscriptionFee} € × ${p.players - p.juniors} joueurs non juniors + ${euros(p.ffb)} FFB + ${euros(p.club)} club · Masters 80 %, National 20 %`}
+        cells={[{ label: "Cagnotte", value: money(p.total), size: "md" }]}
       />
-      <p className="mb-2">
-        Cagnotte : {state.rules.inscriptionFee} € × {p.players - p.juniors} joueurs non juniors +{" "}
-        {euros(p.ffb)} FFB + {euros(p.club)} club = <b>{money(p.total)}</b>. Masters 80 %, National
-        20 %. Les bénéficiaires encore inconnus à l'impression se complètent à la main.
-      </p>
-      {block("M", "Masters")}
-      {block("N", "National")}
+      <table className="pt mt-[3.5mm]">
+        <thead>
+          <tr>
+            <th className="w-[46mm]">Palier</th>
+            <th>Bénéficiaire</th>
+            <th className="w-[22mm] r">Montant</th>
+            <th className="w-[24mm]">Chèque n°</th>
+            <th className="w-[12mm] c">Remis</th>
+            <th className="w-[34mm]">Signature</th>
+          </tr>
+        </thead>
+        {block("M", "Masters")}
+        {block("N", "National")}
+      </table>
       <Foot>
         Samedi : 3e et 4e des poules Masters, payables dès la fin de leur poule. Dimanche : après
-        chaque tour.
+        chaque tour. Les bénéficiaires encore inconnus à l'impression se complètent à la main.
       </Foot>
     </Page>
   );
@@ -717,20 +776,21 @@ export const DOCS: DocDef[] = [
     pages: () => 1,
     available: (s) => s.players.length > 0,
     render: (s) => (
-      <section className="print-page print-doc print-landscape">
-        <DocHeader
+      <section className="print-page print-doc print-fixed print-landscape">
+        <DocBanner
           state={s}
-          title="SCHÉMA DU TOURNOI"
-          subtitle={`${longDate(dayDate(s, "jeudi"), true)} → ${longDate(dayDate(s, "dimanche"), true)}`}
-          right={`${s.players.length} inscrits`}
+          title="Schéma du tournoi"
+          date={`${longDate(dayDate(s, "jeudi"), true)} → ${longDate(dayDate(s, "dimanche"), true)}`}
+          sub="Du tirage du jeudi aux finales du dimanche : chaque ruban est un groupe de joueurs"
+          cells={[{ label: "Inscrits", value: String(s.players.length) }]}
         />
-        <div className="mt-2">
+        <div className="mt-[3mm] min-h-0 flex-1">
           <FlowDiagram print />
         </div>
         <Foot>
-          Chaque ruban est un groupe de joueurs qui passe d'une étape à la suivante, sa largeur est
-          proportionnelle au nombre. Or : Masters · vert : National · bleu : qualifications du
-          vendredi · gris : consolante. Étapes à venir en pointillé.
+          La largeur d'un ruban est proportionnelle au nombre de joueurs. Or : Masters · vert :
+          National · bleu : qualifications du vendredi · gris : consolante. Étapes à venir en
+          pointillé.
         </Foot>
       </section>
     ),
@@ -738,7 +798,7 @@ export const DOCS: DocDef[] = [
   {
     id: "pointage",
     label: "Liste alphabétique · pointage des droits d'inscription",
-    pages: (s) => Math.max(1, Math.ceil(s.players.length / 40)),
+    pages: (s) => chunk(s.players, ROWS.pointage).length,
     available: (s) => s.players.length > 0,
     render: (s) => <Pointage state={s} />,
   },
@@ -787,18 +847,16 @@ export const DOCS: DocDef[] = [
   {
     id: "classement-preq",
     label: "Classement des préqualifications",
-    pages: (s) => Math.max(1, Math.ceil(s.players.length / 45)),
+    pages: (s) => chunk(preqRanking(s), ROWS.classement).length,
     available: preqClosed,
     render: (s) => <ClassementPreq state={s} />,
   },
   {
     id: "resultats-poules",
     label: "Résultats des poules",
-    pages: (s) => Math.ceil(s.poules.PREQ.length / 6),
+    pages: (s) => chunk(s.poules.PREQ, ROWS.poulesParPage).length,
     available: preqClosed,
-    render: (s) => (
-      <ResultatsPoules state={s} phase="PREQ" title="RÉSULTATS DES POULES · PRÉQUALIFICATIONS" />
-    ),
+    render: (s) => <ResultatsPoules state={s} phase="PREQ" title="Résultats des poules" />,
   },
   {
     id: "tableau-barrages",
@@ -818,7 +876,7 @@ export const DOCS: DocDef[] = [
   {
     id: "pointage-consolante",
     label: "Pointage des volontaires consolante",
-    pages: () => 1,
+    pages: (s) => chunk(qualifiers(s).consolante, ROWS.consolante).length,
     available: preqClosed,
     render: (s) => <PointageConsolante state={s} />,
   },
@@ -862,7 +920,7 @@ export const DOCS: DocDef[] = [
     label: "Tableau de la consolante",
     pages: (s) => bracketPages(s, "CLS").length,
     available: (s) => s.brackets.CLS.length > 0,
-    render: (s) => <BracketTable state={s} phase="CLS" title="CONSOLANTE" />,
+    render: (s) => <BracketTable state={s} phase="CLS" title="Consolante" />,
   },
   {
     id: "tableaux-finaux",
@@ -872,10 +930,10 @@ export const DOCS: DocDef[] = [
     render: (s) => (
       <>
         {s.brackets.M.length > 0 ? (
-          <BracketTable state={s} phase="M" title="TABLEAU FINAL · MASTERS" />
+          <BracketTable state={s} phase="M" title="Tableau final · Masters" />
         ) : null}
         {s.brackets.N.length > 0 ? (
-          <BracketTable state={s} phase="N" title="TABLEAU FINAL · NATIONAL" />
+          <BracketTable state={s} phase="N" title="Tableau final · National" />
         ) : null}
       </>
     ),

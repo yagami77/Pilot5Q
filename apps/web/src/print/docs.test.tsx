@@ -5,7 +5,7 @@ import { describe, expect, it } from "vitest";
 import { demoEvents } from "@/lib/demo";
 import { replay } from "@/lib/engine";
 
-import { docById } from "./docs";
+import { ROWS, docById, docsFor } from "./docs";
 
 describe("documents imprimés", () => {
   it("le tableau de la consolante imprime aussi le premier tour (seizièmes, barrages)", () => {
@@ -40,5 +40,38 @@ describe("documents imprimés", () => {
     expect(screen.getByText(/Seizièmes/)).toBeInTheDocument();
     expect(screen.getByText(/Huitièmes/)).toBeInTheDocument();
     expect(screen.getByText("Vainqueur S1")).toBeInTheDocument();
+  });
+
+  it("pagine le pointage par lignes de 7,6 mm (cases à cocher) avec le numéro de page", () => {
+    const at = "2026-10-29T08:00:00.000Z";
+    const state = replay(demoEvents().map((e) => ({ ...e, at }) as TournamentEvent));
+    const doc = docById("pointage")!;
+    expect(doc.pages(state)).toBe(Math.ceil(state.players.length / ROWS.pointage));
+    const { container } = render(<>{doc.render(state)}</>);
+    expect(container.querySelectorAll(".print-page")).toHaveLength(doc.pages(state));
+    expect(container.querySelectorAll(".p-box")).toHaveLength(state.players.length);
+    expect(container.querySelectorAll("tr.hl")).toHaveLength(state.masters.length);
+    expect(screen.getByText("1/3")).toBeInTheDocument();
+  });
+
+  it("propose le tableau des poules en A4 et en A3 le jeudi", () => {
+    const at = "2026-10-29T08:00:00.000Z";
+    const base = replay(demoEvents().map((e) => ({ ...e, at }) as TournamentEvent));
+    expect(docsFor("jeudi", base).map((d) => d.id)).toEqual(["pointage", "schema"]);
+    const names = base.players.slice(8, 12).map((p) => p.name);
+    const state = replay([
+      ...demoEvents().map((e) => ({ ...e, at }) as TournamentEvent),
+      {
+        type: "poules.drawn",
+        at,
+        payload: {
+          phase: "PREQ",
+          poules: [{ num: 1, players: names, billards: [1], matches: [] }],
+        },
+      },
+    ]);
+    const ids = docsFor("jeudi", state).map((d) => d.id);
+    expect(ids).toContain("tableau-poules");
+    expect(ids).toContain("tableau-poules-a3");
   });
 });
