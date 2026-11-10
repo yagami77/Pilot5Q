@@ -33,8 +33,8 @@ export function Welcome() {
           <div>
             <h2 className="text-[20px]">Charger la saison de démonstration</h2>
             <p className="text-ink-muted mt-1">
-              Saison {SEASON_FIXTURE.season} : calendrier réel des 5 TN,{" "}
-              {SEASON_FIXTURE.clubs.length} clubs hôtes, {SEASON_FIXTURE.players.length} joueurs,
+              Saison {SEASON_FIXTURE.season} : calendrier réel des 5 TN, base réelle de{" "}
+              {SEASON_FIXTURE.clubs.length} clubs et de {SEASON_FIXTURE.players.length} joueurs,
               classement glissant reconstitué avant le TN 2 et les {order.length} inscrits du
               tournoi d'exemple.
             </p>
@@ -42,7 +42,7 @@ export function Welcome() {
           <div className="flex flex-wrap gap-2">
             <Chip tone="blue">5 TN</Chip>
             <Chip tone="gold">{SEASON_FIXTURE.windowBefore.length} classés</Chip>
-            <Chip tone="grey">noms et licences fictifs</Chip>
+            <Chip tone="grey">données réelles 2026-2027</Chip>
           </div>
           <Button
             variant="primary"

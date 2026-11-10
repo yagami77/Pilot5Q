@@ -1,5 +1,5 @@
 /**
- * Données de démonstration : saison 2026-2027 (calendrier réel, clubs et joueurs fictifs),
+ * Données de démonstration : saison 2026-2027 (calendrier, clubs et base joueurs réels),
  * classement glissant reconstitué « avant TN 2 », inscrits du tournoi d'exemple.
  */
 import type {
@@ -183,7 +183,7 @@ function seeded(seed: number): () => number {
 export const DEMO_LEFT_STAGE = { season: "2025-2026", tn: 2 } as const;
 
 /**
- * Démonstration : résultats fictifs du TN 2 2025-2026, le TN qui sort de la fenêtre à la
+ * Démonstration : résultats simulés du TN 2 2025-2026, le TN qui sort de la fenêtre à la
  * clôture du TN 2 2026-2027. Le classeur de référence ne le contient pas (sa fenêtre commence au
  * TN 3 2025-2026) ; ces points, tirés de façon déterministe du barème, servent seulement à
  * montrer la colonne « sorti » du classement : ils ne comptent plus après le TN 2.

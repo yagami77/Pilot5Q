@@ -36,8 +36,9 @@ billard 5-Quilles (FFB). Interface en français.
 - Tests : Vitest. `packages/domain` en environnement `node`, `apps/web` en `jsdom` avec
   `@testing-library/react` (setup dans `src/test/setup.ts`). Fichiers `*.test.ts(x)` à côté du code
   ou dans `test/`.
-- Pas de donnée personnelle (emails réels, licences réelles) dans le dépôt : la fixture utilise des
-  noms fictifs.
+- Les fixtures contiennent les bases réelles transmises par le responsable national (joueurs,
+  licences, clubs : données publiques du site fédéral) et les scores réels du TN 2 2026-2027 de
+  Ronchin. Aucun email de joueur dans le dépôt.
 
 ## Commandes
 

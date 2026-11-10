@@ -28,8 +28,8 @@ describe("vue Jeudi", () => {
     expect(
       screen.getByText("Inscrits").nextElementSibling?.querySelector("[aria-label]"),
     ).toHaveAttribute("aria-label", "76");
-    expect(screen.getByText("Barre Patrick")).toBeInTheDocument();
-    expect(screen.getByText("Hubert Michel")).toBeInTheDocument();
+    expect(screen.getByText("Coupade Jules")).toBeInTheDocument();
+    expect(screen.getByText("David Nicolas")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Lancer le tirage" }));
     expect(screen.getByRole("heading", { name: "Serpentin du tirage" })).toBeInTheDocument();
     // Liste statique des poules : une ligne par poule, sans numéros 1 à 4

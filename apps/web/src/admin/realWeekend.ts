@@ -1,6 +1,6 @@
 /**
  * Démonstration : rejoue les scores réels de tout le week-end du tournoi d'exemple (TN 2
- * 2026-2027, noms fictifs) dans le journal du cockpit, phase par phase, comme le ferait le
+ * 2026-2027 de Ronchin, données réelles) dans le journal du cockpit, phase par phase, comme le ferait le
  * directeur de jeu. Sert de preuve : une fois le tournoi clôturé par le responsable, le
  * classement glissant devient celui « après TN 2 » du classeur de référence.
  */

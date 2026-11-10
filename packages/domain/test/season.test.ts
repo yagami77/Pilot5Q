@@ -1,7 +1,7 @@
 /**
  * Espace du responsable national : barème, classement glissant, base joueurs, inscriptions.
  *
- * Validation sur données réelles pseudonymisées (fixture season-exemple.json, issue du classeur
+ * Validation sur données réelles (fixture season-exemple.json, issue du classeur
  * de référence du TN 2 2026-2027) : les points attribués à chaque joueur et le classement
  * glissant « APRES TN2 2026-2027 » doivent être reproduits exactement à partir du classement
  * reconstitué « avant » (fenêtre TN3..TN5 2025-2026 + TN1 2026-2027) et des résultats du tournoi.
@@ -485,8 +485,8 @@ describe("base joueurs", () => {
   });
 
   it("recherche sans accents ni casse", () => {
-    const found = searchPlayers(fx.players, "barre pat");
-    expect(found.map((p) => p.name)).toContain("BARRE PATRICK");
+    const found = searchPlayers(fx.players, "coupade jul");
+    expect(found.map((p) => p.name)).toContain("COUPADE JULES");
     expect(searchPlayers(fx.players, "")).toHaveLength(fx.players.length);
   });
 });

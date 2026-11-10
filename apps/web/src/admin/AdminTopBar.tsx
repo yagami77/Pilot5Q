@@ -33,7 +33,7 @@ export function AdminTopBar() {
           </h1>
           <div className="text-ink-muted hidden text-[12.5px] sm:block">
             {doc
-              ? `Saison ${doc.id} · ${doc.stages.length} étapes · ${doc.clubs.length} clubs hôtes`
+              ? `Saison ${doc.id} · ${doc.stages.length} étapes · ${doc.clubs.length} clubs`
               : "Aucune saison ouverte"}
           </div>
         </div>

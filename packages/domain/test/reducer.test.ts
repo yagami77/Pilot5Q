@@ -124,7 +124,7 @@ describe("réducteur : vendredi", () => {
   });
 
   const scored = preqScores(afterDraw).reduce(reduce, afterDraw);
-  const abandon = "CLEMENT GILLES";
+  const abandon = "MICHELOTTI FRANCESCO";
   const withForfait = reduce(scored, {
     type: "forfait.declared",
     at,
@@ -170,8 +170,8 @@ describe("réducteur : vendredi", () => {
     s = reduce(s, { type: "phase.closed", at, payload: { phase: "B" } });
     expect(s.poules.QM).toHaveLength(4);
     expect(s.poules.QN).toHaveLength(8);
-    expect(s.poules.QM.flatMap((p) => p.players)).toContain("CHAUVIN THIERRY");
-    expect(s.poules.QN.flatMap((p) => p.players)).toContain("ROUSSEL JULIE");
+    expect(s.poules.QM.flatMap((p) => p.players)).toContain("MIKDAD ALI MOHAMMED");
+    expect(s.poules.QN.flatMap((p) => p.players)).toContain("PAPIN JEAN CHRISTOPHE");
     expect(s.poules.QM[0]?.matches[0]?.id).toBe("P1-M1");
 
     // Samedi : le joueur en tête de poule gagne tout (QN en 1 set, QM en 2 sets gagnants).
@@ -293,7 +293,7 @@ describe("réducteur : vendredi", () => {
     expect(live.tournoi).toBe("TN 2");
     expect(live.infos.joueurs).toHaveLength(68);
     expect(live.competitions.map((c) => c.nom)).toEqual(["PRE Q", "N1 Q", "M Q", "N1 KO", "M KO"]);
-    expect(live.competitions[0]?.classement[0]?.[1]).toBe("KLEIN ÉMILIE");
+    expect(live.competitions[0]?.classement[0]?.[1]).toBe("BOUZEMANE KAMEL");
     expect(live.competitions[3]?.poules.map((p) => p.nom)).toEqual(["R16", "QF", "SF", "F"]);
   });
 });
