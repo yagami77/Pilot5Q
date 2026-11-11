@@ -1,10 +1,11 @@
 import type { BracketMatch, TournamentEvent } from "@pilot5q/domain";
-import { pouleMatches } from "@pilot5q/domain";
+import { consolanteBracket, pouleMatches } from "@pilot5q/domain";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import { demoEvents } from "@/lib/demo";
 import { replay } from "@/lib/engine";
+import { nice } from "@/lib/format";
 
 import { ROWS, docById, docsFor } from "./docs";
 
@@ -113,5 +114,73 @@ describe("documents imprimés", () => {
       expect(foot.querySelector(".sheet-rule")?.textContent).toMatch(/Match valide/);
       expect(foot.textContent).toMatch(/Pilot5Q/);
     }
+  });
+});
+
+describe("tours de jeu de la consolante (document)", () => {
+  const at = "2026-10-31T08:00:00.000Z";
+  const base = () => replay(demoEvents().map((e) => ({ ...e, at }) as TournamentEvent));
+
+  function withConsolante(count: number) {
+    const s = base();
+    const names = s.players.slice(8, 8 + count).map((p) => p.name);
+    return {
+      state: { ...s, brackets: { ...s.brackets, CLS: consolanteBracket(names, 40) } },
+      names,
+    };
+  }
+
+  it("n'est proposé qu'une fois la consolante créée, le vendredi soir et le samedi", () => {
+    const s = base();
+    const doc = docById("tours-consolante")!;
+    expect(doc.available(s)).toBe(false);
+    const closed = { ...s, closed: { PREQ: true, B: true } };
+    expect(docsFor("vendredi", closed).map((d) => d.id)).not.toContain("tours-consolante");
+    const { state } = withConsolante(19);
+    expect(doc.available(state)).toBe(true);
+    const friday = docsFor("vendredi", { ...state, closed: { PREQ: true, B: true } });
+    expect(friday.map((d) => d.id)).toEqual(
+      expect.arrayContaining(["pointage-consolante", "tableau-consolante", "tours-consolante"]),
+    );
+    expect(docsFor("samedi", state).map((d) => d.id)).toContain("tours-consolante");
+    // Pas le jeudi ni le dimanche
+    expect(docsFor("jeudi", state).map((d) => d.id)).not.toContain("tours-consolante");
+    expect(docsFor("dimanche", state).map((d) => d.id)).not.toContain("tours-consolante");
+  });
+
+  it("19 joueurs : barrages, huitièmes, quarts, demies, finale sur une page", () => {
+    const { state, names } = withConsolante(19);
+    const doc = docById("tours-consolante")!;
+    expect(doc.pages(state)).toBe(1);
+    const { container } = render(<>{doc.render(state)}</>);
+    expect(container.querySelectorAll(".print-page")).toHaveLength(1);
+    expect(screen.getByText("Tours de jeu · Consolante")).toBeInTheDocument();
+    const groups = [...container.querySelectorAll("tr.group th")].map((th) => th.textContent);
+    expect(groups).toHaveLength(5);
+    expect(groups[0]).toMatch(/^Seizièmes \(barrages\).*3 matchs/);
+    expect(groups[1]).toMatch(/^Huitièmes.*8 matchs.*passages/);
+    expect(groups[4]).toMatch(/^Finale.*1 match$/);
+    // 3 + 8 + 4 + 2 + 1 matchs, une case « Joué » par match
+    expect(container.querySelectorAll("tbody tr:not(.group)")).toHaveLength(18);
+    expect(container.querySelectorAll(".p-box")).toHaveLength(18);
+    // Tête de série 1 connue, son adversaire désigné par le barrage qui le qualifie
+    expect(screen.getByText(nice(names[0]!))).toBeInTheDocument();
+    expect(screen.getByText("Vainqueur S2")).toBeInTheDocument();
+    expect(screen.getByText("Vainqueur H1")).toBeInTheDocument();
+    expect(screen.getByText("Vainqueur D2")).toBeInTheDocument();
+  });
+
+  it("40 joueurs : deux pages numérotées, aucun tour coupé", () => {
+    const s = base();
+    const names = Array.from({ length: 40 }, (_, i) => `JOUEUR ${i + 1}`);
+    const state = { ...s, brackets: { ...s.brackets, CLS: consolanteBracket(names, 40) } };
+    const doc = docById("tours-consolante")!;
+    expect(doc.pages(state)).toBe(2);
+    const { container } = render(<>{doc.render(state)}</>);
+    const pages = [...container.querySelectorAll(".print-page")];
+    expect(pages).toHaveLength(2);
+    expect(container.querySelectorAll("tbody tr:not(.group)")).toHaveLength(39);
+    expect(screen.getByText("1/2")).toBeInTheDocument();
+    expect(screen.getByText("2/2")).toBeInTheDocument();
   });
 });
