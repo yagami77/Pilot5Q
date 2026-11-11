@@ -10,7 +10,7 @@ import { nice } from "@/lib/format";
 import { ROWS, docById, docsFor } from "./docs";
 
 describe("documents imprimés", () => {
-  it("le tableau de la consolante imprime aussi le premier tour (seizièmes, barrages)", () => {
+  it("le tableau de la consolante imprime tous les tours présents, premier tour compris", () => {
     const at = "2026-10-31T08:00:00.000Z";
     const base = replay(demoEvents().map((e) => ({ ...e, at }) as TournamentEvent));
     const names = base.players.map((p) => p.name);
@@ -157,17 +157,74 @@ describe("tours de jeu de la consolante (document)", () => {
     expect(screen.getByText("Tours de jeu · Consolante")).toBeInTheDocument();
     const groups = [...container.querySelectorAll("tr.group th")].map((th) => th.textContent);
     expect(groups).toHaveLength(5);
-    expect(groups[0]).toMatch(/^Seizièmes \(barrages\).*3 matchs/);
-    expect(groups[1]).toMatch(/^Huitièmes.*8 matchs.*passages/);
+    expect(groups[0]).toMatch(/^Barrages.*3 matchs$/);
+    expect(groups[1]).toMatch(/^Huitièmes.*8 matchs$/);
     expect(groups[4]).toMatch(/^Finale.*1 match$/);
     // 3 + 8 + 4 + 2 + 1 matchs, une case « Joué » par match
     expect(container.querySelectorAll("tbody tr:not(.group)")).toHaveLength(18);
     expect(container.querySelectorAll(".p-box")).toHaveLength(18);
     // Tête de série 1 connue, son adversaire désigné par le barrage qui le qualifie
     expect(screen.getByText(nice(names[0]!))).toBeInTheDocument();
-    expect(screen.getByText("Vainqueur S2")).toBeInTheDocument();
+    expect(screen.getByText("Vainqueur B1")).toBeInTheDocument();
     expect(screen.getByText("Vainqueur H1")).toBeInTheDocument();
+    // Codes des matchs : B1 à B3, H1 à H8, Q1 à Q4, D1, D2, F
+    const codes = [...container.querySelectorAll("tbody tr:not(.group) td:nth-child(5)")].map(
+      (td) => td.textContent,
+    );
+    expect(codes.slice(0, 4)).toEqual(["B1", "B2", "B3", "H1"]);
+    expect(codes.slice(-3)).toEqual(["D1", "D2", "F"]);
+    // Aucun billard proposé : colonne « Billard » vide, à remplir à la main ; plus de « Passage »
+    const head = [...container.querySelectorAll("thead th")].map((th) => th.textContent);
+    expect(head).toEqual([
+      "Heure",
+      "#",
+      "Joué",
+      "Billard",
+      "Match",
+      "Joueur 1",
+      "Joueur 2",
+      "Score",
+    ]);
+    const billards = [...container.querySelectorAll("tbody tr:not(.group) td:nth-child(4)")];
+    expect(billards.every((td) => td.textContent === "")).toBe(true);
+    expect(container.textContent).not.toMatch(/passage|indicatif|billards? \d/i);
     expect(screen.getByText("Vainqueur D2")).toBeInTheDocument();
+  });
+
+  it("tableau imprimé de 19 joueurs : mêmes codes qu'à l'écran, sans billard", () => {
+    const { state } = withConsolante(19);
+    // Même si un billard a été tiré pour un match, il n'est pas imprimé pour la consolante
+    const CLS = state.brackets.CLS.map((m) => (m.id === "CLS-R16-2" ? { ...m, billard: 7 } : m));
+    const doc = docById("tableau-consolante")!;
+    const { container } = render(
+      <>{doc.render({ ...state, brackets: { ...state.brackets, CLS } })}</>,
+    );
+    const groups = [...container.querySelectorAll("tr.group th")].map((th) => th.textContent);
+    expect(groups.map((g) => g?.replace(/1 set.*/, ""))).toEqual([
+      "Barrages",
+      "Huitièmes",
+      "Quarts",
+      "Demi-finales",
+      "Finale",
+    ]);
+    const rows = [...container.querySelectorAll("tbody tr:not(.group)")];
+    expect(rows.map((r) => r.querySelector("td")?.textContent)).toEqual([
+      "B1",
+      "B2",
+      "B3",
+      ...Array.from({ length: 8 }, (_, i) => `H${i + 1}`),
+      "Q1",
+      "Q2",
+      "Q3",
+      "Q4",
+      "D1",
+      "D2",
+      "F",
+    ]);
+    expect(rows.every((r) => r.querySelectorAll("td")[1]?.textContent === "")).toBe(true);
+    expect(screen.getByText("Vainqueur B1")).toBeInTheDocument();
+    expect(screen.getByText("Vainqueur B3")).toBeInTheDocument();
+    expect(screen.queryByText(/Vainqueur S\d/)).not.toBeInTheDocument();
   });
 
   it("40 joueurs : deux pages numérotées, aucun tour coupé", () => {

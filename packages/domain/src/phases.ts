@@ -392,6 +392,25 @@ export function seedOrder(size: number): number[] {
   return order;
 }
 
+/**
+ * Tour de barrages d'un tableau, ou null s'il n'y en a pas.
+ *
+ * Un tableau de consolante dont le nombre de joueurs dépasse de peu une puissance de 2 (17 à 24,
+ * 33 à 40…) commence par quelques matchs préliminaires, les « barrages » (cf.
+ * `consolanteBracket`) : ils occupent le premier tour présent, qu'ils remplissent au plus à
+ * moitié, et alimentent chacun un match différent du tour suivant, qui est lui complet. Un tour
+ * incomplet à cause d'exemptions (25 à 31 joueurs) n'est pas un tour de barrages : c'est un vrai
+ * tour de seizièmes.
+ */
+export function preliminaryRound(matches: BracketMatch[]): BracketRound | null {
+  const present = BRACKET_ROUNDS.filter((r) => matches.some((m) => m.round === r));
+  const [first, next] = present;
+  if (first === undefined || next === undefined) return null;
+  const count = (r: BracketRound): number => matches.filter((m) => m.round === r).length;
+  const full = (r: BracketRound): number => roundSize(r) / 2;
+  return count(first) <= full(first) / 2 && count(next) === full(next) ? first : null;
+}
+
 /** Tableau de la consolante, élimination directe (SPEC §5, règle de taille de l'outil Excel). */
 export function consolanteBracket(players: string[], max: number): BracketMatch[] {
   const n = players.length;

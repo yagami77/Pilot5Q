@@ -89,9 +89,19 @@ describe("samedi : consolante", () => {
       if (!el) throw new Error(`carte ${id} absente`);
       return el;
     };
-    // H1 : tête de série 1 contre le vainqueur du préliminaire S2
+    // Les trois matchs avant les huitièmes sont des barrages : B1, B2, B3 dans l'ordre du tableau
+    expect(screen.getByText(/^Barrages · 1 set à 100$/)).toBeInTheDocument();
+    expect(screen.queryByText(/^Seizièmes/)).not.toBeInTheDocument();
+    expect(card("CLS-R32-2")).toHaveTextContent(/^B1/);
+    expect(card("CLS-R32-10")).toHaveTextContent(/^B2/);
+    expect(card("CLS-R32-14")).toHaveTextContent(/^B3/);
+    // H1 : tête de série 1 contre le vainqueur du barrage B1
+    expect(card("CLS-R16-1")).toHaveTextContent(/^H1/);
     expect(card("CLS-R16-1")).toHaveTextContent("Desmettre Bruno");
-    expect(card("CLS-R16-1")).toHaveTextContent("Vainqueur S2");
+    expect(card("CLS-R16-1")).toHaveTextContent("Vainqueur B1");
+    expect(card("CLS-R16-5")).toHaveTextContent("Vainqueur B2");
+    expect(card("CLS-R16-7")).toHaveTextContent("Vainqueur B3");
+    expect(card("CLS-QF1")).toHaveTextContent("Vainqueur H1");
     // H2 : deux joueurs connus
     expect(card("CLS-R16-2")).toHaveTextContent("Goutaloy Sylvain");
     expect(card("CLS-R16-2")).toHaveTextContent("Fourneyron Richard");

@@ -11,7 +11,7 @@ import { FlowDiagram } from "@/components/FlowDiagram";
 
 import { PlayersBoard, PoulesBoard } from "./boards";
 import { DocBanner, PrintFoot, Score, winClass, type BannerCell } from "./brand";
-import { consolantePages, consolanteRounds, waitingLabel } from "./consolanteRounds";
+import { consolantePages, consolanteRounds } from "./consolanteRounds";
 import { chunk } from "./layout";
 import {
   SheetPages,
@@ -26,7 +26,8 @@ import "./print.css";
 
 import { matchWinner } from "@/lib/engine";
 import { mastersRotationOf } from "@/lib/mastersRotation";
-import { clubShort, dateRange, euros, longDate, nice, ordinal, shortName } from "@/lib/format";
+import { bracketNaming } from "@/lib/bracketNaming";
+import { clubShort, dateRange, euros, longDate, nice, shortName } from "@/lib/format";
 import { progressivePrimes } from "@/lib/primes";
 import {
   billardType,
@@ -38,8 +39,6 @@ import {
   pouleState,
   preqRanking,
   qualifiers,
-  roundLabel,
-  roundShort,
   type Day,
 } from "@/lib/tournament";
 
@@ -594,17 +593,14 @@ function ToursMasters({ state }: { state: TournamentState }) {
 
 /**
  * Tours de jeu de la consolante (onglet « TDJ CLS » de l'outil Excel) : tour par tour, la liste
- * des matchs dans l'ordre de lancement, avec leur billard 2m80 et leur passage quand un tour
- * compte plus de matchs que de billards. Même présentation que les tours de jeu Masters : heure
- * à noter, case « Joué », joueurs connus ou « Vainqueur H3 ».
+ * des matchs dans l'ordre du tableau. Même présentation que les tours de jeu Masters : heure à
+ * noter, case « Joué », joueurs connus ou « Vainqueur B1 ». La colonne « Billard » est vide : il
+ * se note à la main sur place (pas de billard indiqué pour la consolante).
  */
 function ToursConsolante({ state }: { state: TournamentState }) {
   const rounds = consolanteRounds(state);
   const pages = consolantePages(rounds);
   const total = rounds.tours.reduce((n, t) => n + t.rows.length, 0);
-  const n = rounds.billards.length;
-  const rotation = rounds.tours.some((t) => t.passages > 1);
-  const types = [...new Set(rounds.billards.map((b) => billardType(state, b)))];
   return (
     <>
       {pages.map((tours, pi) => (
@@ -613,11 +609,8 @@ function ToursConsolante({ state }: { state: TournamentState }) {
             state={state}
             title="Tours de jeu · Consolante"
             date={longDate(dayDate(state, "samedi"), true)}
-            sub={`Élimination directe · matchs dans l'ordre de lancement · billard${n > 1 ? "s" : ""} ${rounds.billards.join(", ")}`}
-            cells={[
-              { label: "Matchs", value: String(total) },
-              { label: "Billards", value: String(n), sub: types.join(" et ") },
-            ]}
+            sub="Élimination directe · matchs dans l'ordre du tableau"
+            cells={[{ label: "Matchs", value: String(total) }]}
           />
           <table className="pt pt-tall mt-[3.5mm]">
             <thead>
@@ -625,8 +618,7 @@ function ToursConsolante({ state }: { state: TournamentState }) {
                 <th className="w-[14mm]">Heure</th>
                 <th className="w-[8mm] c">#</th>
                 <th className="w-[9mm] c">Joué</th>
-                <th className="w-[13mm] c">Billard</th>
-                <th className="w-[15mm] c">Passage</th>
+                <th className="w-[15mm] c">Billard</th>
                 <th className="w-[11mm] c">Match</th>
                 <th>Joueur 1</th>
                 <th>Joueur 2</th>
@@ -636,22 +628,16 @@ function ToursConsolante({ state }: { state: TournamentState }) {
             {tours.map((t) => (
               <tbody key={t.round}>
                 <tr className="group">
-                  <th colSpan={9}>
+                  <th colSpan={8}>
                     {t.label}
                     <small>
                       {distanceLabel(t.distance)} · {t.rows.length} match
                       {t.rows.length > 1 ? "s" : ""}
-                      {t.passages > 1 ? ` · ${t.passages} passages` : ""}
                     </small>
                   </th>
                 </tr>
-                {t.rows.map((r, i) => (
-                  <tr
-                    key={r.id}
-                    className={
-                      i > 0 && r.passage !== t.rows[i - 1]?.passage ? "rule-top" : undefined
-                    }
-                  >
+                {t.rows.map((r) => (
+                  <tr key={r.id}>
                     <td>
                       <span className="p-sign" />
                     </td>
@@ -659,14 +645,10 @@ function ToursConsolante({ state }: { state: TournamentState }) {
                     <td className="c">
                       <Box on={r.played} />
                     </td>
-                    <td
-                      className={
-                        r.billardFirm ? "c num text-[12pt] font-bold" : "c num muted text-[10pt]"
-                      }
-                    >
-                      {r.billard ?? ""}
+                    {/* Billard : à remplir à la main */}
+                    <td className="c">
+                      <span className="p-sign" />
                     </td>
-                    <td className="c num">{t.passages > 1 ? ordinal(r.passage) : "–"}</td>
                     <td className="c num font-bold">{r.code}</td>
                     <td
                       className={
@@ -691,14 +673,8 @@ function ToursConsolante({ state }: { state: TournamentState }) {
             ))}
           </table>
           <Foot page={pageOf(pi, pages.length)}>
-            Noter l'heure, cocher « Joué » et reporter le score à la fin du match.{" "}
-            {rounds.drawn
-              ? "Billards du tirage ; les autres matchs sont répartis dans l'ordre du tableau. "
-              : "Billards répartis dans l'ordre du tableau (pas de tirage pour la consolante). "}
-            {rotation
-              ? "À partir du 2e passage, le billard (en gris) est indicatif : le premier billard libéré prend le match suivant du tour. "
-              : ""}
-            Un joueur en attente est désigné par le match qui le qualifie.
+            Noter l'heure et le billard, cocher « Joué » et reporter le score à la fin du match. Un
+            joueur en attente est désigné par le match qui le qualifie.
           </Foot>
         </Page>
       ))}
@@ -740,6 +716,8 @@ function BracketTable({
   title: string;
 }) {
   const b = state.brackets[phase];
+  // Noms des tours et codes des matchs : les mêmes qu'à l'écran (B = barrages, S, H, Q, D, F)
+  const naming = bracketNaming(b);
   // Tous les tours présents, premier tour compris (barrages et seizièmes de la consolante)
   const pages = bracketPages(state, phase);
   const played = b.filter((m) => matchWinner(m, phaseDistance(state, phase, m.round))).length;
@@ -764,7 +742,7 @@ function BracketTable({
                 <tbody key={r}>
                   <tr className="group">
                     <th colSpan={5}>
-                      {roundLabel(r)}
+                      {naming.round(r)}
                       <small>{distanceLabel(d)}</small>
                     </th>
                   </tr>
@@ -772,19 +750,19 @@ function BracketTable({
                     .filter((m) => m.round === r)
                     .map((m) => (
                       <tr key={m.id}>
-                        <td className="num w-[12mm] font-bold">
-                          {roundShort(r)}
-                          {m.slot}
+                        <td className="num w-[12mm] font-bold">{naming.code(m)}</td>
+                        {/* Billard : jamais pour la consolante (et « B » y désigne un barrage) */}
+                        <td className="num muted w-[14mm] c">
+                          {m.billard && phase !== "CLS" ? `B${m.billard}` : ""}
                         </td>
-                        <td className="num muted w-[14mm] c">{m.billard ? `B${m.billard}` : ""}</td>
                         <td className={m.a ? winClass(m, d, m.a) : "muted"}>
-                          {m.a ? nice(m.a) : waitingLabel(m.labelA)}
+                          {m.a ? nice(m.a) : naming.waiting(m.labelA)}
                         </td>
                         <td className="w-[34mm] c">
                           <Score m={m} d={d} />
                         </td>
                         <td className={m.b ? winClass(m, d, m.b) : "muted"}>
-                          {m.b ? nice(m.b) : waitingLabel(m.labelB)}
+                          {m.b ? nice(m.b) : naming.waiting(m.labelB)}
                         </td>
                       </tr>
                     ))}

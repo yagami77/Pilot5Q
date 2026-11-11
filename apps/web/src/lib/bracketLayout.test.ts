@@ -1,8 +1,8 @@
-import type { BracketMatch, BracketRound } from "@pilot5q/domain";
-import { BRACKET_ROUNDS, consolanteBracket } from "@pilot5q/domain";
+import type { BracketMatch } from "@pilot5q/domain";
+import { BRACKET_ROUNDS, consolanteBracket, preliminaryRound } from "@pilot5q/domain";
 import { describe, expect, it } from "vitest";
 
-import { bracketLayout, isPreliminaryRound, waitingLabel } from "./bracketLayout";
+import { bracketLayout } from "./bracketLayout";
 
 const BOX = { w: 300, h: 116, gap: 110, rowH: (rows: number) => (rows > 8 ? 124 : 132) };
 
@@ -33,18 +33,18 @@ function overlaps(matches: BracketMatch[]): string[] {
 }
 
 describe("géométrie du tableau", () => {
-  it("consolante de 19 joueurs : tableau de 16 et 3 préliminaires, huitièmes entiers", () => {
+  it("consolante de 19 joueurs : tableau de 16 et 3 barrages, huitièmes entiers", () => {
     const cls = consolanteBracket(players(19), 40);
     const { rounds, byRound, layout } = layoutOf(cls);
     expect(rounds).toEqual(["R32", "R16", "QF", "SF", "F"]);
     expect(byRound[0]).toHaveLength(3);
     expect(byRound[1]).toHaveLength(8);
-    expect(isPreliminaryRound(byRound[0] ?? [], byRound[1])).toBe(true);
-    // La hauteur est celle des 8 huitièmes, pas celle des 3 préliminaires
+    expect(preliminaryRound(cls)).toBe("R32");
+    // La hauteur est celle des 8 huitièmes, pas celle des 3 barrages
     expect(layout.base).toBe(1);
     expect(layout.height).toBe(8 * 132);
     expect(overlaps(cls)).toEqual([]);
-    // Chaque préliminaire est en face du huitième qu'il alimente (côté joueur B)
+    // Chaque barrage est en face du huitième qu'il alimente (côté joueur B)
     for (const pre of byRound[0] ?? []) {
       const target = (byRound[1] ?? []).find((m) => m.slot === Math.ceil(pre.slot / 2));
       expect(target?.b).toBe("");
@@ -79,22 +79,5 @@ describe("géométrie du tableau", () => {
       expect(feeders).toHaveLength(2);
       expect(y(qf.id)).toBe((y(feeders[0]?.id ?? "") + y(feeders[1]?.id ?? "")) / 2);
     }
-  });
-});
-
-describe("libellé d'un joueur attendu", () => {
-  it("reprend le nom du match tel qu'il est affiché sur sa carte", () => {
-    const cases: [string | undefined, string][] = [
-      ["Vainqueur R32-2", "Vainqueur S2"],
-      ["Vainqueur R16-8", "Vainqueur H8"],
-      ["Vainqueur QF1", "Vainqueur Q1"],
-      ["Vainqueur SF2", "Vainqueur D2"],
-      ["TS 14", "TS 14"],
-      ["1er P3", "1er P3"],
-      [undefined, ""],
-    ];
-    for (const [input, expected] of cases) expect(waitingLabel(input)).toBe(expected);
-    const round: BracketRound = "R64";
-    expect(waitingLabel(`Vainqueur ${round}-12`)).toBe("Vainqueur T12");
   });
 });

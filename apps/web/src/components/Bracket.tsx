@@ -12,16 +12,11 @@ import { createPortal } from "react-dom";
 
 import { isValidScore, matchWinner } from "@/lib/engine";
 import { findByLicence, useKnownPeople, type KnownPerson } from "@/lib/arbitres";
-import { bracketLayout, waitingLabel } from "@/lib/bracketLayout";
+import { bracketLayout } from "@/lib/bracketLayout";
+import { bracketNaming, type BracketNaming } from "@/lib/bracketNaming";
 import { nice, shortName } from "@/lib/format";
 import { celebrate, prefersReducedMotion } from "@/lib/motion";
-import {
-  distanceLabel,
-  matchTouched,
-  phaseDistance,
-  roundLabel,
-  roundShort,
-} from "@/lib/tournament";
+import { distanceLabel, matchTouched, phaseDistance } from "@/lib/tournament";
 import { useEditLock, useTournament } from "@/store/tournament";
 
 import { ArbitreField } from "./ArbitreField";
@@ -63,8 +58,9 @@ export interface BracketProps {
   gridClassName?: string;
 }
 
-function matchLabel(m: BracketMatch): string {
-  return m.round === "F" ? "Finale" : `${roundShort(m.round)}${m.slot}`;
+/** En-tête d'une carte : « B1 », « H3 », « Q1 », « D2 », « Finale » (codes : `bracketNaming`). */
+function matchLabel(m: BracketMatch, naming: BracketNaming): string {
+  return m.round === "F" ? "Finale" : naming.code(m);
 }
 
 interface Travel {
@@ -94,6 +90,9 @@ export function Bracket({
   const locked = Boolean(state.closed[phase]);
   const [zoom, setZoom] = useState(1);
   const rootRef = useRef<HTMLDivElement>(null);
+
+  // Noms des tours et codes des matchs (B = barrages, S, H, Q, D, F)
+  const naming = useMemo(() => bracketNaming(all), [all]);
 
   const dist = (r: BracketRound): Distance => phaseDistance(state, phase, r);
   const winner = (m: BracketMatch) => (m.a && m.b ? matchWinner(m, dist(m.round)) : null);
@@ -224,6 +223,7 @@ export function Bracket({
         refEl={r === "F" ? finalRef : undefined}
         delay={layout === "grid" ? m.slot * 40 : ri * 60}
         people={people}
+        naming={naming}
       />
     );
   };
@@ -299,7 +299,7 @@ export function Bracket({
                 className="text-ink-muted absolute -top-7 text-[11px] font-extrabold tracking-[0.1em] uppercase whitespace-nowrap"
                 style={{ left: ri * (W + GAP) }}
               >
-                {roundLabel(r)} · {distanceLabel(dist(r))}
+                {naming.round(r)} · {distanceLabel(dist(r))}
               </div>
             );
           })}
@@ -387,6 +387,7 @@ function MatchCard({
   refEl,
   delay,
   people,
+  naming,
 }: {
   phase: Phase;
   match: BracketMatch;
@@ -402,6 +403,7 @@ function MatchCard({
   refEl?: React.RefObject<HTMLDivElement | null>;
   delay: number;
   people: KnownPerson[];
+  naming: BracketNaming;
 }) {
   const { state, dispatch } = useTournament();
   const photoOf = (n: string) => state.players.find((p) => p.name === n)?.photoUrl ?? null;
@@ -452,7 +454,7 @@ function MatchCard({
 
   const slot = (who: "a" | "b") => {
     const name = who === "a" ? match.a : match.b;
-    const label = waitingLabel(who === "a" ? match.labelA : match.labelB);
+    const label = naming.waiting(who === "a" ? match.labelA : match.labelB);
     const hiddenSlot = who === "a" ? hiddenA : hiddenB;
     const sets = who === "a" ? match.setsA : match.setsB;
     const score = who === "a" ? match.sa : match.sb;
@@ -577,7 +579,7 @@ function MatchCard({
           )}
           aria-hidden="true"
         />
-        {matchLabel(match)}
+        {matchLabel(match, naming)}
         {match.needsReview ? (
           <span
             className="bg-alert-soft text-alert-ink rounded-[5px] px-1.5 py-[1px] font-sans text-[10px] font-bold tracking-normal normal-case"
@@ -587,7 +589,8 @@ function MatchCard({
           </span>
         ) : null}
         <span className="text-ink-secondary ml-auto font-mono font-semibold tracking-normal normal-case">
-          {match.billard ? `Billard ${match.billard}` : ""}
+          {/* Pas de billard sur la consolante : il se décide sur place */}
+          {match.billard && phase !== "CLS" ? `Billard ${match.billard}` : ""}
         </span>
         {multi && editable && ready && !match.forfait ? (
           <button
@@ -595,7 +598,7 @@ function MatchCard({
             onClick={() => (open ? closeEntry() : setOpen(true))}
             className="text-brand inline-flex items-center gap-1 font-sans text-[11px] font-bold tracking-normal normal-case"
             aria-expanded={open}
-            aria-label={`Saisir ${roundLabel(match.round)} ${match.slot}`}
+            aria-label={`Saisir ${naming.round(match.round)} ${naming.number(match)}`}
           >
             <Pencil className="size-3" aria-hidden="true" />
             {valid ? "Modifier" : "Saisir"}
@@ -608,7 +611,7 @@ function MatchCard({
         <SaisiePopover anchor={rootRef} onClose={closeEntry}>
           <div className="mb-2 flex items-center justify-between gap-2">
             <span className="text-[12.5px] font-bold">
-              {matchLabel(match)} · {distanceLabel(d)}
+              {matchLabel(match, naming)} · {distanceLabel(d)}
             </span>
             <button
               type="button"

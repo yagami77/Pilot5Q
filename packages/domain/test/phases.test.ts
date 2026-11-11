@@ -4,6 +4,7 @@ import {
   DEFAULT_RULES,
   advanceBracket,
   consolanteBracket,
+  preliminaryRound,
   mastersQF,
   nationalR16,
   seedOrder,
@@ -225,5 +226,32 @@ describe("consolanteBracket", () => {
     expect(ms.filter((m) => m.round === "F")).toHaveLength(1);
     expect(() => consolanteBracket(names(41), 40)).toThrow(/maximum/);
     expect(consolanteBracket(names(2), 40).map((m) => m.id)).toEqual(["CLS-F"]);
+  });
+});
+
+describe("preliminaryRound : barrages d'un tableau", () => {
+  const names = (n: number): string[] => Array.from({ length: n }, (_, i) => `C${i + 1}`);
+  const pre = (n: number) => preliminaryRound(consolanteBracket(names(n), 40));
+
+  it("17 à 24 joueurs : barrages avant les huitièmes d'un tableau de 16", () => {
+    for (let n = 17; n <= 24; n++) expect(pre(n), `${n} joueurs`).toBe("R32");
+  });
+
+  it("25 à 32 joueurs : vrai tour de seizièmes (exemptions), pas de barrages", () => {
+    for (let n = 25; n <= 32; n++) expect(pre(n), `${n} joueurs`).toBeNull();
+  });
+
+  it("33 à 40 joueurs : barrages avant les seizièmes d'un tableau de 32", () => {
+    for (let n = 33; n <= 40; n++) expect(pre(n), `${n} joueurs`).toBe("R64");
+  });
+
+  it("petits tableaux : barrages avant les quarts, les demies ou la finale ; aucun à 2^k", () => {
+    expect(pre(9)).toBe("R16");
+    expect(pre(12)).toBe("R16");
+    expect(pre(13)).toBeNull();
+    expect(pre(5)).toBe("QF");
+    expect(pre(3)).toBe("SF");
+    for (const n of [2, 4, 8, 16]) expect(pre(n), `${n} joueurs`).toBeNull();
+    expect(preliminaryRound([])).toBeNull();
   });
 });
