@@ -139,9 +139,11 @@ export function DayTasks({
     ? undefined
     : blockers.length > 0
       ? `Reste à jouer : ${blockers.join(", ")}`
-      : locked
-        ? "Tournoi en consultation seule"
-        : undefined;
+      : state.reopening && locked
+        ? "Tournoi rouvert par le responsable : lui seul peut le clôturer de nouveau"
+        : locked
+          ? "Tournoi en consultation seule"
+          : undefined;
 
   const open = (t: DayTask) => {
     const action = actions[t.id];
@@ -263,9 +265,9 @@ export function DayTasks({
             );
           })}
         </ul>
-        Les tableaux sont classés et le tournoi est clôturé. Après la clôture, plus rien ne peut
-        être modifié depuis le cockpit du directeur de jeu (ni score, ni annulation) : seul le
-        responsable national peut rouvrir le tournoi pour corriger.
+        Les tableaux sont classés et le tournoi est clôturé. Après la clôture, le directeur de jeu
+        ne peut plus rien modifier (ni score, ni annulation), définitivement : toute correction est
+        faite par le responsable national, qui seul peut rouvrir le tournoi.
       </ConfirmDialog>
     </section>
   );

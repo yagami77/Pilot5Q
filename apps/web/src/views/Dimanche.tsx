@@ -32,7 +32,7 @@ function primeOf(sheet: PrimesSheet, phase: "M" | "N", label: string): number {
 }
 
 export function Dimanche() {
-  const { state, dispatch, id, closure } = useTournament();
+  const { state, dispatch, id, closure, reopening } = useTournament();
   const toast = useToast();
   const ro = useEditLock();
   const [printOpen, setPrintOpen] = useState(false);
@@ -216,7 +216,9 @@ export function Dimanche() {
               >
                 {closure
                   ? "Tournoi clôturé · tableaux finaux et primes imprimables"
-                  : "Tableaux classés · le tournoi peut être clôturé"}
+                  : reopening
+                    ? "Tournoi rouvert par le responsable pour correction"
+                    : "Tableaux classés · le tournoi peut être clôturé"}
               </Banner>
             ) : null}
           </>
@@ -231,7 +233,7 @@ export function Dimanche() {
 /* ---------- Résumé de fin : podiums Masters et National ---------- */
 
 function Summary({ onTables }: { onTables: () => void }) {
-  const { state, closure } = useTournament();
+  const { state, closure, reopening, canReopen } = useTournament();
   const consolante = bracketWinner(state, "CLS");
   // Photo du joueur si l'application 5 Quilles en fournit une (sinon le nom seul)
   const photoOf = (n: string) => state.players.find((p) => p.name === n)?.photoUrl ?? null;
@@ -300,7 +302,11 @@ function Summary({ onTables }: { onTables: () => void }) {
         {state.info?.name} · {state.info?.city} :{" "}
         {closure
           ? `tournoi clôturé le ${closureWhen(closure.at)}${closure.by ? ` par ${closure.by}` : ""}. Toute correction passe désormais par le responsable national.`
-          : "tout est classé. Il reste à clôturer le tournoi avec le bouton « Clôturer le tournoi », en haut de la page."}
+          : reopening && !canReopen
+            ? "tournoi rouvert par le responsable national pour correction. Vous êtes en consultation seule."
+            : reopening
+              ? "tournoi rouvert pour correction. Clôturez-le de nouveau avec le bouton « Clôturer le tournoi », en haut de la page."
+              : "tout est classé. Il reste à clôturer le tournoi avec le bouton « Clôturer le tournoi », en haut de la page."}
       </Banner>
       <div className="grid gap-3.5 md:grid-cols-2">
         {block("Masters", "M")}

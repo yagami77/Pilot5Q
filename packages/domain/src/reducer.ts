@@ -40,10 +40,12 @@
  * - `arbitre.set` : numéro de licence de l'arbitre 1 (`arbitre`) ou 2 (`arbitre2`, `slot: 2`) sur
  *   le match ; sans `slot` (anciens journaux), l'arbitre 1 ; une licence vide efface l'arbitre.
  * - `tournament.closed` : clôture du tournoi par le directeur de jeu (`closure` = date et auteur) ;
- *   `tournament.reopened` : réouverture par le responsable (`closure` = null). Le réducteur ne
- *   fait qu'enregistrer l'état : c'est l'appelant (store du cockpit, serveur demain) qui refuse
- *   toute modification tant que le tournoi est clôturé (`journalClosed`) et réserve la
- *   réouverture au responsable. `canCloseTournament` dit si la clôture est possible.
+ *   `tournament.reopened` : réouverture par le responsable pour correction (`closure` = null,
+ *   `reopening` = date et auteur), jusqu'à la clôture suivante. Le réducteur ne fait
+ *   qu'enregistrer l'état : c'est l'appelant (store du cockpit, serveur demain) qui applique les
+ *   droits d'après `closureStatus` — tournoi clôturé : plus aucune modification ; rouvert : seul
+ *   le responsable modifie, le directeur de jeu ne retrouve jamais la saisie (réponse du
+ *   responsable national, 11 novembre). `canCloseTournament` dit si la clôture est possible.
  *
  * Sélecteurs dérivés : `phaseRanking` (classement d'une phase de poules, l'ordre d'arrivée
  * étant l'ordre d'entrée dans la phase, cf. `entryArrivee`), `barrageRanking`, `bracketRanking`
@@ -72,6 +74,7 @@ import { matchOutcome, rankBarrages, rankPhase, rankPoule, rankPouleInPhase } fr
 import type {
   BracketMatch,
   BracketRound,
+  ClosureStatus,
   Distance,
   Match,
   PhaseId,
@@ -115,6 +118,7 @@ export function initialState(): TournamentState {
     forfaits: [],
     billardAssignments: {},
     closure: null,
+    reopening: null,
   };
 }
 
@@ -771,25 +775,42 @@ export function reduce(state: TournamentState, event: TournamentEvent): Tourname
     case "tournament.closed":
       // Déjà clôturé : la première clôture fait foi.
       if (state.closure) return state;
-      return { ...state, closure: { at: event.at, by: event.payload.by ?? "" } };
+      return {
+        ...state,
+        closure: { at: event.at, by: event.payload.by ?? "" },
+        reopening: null,
+      };
     case "tournament.reopened":
-      return state.closure ? { ...state, closure: null } : state;
+      // Sans clôture préalable, il n'y a rien à rouvrir.
+      if (!state.closure) return state;
+      return {
+        ...state,
+        closure: null,
+        reopening: { at: event.at, by: event.payload.by ?? "" },
+      };
     default:
       return state;
   }
 }
 
 /**
- * Le journal se termine-t-il par une clôture du tournoi non rouverte ? Équivalent à
- * `replay(events).closure != null`, sans rejouer le journal.
+ * Où en est la clôture d'après le journal, sans le rejouer : la dernière clôture ou réouverture
+ * fait foi. Équivalent à lire `closure` et `reopening` de `replay(events)`.
  */
-export function journalClosed(events: readonly TournamentEvent[]): boolean {
+export function closureStatus(events: readonly TournamentEvent[]): ClosureStatus {
+  // Dernière réouverture rencontrée en remontant : elle ne vaut que si une clôture la précède.
+  let reopened = false;
   for (let i = events.length - 1; i >= 0; i--) {
     const type = events[i]?.type;
-    if (type === "tournament.closed") return true;
-    if (type === "tournament.reopened") return false;
+    if (type === "tournament.closed") return reopened ? "reopened" : "closed";
+    if (type === "tournament.reopened") reopened = true;
   }
-  return false;
+  return "open";
+}
+
+/** Le journal se termine-t-il par une clôture du tournoi non rouverte ? */
+export function journalClosed(events: readonly TournamentEvent[]): boolean {
+  return closureStatus(events) === "closed";
 }
 
 /**

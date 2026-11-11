@@ -224,7 +224,8 @@ export type TournamentEvent =
     }
   /**
    * Clôture du tournoi par le directeur de jeu : au-delà, seul le responsable national peut
-   * rouvrir (`tournament.reopened`) pour corriger. `by` = nom de la personne qui agit.
+   * rouvrir (`tournament.reopened`), corriger, puis clôturer de nouveau ; le directeur de jeu
+   * ne retrouve plus la saisie. `by` = nom de la personne qui agit.
    */
   | { type: "tournament.closed"; at: string; payload: { by?: string } }
   | { type: "tournament.reopened"; at: string; payload: { by?: string } };
@@ -254,4 +255,15 @@ export interface TournamentState {
    * tournoi est ouvert, ou après une réouverture par le responsable.
    */
   closure?: { at: string; by: string } | null;
+  /**
+   * Réouverture en cours par le responsable (date et auteur), après une clôture : lui seul peut
+   * corriger, jusqu'à la nouvelle clôture. Null ou absent sinon.
+   */
+  reopening?: { at: string; by: string } | null;
 }
+
+/**
+ * Où en est la clôture d'un tournoi : jamais clôturé (« open »), clôturé (« closed », plus aucune
+ * modification), ou rouvert par le responsable pour correction (« reopened », lui seul modifie).
+ */
+export type ClosureStatus = "open" | "closed" | "reopened";

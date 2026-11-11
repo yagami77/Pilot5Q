@@ -18,9 +18,12 @@ function lower(label: string): string {
 }
 
 export function UndoMenu() {
-  const { events, undo, undoTo, canUndo, readOnly, closure } = useTournament();
-  // Consultation seule ou tournoi clôturé : rien ne s'annule.
-  const frozen = readOnly || Boolean(closure);
+  const { events, undo, undoTo, canUndo, readOnly, closure, reopening, canReopen } =
+    useTournament();
+  // Tournoi rouvert pour correction : seul le responsable annule.
+  const reserved = Boolean(reopening) && !canReopen;
+  // Consultation seule, tournoi clôturé ou réservé au responsable : rien ne s'annule.
+  const frozen = readOnly || Boolean(closure) || reserved;
   const toast = useToast();
   const [open, setOpen] = useState(false);
   const [hover, setHover] = useState<number | null>(null);
@@ -73,9 +76,11 @@ export function UndoMenu() {
         title={
           closure
             ? "Tournoi clôturé : plus d'annulation"
-            : last
-              ? `Annuler : ${lower(last.label)}`
-              : "Rien à annuler"
+            : reserved
+              ? "Tournoi rouvert par le responsable : lui seul peut annuler"
+              : last
+                ? `Annuler : ${lower(last.label)}`
+                : "Rien à annuler"
         }
         className="border-line-2 bg-surface enabled:hover:bg-brand-soft inline-flex max-w-[280px] items-center gap-1.5 rounded-l-[10px] border px-2.5 py-1.5 text-[12.5px] font-semibold transition-colors disabled:opacity-50"
       >

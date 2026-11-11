@@ -10,6 +10,7 @@ import { describe, expect, it } from "vitest";
 import {
   DEFAULT_RULES,
   canCloseTournament,
+  closureStatus,
   initialState,
   journalClosed,
   phaseComplete,
@@ -320,9 +321,16 @@ describe("réducteur : clôture du tournoi", () => {
     // Une seconde clôture ne change rien : la première fait foi.
     s = reduce(s, { type: "tournament.closed", at: "2026-11-02T08:00:00.000Z", payload: {} });
     expect(s.closure).toEqual({ at, by: "DJ" });
-    s = reduce(s, reopened);
+    s = reduce(s, { ...reopened, payload: { by: "Responsable" } });
     expect(s.closure).toBeNull();
+    // Réouverture en cours : elle est notée, jusqu'à la clôture suivante
+    expect(s.reopening).toEqual({ at, by: "Responsable" });
     expect(reduce(s, reopened)).toBe(s);
+    s = reduce(s, { type: "tournament.closed", at, payload: { by: "Responsable" } });
+    expect(s.closure).toEqual({ at, by: "Responsable" });
+    expect(s.reopening).toBeNull();
+    // Rouvrir un tournoi jamais clôturé ne fait rien
+    expect(reduce(initialState(), reopened).reopening).toBeNull();
   });
 
   it("journalClosed suit la dernière clôture ou réouverture du journal", () => {
@@ -330,6 +338,12 @@ describe("réducteur : clôture du tournoi", () => {
     expect(journalClosed([closed])).toBe(true);
     expect(journalClosed([closed, reopened])).toBe(false);
     expect(journalClosed([closed, reopened, closed])).toBe(true);
+    expect(closureStatus([])).toBe("open");
+    expect(closureStatus([reopened])).toBe("open");
+    expect(closureStatus([closed])).toBe("closed");
+    expect(closureStatus([closed, reopened])).toBe("reopened");
+    expect(closureStatus([closed, reopened, reopened])).toBe("reopened");
+    expect(closureStatus([closed, reopened, closed])).toBe("closed");
   });
 
   it("un tournoi sans finales jouées ne peut pas être clôturé", () => {

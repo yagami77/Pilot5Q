@@ -4,8 +4,9 @@
  * tournoi et en lecture seule après la clôture.
  *
  * Deux clôtures verrouillent la saisie : celle du directeur de jeu (dans le journal du tournoi,
- * elle vaut pour tous jusqu'à la réouverture par le responsable) et celle du responsable (points
- * attribués : l'accès du directeur de jeu passe en lecture seule).
+ * elle vaut pour tous jusqu'à la réouverture par le responsable, et pour le directeur de jeu
+ * définitivement : pendant une réouverture, seul le responsable corrige) et celle du responsable
+ * (points attribués : l'accès du directeur de jeu passe en lecture seule).
  */
 import { LockKeyhole, LockKeyholeOpen, LogOut, RefreshCw } from "lucide-react";
 import { useState, type ReactNode } from "react";
@@ -84,10 +85,13 @@ export function RequireCockpit({ children }: { children: ReactNode }) {
     );
   }
   // Tournoi clôturé (par le directeur de jeu dans le cockpit, ou par le responsable pour l'accès
-  // du DJ) : la saisie est verrouillée par le cockpit (store figé, commandes de saisie masquées
-  // ou désactivées) ; navigation, impression, schéma et primes restent consultables.
-  // Impression : consultation pure, sans bandeau.
-  const closed = Boolean(cockpit.closure) || (session.role === "dj" && session.readOnly);
+  // du DJ) ou rouvert par le responsable pour correction : la saisie est verrouillée par le
+  // cockpit (store figé, commandes de saisie masquées ou désactivées) ; navigation, impression,
+  // schéma et primes restent consultables. Impression : consultation pure, sans bandeau.
+  const closed =
+    Boolean(cockpit.closure) ||
+    Boolean(cockpit.reopening) ||
+    (session.role === "dj" && session.readOnly);
   return (
     <>
       {children}
@@ -98,17 +102,20 @@ export function RequireCockpit({ children }: { children: ReactNode }) {
 }
 
 /**
- * Bandeau de consultation seule : rappelle que le tournoi est clôturé, avec un accès direct
- * aux journées ouvertes et au schéma. Le responsable connecté y trouve « Rouvrir le tournoi »
- * (clôture du directeur de jeu) ; le directeur de jeu, lui, ne peut plus rien modifier.
+ * Bandeau de clôture : rappelle que le tournoi est clôturé, ou rouvert par le responsable pour
+ * correction, avec un accès direct aux journées ouvertes et au schéma. Le responsable connecté y
+ * trouve « Rouvrir le tournoi » ; le directeur de jeu, lui, ne peut plus rien modifier, même
+ * pendant une réouverture.
  */
 function ReadOnlyBar() {
-  const { state, closure, canReopen, reopenTournament } = useTournament();
+  const { state, closure, reopening, canReopen, reopenTournament } = useTournament();
   const { session } = useAuth();
   const toast = useToast();
   const location = useLocation();
   const [confirm, setConfirm] = useState(false);
   const reopenable = Boolean(closure) && canReopen;
+  // Réouverture en cours, vue par le responsable : lui seul corrige
+  const correcting = !closure && Boolean(reopening) && canReopen;
   const statuses = dayStatuses(state);
   const links = [
     ...DAYS.filter((d) => statuses[d].unlocked).map((d) => ({
@@ -120,13 +127,26 @@ function ReadOnlyBar() {
   return (
     <div className="no-print pointer-events-none fixed inset-x-0 bottom-4 z-40 flex justify-center px-4">
       <div className="bg-surface/95 border-line animate-pop pointer-events-auto flex flex-wrap items-center gap-2 rounded-full border py-1.5 pr-1.5 pl-4 text-[12.5px] font-semibold shadow-[var(--shadow-raised)] backdrop-blur-[10px]">
-        <span className="text-gold-ink flex items-center gap-1.5">
-          <LockKeyhole className="size-4" aria-hidden="true" />
+        <span
+          className={cx(
+            "flex items-center gap-1.5",
+            correcting ? "text-brand-ink" : "text-gold-ink",
+          )}
+        >
+          {correcting ? (
+            <LockKeyholeOpen className="size-4" aria-hidden="true" />
+          ) : (
+            <LockKeyhole className="size-4" aria-hidden="true" />
+          )}
           {reopenable && closure
             ? `Tournoi clôturé le ${closureWhen(closure.at)}${closure.by ? ` par ${closure.by}` : ""}`
             : closure
               ? "Tournoi clôturé : consultation seule, seul le responsable peut le rouvrir"
-              : "Tournoi clôturé : consultation seule"}
+              : correcting
+                ? "Tournoi rouvert pour correction : vous seul pouvez modifier, puis clôturez de nouveau"
+                : reopening
+                  ? "Tournoi rouvert par le responsable pour correction : consultation seule"
+                  : "Tournoi clôturé : consultation seule"}
         </span>
         <nav aria-label="Journées" className="bg-surface-2 flex gap-0.5 rounded-full p-0.5">
           {links.map((l) => (
@@ -166,11 +186,11 @@ function ReadOnlyBar() {
         onConfirm={() => {
           setConfirm(false);
           reopenTournament(session?.displayName);
-          toast("Tournoi rouvert : la saisie est de nouveau possible");
+          toast("Tournoi rouvert pour correction : vous seul pouvez modifier");
         }}
       >
-        La saisie redevient possible, pour vous comme pour le directeur de jeu. Corrigez ce qui doit
-        l'être, puis clôturez de nouveau le tournoi.
+        La saisie redevient possible pour vous seul : le directeur de jeu reste en consultation.
+        Corrigez ce qui doit l'être, puis clôturez de nouveau le tournoi.
       </ConfirmDialog>
     </div>
   );

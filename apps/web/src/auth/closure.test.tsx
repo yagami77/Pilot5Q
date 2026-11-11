@@ -65,6 +65,12 @@ const closedByDj = (): TournamentEvent[] => [
   { type: "tournament.closed", at: AT, payload: { by: "Martin Paul" } },
 ];
 
+/** Puis rouvert par le responsable pour correction (pas encore reclôturé). */
+const reopenedByResponsable = (): TournamentEvent[] => [
+  ...closedByDj(),
+  { type: "tournament.reopened", at: AT, payload: { by: "Responsable national" } },
+];
+
 const entryButtons = () => screen.queryAllByRole("button", { name: /^Saisir / });
 const undo = () => screen.getByRole("button", { name: /^Annuler/ });
 
@@ -115,11 +121,66 @@ describe("clôture par le directeur de jeu", () => {
     );
     await waitFor(() => expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument());
     expect(screen.queryByText(/^Tournoi clôturé/)).not.toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Tournoi rouvert pour correction : vous seul pouvez modifier, puis clôturez de nouveau",
+      ),
+    ).toBeInTheDocument();
     expect(undo()).toBeEnabled();
     // Correction : le tableau Masters classé se rouvre, ses matchs redeviennent saisissables
     fireEvent.click(screen.getAllByRole("button", { name: "Rouvrir la saisie" })[0]!);
     expect(entryButtons().length).toBeGreaterThan(0);
-    // Puis le tournoi peut être clôturé de nouveau
+    // Puis il clôture de nouveau : le tournoi est signé de son nom
+    fireEvent.click(screen.getByRole("button", { name: "Clôturer le tournoi" }));
+    fireEvent.click(
+      within(screen.getByRole("alertdialog")).getByRole("button", { name: "Clôturer le tournoi" }),
+    );
+    await waitFor(() => expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument());
+    expect(
+      await screen.findByText(/^Tournoi clôturé le .* par Responsable national/),
+    ).toBeVisible();
+    expect(entryButtons()).toHaveLength(0);
+  });
+});
+
+describe("tournoi rouvert par le responsable pour correction", () => {
+  for (const role of ["dj", "demo"] as const) {
+    it(`${role === "dj" ? "le directeur de jeu" : "la démonstration"} ne retrouve pas la saisie`, async () => {
+      await openCockpit(role, reopenedByResponsable());
+      expect(
+        screen.getByText("Tournoi rouvert par le responsable pour correction : consultation seule"),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(/tournoi rouvert par le responsable national pour correction/),
+      ).toBeVisible();
+      // Ni annulation, ni clôture, ni réouverture
+      expect(undo()).toBeDisabled();
+      const close = screen.getByRole("button", { name: "Clôturer le tournoi" });
+      expect(close).toBeDisabled();
+      expect(close.parentElement?.parentElement).toHaveAttribute(
+        "title",
+        "Tournoi rouvert par le responsable : lui seul peut le clôturer de nouveau",
+      );
+      expect(screen.queryByRole("button", { name: /Rouvrir/ })).not.toBeInTheDocument();
+      // Ni saisie d'un score, ni réouverture d'un tableau classé
+      fireEvent.click(screen.getByRole("button", { name: "Revoir les tableaux" }));
+      expect(entryButtons()).toHaveLength(0);
+      expect(screen.queryByRole("button", { name: /Rouvrir/ })).not.toBeInTheDocument();
+      expect(screen.queryByRole("button", { name: /Mode test/ })).not.toBeInTheDocument();
+    });
+  }
+
+  it("le responsable, lui, corrige : saisie et annulation actives", async () => {
+    await openCockpit("responsable", reopenedByResponsable());
+    expect(
+      await screen.findByText(
+        "Tournoi rouvert pour correction : vous seul pouvez modifier, puis clôturez de nouveau",
+      ),
+    ).toBeVisible();
+    expect(undo()).toBeEnabled();
     expect(screen.getByRole("button", { name: "Clôturer le tournoi" })).toBeEnabled();
+    fireEvent.click(screen.getByRole("button", { name: "Revoir les tableaux" }));
+    fireEvent.click(screen.getAllByRole("button", { name: "Rouvrir la saisie" })[0]!);
+    expect(entryButtons().length).toBeGreaterThan(0);
   });
 });

@@ -80,7 +80,7 @@ describe("barre des tâches : clôture du tournoi", () => {
     fireEvent.click(screen.getByRole("button", { name: "Clôturer le tournoi" }));
     const dialog = screen.getByRole("alertdialog", { name: "Clôturer le tournoi ?" });
     expect(dialog).toHaveTextContent("Masters : Coupade Jules");
-    expect(dialog).toHaveTextContent("seul le responsable national peut rouvrir");
+    expect(dialog).toHaveTextContent("toute correction est faite par le responsable national");
     // Annuler : rien ne change
     fireEvent.click(within(dialog).getByRole("button", { name: "Annuler" }));
     await gone();

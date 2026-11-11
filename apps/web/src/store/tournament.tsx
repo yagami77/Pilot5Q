@@ -4,13 +4,18 @@
  * - `events` est la source de vérité, persistée dans IndexedDB à chaque changement ;
  * - `state` est recalculé par `replay` (moteur du domaine ou secours) ;
  * - `undo` retire le dernier événement et rejoue le journal ;
- * - clôture du tournoi par le directeur de jeu (`closeTournament`) : tant que le journal se
- *   termine par une clôture, plus rien ne passe (ni score, ni annulation, ni réouverture de
- *   phase), quel que soit le rôle ; seule `reopenTournament` rouvre, et uniquement si le cockpit
- *   l'a autorisée pour la session en cours (`setCanReopen` : responsable connecté).
+ * - clôture du tournoi par le directeur de jeu (`closeTournament`), d'après `closureStatus` du
+ *   domaine (réponse du responsable national, 11 novembre : « après la clôture du DJ seul le
+ *   responsable peut modifier ») :
+ *   · tournoi clôturé : plus rien ne passe (ni score, ni annulation, ni réouverture de phase),
+ *     quel que soit le rôle ; seule `reopenTournament` rouvre, et uniquement pour la session du
+ *     responsable connecté (`setCanReopen`, posé par le cockpit) ;
+ *   · tournoi rouvert : seul le responsable modifie (scores, classements, annulation) puis
+ *     clôture de nouveau ; le directeur de jeu et la démonstration restent en lecture seule ;
+ *   · une clôture ne s'annule pas : le directeur de jeu ne retrouve jamais la saisie.
  */
 import type { Billard, TournamentEvent, TournamentState } from "@pilot5q/domain";
-import { journalClosed } from "@pilot5q/domain";
+import { closureStatus, journalClosed } from "@pilot5q/domain";
 import {
   createContext,
   useCallback,
@@ -71,7 +76,15 @@ export interface TournamentStore {
    * Sans effet si la clôture n'est pas possible (finales non jouées, consolante en cours).
    */
   closeTournament: (by?: string) => void;
-  /** La session en cours peut rouvrir un tournoi clôturé (responsable connecté). */
+  /**
+   * Réouverture en cours par le responsable (date, auteur), après une clôture : lui seul peut
+   * corriger, jusqu'à la nouvelle clôture.
+   */
+  reopening: { at: string; by: string } | null;
+  /**
+   * Session du responsable connecté : elle seule peut rouvrir un tournoi clôturé, le corriger
+   * pendant la réouverture et le clôturer de nouveau.
+   */
   canReopen: boolean;
   setCanReopen: (v: boolean) => void;
   /** Rouvre un tournoi clôturé ; ignoré si la session n'y est pas autorisée. */
@@ -83,7 +96,12 @@ const Ctx = createContext<TournamentStore | null>(null);
 const stamp = (e: EventInput): TournamentEvent =>
   ({ ...e, at: new Date().toISOString() }) as TournamentEvent;
 
-export const PROTECTED: TournamentEvent["type"][] = ["tournament.created", "players.imported"];
+/** Événements que « Annuler » ne retire jamais : création, import, et clôture du tournoi. */
+export const PROTECTED: TournamentEvent["type"][] = [
+  "tournament.created",
+  "players.imported",
+  "tournament.closed",
+];
 
 export function TournamentProvider({
   children,
@@ -170,18 +188,32 @@ export function TournamentProvider({
   const state = useMemo(() => replay(events), [events]);
 
   const closure = state.closure ?? null;
+  const reopening = state.reopening ?? null;
 
-  // Tournoi clôturé : le journal est figé (vérifié sur le journal à jour, pas sur un rendu).
-  const dispatchMany = useCallback((inputs: EventInput[]) => {
-    if (locked.current) return;
-    dirty.current = true;
-    setEvents((prev) => (journalClosed(prev) ? prev : [...prev, ...inputs.map(stamp)]));
+  /**
+   * Le journal refuse-t-il toute modification à la session en cours ? Clôturé : oui, pour tous.
+   * Rouvert pour correction : oui, sauf pour le responsable. Vérifié sur le journal à jour, pas
+   * sur un rendu.
+   */
+  const frozen = useCallback((events: TournamentEvent[]) => {
+    const status = closureStatus(events);
+    return status === "closed" || (status === "reopened" && !reopenAllowed.current);
   }, []);
+
+  const dispatchMany = useCallback(
+    (inputs: EventInput[]) => {
+      if (locked.current) return;
+      dirty.current = true;
+      setEvents((prev) => (frozen(prev) ? prev : [...prev, ...inputs.map(stamp)]));
+    },
+    [frozen],
+  );
   const dispatch = useCallback((e: EventInput) => dispatchMany([e]), [dispatchMany]);
 
   const canUndo =
     !readOnly &&
     !closure &&
+    !(reopening && !canReopen) &&
     events.length > 0 &&
     !PROTECTED.includes(events[events.length - 1]!.type);
   const undo = useCallback(() => {
@@ -189,30 +221,36 @@ export function TournamentProvider({
     dirty.current = true;
     setEvents((prev) => {
       const last = prev[prev.length - 1];
-      if (!last || PROTECTED.includes(last.type) || journalClosed(prev)) return prev;
+      if (!last || PROTECTED.includes(last.type) || frozen(prev)) return prev;
       return prev.slice(0, -1);
     });
-  }, []);
+  }, [frozen]);
 
-  const undoTo = useCallback((index: number) => {
-    if (locked.current) return;
-    dirty.current = true;
-    setEvents((prev) => {
-      if (index < 0 || index >= prev.length || journalClosed(prev)) return prev;
-      if (prev.slice(index).some((e) => PROTECTED.includes(e.type))) return prev;
-      return prev.slice(0, index);
-    });
-  }, []);
+  const undoTo = useCallback(
+    (index: number) => {
+      if (locked.current) return;
+      dirty.current = true;
+      setEvents((prev) => {
+        if (index < 0 || index >= prev.length || frozen(prev)) return prev;
+        if (prev.slice(index).some((e) => PROTECTED.includes(e.type))) return prev;
+        return prev.slice(0, index);
+      });
+    },
+    [frozen],
+  );
 
-  const closeTournament = useCallback((by?: string) => {
-    if (locked.current) return;
-    dirty.current = true;
-    setEvents((prev) => {
-      if (journalClosed(prev)) return prev;
-      const more = closureEvents(replay(prev), by);
-      return more.length > 0 ? [...prev, ...more.map(stamp)] : prev;
-    });
-  }, []);
+  const closeTournament = useCallback(
+    (by?: string) => {
+      if (locked.current) return;
+      dirty.current = true;
+      setEvents((prev) => {
+        if (frozen(prev)) return prev;
+        const more = closureEvents(replay(prev), by);
+        return more.length > 0 ? [...prev, ...more.map(stamp)] : prev;
+      });
+    },
+    [frozen],
+  );
 
   const reopenTournament = useCallback((by?: string) => {
     if (locked.current || !reopenAllowed.current) return;
@@ -248,17 +286,20 @@ export function TournamentProvider({
     if (persist && current) void removeTournament(current);
   }, [close, id, persist]);
 
-  const amendBillards = useCallback((billards: Billard[]) => {
-    if (locked.current) return;
-    dirty.current = true;
-    setEvents((prev) =>
-      journalClosed(prev)
-        ? prev
-        : prev.map((e) =>
-            e.type === "tournament.created" ? { ...e, payload: { ...e.payload, billards } } : e,
-          ),
-    );
-  }, []);
+  const amendBillards = useCallback(
+    (billards: Billard[]) => {
+      if (locked.current) return;
+      dirty.current = true;
+      setEvents((prev) =>
+        frozen(prev)
+          ? prev
+          : prev.map((e) =>
+              e.type === "tournament.created" ? { ...e, payload: { ...e.payload, billards } } : e,
+            ),
+      );
+    },
+    [frozen],
+  );
 
   const value = useMemo<TournamentStore>(
     () => ({
@@ -280,6 +321,7 @@ export function TournamentProvider({
       readOnly,
       setReadOnly,
       closure,
+      reopening,
       closeTournament,
       canReopen,
       setCanReopen,
@@ -304,6 +346,7 @@ export function TournamentProvider({
       readOnly,
       setReadOnly,
       closure,
+      reopening,
       closeTournament,
       canReopen,
       setCanReopen,
@@ -315,12 +358,14 @@ export function TournamentProvider({
 }
 
 /**
- * Commandes de saisie désactivées : session en consultation seule, ou tournoi clôturé par le
- * directeur de jeu (pour tout le monde, jusqu'à la réouverture par le responsable).
+ * Commandes de saisie désactivées : session en consultation seule, tournoi clôturé (pour tout le
+ * monde, jusqu'à la réouverture par le responsable), ou tournoi rouvert pour correction (pour
+ * tous sauf le responsable).
  */
 export function useEditLock(): boolean {
   const ctx = useContext(Ctx);
-  return Boolean(ctx && (ctx.readOnly || ctx.closure));
+  if (!ctx) return false;
+  return Boolean(ctx.readOnly || ctx.closure || (ctx.reopening && !ctx.canReopen));
 }
 
 export function useTournament(): TournamentStore {

@@ -15,7 +15,7 @@ import { useAuth } from "./context";
 
 export function SessionDock() {
   const { session, logout } = useAuth();
-  const { closure } = useTournament();
+  const { closure, reopening } = useTournament();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const root = useRef<HTMLDivElement>(null);
@@ -70,7 +70,9 @@ export function SessionDock() {
                 {session.stageName}
                 {session.readOnly || closure
                   ? " · clôturé, consultation seule"
-                  : " · droits actifs"}
+                  : reopening
+                    ? " · rouvert par le responsable, consultation seule"
+                    : " · droits actifs"}
               </div>
             ) : session.role === "responsable" ? (
               <Link

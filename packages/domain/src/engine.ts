@@ -94,6 +94,7 @@ export {
   finalRanking,
   primesOf,
   journalClosed,
+  closureStatus,
   canCloseTournament,
 } from "./reducer.js";
 export { toLiveJson } from "./live.js";
