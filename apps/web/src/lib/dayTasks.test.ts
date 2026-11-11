@@ -22,8 +22,9 @@ const byId = (tasks: ReturnType<typeof dayTasks>) =>
 describe("tâches du jour", () => {
   it("jeudi : tirage puis documents imprimés", () => {
     const before = byId(dayTasks(replay(base), "jeudi", emptyMeta()));
-    expect(before.billards?.status).toBe("done");
-    expect(before.affectation?.status).toBe("done");
+    // Billards et affectation : à valider par le DJ (détail dans jeudiValidation.test.ts)
+    expect(before.billards?.status).toBe("todo");
+    expect(before.affectation?.status).toBe("todo");
     expect(before.tirage?.status).toBe("todo");
     const drawn = replay([...base, all[0]!]);
     const meta = emptyMeta();

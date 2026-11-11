@@ -1,4 +1,10 @@
-/** Jeudi : structure des billards, tirages, création des poules du vendredi, documents. */
+/**
+ * Jeudi : structure des billards, tirages, création des poules du vendredi, documents.
+ *
+ * La structure des billards et l'affectation des poules sont validées explicitement par le DJ
+ * (« Valider les billards », « Valider l'affectation », remarques du 11 novembre) : l'empreinte
+ * de ce qui est validé est gardée dans le suivi du DJ (`lib/jeudiValidation`).
+ */
 import type { Billard } from "@pilot5q/domain";
 import {
   Check,
@@ -11,7 +17,7 @@ import {
   Trash2,
   TriangleAlert,
 } from "lucide-react";
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState, type ReactNode } from "react";
 
 import { DayTasks } from "@/components/DayTasks";
 import { SerpentinPanel } from "@/components/Serpentin";
@@ -24,6 +30,13 @@ import { optimizeBillards } from "@/lib/billardsOptimizer";
 import { JEUDI_DOCS } from "@/lib/dayTasks";
 import { useDjMeta } from "@/lib/djMeta";
 import { drawFridayPoules } from "@/lib/forfaits";
+import {
+  affectationCoherent,
+  billardsSignature,
+  jeudiValidation,
+  laterPhasesCoherent,
+  type ValidationState,
+} from "@/lib/jeudiValidation";
 import { docsFor } from "@/print/docs";
 import { forfaitsOf, pouleSizes } from "@/lib/engine";
 import { longDate, nice, plural } from "@/lib/format";
@@ -37,10 +50,11 @@ import {
   pouleBillards,
   smallTables,
 } from "@/lib/tournament";
-import { useEditLock, useTournament } from "@/store/tournament";
+import { useEditLock, useTournament, type EventInput } from "@/store/tournament";
 
 export function Jeudi() {
-  const { state, dispatch, dispatchMany, amendBillards } = useTournament();
+  const { state, id, dispatch, dispatchMany, amendBillards } = useTournament();
+  const [meta, updateMeta] = useDjMeta(id);
   const toast = useToast();
   const [printOpen, setPrintOpen] = useState(false);
   const [drawSeq, setDrawSeq] = useState(0);
@@ -109,6 +123,54 @@ export function Jeudi() {
   const conflictSet = new Set([...conflicts, ...unresolved]);
   const totalMatches = state.poules.PREQ.reduce((n, p) => n + p.matches.length, 0);
 
+  // Validations explicites du DJ : on enregistre l'empreinte de ce qui est validé
+  const validation = useMemo(() => jeudiValidation(state, meta), [state, meta]);
+  const validate = (what: "billards" | "affectation") => {
+    const { ready, signature } = validation[what];
+    if (ro || !ready) return;
+    const at = new Date().toISOString();
+    void updateMeta((m) => ({ ...m, validated: { ...m.validated, [what]: { signature, at } } }));
+    toast(what === "billards" ? "Billards validés" : "Affectation des billards validée");
+  };
+
+  /** Nouvelle structure : on ne retire au sort que ce qui n'est plus cohérent avec elle. */
+  const changeStructure = (billards: Billard[]) => {
+    if (billardsSignature(billards) === billardsSignature(state.billards)) return;
+    amendBillards(billards);
+    const events: EventInput[] = [];
+    const keepPreq = affectationCoherent(
+      state.billardAssignments.PREQ,
+      pouleCount,
+      billards,
+      state.billards,
+    );
+    if (!keepPreq) {
+      const proposal = optimizeBillards(
+        sizes.map((size, i) => ({ num: i + 1, size })),
+        billards,
+      );
+      events.push({
+        type: "billards.assigned",
+        payload: {
+          phase: "PREQ",
+          assignments: proposal.ok ? planToAssignments(proposal.plan, pouleCount) : {},
+        },
+      });
+    }
+    const keepLater = laterPhasesCoherent(state.billardAssignments, billards);
+    if (!keepLater) events.push(...drawLaterPhaseEvents(billards));
+    if (events.length) dispatchMany(events);
+    toast(
+      [
+        "Structure enregistrée, à valider",
+        keepPreq ? "" : "nouvelle proposition d'affectation des poules",
+        keepLater ? "" : "billards des phases suivantes retirés au sort",
+      ]
+        .filter(Boolean)
+        .join(" · "),
+    );
+  };
+
   return (
     <section className="cascade">
       <DayTasks day="jeudi" actions={{ documents: () => setPrintOpen(true) }} />
@@ -118,7 +180,7 @@ export function Jeudi() {
         help={
           drawn
             ? "Les poules du vendredi sont créées. Vérifiez les billards, imprimez les documents et passez au vendredi."
-            : "Les inscrits sont importés et classés. Il reste à affecter les billards et à lancer le tirage."
+            : "Les inscrits sont importés et classés. Validez les billards et leur affectation, puis lancez le tirage."
         }
       >
         <Chip tone="blue">{distanceLabel(d)}</Chip>
@@ -188,27 +250,17 @@ export function Jeudi() {
       <BillardStructure
         billards={state.billards}
         locked={drawn || ro}
-        onChange={(billards) => {
-          amendBillards(billards);
-          const proposal = optimizeBillards(
-            sizes.map((size, i) => ({ num: i + 1, size })),
-            billards,
-          );
-          dispatchMany([
-            {
-              type: "billards.assigned",
-              payload: {
-                phase: "PREQ",
-                assignments: proposal.ok ? planToAssignments(proposal.plan) : {},
-              },
-            },
-            ...drawLaterPhaseEvents(billards),
-          ]);
-          toast("Structure enregistrée · billards retirés au sort");
-        }}
+        onChange={changeStructure}
+        validation={validation.billards}
+        onValidate={ro ? undefined : () => validate("billards")}
       />
 
-      <BillardAssignment pouleCount={pouleCount} locked={locked} />
+      <BillardAssignment
+        pouleCount={pouleCount}
+        locked={locked}
+        validation={validation.affectation}
+        onValidate={ro ? undefined : () => validate("affectation")}
+      />
 
       <LaterPhases />
 
@@ -443,14 +495,37 @@ function DocumentsPanel({ onOpen }: { onOpen: () => void }) {
 
 /* ---------- Structure des billards ---------- */
 
+const isFrozen = (v: ValidationState) => v.status === "frozen";
+
+/** Pastille d'état de la validation des billards. */
+const VALIDATION_CHIP: Record<ValidationState["status"], ReactNode> = {
+  todo: <Chip>À valider</Chip>,
+  modified: (
+    <Chip tone="gold" icon={TriangleAlert}>
+      Modifiés, à revalider
+    </Chip>
+  ),
+  validated: (
+    <Chip tone="green" icon={Check}>
+      Validés
+    </Chip>
+  ),
+  frozen: null,
+};
+
 function BillardStructure({
   billards,
   locked,
   onChange,
+  validation,
+  onValidate,
 }: {
   billards: Billard[];
   locked: boolean;
   onChange: (b: Billard[]) => void;
+  /** État de la validation par le DJ. */
+  validation: ValidationState;
+  onValidate?: (() => void) | undefined;
 }) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState<Billard[]>(billards);
@@ -474,6 +549,7 @@ function BillardStructure({
               2m80
             </Chip>
           )}
+          {VALIDATION_CHIP[validation.status]}
           {!locked ? (
             editing ? (
               <>
@@ -512,10 +588,21 @@ function BillardStructure({
               </Button>
             )
           ) : (
-            <Chip tone="green" icon={Check}>
-              Figée depuis le tirage
-            </Chip>
+            <Chip tone="grey">Figée depuis le tirage</Chip>
           )}
+          {onValidate && !editing && validation.status !== "validated" && !isFrozen(validation) ? (
+            <span className="inline-flex" title={validation.blocked}>
+              <Button
+                size="sm"
+                variant="primary"
+                icon={Check}
+                onClick={onValidate}
+                disabled={!validation.ready}
+              >
+                Valider les billards
+              </Button>
+            </span>
+          ) : null}
         </>
       }
     >

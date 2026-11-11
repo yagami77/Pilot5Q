@@ -6,6 +6,9 @@
  * billard ; « Vider » remet toutes les poules dans le bac pour une affectation manuelle. Un
  * contrôle signale les poules non placées, en double ou les billards de plus de 3 poules.
  *
+ * L'affectation n'est « faite » qu'après « Valider l'affectation » (remarques du 11 novembre) ;
+ * la modifier ensuite la remet à revalider (`lib/jeudiValidation`).
+ *
  * Chaque modification est écrite aussitôt dans le journal (`billards.assigned`, phase PREQ) : le
  * journal est la seule source de vérité, il n'y a pas de brouillon à enregistrer. L'état local ne
  * garde que ce que le journal ne sait pas dire (deux billards liés encore vides) et ne se
@@ -52,6 +55,7 @@ import {
 } from "@/lib/billardsOptimizer";
 import { forfaitsOf, pouleSizes } from "@/lib/engine";
 import { plural } from "@/lib/format";
+import type { ValidationState } from "@/lib/jeudiValidation";
 import { useTournament } from "@/store/tournament";
 
 const DRAG_TYPE = "application/x-pilot5q-poule";
@@ -59,10 +63,15 @@ const DRAG_TYPE = "application/x-pilot5q-poule";
 export function BillardAssignment({
   pouleCount,
   locked,
+  validation,
+  onValidate,
 }: {
   pouleCount: number;
   /** Scores déjà saisis : l'affectation est figée. */
   locked: boolean;
+  /** État de la validation par le DJ (absent : pas de validation à cet endroit). */
+  validation?: ValidationState;
+  onValidate?: () => void;
 }) {
   const { state, dispatch } = useTournament();
   const toast = useToast();
@@ -369,9 +378,18 @@ export function BillardAssignment({
       aside={
         <>
           {issues.ok ? (
-            <Chip tone="green" icon={Check}>
-              {plural(pouleCount, "poule placée", "poules placées")}
-            </Chip>
+            validation?.status === "modified" ? (
+              <Chip tone="gold" icon={TriangleAlert}>
+                Modifiée, à revalider
+              </Chip>
+            ) : validation?.status === "todo" ? (
+              <Chip>{plural(pouleCount, "poule placée", "poules placées")} · à valider</Chip>
+            ) : (
+              <Chip tone="green" icon={Check}>
+                {plural(pouleCount, "poule placée", "poules placées")}
+                {validation?.status === "validated" ? " · affectation validée" : ""}
+              </Chip>
+            )
           ) : (
             <Chip tone="red" icon={TriangleAlert}>
               {[
@@ -411,6 +429,25 @@ export function BillardAssignment({
                   Proposer
                 </Button>
               )}
+              {validation && onValidate && validation.status !== "validated" ? (
+                <span className="inline-flex" title={validation.blocked}>
+                  <Button
+                    size="sm"
+                    variant="primary"
+                    icon={Check}
+                    onClick={onValidate}
+                    disabled={!validation.ready}
+                    aria-describedby={validation.blocked ? "affectation-blocked" : undefined}
+                  >
+                    Valider l'affectation
+                  </Button>
+                  {validation.blocked ? (
+                    <span id="affectation-blocked" className="sr-only">
+                      {validation.blocked}
+                    </span>
+                  ) : null}
+                </span>
+              ) : null}
             </>
           )}
         </>

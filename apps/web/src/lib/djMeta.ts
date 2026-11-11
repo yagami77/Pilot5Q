@@ -1,6 +1,7 @@
 /**
  * Suivi local du directeur de jeu, hors journal du tournoi : documents imprimés, forfaits de
- * dernière minute vérifiés, primes payées, texte d'informations aux joueurs.
+ * dernière minute vérifiés, validations du jeudi (billards, affectation), primes payées, texte
+ * d'informations aux joueurs.
  *
  * Persistance idb-keyval (`pilot5q:dj:<tournamentId>`), diffusion entre onglets par
  * `BroadcastChannel("pilot5q")` (la vue d'impression s'ouvre dans un autre onglet).
@@ -8,11 +9,23 @@
 import { get, set } from "idb-keyval";
 import { useCallback, useEffect, useState } from "react";
 
+/** Validation explicite : empreinte de ce qui a été validé (voir `lib/jeudiValidation`). */
+export interface Validation {
+  signature: string;
+  /** Horodatage ISO de la validation. */
+  at: string;
+}
+
 export interface DjMeta {
   /** Documents ouverts pour impression : id → horodatage ISO. */
   printed: Record<string, string>;
   /** Journées dont les forfaits de dernière minute ont été vérifiés. */
   forfaitsChecked: Record<string, string>;
+  /**
+   * Validations du jeudi par le DJ : structure des billards, affectation des poules du vendredi.
+   * On garde l'empreinte de ce qui a été validé : toute modification ultérieure se voit.
+   */
+  validated: Partial<Record<"billards" | "affectation", Validation>>;
   /** Primes payées : clé de ligne → horodatage ISO. */
   paid: Record<string, string>;
   /** Informations aux joueurs (logistique, hébergement, restauration). */
@@ -22,6 +35,7 @@ export interface DjMeta {
 export const emptyMeta = (): DjMeta => ({
   printed: {},
   forfaitsChecked: {},
+  validated: {},
   paid: {},
   info: { text: "", subject: "", updatedAt: null },
 });

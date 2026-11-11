@@ -8,9 +8,10 @@ import type { TournamentState } from "@pilot5q/domain";
 import { checkPlan, assignmentsToPlan } from "./assign";
 import type { DjMeta } from "./djMeta";
 import { isValidScore, matchWinner } from "./engine";
+import { isValidated, jeudiValidation, structureOk } from "./jeudiValidation";
 import { primesTotals, progressivePrimes } from "./primes";
 import { preqPouleCount } from "./setup";
-import { bigTables, consolanteAllowed, phaseDistance, pouleState, type Day } from "./tournament";
+import { consolanteAllowed, phaseDistance, pouleState, type Day } from "./tournament";
 
 export type TaskStatus = "todo" | "doing" | "done";
 
@@ -51,21 +52,42 @@ export function dayTasks(state: TournamentState, day: Day, meta: DjMeta): DayTas
     const issues = checkPlan(plan, count, state.billards);
     const placed = count - issues.unplaced.length;
     const printed = JEUDI_DOCS.filter((d) => meta.printed[d]).length;
-    const structureOk = state.billards.length >= 8 && bigTables(state.billards) >= 3;
+    // Billards et affectation : faits seulement après validation explicite par le DJ ; une
+    // modification après validation les remet « à revalider » (remarques du 11 novembre)
+    const v = jeudiValidation(state, meta);
+    const bDone = isValidated(v.billards.status);
+    const bModified = v.billards.status === "modified";
+    const aDone = isValidated(v.affectation.status);
+    const aModified = v.affectation.status === "modified";
     return [
       {
         id: "billards",
-        label: "Billards définis",
-        status: flag(structureOk),
+        label: bModified ? "Billards modifiés, à revalider" : "Billards définis",
+        status: bDone ? "done" : bModified ? "doing" : "todo",
         target: "billards",
-        hint: "Au moins 8 billards dont 3 de 3m10",
+        hint: !structureOk(state.billards)
+          ? "Au moins 8 billards dont 3 de 3m10"
+          : bDone
+            ? "Structure des billards validée"
+            : "Vérifiez la structure puis cliquez sur « Valider les billards »",
       },
       {
         id: "affectation",
-        label: "Billards des poules affectés",
-        status: issues.ok ? "done" : status(placed, count),
-        count: { done: placed, total: count },
+        label: aModified ? "Affectation modifiée, à revalider" : "Billards des poules affectés",
+        status: aDone
+          ? "done"
+          : !issues.ok && placed < count
+            ? status(placed, count)
+            : aModified || !issues.ok
+              ? "doing"
+              : "todo",
+        // Compteur tant que des poules restent à placer ; ensuite il ne manque que la validation
+        ...(placed < count ? { count: { done: placed, total: count } } : {}),
         target: "affectation",
+        hint: aDone
+          ? "Affectation des billards aux poules validée"
+          : (v.affectation.blocked ??
+            "Vérifiez l'affectation puis cliquez sur « Valider l'affectation »"),
       },
       {
         id: "tirage",
