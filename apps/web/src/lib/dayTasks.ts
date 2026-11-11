@@ -9,11 +9,14 @@ import { checkPlan, assignmentsToPlan } from "./assign";
 import type { DjMeta } from "./djMeta";
 import { isValidScore, matchWinner } from "./engine";
 import { isValidated, jeudiValidation, structureOk } from "./jeudiValidation";
-import { primesTotals, progressivePrimes } from "./primes";
 import { preqPouleCount } from "./setup";
-import { consolanteAllowed, phaseDistance, pouleState, type Day } from "./tournament";
+import { consolanteAllowed, phaseDistance, pouleState, qualifiers, type Day } from "./tournament";
 
-export type TaskStatus = "todo" | "doing" | "done";
+/**
+ * État d'une tâche : à faire, en cours, faite ; « alert » = à traiter, signalée en rouge (ne
+ * compte pas comme faite) ; « na » = sans objet, neutre (ne compte ni comme faite ni à faire).
+ */
+export type TaskStatus = "todo" | "doing" | "done" | "alert" | "na";
 
 export interface DayTask {
   id: string;
@@ -25,6 +28,10 @@ export interface DayTask {
   target: string;
   /** Explication courte (infobulle). */
   hint?: string;
+  /** Journée de la zone, si elle n'est pas celle de la barre (consolante vue du dimanche). */
+  targetDay?: Day;
+  /** Action directe proposée sur la tâche (« Créer »). */
+  cta?: string;
 }
 
 const status = (done: number, total: number): TaskStatus =>
@@ -145,13 +152,21 @@ export function dayTasks(state: TournamentState, day: Day, meta: DjMeta): DayTas
         status: flag(Boolean(state.closed.B)),
         target: "barrages",
       },
-      {
-        id: "consolante",
-        label: clsOk ? "Consolante créée" : "Consolante (impossible)",
-        status: flag(state.brackets.CLS.length > 0 || !clsOk),
-        target: "qualifies",
-        ...(clsOk ? {} : { hint: "Il faut au moins 5 billards de 2m80" }),
-      },
+      clsOk
+        ? {
+            id: "consolante",
+            label: "Consolante créée",
+            status: flag(state.brackets.CLS.length > 0),
+            target: "qualifies",
+            hint: "Facultatif pour passer au samedi : elle peut encore être créée le samedi",
+          }
+        : {
+            id: "consolante",
+            label: "Consolante sans objet",
+            status: "na",
+            target: "qualifies",
+            hint: consolanteNaHint(state),
+          },
     ];
   }
   if (day === "samedi") {
@@ -163,9 +178,34 @@ export function dayTasks(state: TournamentState, day: Day, meta: DjMeta): DayTas
     ).length;
     const cls = state.brackets.CLS.filter((m) => m.a && m.b);
     const clsDone = cls.filter((m) => matchWinner(m, phaseDistance(state, "CLS", m.round))).length;
-    const primes = progressivePrimes(state).lines.filter((l) => l.when === "samedi");
-    const totals = primesTotals(primes, meta.paid);
     const hasCls = state.brackets.CLS.length > 0;
+    // Consolante sans objet : moins de 5 billards 2m80 (SPEC §5) ou personne à y inscrire
+    const clsNa = !hasCls && (!consolanteAllowed(state) || qualifiers(state).consolante.length < 2);
+    const consolante: DayTask = hasCls
+      ? {
+          id: "consolante",
+          label: "Consolante",
+          status: state.closed.CLS ? "done" : status(clsDone, cls.length),
+          count: { done: clsDone, total: Math.max(cls.length, clsDone) },
+          target: "consolante",
+        }
+      : clsNa
+        ? {
+            id: "consolante",
+            label: "Consolante sans objet",
+            status: "na",
+            target: "consolante",
+            hint: consolanteNaHint(state),
+          }
+        : {
+            // Pas créée le vendredi : à traiter, en rouge, avec la création à portée de clic
+            id: "consolante",
+            label: "Consolante non créée",
+            status: "alert",
+            target: "consolante",
+            cta: "Créer",
+            hint: "Cochez les volontaires puis créez le tableau de la consolante",
+          };
     return [
       {
         id: "masters",
@@ -188,21 +228,7 @@ export function dayTasks(state: TournamentState, day: Day, meta: DjMeta): DayTas
         count: { done: r16Done, total: 8 },
         target: "huitiemes",
       },
-      {
-        id: "consolante",
-        label: hasCls ? "Consolante" : "Consolante (non créée)",
-        status: hasCls ? (state.closed.CLS ? "done" : status(clsDone, cls.length)) : "done",
-        ...(hasCls ? { count: { done: clsDone, total: Math.max(cls.length, clsDone) } } : {}),
-        target: "consolante",
-      },
-      {
-        id: "primes",
-        label: "Primes des poules Masters",
-        status: status(totals.paidCount, primes.length),
-        count: { done: totals.paidCount, total: primes.length },
-        target: "primes",
-        hint: "3e et 4e de chaque poule Masters, payables dès la fin de leur poule",
-      },
+      consolante,
     ];
   }
   // Dimanche
@@ -220,8 +246,22 @@ export function dayTasks(state: TournamentState, day: Day, meta: DjMeta): DayTas
   const qf = rounds("QF");
   const sf = rounds("SF");
   const f = rounds("F");
-  const finals = [...state.brackets.M, ...state.brackets.N].filter((m) => m.round !== "R16");
-  const arbitres = finals.filter((m) => Boolean(m.arbitre)).length;
+  // Consolante encore en cours le dimanche : elle doit être terminée avant la clôture
+  const cls = state.brackets.CLS.filter((m) => m.a && m.b);
+  const clsDone = cls.filter((m) => matchWinner(m, phaseDistance(state, "CLS", m.round))).length;
+  const consolante: DayTask[] =
+    state.brackets.CLS.length > 0
+      ? [
+          {
+            id: "consolante",
+            label: "Consolante",
+            status: state.closed.CLS ? "done" : status(clsDone, cls.length),
+            count: { done: clsDone, total: Math.max(cls.length, clsDone) },
+            target: "consolante",
+            targetDay: "samedi",
+          },
+        ]
+      : [];
   return [
     {
       id: "quarts",
@@ -244,21 +284,22 @@ export function dayTasks(state: TournamentState, day: Day, meta: DjMeta): DayTas
       count: f,
       target: "masters",
     },
-    {
-      id: "arbitres",
-      label: "Arbitres renseignés",
-      status: status(arbitres, 14),
-      count: { done: arbitres, total: 14 },
-      target: "masters",
-      hint: "Numéro de licence de l'arbitre de chaque quart, demie et finale",
-    },
+    ...consolante,
     {
       id: "cloture",
       label: "Clôture",
-      status: flag(Boolean(state.closed.M && state.closed.N)),
+      status: flag(Boolean(state.closure)),
       target: "cloture",
+      hint: "Un seul geste, quand toutes les finales sont jouées",
     },
   ];
+}
+
+/** Pourquoi la consolante est sans objet (SPEC §5). */
+function consolanteNaHint(state: TournamentState): string {
+  return consolanteAllowed(state)
+    ? "Aucun joueur éligible à la consolante"
+    : `Il faut au moins ${state.rules.consolanteMinSmallTables} billards de 2m80`;
 }
 
 export const NEXT_DAY: Record<Day, Day | null> = {

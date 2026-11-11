@@ -2,6 +2,13 @@ import type { TournamentEvent } from "@pilot5q/domain";
 import { describe, expect, it } from "vitest";
 
 import { realWeekendEvents } from "@/admin/realWeekend";
+import {
+  allRanked,
+  fewSmallTables,
+  fridayDone,
+  saturdayWithConsolante,
+  sundayStart,
+} from "@/test/weekend";
 
 import { dayTasks, JEUDI_DOCS } from "./dayTasks";
 import { demoEvents } from "./demo";
@@ -60,8 +67,61 @@ describe("tâches du jour", () => {
     meta.paid = { [lines[0]!.key]: at, [lines[1]!.key]: at };
     const t = byId(dayTasks(qm, "samedi", meta));
     expect(t.masters?.status).toBe("done");
-    expect(t.primes?.count).toEqual({ done: 2, total: 8 });
+    // La tâche « Primes des poules Masters » a disparu : le suivi se fait sous les poules
+    expect(t.primes).toBeUndefined();
     expect(primesTotals(lines, meta.paid).paidCount).toBe(2);
+  });
+
+  it("vendredi : la consolante reste à faire tant qu'elle n'est pas créée", () => {
+    const t = byId(dayTasks(replay(fridayDone()), "vendredi", emptyMeta()));
+    expect(t.consolante).toMatchObject({ status: "todo", label: "Consolante créée" });
+    const created = byId(dayTasks(replay(saturdayWithConsolante()), "vendredi", emptyMeta()));
+    expect(created.consolante?.status).toBe("done");
+    const none = byId(dayTasks(replay(fewSmallTables(fridayDone())), "vendredi", emptyMeta()));
+    expect(none.consolante).toMatchObject({ status: "na", label: "Consolante sans objet" });
+  });
+
+  it("samedi : consolante non créée en alerte (rouge), jamais comptée comme faite", () => {
+    const t = byId(dayTasks(replay(fridayDone()), "samedi", emptyMeta()));
+    expect(t.consolante).toMatchObject({
+      status: "alert",
+      label: "Consolante non créée",
+      cta: "Créer",
+      target: "consolante",
+    });
+    // Créée : tâche en cours, avec son compteur de matchs
+    const created = byId(dayTasks(replay(saturdayWithConsolante()), "samedi", emptyMeta()));
+    expect(created.consolante).toMatchObject({ status: "todo", label: "Consolante" });
+    expect(created.consolante?.count?.done).toBe(0);
+  });
+
+  it("samedi : moins de 5 billards 2m80, consolante sans objet (neutre, pas rouge)", () => {
+    const state = replay(fewSmallTables(fridayDone()));
+    expect(state.billards.filter((b) => b.type === "2m80")).toHaveLength(4);
+    const t = byId(dayTasks(state, "samedi", emptyMeta()));
+    expect(t.consolante).toMatchObject({ status: "na", label: "Consolante sans objet" });
+    expect(t.consolante?.hint).toMatch(/au moins 5 billards de 2m80/);
+  });
+
+  it("dimanche : quarts, demies, finales, consolante et clôture ; plus de tâche arbitres", () => {
+    const start = dayTasks(replay(sundayStart()), "dimanche", emptyMeta());
+    expect(start.map((t) => t.id)).toEqual([
+      "quarts",
+      "demies",
+      "finales",
+      "consolante",
+      "cloture",
+    ]);
+    expect(byId(start).consolante).toMatchObject({ targetDay: "samedi", target: "consolante" });
+    // Sans consolante : elle est sans objet et n'apparaît pas le dimanche
+    const none = dayTasks(replay(sundayStart(false)), "dimanche", emptyMeta());
+    expect(none.map((t) => t.id)).toEqual(["quarts", "demies", "finales", "cloture"]);
+
+    // Tout joué et classé, aucun arbitre saisi : seule la clôture reste à faire
+    const ranked = dayTasks(replay(allRanked()), "dimanche", emptyMeta());
+    expect(ranked.filter((t) => t.status !== "done").map((t) => t.id)).toEqual(["cloture"]);
+    const closed = replay([...allRanked(), { type: "tournament.closed", at, payload: {} }]);
+    expect(dayTasks(closed, "dimanche", emptyMeta()).every((t) => t.status === "done")).toBe(true);
   });
 
   it("primes : les finalistes restent inconnus tant que la finale n'est pas jouée", () => {

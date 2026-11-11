@@ -1,10 +1,9 @@
 /** Barre haute : marque, tournoi, état d'enregistrement, annulation, utilisateur. */
-import { Coins, Home, Info, UserRound, Waypoints } from "lucide-react";
+import { Home, Info, UserRound, Waypoints } from "lucide-react";
 import { Link, useLocation } from "react-router";
 
 import { ROLE_LABELS, useRole } from "@/admin/role";
 import { clock, dateRange, initials, plural } from "@/lib/format";
-import { dayStatuses } from "@/lib/tournament";
 import { useTournament } from "@/store/tournament";
 
 import { NotificationBell } from "./NotificationBell";
@@ -41,10 +40,10 @@ export function TopBar() {
   const { state, savedAt, saving, events } = useTournament();
   const [role] = useRole();
   const location = useLocation();
-  const satOpen = dayStatuses(state).samedi.unlocked;
+  // Les primes ne sont plus un lien permanent de la barre haute (retours du 11 novembre) : elles
+  // s'ouvrent en volet le samedi, sous les poules Masters, et le dimanche, en haut de page.
   const links = [
     { to: "/tournoi/informations", label: "Informations", icon: Info },
-    ...(satOpen ? [{ to: "/tournoi/primes", label: "Primes", icon: Coins }] : []),
     { to: "/tournoi/schema", label: "Schéma", icon: Waypoints },
   ];
   const info = state.info;

@@ -1,18 +1,26 @@
 /**
  * Tâches du jour, en tête de chaque journée : état de chaque tâche (à faire, en cours avec
- * compteur, faite), clic = défilement vers sa zone, « Modifier » quand elle est faite, et
- * « Passer au jour suivant » toujours au même endroit (actif quand tout est fait).
+ * compteur, faite, à traiter en rouge, sans objet), clic = défilement vers sa zone, « Modifier »
+ * quand elle est faite, et « Passer au jour suivant » toujours au même endroit.
+ *
+ * Retours du 11 novembre : « Passer au samedi » et « Passer au dimanche » sont actifs dès que la
+ * journée suivante est débloquée (sans attendre les impressions ni la consolante) ; le dimanche,
+ * le même emplacement porte l'unique bouton « Clôturer le tournoi », avec confirmation.
  */
-import { ArrowRight, Flag, Pencil } from "lucide-react";
+import { ArrowRight, Flag, Minus, Pencil, TriangleAlert } from "lucide-react";
 import { motion } from "motion/react";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router";
 
+import { useSessionName } from "@/auth/context";
+import { closureBlockers } from "@/lib/closure";
 import { dayTasks, NEXT_DAY, type DayTask } from "@/lib/dayTasks";
 import { useDjMeta } from "@/lib/djMeta";
-import type { Day } from "@/lib/tournament";
-import { useTournament } from "@/store/tournament";
+import { nice } from "@/lib/format";
+import { bracketWinner, dayStatuses, type Day } from "@/lib/tournament";
+import { useEditLock, useTournament } from "@/store/tournament";
 
+import { ConfirmDialog } from "./ConfirmDialog";
 import { RollingNumber } from "./RollingNumber";
 import { Button, cx } from "./ui";
 
@@ -56,6 +64,20 @@ function TaskIcon({ task }: { task: DayTask }) {
       </span>
     );
   }
+  if (task.status === "alert") {
+    return (
+      <span className="bg-alert grid size-[22px] shrink-0 place-items-center rounded-full text-white">
+        <TriangleAlert className="size-[13px]" strokeWidth={2.6} aria-hidden="true" />
+      </span>
+    );
+  }
+  if (task.status === "na") {
+    return (
+      <span className="border-line-2 text-ink-muted grid size-[22px] shrink-0 place-items-center rounded-full border-[1.5px]">
+        <Minus className="size-3" aria-hidden="true" />
+      </span>
+    );
+  }
   const r = 9;
   const c = 2 * Math.PI * r;
   return (
@@ -96,17 +118,40 @@ export function DayTasks({
   /** Actions spécifiques par tâche (ouvrir l'impression, la page des primes…). */
   actions?: Record<string, () => void>;
 }) {
-  const { state, id } = useTournament();
+  const { state, id, closeTournament } = useTournament();
   const [meta] = useDjMeta(id);
+  const navigate = useNavigate();
+  const locked = useEditLock();
+  const by = useSessionName();
   const tasks = useMemo(() => dayTasks(state, day, meta), [state, day, meta]);
-  const done = tasks.filter((t) => t.status === "done").length;
-  const all = done === tasks.length;
-  const pct = tasks.length ? done / tasks.length : 0;
+  // Les tâches sans objet ne comptent ni comme faites ni comme à faire
+  const counted = tasks.filter((t) => t.status !== "na");
+  const done = counted.filter((t) => t.status === "done").length;
+  const all = done === counted.length;
+  const pct = counted.length ? done / counted.length : 0;
+
+  // Clôture du tournoi (dimanche) : possible quand tout est joué, toujours avec confirmation
+  const blockers = useMemo(() => closureBlockers(state), [state]);
+  const closed = Boolean(state.closure);
+  const canClose = !closed && !locked && blockers.length === 0;
+  const [confirm, setConfirm] = useState(false);
+  const closureReason = closed
+    ? undefined
+    : blockers.length > 0
+      ? `Reste à jouer : ${blockers.join(", ")}`
+      : locked
+        ? "Tournoi en consultation seule"
+        : undefined;
 
   const open = (t: DayTask) => {
     const action = actions[t.id];
     if (action) action();
-    else if (!focusZone(t.target)) window.scrollTo({ top: 0, behavior: "smooth" });
+    else if (t.id === "cloture") {
+      if (canClose) setConfirm(true);
+    } else if (t.targetDay && t.targetDay !== day) {
+      void navigate(`/tournoi/${t.targetDay}`);
+      window.setTimeout(() => focusZone(t.target), 450);
+    } else if (!focusZone(t.target)) window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
@@ -134,14 +179,14 @@ export function DayTasks({
           </svg>
           <span className="absolute inset-0 grid place-items-center font-mono text-[12px] font-bold tabular-nums">
             <span>
-              <RollingNumber value={done} />/{tasks.length}
+              <RollingNumber value={done} />/{counted.length}
             </span>
           </span>
         </div>
         <div className="leading-tight">
           <div className="eyebrow">Tâches du jour</div>
           <div className="text-[13.5px] font-bold">
-            {all ? "Tout est fait" : `${tasks.length - done} à faire`}
+            {all ? "Tout est fait" : `${counted.length - done} à faire`}
           </div>
         </div>
       </div>
@@ -152,22 +197,30 @@ export function DayTasks({
             <button
               type="button"
               onClick={() => open(t)}
-              title={t.hint}
+              title={t.id === "cloture" ? (closureReason ?? t.hint) : t.hint}
+              data-status={t.status}
               className={cx(
                 "flex items-center gap-2 rounded-[11px] border py-[6px] pr-3 pl-[7px] text-left text-[12.5px] font-semibold transition-[background-color,border-color,transform] duration-200 hover:-translate-y-px",
                 t.status === "done" && "border-[#bfe6d2] bg-ok-soft/60 text-ok-ink",
                 t.status === "doing" && "border-brand-light/40 bg-brand-soft text-brand-ink",
                 t.status === "todo" && "border-line-2 bg-surface text-ink-secondary",
+                t.status === "alert" && "border-alert/60 bg-alert-soft text-alert-ink",
+                t.status === "na" && "border-line bg-surface-2 text-ink-muted border-dashed",
               )}
             >
               <TaskIcon task={t} />
               <span>{t.label}</span>
-              {t.count && t.status !== "todo" && t.status !== "done" ? (
+              {t.status === "alert" && t.cta ? (
+                <span className="bg-alert rounded-[7px] px-1.5 py-[1px] text-[11px] font-bold text-white">
+                  {t.cta}
+                </span>
+              ) : null}
+              {t.count && t.status === "doing" ? (
                 <span className="font-mono text-[11.5px] tabular-nums">
                   <RollingNumber value={t.count.done} />/{t.count.total}
                 </span>
               ) : null}
-              {t.status === "done" ? (
+              {t.status === "done" && !locked ? (
                 <span
                   className="text-ok-ink inline-flex max-w-0 items-center gap-1 overflow-hidden text-[11px] font-bold whitespace-nowrap opacity-0 transition-[max-width,opacity,margin] duration-200 group-focus-within:ml-0.5 group-focus-within:max-w-[90px] group-focus-within:opacity-100 group-hover:ml-0.5 group-hover:max-w-[90px] group-hover:opacity-100"
                   aria-label={`Modifier : ${t.label}`}
@@ -181,30 +234,79 @@ export function DayTasks({
         ))}
       </ol>
 
-      <NextDay day={day} tasks={tasks} />
+      <NextDay
+        day={day}
+        tasks={counted}
+        closure={{ closed, canClose, reason: closureReason, ask: () => setConfirm(true) }}
+      />
+      <ConfirmDialog
+        open={confirm && canClose}
+        title="Clôturer le tournoi ?"
+        icon={Flag}
+        tone="gold"
+        confirmLabel="Clôturer le tournoi"
+        onCancel={() => setConfirm(false)}
+        onConfirm={() => {
+          setConfirm(false);
+          closeTournament(by || undefined);
+        }}
+      >
+        <ul className="mb-2 flex flex-col gap-0.5">
+          {(["M", "N", "CLS"] as const).map((phase) => {
+            const w = bracketWinner(state, phase);
+            if (!w) return null;
+            return (
+              <li key={phase}>
+                {phase === "M" ? "Masters" : phase === "N" ? "National" : "Consolante"} :{" "}
+                <b className="text-ink">{nice(w)}</b>
+              </li>
+            );
+          })}
+        </ul>
+        Les tableaux sont classés et le tournoi est clôturé. Après la clôture, plus rien ne peut
+        être modifié depuis le cockpit du directeur de jeu (ni score, ni annulation) : seul le
+        responsable national peut rouvrir le tournoi pour corriger.
+      </ConfirmDialog>
     </section>
   );
 }
 
 /**
  * Bouton « Passer au jour suivant », toujours au même endroit (à droite de la barre des tâches)
- * pour les quatre journées : actif quand toutes les tâches sont faites, sinon désactivé avec la
- * raison en infobulle. Le dimanche, il mène à la clôture puis devient « Tournoi clôturé ».
+ * pour les quatre journées. Jeudi : actif quand toutes les tâches sont faites. Vendredi et
+ * samedi : actif dès que la journée suivante est débloquée (barrages classés ; Masters classés
+ * et huitièmes joués), sans attendre les impressions ni la consolante. Dimanche : « Clôturer le
+ * tournoi », actif quand tout est joué, puis « Tournoi clôturé ».
  */
-function NextDay({ day, tasks }: { day: Day; tasks: DayTask[] }) {
+function NextDay({
+  day,
+  tasks,
+  closure,
+}: {
+  day: Day;
+  tasks: DayTask[];
+  closure: { closed: boolean; canClose: boolean; reason: string | undefined; ask: () => void };
+}) {
   const navigate = useNavigate();
+  const { state } = useTournament();
   const next = NEXT_DAY[day];
   const remaining = tasks.filter((t) => t.status !== "done");
-  const all = remaining.length === 0;
-  // Dimanche : la clôture est la dernière tâche ; le bouton y mène dès que le reste est fait
-  const beforeClosure = remaining.filter((t) => t.id !== "cloture");
-  const ready = next ? all : beforeClosure.length === 0;
+  const nextStatus = next ? dayStatuses(state)[next] : null;
+  const ready = !next
+    ? closure.canClose
+    : day === "jeudi"
+      ? remaining.length === 0
+      : Boolean(nextStatus?.unlocked);
   const reason = ready
     ? undefined
-    : `Reste à faire : ${(next ? remaining : beforeClosure).map((t) => t.label).join(" · ")}`;
+    : !next
+      ? closure.reason
+      : day === "jeudi"
+        ? `Reste à faire : ${remaining.map((t) => t.label).join(" · ")}`
+        : (nextStatus?.reason ?? "Journée suivante verrouillée");
   const reasonId = `next-day-reason-${day}`;
 
-  if (!next && all) {
+  if (!next && closure.closed) {
     return (
       <motion.span
         initial={{ opacity: 0, scale: 0.9 }}
@@ -250,7 +352,7 @@ function NextDay({ day, tasks }: { day: Day; tasks: DayTask[] }) {
             if (next) {
               void navigate(`/tournoi/${next}`);
               window.scrollTo({ top: 0 });
-            } else focusZone("cloture");
+            } else closure.ask();
           }}
         >
           {next ? `Passer au ${DAY_LABEL[next]}` : "Clôturer le tournoi"}

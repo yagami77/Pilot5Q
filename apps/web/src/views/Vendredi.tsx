@@ -1,12 +1,13 @@
 /** Vendredi : saisie des préqualifications, classement de phase, barrages, qualifiés. */
 import type { Match } from "@pilot5q/domain";
-import { Check, Printer, RotateCcw, Trophy, UserX, WandSparkles } from "lucide-react";
+import { Printer, RotateCcw, Trophy, UserX, WandSparkles } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { useProgressiveFill } from "@/lib/fill";
 
 import { DayTasks } from "@/components/DayTasks";
 import { PouleGrid, PouleViewToggle, usePouleView } from "@/components/PouleGrid";
+import { ConsolanteSetup } from "@/dj/ConsolanteSetup";
 import { LateForfaits } from "@/dj/LateForfaits";
 import { LiveBillards } from "@/dj/LiveBillards";
 import { preqStarted } from "@/lib/forfaits";
@@ -438,14 +439,10 @@ function BarrageRow({
 }
 
 function Qualifies({ onPrint }: { onPrint: () => void }) {
-  const { state, dispatch } = useTournament();
-  const toast = useToast();
+  const { state } = useTournament();
   const q = useMemo(() => qualifiers(state), [state]);
   const placeOf = useMemo(() => new Map(preqRanking(state).map((r) => [r.name, r.place])), [state]);
-  const [volunteers, setVolunteers] = useState<Set<string>>(() => new Set(q.consolante));
   const allowed = consolanteAllowed(state);
-  const ro = useEditLock();
-  const created = state.brackets.CLS.length > 0;
   const max = state.rules.consolanteMax;
   const list = (names: string[], tag: (n: string, i: number) => React.ReactNode) => (
     <div className="flex max-h-[420px] flex-col gap-[3px] overflow-auto px-2.5 py-2">
@@ -473,15 +470,6 @@ function Qualifies({ onPrint }: { onPrint: () => void }) {
       {text}
     </span>
   );
-  const createConsolante = () => {
-    const players = q.consolante.filter((n) => volunteers.has(n)).slice(0, max);
-    if (players.length < 2) {
-      toast("Il faut au moins deux volontaires");
-      return;
-    }
-    dispatch({ type: "consolante.created", payload: { players } });
-    toast(`Consolante créée · ${plural(players.length, "joueur")}`);
-  };
   return (
     <div id="qualifies" className="mt-4 grid gap-3.5 lg:grid-cols-3">
       <Card
@@ -512,44 +500,15 @@ function Qualifies({ onPrint }: { onPrint: () => void }) {
         title={`Consolante · ${q.consolante.length} éligibles`}
         aside={
           <Chip tone="grey">
-            {allowed ? `sur volontariat · max ${max}` : "moins de 5 billards 2m80"}
+            {allowed
+              ? `sur volontariat · max ${max}`
+              : `sans objet · moins de ${state.rules.consolanteMinSmallTables} billards 2m80`}
           </Chip>
         }
         headerClassName="bg-surface-2 border-line border-b"
       >
-        {list(q.consolante, (n) => (
-          <input
-            type="checkbox"
-            className="accent-brand ml-auto"
-            aria-label={`${nice(n)} souhaite jouer la consolante`}
-            checked={volunteers.has(n)}
-            disabled={created || !allowed || ro}
-            onChange={(e) => {
-              const next = new Set(volunteers);
-              if (e.target.checked) next.add(n);
-              else next.delete(n);
-              setVolunteers(next);
-            }}
-          />
-        ))}
-        <div className="border-line flex items-center gap-2 border-t px-3.5 py-2.5">
-          <span className="text-ink-muted text-[12px]">
-            {created
-              ? `Tableau créé · ${plural(new Set(state.brackets.CLS.flatMap((m) => [m.a, m.b]).filter(Boolean)).size, "joueur")}`
-              : `${volunteers.size} volontaires cochés`}
-          </span>
-          {!created && allowed && !ro ? (
-            <Button
-              size="sm"
-              variant="primary"
-              icon={Check}
-              className="ml-auto"
-              onClick={createConsolante}
-            >
-              Créer la consolante
-            </Button>
-          ) : null}
-        </div>
+        {/* Volontaires et création : possible aussi le samedi si ce n'est pas fait ce soir */}
+        <ConsolanteSetup />
       </Card>
       <div className="flex flex-wrap justify-end gap-2.5 lg:col-span-3">
         <Button icon={Printer} onClick={onPrint}>

@@ -1,8 +1,7 @@
 /** Samedi : poules Masters et National, huitièmes National, consolante. */
-import { ArrowLeft, Check, Printer, TriangleAlert, WandSparkles } from "lucide-react";
+import { Check, Printer, RotateCcw, TriangleAlert, WandSparkles } from "lucide-react";
 import { motion } from "motion/react";
 import { useMemo, useState } from "react";
-import { useNavigate } from "react-router";
 
 import { Bracket } from "@/components/Bracket";
 import { DayTasks } from "@/components/DayTasks";
@@ -13,6 +12,8 @@ import { PouleDrawer } from "@/components/PouleDrawer";
 import { PrintCenter } from "@/components/PrintCenter";
 import { useToast } from "@/components/Toast";
 import { Banner, Button, Card, Chip, GaugeButton, PageHead, cx } from "@/components/ui";
+import { ConsolanteSetup } from "@/dj/ConsolanteSetup";
+import { MastersOutcome } from "@/dj/MastersOutcome";
 import {
   clubOf,
   forfaitsOf,
@@ -36,6 +37,7 @@ import {
   poulesProgress,
   qualifiers,
   r16Progress,
+  smallTables,
 } from "@/lib/tournament";
 import { useEditLock, useTournament } from "@/store/tournament";
 
@@ -43,7 +45,6 @@ export function Samedi() {
   const { state, dispatch } = useTournament();
   const toast = useToast();
   const ro = useEditLock();
-  const navigate = useNavigate();
   const [open, setOpen] = useState<{ phase: "QM" | "QN"; num: number } | null>(null);
   const [printOpen, setPrintOpen] = useState(false);
   const [view, setView] = usePouleView();
@@ -56,6 +57,9 @@ export function Samedi() {
   const cls = state.brackets.CLS;
   const hasCls = cls.length > 0;
   const clsDone = phaseComplete(state, "CLS");
+  // Consolante possible : au moins 5 billards 2m80 (SPEC §5) et des joueurs à y inscrire
+  const eligible = useMemo(() => qualifiers(state).consolante.length, [state]);
+  const clsPossible = consolanteAllowed(state) && eligible >= 2;
   const conflicts = useMemo(() => mastersClubConflicts(state.poules.QM, clubOf(state)), [state]);
   const big = bigTables(state.billards);
   const convocation = big <= 3 ? "8h00" : "8h30";
@@ -107,7 +111,7 @@ export function Samedi() {
 
   return (
     <section className="cascade">
-      <DayTasks day="samedi" actions={{ primes: () => void navigate("/tournoi/primes") }} />
+      <DayTasks day="samedi" />
       <PageHead
         eyebrow={`${longDate(dayDate(state, "samedi"))} · convocation ${convocation}`}
         title="Trois tournois en parallèle"
@@ -174,6 +178,8 @@ export function Samedi() {
             onOpen={(num) => setOpen({ phase: "QM", num })}
             conflicts={conflicts}
           />
+          {/* Masters classés : qualifiés pour les quarts, éliminés et leurs primes */}
+          <MastersOutcome />
         </Card>
 
         {/* Tours de jeu Masters : seulement s'il n'y a que 3 billards 3m10 */}
@@ -239,22 +245,44 @@ export function Samedi() {
                   Vainqueur : {nice(bracketWinner(state, "CLS") ?? "")}
                 </Chip>
               ) : null}
+              {closedCLS && !ro ? (
+                <Button
+                  size="sm"
+                  icon={RotateCcw}
+                  onClick={() => {
+                    dispatch({ type: "phase.reopened", payload: { phase: "CLS" } });
+                    toast("Consolante rouverte : les scores peuvent être corrigés");
+                  }}
+                >
+                  Rouvrir la saisie
+                </Button>
+              ) : null}
+              {!hasCls && clsPossible ? (
+                <Chip tone="red" icon={TriangleAlert}>
+                  Non créée
+                </Chip>
+              ) : null}
+              {!hasCls && !clsPossible ? <Chip tone="grey">Sans objet</Chip> : null}
             </>
           }
         >
           {hasCls ? (
             <Bracket phase="CLS" zoomable championNote="vainqueur de la consolante" />
+          ) : clsPossible ? (
+            <>
+              <p className="text-ink-muted px-4 pb-1 text-[13px]">
+                La consolante n'a pas été créée le vendredi soir. Cochez les volontaires parmi les{" "}
+                {eligible} joueurs éligibles (ordre du classement de sortie des poules), puis créez
+                le tableau.
+              </p>
+              <ConsolanteSetup wide />
+            </>
           ) : (
-            <div className="text-ink-muted flex flex-wrap items-center gap-3 px-4 pb-4 text-[13px]">
+            <p className="text-ink-muted px-4 pb-4 text-[13px]">
               {consolanteAllowed(state)
-                ? `Le tableau se génère à partir des volontaires pointés le vendredi soir (${qualifiers(state).consolante.length} éligibles), dans l'ordre du classement de sortie des poules.`
-                : "Consolante impossible : il faut au moins 5 billards de 2m80."}
-              {consolanteAllowed(state) ? (
-                <Button size="sm" icon={ArrowLeft} onClick={() => navigate("/tournoi/vendredi")}>
-                  Pointer les volontaires
-                </Button>
-              ) : null}
-            </div>
+                ? "Consolante sans objet : aucun joueur éligible."
+                : `Consolante sans objet : il faut au moins ${state.rules.consolanteMinSmallTables} billards de 2m80 (ce club en a ${smallTables(state.billards)}).`}
+            </p>
           )}
         </Card>
 
