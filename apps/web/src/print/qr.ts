@@ -1,7 +1,8 @@
 /**
  * Encodeur QR code minimal, sans dépendance : mode octets, correction M, versions 1 à 10
- * (jusqu'à 213 octets), choix du masque par pénalité. Rend une matrice de modules que
- * `QrSvg` dessine en vecteur.
+ * (jusqu'à 213 octets), choix du masque par pénalité. Rend une matrice de modules et son tracé
+ * vectoriel (`qrPath`). Plus utilisé par les documents imprimés (QR code retiré des feuilles de
+ * match le 11 novembre 2026) : conservé pour la feuille de match en ligne.
  */
 
 /** Par version : [codewords EC par bloc, blocs du groupe 1, données/bloc, blocs du groupe 2, données/bloc]. */
