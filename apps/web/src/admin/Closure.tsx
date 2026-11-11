@@ -1,46 +1,34 @@
 /**
  * Clôture d'une étape : lecture du tournoi joué dans le cockpit, points du barème (corrigeables),
- * intégration au classement glissant, mise à jour de la base joueurs, documents et mail au
- * secrétariat. La clôture peut être annulée pour corriger.
+ * intégration au classement glissant, mise à jour de la base joueurs, puis liste de contrôle
+ * des suites (PDF du classement, RANKING.json, PDF récapitulatif, message au secrétariat). La
+ * clôture peut être annulée pour corriger.
  */
 import {
-  latestStage,
   rankingRows,
   replay,
   type Stage,
   type TournamentAward,
   type TournamentEvent,
 } from "@pilot5q/domain";
-import {
-  Check,
-  Copy,
-  FileDown,
-  FileText,
-  Lock,
-  Play,
-  Printer,
-  RotateCcw,
-  Trophy,
-  Waypoints,
-} from "lucide-react";
+import { Check, FileText, Lock, Play, RotateCcw, Trophy } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router";
 
 import { useAuth } from "@/auth/context";
 import { useToast } from "@/components/Toast";
 import { Avatar, Banner, Button, Card, Chip, cx } from "@/components/ui";
-import { clubShort, dateRange, nice } from "@/lib/format";
+import { clubShort, nice } from "@/lib/format";
 import { addNotification } from "@/lib/notifications";
 import { loadEvents } from "@/store/persistence";
 import { useTournament } from "@/store/tournament";
 
-import { downloadBlob } from "./attachments";
-import { rankingFileName, rankingPdf } from "./rankingPdf";
+import { ClosureChecklist } from "./ClosureChecklist";
 import { isAfterReference } from "./reference";
 import { isExampleTournament, realWeekendEvents } from "./realWeekend";
 import { useSeason, useSeasonDoc } from "./store";
 import { closeStage, reopenStage, tournamentAwards, tournamentFinished } from "./stage";
-import { Empty, Num, Row, Table, copyText, dec, frDateTime } from "./ui";
+import { Empty, Num, Row, Table, dec, frDateTime } from "./ui";
 
 const ORIGIN = { M: "Masters", N: "National", CLS: "Consolante", PREQ: "Vendredi" } as const;
 
@@ -142,7 +130,6 @@ export function ClosureSection({ stage }: { stage: Stage }) {
 
   const rows = useMemo(() => rankingRows(doc.ranking), [doc.ranking]);
   const reference = closed && isAfterReference(rows);
-  const mail = secretariatMail(doc.id, stage, awards, rows.length);
 
   return (
     <Card
@@ -248,68 +235,24 @@ export function ClosureSection({ stage }: { stage: Stage }) {
               </Button>
             </div>
           )}
-          <AwardsTable
-            awards={awards}
-            editable={!closed}
-            onEdit={(name, patch) => setEdits((e) => ({ ...e, [name]: { ...e[name], ...patch } }))}
-          />
-          {closed ? (
-            <div className="mt-4 grid gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)]">
-              <div className="flex flex-col gap-2">
-                <div className="eyebrow">Documents</div>
-                <Button
-                  icon={FileDown}
-                  className="w-full justify-start"
-                  onClick={() => {
-                    const last = latestStage(doc.ranking);
-                    if (!last) return;
-                    void rankingPdf(rows, last).then((blob) =>
-                      downloadBlob(rankingFileName(last), blob),
-                    );
-                  }}
-                >
-                  Classement glissant (PDF)
-                </Button>
-                <Link to={`/responsable/imprimer/points/${stage.id}`}>
-                  <Button icon={Printer} className="w-full justify-start">
-                    Classement final du TN et points attribués
-                  </Button>
-                </Link>
-                <Button
-                  icon={Waypoints}
-                  className="w-full justify-start"
-                  disabled={!current}
-                  title={
-                    current ? undefined : "Le cockpit de ce navigateur affiche un autre tournoi"
-                  }
-                  onClick={() => navigate("/tournoi/schema")}
-                >
-                  Schéma du TN
-                </Button>
-              </div>
-              <div className="min-w-0">
-                <div className="eyebrow mb-1">Mail au secrétariat</div>
-                <pre className="bg-surface-2 border-line max-h-[220px] overflow-auto rounded-[10px] border px-3 py-2 font-sans text-[12.5px] whitespace-pre-wrap">
-                  {mail}
-                </pre>
-                <Button
-                  size="sm"
-                  variant="primary"
-                  icon={Copy}
-                  className="mt-2"
-                  onClick={async () =>
-                    toast(
-                      (await copyText(mail))
-                        ? "Texte copié"
-                        : "Copie impossible dans ce navigateur",
-                    )
-                  }
-                >
-                  Copier le texte
-                </Button>
-              </div>
-            </div>
+          {closure ? (
+            <ClosureChecklist
+              stage={stage}
+              closure={closure}
+              state={state}
+              cockpitCurrent={current}
+            />
           ) : null}
+          <div className={closed ? "mt-5" : undefined}>
+            {closed ? <div className="eyebrow mb-2">Points attribués</div> : null}
+            <AwardsTable
+              awards={awards}
+              editable={!closed}
+              onEdit={(name, patch) =>
+                setEdits((e) => ({ ...e, [name]: { ...e[name], ...patch } }))
+              }
+            />
+          </div>
         </>
       )}
     </Card>
@@ -387,31 +330,4 @@ function AwardsTable({
       ) : null}
     </>
   );
-}
-
-function secretariatMail(
-  season: string,
-  stage: Stage,
-  awards: TournamentAward[],
-  ranked: number,
-): string {
-  const top = (origin: TournamentAward["origin"]) =>
-    awards
-      .filter((a) => a.origin === origin && !a.abandon)
-      .slice(0, 2)
-      .map((a) => nice(a.name))
-      .join(", ");
-  return `Bonjour,
-
-Le ${stage.name} ${season} de billard 5-Quilles (${stage.city}${stage.start ? `, ${dateRange(stage.start, stage.end)}` : ""}) est clôturé.
-
-Participants : ${awards.length} (abandons : ${awards.filter((a) => a.abandon).length}).
-Masters : ${top("M") || "–"}.
-National : ${top("N") || "–"}.
-Le classement glissant mis à jour compte ${ranked} joueurs.
-
-Pièces jointes : classement final du tournoi avec les points attribués, classement glissant, schéma du tournoi.
-
-Sportivement,
-Le responsable national 5-Quilles`;
 }

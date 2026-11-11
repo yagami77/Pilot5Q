@@ -15,6 +15,9 @@ import {
   DEFAULT_SEASON_SETTINGS,
   acceptRegistrations,
   markLegacyIntegrations,
+  APP_RANKING_FILE,
+  appRanking,
+  appRankingJson,
   applyTournament,
   awardPoints,
   awardsFromRanking,
@@ -417,6 +420,65 @@ describe("classement glissant « APRES TN2 2026-2027 »", () => {
     expect(cells[7]).toBe("");
     expect(cells.slice(8).filter((c) => c.endsWith("*"))).toHaveLength(1);
     expect(rankingCsv(rows.slice(0, 2)).split("\n")[0]).toBe(lines[0]);
+  });
+
+  it("produit RANKING.json au format lu par l'application 5 Quilles", () => {
+    const last = { season: fx.season, tn: 2 };
+    const file = appRanking(rows, last);
+    expect(APP_RANKING_FILE).toBe("RANKING.json");
+    // Structure exacte : { ranking, saison, type, joueurs: [{ nom, points, TNs: [{ nom, points }] }] }.
+    expect(Object.keys(file)).toEqual(["ranking", "saison", "type", "joueurs"]);
+    expect(file.ranking).toBe("après TN2 2026-2027");
+    expect(file.saison).toBe("2026-2027");
+    expect(file.type).toBe("Après TN2");
+    expect(file.joueurs).toHaveLength(rows.length);
+    const names = [
+      "TN 3 2025-2026",
+      "TN 4 2025-2026",
+      "TN 5 2025-2026",
+      "TN 1 2026-2027",
+      "TN 2 2026-2027",
+    ];
+    file.joueurs.forEach((j, i) => {
+      const row = rows[i];
+      if (!row) throw new Error("ligne absente");
+      expect(Object.keys(j)).toEqual(["nom", "points", "TNs"]);
+      // L'ordre du fichier est le classement : l'application en déduit le rang.
+      expect(row.position).toBe(i + 1);
+      expect(j.nom).toBe(row.name);
+      expect(j.points).toBeCloseTo(row.pts, 10);
+      expect(j.TNs.map((t) => t.nom)).toEqual(names);
+      j.TNs.forEach((t, k) => {
+        expect(Object.keys(t)).toEqual(["nom", "points"]);
+        const pts = row.window[k]?.pts ?? null;
+        // Un TN non joué vaut la chaîne « - », jamais null ni 0.
+        if (pts === null) expect(t.points).toBe("-");
+        else expect(t.points).toBeCloseTo(pts, 10);
+      });
+    });
+    // Premier du classement de référence : 266,0933… (4 meilleurs sur 5, les 5 TN listés).
+    const first = file.joueurs[0];
+    expect(first?.nom).toBe("COUPADE JULES");
+    expect(first?.points).toBe(266.093333333333);
+    expect(first?.TNs.map((t) => t.points)).toEqual([
+      26.006, 80.02, 80.02, 26.02, 80.0333333333333,
+    ]);
+    // Lecture comme le fait l'application (rankingLive.ts) : étape, saison, points entiers.
+    const text = appRankingJson(rows, last);
+    const read = JSON.parse(text) as {
+      ranking: string;
+      saison?: string;
+      type?: string;
+      joueurs: { nom: string; points: number; TNs: { nom: string; points: number | string }[] }[];
+    };
+    expect(/TN\s*(\d+)/i.exec(read.type ?? "")?.[1]).toBe("2");
+    expect(/TN\s*(\d+)/i.exec(read.ranking)?.[1]).toBe("2");
+    expect(/(\d{4}-\d{4})/.exec(read.ranking)?.[1]).toBe(read.saison);
+    expect(Math.floor(read.joueurs[0]?.points ?? 0)).toBe(266);
+    const played = (j: (typeof read.joueurs)[number]) =>
+      j.TNs.filter((t) => typeof t.points === "number").length;
+    expect(read.joueurs.map(played)).toEqual(rows.map((r) => r.count));
+    expect(text.endsWith("\n")).toBe(true);
   });
 });
 

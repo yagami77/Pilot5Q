@@ -17,6 +17,18 @@ import type {
 } from "@pilot5q/domain";
 import { del, get, set } from "idb-keyval";
 
+/**
+ * Liste de contrôle de la clôture : date (ISO 8601) à laquelle chaque étape a été faite dans ce
+ * navigateur (PDF du classement glissant, `RANKING.json`, PDF récapitulatif, message au
+ * secrétariat). Une étape absente reste à faire.
+ */
+export interface ClosureChecklist {
+  rankingPdf?: string;
+  rankingJson?: string;
+  recapPdf?: string;
+  secretariat?: string;
+}
+
 /** Trace d'une clôture de TN : points attribués et fenêtre avant intégration (pour corriger). */
 export interface StageClosure {
   stageId: string;
@@ -27,6 +39,8 @@ export interface StageClosure {
   playersBefore?: PlayerRecord[];
   /** Nombre de joueurs classés après intégration. */
   rankedAfter: number;
+  /** Suites de la clôture déjà faites par le responsable. */
+  checklist?: ClosureChecklist;
 }
 
 /** Document d'une saison : toutes les données du responsable national. */

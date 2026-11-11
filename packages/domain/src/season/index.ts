@@ -30,6 +30,8 @@ export {
   rankingCsv,
 } from "./glissant.js";
 export type { RankingOptions } from "./glissant.js";
+export { APP_RANKING_FILE, appRanking, appRankingJson, appRankingStageName } from "./appRanking.js";
+export type { AppRanking, AppRankingPlayer, AppRankingTn } from "./appRanking.js";
 export {
   normalizeLicence,
   normalizeName,
