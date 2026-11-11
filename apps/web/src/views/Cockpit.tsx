@@ -3,14 +3,14 @@ import { AnimatePresence, motion } from "motion/react";
 import { useEffect } from "react";
 import { Navigate, useParams } from "react-router";
 
-import { useReadOnly } from "@/auth/context";
+import { useAuth, useReadOnly } from "@/auth/context";
 import { NotificationBanner } from "@/components/NotificationBell";
 import { PhaseRail } from "@/components/PhaseRail";
 import { TopBar } from "@/components/TopBar";
 import { Informations } from "@/dj/Informations";
 import { Primes } from "@/dj/Primes";
 import { DAYS, dayStatuses, type Day } from "@/lib/tournament";
-import { useTournament } from "@/store/tournament";
+import { useEditLock, useTournament } from "@/store/tournament";
 
 import { Dimanche } from "./Dimanche";
 import { Jeudi } from "./Jeudi";
@@ -37,8 +37,9 @@ function isPage(v: string | undefined): v is Page {
 }
 
 export function Cockpit() {
-  const { ready, id, state, setReadOnly } = useTournament();
+  const { ready, id, state, setReadOnly, setCanReopen } = useTournament();
   const { day } = useParams();
+  const { session } = useAuth();
   const readOnly = useReadOnly();
   // Consultation seule (DJ après la clôture) : la saisie est verrouillée dans le store,
   // la navigation, l'impression, le schéma et les primes restent consultables.
@@ -46,6 +47,14 @@ export function Cockpit() {
     setReadOnly(readOnly);
     return () => setReadOnly(false);
   }, [readOnly, setReadOnly]);
+  // Tournoi clôturé par le directeur de jeu : seul le responsable connecté peut le rouvrir.
+  const responsable = session?.role === "responsable";
+  useEffect(() => {
+    setCanReopen(responsable);
+    return () => setCanReopen(false);
+  }, [responsable, setCanReopen]);
+  // Saisie verrouillée : session en lecture seule ou tournoi clôturé.
+  const locked = useEditLock();
   if (!ready) {
     return (
       <div className="text-ink-muted grid min-h-[60vh] place-items-center text-sm">
@@ -71,9 +80,9 @@ export function Cockpit() {
             transition={{ duration: 0.3, ease: [0.2, 0.8, 0.2, 1] }}
           >
             {day === "informations" ? (
-              <Informations readOnly={readOnly} />
+              <Informations readOnly={locked} />
             ) : (
-              <Primes readOnly={readOnly} />
+              <Primes readOnly={locked} />
             )}
           </motion.div>
         </main>

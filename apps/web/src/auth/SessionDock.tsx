@@ -9,11 +9,13 @@ import { Link, useNavigate } from "react-router";
 
 import { Avatar, Button, cx } from "@/components/ui";
 import { nice } from "@/lib/format";
+import { useTournament } from "@/store/tournament";
 
 import { useAuth } from "./context";
 
 export function SessionDock() {
   const { session, logout } = useAuth();
+  const { closure } = useTournament();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const root = useRef<HTMLDivElement>(null);
@@ -66,7 +68,9 @@ export function SessionDock() {
                 {session.email}
                 <br />
                 {session.stageName}
-                {session.readOnly ? " · clôturé, consultation seule" : " · droits actifs"}
+                {session.readOnly || closure
+                  ? " · clôturé, consultation seule"
+                  : " · droits actifs"}
               </div>
             ) : session.role === "responsable" ? (
               <Link

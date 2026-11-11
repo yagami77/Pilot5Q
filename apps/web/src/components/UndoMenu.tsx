@@ -18,7 +18,9 @@ function lower(label: string): string {
 }
 
 export function UndoMenu() {
-  const { events, undo, undoTo, canUndo, readOnly } = useTournament();
+  const { events, undo, undoTo, canUndo, readOnly, closure } = useTournament();
+  // Consultation seule ou tournoi clôturé : rien ne s'annule.
+  const frozen = readOnly || Boolean(closure);
   const toast = useToast();
   const [open, setOpen] = useState(false);
   const [hover, setHover] = useState<number | null>(null);
@@ -68,7 +70,13 @@ export function UndoMenu() {
         type="button"
         onClick={undoLast}
         disabled={!canUndo || !last}
-        title={last ? `Annuler : ${lower(last.label)}` : "Rien à annuler"}
+        title={
+          closure
+            ? "Tournoi clôturé : plus d'annulation"
+            : last
+              ? `Annuler : ${lower(last.label)}`
+              : "Rien à annuler"
+        }
         className="border-line-2 bg-surface enabled:hover:bg-brand-soft inline-flex max-w-[280px] items-center gap-1.5 rounded-l-[10px] border px-2.5 py-1.5 text-[12.5px] font-semibold transition-colors disabled:opacity-50"
       >
         <Undo2 className="size-3.5 shrink-0" aria-hidden="true" />
@@ -82,7 +90,7 @@ export function UndoMenu() {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        disabled={history.length === 0 || readOnly}
+        disabled={history.length === 0 || frozen}
         aria-expanded={open}
         aria-label="Historique des dernières actions"
         className="border-line-2 bg-surface enabled:hover:bg-brand-soft inline-flex items-center rounded-r-[10px] border border-l-0 px-1.5 transition-colors disabled:opacity-50"

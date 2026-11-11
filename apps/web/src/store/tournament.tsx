@@ -3,9 +3,14 @@
  *
  * - `events` est la source de vérité, persistée dans IndexedDB à chaque changement ;
  * - `state` est recalculé par `replay` (moteur du domaine ou secours) ;
- * - `undo` retire le dernier événement et rejoue le journal.
+ * - `undo` retire le dernier événement et rejoue le journal ;
+ * - clôture du tournoi par le directeur de jeu (`closeTournament`) : tant que le journal se
+ *   termine par une clôture, plus rien ne passe (ni score, ni annulation, ni réouverture de
+ *   phase), quel que soit le rôle ; seule `reopenTournament` rouvre, et uniquement si le cockpit
+ *   l'a autorisée pour la session en cours (`setCanReopen` : responsable connecté).
  */
 import type { Billard, TournamentEvent, TournamentState } from "@pilot5q/domain";
+import { journalClosed } from "@pilot5q/domain";
 import {
   createContext,
   useCallback,
@@ -17,6 +22,7 @@ import {
   type ReactNode,
 } from "react";
 
+import { closureEvents } from "@/lib/closure";
 import { replay } from "@/lib/engine";
 
 import {
@@ -58,6 +64,18 @@ export interface TournamentStore {
   /** Consultation seule (DJ après la clôture) : toute modification est ignorée. */
   readOnly: boolean;
   setReadOnly: (v: boolean) => void;
+  /** Tournoi clôturé par le directeur de jeu (date, auteur), null tant qu'il est ouvert. */
+  closure: { at: string; by: string } | null;
+  /**
+   * Clôture le tournoi : classe les tableaux joués pas encore classés puis verrouille tout.
+   * Sans effet si la clôture n'est pas possible (finales non jouées, consolante en cours).
+   */
+  closeTournament: (by?: string) => void;
+  /** La session en cours peut rouvrir un tournoi clôturé (responsable connecté). */
+  canReopen: boolean;
+  setCanReopen: (v: boolean) => void;
+  /** Rouvre un tournoi clôturé ; ignoré si la session n'y est pas autorisée. */
+  reopenTournament: (by?: string) => void;
 }
 
 const Ctx = createContext<TournamentStore | null>(null);
@@ -89,6 +107,12 @@ export function TournamentProvider({
   const setReadOnly = useCallback((v: boolean) => {
     locked.current = v;
     setReadOnlyState(v);
+  }, []);
+  const [canReopen, setCanReopenState] = useState(false);
+  const reopenAllowed = useRef(false);
+  const setCanReopen = useCallback((v: boolean) => {
+    reopenAllowed.current = v;
+    setCanReopenState(v);
   }, []);
 
   // Chargement initial
@@ -145,21 +169,27 @@ export function TournamentProvider({
 
   const state = useMemo(() => replay(events), [events]);
 
+  const closure = state.closure ?? null;
+
+  // Tournoi clôturé : le journal est figé (vérifié sur le journal à jour, pas sur un rendu).
   const dispatchMany = useCallback((inputs: EventInput[]) => {
     if (locked.current) return;
     dirty.current = true;
-    setEvents((prev) => [...prev, ...inputs.map(stamp)]);
+    setEvents((prev) => (journalClosed(prev) ? prev : [...prev, ...inputs.map(stamp)]));
   }, []);
   const dispatch = useCallback((e: EventInput) => dispatchMany([e]), [dispatchMany]);
 
   const canUndo =
-    !readOnly && events.length > 0 && !PROTECTED.includes(events[events.length - 1]!.type);
+    !readOnly &&
+    !closure &&
+    events.length > 0 &&
+    !PROTECTED.includes(events[events.length - 1]!.type);
   const undo = useCallback(() => {
     if (locked.current) return;
     dirty.current = true;
     setEvents((prev) => {
       const last = prev[prev.length - 1];
-      if (!last || PROTECTED.includes(last.type)) return prev;
+      if (!last || PROTECTED.includes(last.type) || journalClosed(prev)) return prev;
       return prev.slice(0, -1);
     });
   }, []);
@@ -168,10 +198,30 @@ export function TournamentProvider({
     if (locked.current) return;
     dirty.current = true;
     setEvents((prev) => {
-      if (index < 0 || index >= prev.length) return prev;
+      if (index < 0 || index >= prev.length || journalClosed(prev)) return prev;
       if (prev.slice(index).some((e) => PROTECTED.includes(e.type))) return prev;
       return prev.slice(0, index);
     });
+  }, []);
+
+  const closeTournament = useCallback((by?: string) => {
+    if (locked.current) return;
+    dirty.current = true;
+    setEvents((prev) => {
+      if (journalClosed(prev)) return prev;
+      const more = closureEvents(replay(prev), by);
+      return more.length > 0 ? [...prev, ...more.map(stamp)] : prev;
+    });
+  }, []);
+
+  const reopenTournament = useCallback((by?: string) => {
+    if (locked.current || !reopenAllowed.current) return;
+    dirty.current = true;
+    setEvents((prev) =>
+      journalClosed(prev)
+        ? [...prev, stamp({ type: "tournament.reopened", payload: by ? { by } : {} })]
+        : prev,
+    );
   }, []);
 
   const open = useCallback(
@@ -199,11 +249,14 @@ export function TournamentProvider({
   }, [close, id, persist]);
 
   const amendBillards = useCallback((billards: Billard[]) => {
+    if (locked.current) return;
     dirty.current = true;
     setEvents((prev) =>
-      prev.map((e) =>
-        e.type === "tournament.created" ? { ...e, payload: { ...e.payload, billards } } : e,
-      ),
+      journalClosed(prev)
+        ? prev
+        : prev.map((e) =>
+            e.type === "tournament.created" ? { ...e, payload: { ...e.payload, billards } } : e,
+          ),
     );
   }, []);
 
@@ -226,6 +279,11 @@ export function TournamentProvider({
       amendBillards,
       readOnly,
       setReadOnly,
+      closure,
+      closeTournament,
+      canReopen,
+      setCanReopen,
+      reopenTournament,
     }),
     [
       id,
@@ -245,15 +303,24 @@ export function TournamentProvider({
       amendBillards,
       readOnly,
       setReadOnly,
+      closure,
+      closeTournament,
+      canReopen,
+      setCanReopen,
+      reopenTournament,
     ],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }
 
-/** Commandes de saisie désactivées (consultation seule après la clôture). */
+/**
+ * Commandes de saisie désactivées : session en consultation seule, ou tournoi clôturé par le
+ * directeur de jeu (pour tout le monde, jusqu'à la réouverture par le responsable).
+ */
 export function useEditLock(): boolean {
-  return useContext(Ctx)?.readOnly ?? false;
+  const ctx = useContext(Ctx);
+  return Boolean(ctx && (ctx.readOnly || ctx.closure));
 }
 
 export function useTournament(): TournamentStore {

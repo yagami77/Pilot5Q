@@ -2,12 +2,19 @@
  * Gardes des routes : l'espace du responsable exige une session de responsable ; le cockpit
  * accepte le responsable, la démonstration et le directeur de jeu, ce dernier uniquement sur SON
  * tournoi et en lecture seule après la clôture.
+ *
+ * Deux clôtures verrouillent la saisie : celle du directeur de jeu (dans le journal du tournoi,
+ * elle vaut pour tous jusqu'à la réouverture par le responsable) et celle du responsable (points
+ * attribués : l'accès du directeur de jeu passe en lecture seule).
  */
-import { LockKeyhole, LogOut, RefreshCw } from "lucide-react";
+import { LockKeyhole, LockKeyholeOpen, LogOut, RefreshCw } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { Link, Navigate, useLocation, useNavigate } from "react-router";
 
+import { ConfirmDialog } from "@/components/ConfirmDialog";
+import { useToast } from "@/components/Toast";
 import { Banner, Button, cx } from "@/components/ui";
+import { closureWhen } from "@/lib/closure";
 import { DAYS, dayStatuses } from "@/lib/tournament";
 import { useTournament } from "@/store/tournament";
 
@@ -39,15 +46,7 @@ export function RequireCockpit({ children }: { children: ReactNode }) {
   const [problem, setProblem] = useState("");
   if (!ready || !cockpit.ready) return <Loading label="Chargement du tournoi…" />;
   if (!session) return <Navigate to="/?acces=dj" replace />;
-  if (session.role !== "dj") {
-    return (
-      <>
-        {children}
-        <SessionDock />
-      </>
-    );
-  }
-  if (cockpit.id !== session.tournamentId) {
+  if (session.role === "dj" && cockpit.id !== session.tournamentId) {
     return (
       <main className="mx-auto grid min-h-[70vh] max-w-[560px] place-items-center px-4">
         <div className="card animate-fade-up w-full p-6 text-center">
@@ -84,22 +83,15 @@ export function RequireCockpit({ children }: { children: ReactNode }) {
       </main>
     );
   }
-  // Impression : consultation pure, laissée active même après la clôture.
-  if (session.readOnly && !location.pathname.startsWith("/tournoi/imprimer")) {
-    return (
-      <>
-        {/* Tournoi clôturé : la saisie est verrouillée par le cockpit (store en lecture
-            seule, commandes de saisie masquées ou désactivées) ; navigation, impression,
-            schéma et primes restent consultables. */}
-        {children}
-        <ReadOnlyBar />
-        <SessionDock />
-      </>
-    );
-  }
+  // Tournoi clôturé (par le directeur de jeu dans le cockpit, ou par le responsable pour l'accès
+  // du DJ) : la saisie est verrouillée par le cockpit (store figé, commandes de saisie masquées
+  // ou désactivées) ; navigation, impression, schéma et primes restent consultables.
+  // Impression : consultation pure, sans bandeau.
+  const closed = Boolean(cockpit.closure) || (session.role === "dj" && session.readOnly);
   return (
     <>
       {children}
+      {closed && !location.pathname.startsWith("/tournoi/imprimer") ? <ReadOnlyBar /> : null}
       <SessionDock />
     </>
   );
@@ -107,11 +99,16 @@ export function RequireCockpit({ children }: { children: ReactNode }) {
 
 /**
  * Bandeau de consultation seule : rappelle que le tournoi est clôturé, avec un accès direct
- * aux journées ouvertes et au schéma.
+ * aux journées ouvertes et au schéma. Le responsable connecté y trouve « Rouvrir le tournoi »
+ * (clôture du directeur de jeu) ; le directeur de jeu, lui, ne peut plus rien modifier.
  */
 function ReadOnlyBar() {
-  const { state } = useTournament();
+  const { state, closure, canReopen, reopenTournament } = useTournament();
+  const { session } = useAuth();
+  const toast = useToast();
   const location = useLocation();
+  const [confirm, setConfirm] = useState(false);
+  const reopenable = Boolean(closure) && canReopen;
   const statuses = dayStatuses(state);
   const links = [
     ...DAYS.filter((d) => statuses[d].unlocked).map((d) => ({
@@ -125,7 +122,11 @@ function ReadOnlyBar() {
       <div className="bg-surface/95 border-line animate-pop pointer-events-auto flex flex-wrap items-center gap-2 rounded-full border py-1.5 pr-1.5 pl-4 text-[12.5px] font-semibold shadow-[var(--shadow-raised)] backdrop-blur-[10px]">
         <span className="text-gold-ink flex items-center gap-1.5">
           <LockKeyhole className="size-4" aria-hidden="true" />
-          Tournoi clôturé : consultation seule
+          {reopenable && closure
+            ? `Tournoi clôturé le ${closureWhen(closure.at)}${closure.by ? ` par ${closure.by}` : ""}`
+            : closure
+              ? "Tournoi clôturé : consultation seule, seul le responsable peut le rouvrir"
+              : "Tournoi clôturé : consultation seule"}
         </span>
         <nav aria-label="Journées" className="bg-surface-2 flex gap-0.5 rounded-full p-0.5">
           {links.map((l) => (
@@ -144,7 +145,33 @@ function ReadOnlyBar() {
             </Link>
           ))}
         </nav>
+        {reopenable ? (
+          <Button
+            size="sm"
+            variant="primary"
+            icon={LockKeyholeOpen}
+            className="rounded-full"
+            onClick={() => setConfirm(true)}
+          >
+            Rouvrir le tournoi
+          </Button>
+        ) : null}
       </div>
+      <ConfirmDialog
+        open={confirm}
+        title="Rouvrir le tournoi ?"
+        icon={LockKeyholeOpen}
+        confirmLabel="Rouvrir le tournoi"
+        onCancel={() => setConfirm(false)}
+        onConfirm={() => {
+          setConfirm(false);
+          reopenTournament(session?.displayName);
+          toast("Tournoi rouvert : la saisie est de nouveau possible");
+        }}
+      >
+        La saisie redevient possible, pour vous comme pour le directeur de jeu. Corrigez ce qui doit
+        l'être, puis clôturez de nouveau le tournoi.
+      </ConfirmDialog>
     </div>
   );
 }

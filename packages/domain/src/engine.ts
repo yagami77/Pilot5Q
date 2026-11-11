@@ -92,6 +92,8 @@ export {
   bracketRanking,
   finalRanking,
   primesOf,
+  journalClosed,
+  canCloseTournament,
 } from "./reducer.js";
 export { toLiveJson } from "./live.js";
 export type { LiveJson, LiveCompetition, LivePoule, LiveMatch } from "./live.js";

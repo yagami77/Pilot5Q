@@ -13,6 +13,7 @@ import {
 } from "react";
 
 import { setRole } from "@/admin/role";
+import { titleCase } from "@/lib/format";
 
 import { LocalAuthProvider } from "./local";
 import type {
@@ -120,4 +121,14 @@ export function useAuth(): AuthContextValue {
 export function useReadOnly(): boolean {
   const ctx = useContext(Ctx);
   return ctx?.session?.role === "dj" && ctx.session.readOnly;
+}
+
+/**
+ * Nom de la personne connectée, tel qu'il est inscrit au journal quand elle clôture ou rouvre le
+ * tournoi (« Dupont Jean ») ; vide pour la démonstration ou hors session.
+ */
+export function useSessionName(): string {
+  const session = useContext(Ctx)?.session;
+  if (!session || session.role === "demo") return "";
+  return session.role === "dj" ? titleCase(session.displayName) : session.displayName;
 }

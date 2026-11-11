@@ -39,6 +39,11 @@
  *   sont ignorés).
  * - `arbitre.set` : numéro de licence de l'arbitre 1 (`arbitre`) ou 2 (`arbitre2`, `slot: 2`) sur
  *   le match ; sans `slot` (anciens journaux), l'arbitre 1 ; une licence vide efface l'arbitre.
+ * - `tournament.closed` : clôture du tournoi par le directeur de jeu (`closure` = date et auteur) ;
+ *   `tournament.reopened` : réouverture par le responsable (`closure` = null). Le réducteur ne
+ *   fait qu'enregistrer l'état : c'est l'appelant (store du cockpit, serveur demain) qui refuse
+ *   toute modification tant que le tournoi est clôturé (`journalClosed`) et réserve la
+ *   réouverture au responsable. `canCloseTournament` dit si la clôture est possible.
  *
  * Sélecteurs dérivés : `phaseRanking` (classement d'une phase de poules, l'ordre d'arrivée
  * étant l'ordre d'entrée dans la phase, cf. `entryArrivee`), `barrageRanking`, `bracketRanking`
@@ -109,6 +114,7 @@ export function initialState(): TournamentState {
     closed: {},
     forfaits: [],
     billardAssignments: {},
+    closure: null,
   };
 }
 
@@ -762,7 +768,36 @@ export function reduce(state: TournamentState, event: TournamentEvent): Tourname
         slot === 2 ? { ...m, arbitre2: value } : { ...m, arbitre: value },
       );
     }
+    case "tournament.closed":
+      // Déjà clôturé : la première clôture fait foi.
+      if (state.closure) return state;
+      return { ...state, closure: { at: event.at, by: event.payload.by ?? "" } };
+    case "tournament.reopened":
+      return state.closure ? { ...state, closure: null } : state;
     default:
       return state;
   }
+}
+
+/**
+ * Le journal se termine-t-il par une clôture du tournoi non rouverte ? Équivalent à
+ * `replay(events).closure != null`, sans rejouer le journal.
+ */
+export function journalClosed(events: readonly TournamentEvent[]): boolean {
+  for (let i = events.length - 1; i >= 0; i--) {
+    const type = events[i]?.type;
+    if (type === "tournament.closed") return true;
+    if (type === "tournament.reopened") return false;
+  }
+  return false;
+}
+
+/**
+ * Le tournoi peut-il être clôturé (sélecteur) ? Finales Masters et National jouées, consolante
+ * terminée ou sans objet (tableau jamais créé).
+ */
+export function canCloseTournament(state: TournamentState): boolean {
+  if (state.closure) return false;
+  const cls = state.brackets.CLS.length === 0 || phaseComplete(state, "CLS");
+  return phaseComplete(state, "M") && phaseComplete(state, "N") && cls;
 }

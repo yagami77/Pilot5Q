@@ -221,7 +221,13 @@ export type TournamentEvent =
        * licence vide efface l'arbitre.
        */
       payload: { phase: PhaseId; matchId: string; licence: string; slot?: 1 | 2 };
-    };
+    }
+  /**
+   * Clôture du tournoi par le directeur de jeu : au-delà, seul le responsable national peut
+   * rouvrir (`tournament.reopened`) pour corriger. `by` = nom de la personne qui agit.
+   */
+  | { type: "tournament.closed"; at: string; payload: { by?: string } }
+  | { type: "tournament.reopened"; at: string; payload: { by?: string } };
 
 /** État complet du tournoi, obtenu par rejeu des événements. */
 export interface TournamentState {
@@ -243,4 +249,9 @@ export interface TournamentState {
   closed: Partial<Record<PhaseId, boolean>>;
   forfaits: { phase: PhaseId; player: string; kind: "forfait" | "abandon" }[];
   billardAssignments: Partial<Record<PhaseId, Record<string, number[]>>>;
+  /**
+   * Clôture du tournoi par le directeur de jeu (date et auteur) ; null ou absent tant que le
+   * tournoi est ouvert, ou après une réouverture par le responsable.
+   */
+  closure?: { at: string; by: string } | null;
 }
