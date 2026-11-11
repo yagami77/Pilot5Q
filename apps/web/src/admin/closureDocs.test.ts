@@ -52,7 +52,7 @@ describe("suites de la clôture d'un TN", () => {
     };
     expect(json.ranking).toBe("après TN2 2026-2027");
     expect(json.saison).toBe("2026-2027");
-    expect(json.type).toBe("Après TN2");
+    expect(json.type).toBe("TN2");
     expect(json.joueurs).toHaveLength(129);
     expect(json.joueurs.every((j) => j.TNs.length === 5)).toBe(true);
     expect(json.joueurs[0]?.nom).toBe("COUPADE JULES");

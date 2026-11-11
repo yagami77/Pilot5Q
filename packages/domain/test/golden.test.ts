@@ -139,6 +139,16 @@ interface Fixture {
     subis: number;
     moy: number;
   }[];
+  correctedTournamentRanking: {
+    rank: number;
+    name: string;
+    points: number;
+    base: number;
+    decimal: number;
+    faits: number;
+    subis: number;
+    moy: number;
+  }[];
   primes: {
     juniors: number;
     players: number;
@@ -783,6 +793,27 @@ describe("fixture tn-exemple : rejeu complet par le réducteur", () => {
     expect(rows[rows.length - 1]).toMatchObject({ name: abandon, points: 0, abandon: true });
     expect(rows[0]).toMatchObject({ name: masters[0], points: 80, origin: "M" });
     expect(rows[0] && rows[0].points + rows[0].decimal).toBeCloseTo(exp[0]?.points ?? 0, 9);
+  });
+
+  it("classement final identique aux points recalculés par le responsable (comptage des matchs corrigé)", () => {
+    const rows = finalRanking(state);
+    const ref = fixture.correctedTournamentRanking;
+    expect(rows).toHaveLength(ref.length);
+    const byName = new Map(ref.map((e) => [e.name, e]));
+    for (const r of rows) {
+      const e = byName.get(r.name);
+      expect(e, r.name).toBeDefined();
+      if (!e) continue;
+      expect(r.points, `${r.name} barème`).toBe(r.abandon ? 0 : e.base);
+      expect(r.points + r.decimal, `${r.name} total`).toBeCloseTo(e.points, 12);
+      // Un abandon ne garde ni points faits ni subis dans l'application (0 point au classement)
+      if (r.abandon) continue;
+      expect(r.faits, `${r.name} faits`).toBe(e.faits);
+      expect(r.subis, `${r.name} subis`).toBe(e.subis);
+    }
+    expect(rows.map((r) => r.name)).toEqual(
+      [...ref].sort((x, y) => x.rank - y.rank).map((e) => e.name),
+    );
   });
 
   it("primes : cagnotte et bénéficiaires identiques à l'onglet PRIMES (2 juniors)", () => {

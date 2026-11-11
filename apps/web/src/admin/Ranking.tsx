@@ -1007,9 +1007,10 @@ function ReferenceBanner({ c }: { c: ReferenceComparison }) {
       </div>
       {!exact && c.decimalOnly.length > 0 ? (
         <p className="mt-1 text-[12.5px]">
-          {c.decimalOnly.length} décimales diffèrent légèrement (joueurs du National) : l'outil
-          Excel compte 4 à 6 matchs au lieu de 3 dans les poules National 2 à 8, ce qui fausse sa
-          décimale « points de set / matchs / 100 ». Pilot5Q compte les matchs réellement joués ;
+          {c.decimalOnly.length} décimales diffèrent légèrement (joueurs du National) : le
+          classement publié a été calculé avant la correction du classeur, qui comptait 4 à 6
+          matchs au lieu de 3 dans les poules National 2 à 8. Pilot5Q compte les matchs réellement
+          joués et retrouve exactement les points recalculés par le responsable le 11 novembre ;
           les positions ne changent qu'entre joueurs à égalité de points du barème.
         </p>
       ) : null}

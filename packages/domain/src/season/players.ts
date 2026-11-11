@@ -11,6 +11,9 @@
  *     `lastPlace` inchangé ;
  *   - il est à 0 (sorti du classement) → `currentPlace` effacé, `lastPlace` inchangé.
  * - `lastPlace` est donc la place au classement glissant à l'issue du dernier TN joué.
+ * - Un joueur inscrit qui abandonne sans marquer de point (0 au barème) n'est pas compté comme
+ *   ayant joué pour le « dernier » : c'est ce que montre la base remise d'équerre par le
+ *   responsable le 11 novembre 2026 (un abandon du vendredi au TN 2 garde son « dernier »).
  * - Pour la liste ordonnée (`orderParticipants`), un joueur hors classement avec un dernier
  *   classement `P` prend la place 9 si `P ≤ 8`, sinon `P + 0,5` (SPEC §2). Point à confirmer :
  *   l'outil Excel place au contraire un ancien joueur Masters (`P < 8`) en tête de liste.
@@ -41,7 +44,14 @@ export function updatePlayerBase(
   base: PlayerRecord[],
   ranking: RankingRow[],
   season: SeasonId,
-  participants: { licence: string; name: string; club: string; junior?: boolean }[],
+  participants: {
+    licence: string;
+    name: string;
+    club: string;
+    junior?: boolean;
+    /** Abandon sans aucun point au barème : inscrit, mais pas « joué » pour le « dernier ». */
+    scoreless?: boolean;
+  }[],
 ): PlayerRecord[] {
   const byLicence = new Map<string, PlayerRecord>();
   const byName = new Map<string, PlayerRecord>();
@@ -75,7 +85,7 @@ export function updatePlayerBase(
   const played = new Set<PlayerRecord>();
   for (const pl of participants) {
     const p = ensure(pl.licence, pl.name, pl.club);
-    played.add(p);
+    if (!pl.scoreless) played.add(p);
     if (p.lastSeason === null || seasonStartYear(season) >= seasonStartYear(p.lastSeason))
       p.lastSeason = season;
     if (pl.junior !== undefined) p.junior = pl.junior;

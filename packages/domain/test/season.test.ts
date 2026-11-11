@@ -422,6 +422,15 @@ describe("classement glissant « APRES TN2 2026-2027 »", () => {
     expect(rankingCsv(rows.slice(0, 2)).split("\n")[0]).toBe(lines[0]);
   });
 
+  it("RANKING.json : identique au fichier réel « après TN2 2026-2027 » du responsable national", () => {
+    // Fichier transmis le 11 novembre 2026, tel que l'application 5 Quilles le lit aujourd'hui.
+    const real = JSON.parse(
+      readFileSync(join(here, "fixtures", "RANKING-apres-tn2-2026-2027.json"), "utf8"),
+    ) as unknown;
+    expect(appRanking(rows, { season: fx.season, tn: 2 })).toEqual(real);
+    expect(JSON.parse(appRankingJson(rows, { season: fx.season, tn: 2 }))).toEqual(real);
+  });
+
   it("produit RANKING.json au format lu par l'application 5 Quilles", () => {
     const last = { season: fx.season, tn: 2 };
     const file = appRanking(rows, last);
@@ -430,7 +439,7 @@ describe("classement glissant « APRES TN2 2026-2027 »", () => {
     expect(Object.keys(file)).toEqual(["ranking", "saison", "type", "joueurs"]);
     expect(file.ranking).toBe("après TN2 2026-2027");
     expect(file.saison).toBe("2026-2027");
-    expect(file.type).toBe("Après TN2");
+    expect(file.type).toBe("TN2");
     expect(file.joueurs).toHaveLength(rows.length);
     const names = [
       "TN 3 2025-2026",
@@ -442,7 +451,8 @@ describe("classement glissant « APRES TN2 2026-2027 »", () => {
     file.joueurs.forEach((j, i) => {
       const row = rows[i];
       if (!row) throw new Error("ligne absente");
-      expect(Object.keys(j)).toEqual(["nom", "points", "TNs"]);
+      expect(Object.keys(j)).toEqual(["nom", "licence", "points", "TNs"]);
+      expect(j.licence).toBe(row.licence);
       // L'ordre du fichier est le classement : l'application en déduit le rang.
       expect(row.position).toBe(i + 1);
       expect(j.nom).toBe(row.name);
@@ -575,47 +585,52 @@ describe("base joueurs", () => {
     });
   });
 
-  it("appliqué à la base réelle après le TN 2 : 76 joueurs du TN, 53 classés absents, les autres effacés", () => {
-    // Base du responsable telle que transmise (champs « classement » et « dernier »), valeurs
-    // périmées comprises : l'algorithme doit la remettre d'aplomb.
-    const before: PlayerRecord[] = fx.players.map((p) => ({
+  it("la base remise d'équerre par le responsable (11 novembre) est exactement celle de l'algorithme", () => {
+    // La base transmise est l'état après le TN 2 : lui réappliquer la clôture du TN 2 ne doit
+    // rien changer, ni « classement », ni « dernier », ni saison, pour aucun des 329 joueurs.
+    const base: PlayerRecord[] = fx.players.map((p) => ({
       licence: p.licence,
       name: p.name,
       club: p.club,
-      lastSeason: p.lastSeason === fx.season ? "2025-2026" : p.lastSeason,
+      lastSeason: p.lastSeason,
       currentPlace: p.posThis,
       lastPlace: p.posLast,
     }));
-    const participants = results.map((r) => ({
-      licence: r.licence ?? "",
-      name: r.name,
-      club: r.club ?? "",
+    const awards = awardPoints(results, fx.consolanteHeld);
+    const participants = awards.map((a) => ({
+      licence: a.licence,
+      name: a.name,
+      club: a.club,
+      scoreless: a.abandon && a.points === 0,
     }));
-    const updated = updatePlayerBase(before, rows, fx.season, participants);
-    expect(updated).toHaveLength(before.length);
+    const updated = updatePlayerBase(base, rows, fx.season, participants);
+    expect(updated).toHaveLength(base.length);
     const position = new Map(rows.map((r) => [r.name, r.position]));
-    const played = new Set(results.map((r) => r.name));
-    const count = { played: 0, rankedAbsent: 0, out: 0 };
+    const played = new Set(participants.filter((p) => !p.scoreless).map((p) => p.name));
+    const count = { played: 0, scoreless: 0, rankedAbsent: 0, out: 0 };
     updated.forEach((u, i) => {
-      const b = before[i];
-      const source = fx.players[i];
-      if (!b || !source) throw new Error("base incohérente");
+      const b = base[i];
+      if (!b) throw new Error("base incohérente");
       const place = position.get(u.name) ?? null;
       expect(u.currentPlace, `${u.name} classement`).toBe(place);
+      expect(u.currentPlace, `${u.name} classement de la base`).toBe(b.currentPlace);
+      expect(u.lastPlace, `${u.name} dernier de la base`).toBe(b.lastPlace);
+      expect(u.lastSeason, `${u.name} saison de la base`).toBe(b.lastSeason);
       if (played.has(u.name)) {
         count.played++;
         expect(u.lastPlace, `${u.name} dernier`).toBe(place);
         expect(u.lastSeason, `${u.name} saison`).toBe(fx.season);
-        // Seul point où la base transmise est à jour : le « classement » des joueurs du TN 2.
-        expect(source.posThis, `${u.name} classement de la base transmise`).toBe(place);
-      } else {
-        if (place === null) count.out++;
-        else count.rankedAbsent++;
-        expect(u.lastPlace, `${u.name} dernier`).toBe(b.lastPlace);
-        expect(u.lastSeason, `${u.name} saison`).toBe(b.lastSeason);
-      }
+      } else if (participants.some((p) => p.name === u.name)) count.scoreless++;
+      else if (place === null) count.out++;
+      else count.rankedAbsent++;
     });
-    expect(count).toEqual({ played: 76, rankedAbsent: 53, out: 200 });
+    // Un abandon du vendredi sans point : classé, mais son « dernier » reste celui d'avant.
+    expect(count).toEqual({ played: 75, scoreless: 1, rankedAbsent: 53, out: 200 });
+    // Licences : celles du classement font foi (deux joueurs en avaient une autre dans la base).
+    for (const r of rows) {
+      const p = base.find((x) => x.name === r.name);
+      expect(p?.licence, `${r.name} licence`).toBe(r.licence);
+    }
   });
 
   it("fournit les derniers classements connus pour la liste ordonnée", () => {

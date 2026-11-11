@@ -1,5 +1,5 @@
 {
- "_note": "Tournoi d'exemple : structure, billards et scores réels d'un TN complet (76 inscrits, 11 billards dont 4 de 3m10, 17 poules de 4), noms, clubs et licences réels (bases du responsable national) ; les deux drapeaux `junior` sont choisis arbitrairement (le classeur de référence ne stocke que le nombre de juniors, 2). Vendredi : `poules` (PREQ, 1 set à 100), `barrages` (B1..B8), `expectedPhaseRanking` (classement du vendredi produit par l'outil Excel ; la place 68 est un joueur ayant abandonné), `expectedBarrageRanking` (classement cumulé poules + barrage). `abandons` : joueurs déclarés forfait/abandon par phase (phase CLS = non volontaire pour la consolante). Samedi : `saturday.QN` et `saturday.QM` (poules réelles avec billards, scores par match ou par set, `excelRanking` de chaque poule et `expectedRanking` de la phase ; `arriveeQN` = ordre d'entrée dans le National). Dimanche : `brackets.N` (H1..H8 en 1 set à 100 puis Q1..Q4, D1, D2, F en 3 sets gagnants à 60, `labels` = croisements réels), `brackets.M` (Q1..Q4, D1, D2, F ; l'Excel numérote Q3 = 1er P2–2e P3 et Q4 = 1er P4–2e P1, à l'inverse de SPEC §5), `brackets.CLS` (consolante : `candidates` = places 41+, `players` = 19 volontaires dans l'ordre du classement, `seeds` des joueurs de barrage, B1..B3 puis H1..H8, Q1..Q4, D1, D2, F en 1 set à 100) et leurs `expectedRanking` (classements des phases finales de l'Excel : tour atteint, Pm, Ps, points et moyenne cumulés qualification + tableau). `expectedTournamentRanking` : classement final de l'Excel (points du barème + décimale Ps/matchs/100, faits, subis, moyenne) ; attention, l'onglet Q N de l'Excel compte 3, 4, 5 et 6 matchs aux quatre joueurs des poules 2 à 8 (série recopiée), ce qui fausse sa décimale pour ces joueurs. `primes` : onglet PRIMES (cagnotte et bénéficiaires).",
+ "_note": "Tournoi d'exemple : structure, billards et scores réels d'un TN complet (76 inscrits, 11 billards dont 4 de 3m10, 17 poules de 4), noms, clubs et licences réels (bases du responsable national) ; les deux drapeaux `junior` sont choisis arbitrairement (le classeur de référence ne stocke que le nombre de juniors, 2). Vendredi : `poules` (PREQ, 1 set à 100), `barrages` (B1..B8), `expectedPhaseRanking` (classement du vendredi produit par l'outil Excel ; la place 68 est un joueur ayant abandonné), `expectedBarrageRanking` (classement cumulé poules + barrage). `abandons` : joueurs déclarés forfait/abandon par phase (phase CLS = non volontaire pour la consolante). Samedi : `saturday.QN` et `saturday.QM` (poules réelles avec billards, scores par match ou par set, `excelRanking` de chaque poule et `expectedRanking` de la phase ; `arriveeQN` = ordre d'entrée dans le National). Dimanche : `brackets.N` (H1..H8 en 1 set à 100 puis Q1..Q4, D1, D2, F en 3 sets gagnants à 60, `labels` = croisements réels), `brackets.M` (Q1..Q4, D1, D2, F ; l'Excel numérote Q3 = 1er P2–2e P3 et Q4 = 1er P4–2e P1, à l'inverse de SPEC §5), `brackets.CLS` (consolante : `candidates` = places 41+, `players` = 19 volontaires dans l'ordre du classement, `seeds` des joueurs de barrage, B1..B3 puis H1..H8, Q1..Q4, D1, D2, F en 1 set à 100) et leurs `expectedRanking` (classements des phases finales de l'Excel : tour atteint, Pm, Ps, points et moyenne cumulés qualification + tableau). `expectedTournamentRanking` : classement final de l'Excel (points du barème + décimale Ps/matchs/100, faits, subis, moyenne) ; attention, l'onglet Q N de l'Excel compte 3, 4, 5 et 6 matchs aux quatre joueurs des poules 2 à 8 (série recopiée), ce qui fausse sa décimale pour ces joueurs. `primes` : onglet PRIMES (cagnotte et bénéficiaires). `correctedTournamentRanking` : points du TN recalculés par le responsable national après correction de ce comptage (fichier « points TN2 » du 11 novembre 2026 : rang, points du barème, décimale, faits, subis, moyenne) ; c'est la référence exacte de l'application.",
  "tournament": {
   "name": "TN 2",
   "season": "2026-2027",
@@ -6279,6 +6279,768 @@
    "rank": 76,
    "name": "MICHELOTTI FRANCESCO",
    "points": 0,
+   "faits": 216,
+   "subis": 300,
+   "moy": 0.72
+  }
+ ],
+ "correctedTournamentRanking": [
+  {
+   "rank": 1,
+   "name": "COUPADE JULES",
+   "points": 80.03333333333333,
+   "base": 80,
+   "decimal": 0.03333333333333333,
+   "faits": 1017,
+   "subis": 753,
+   "moy": 1.350597609561753
+  },
+  {
+   "rank": 2,
+   "name": "DAVID NICOLAS",
+   "points": 54.02333333333333,
+   "base": 54,
+   "decimal": 0.023333333333333334,
+   "faits": 1184,
+   "subis": 1098,
+   "moy": 1.0783242258652095
+  },
+  {
+   "rank": 3,
+   "name": "GUERIN XAVIER",
+   "points": 38.03,
+   "base": 38,
+   "decimal": 0.03,
+   "faits": 795,
+   "subis": 603,
+   "moy": 1.318407960199005
+  },
+  {
+   "rank": 4,
+   "name": "DUVERNOY CHRISTOPHE",
+   "points": 38.016,
+   "base": 38,
+   "decimal": 0.016,
+   "faits": 746,
+   "subis": 750,
+   "moy": 0.9946666666666667
+  },
+  {
+   "rank": 5,
+   "name": "CARREAU MICHAEL",
+   "points": 26.0275,
+   "base": 26,
+   "decimal": 0.0275,
+   "faits": 623,
+   "subis": 520,
+   "moy": 1.198076923076923
+  },
+  {
+   "rank": 6,
+   "name": "ROUBY GUILLAUME",
+   "points": 26.0225,
+   "base": 26,
+   "decimal": 0.0225,
+   "faits": 582,
+   "subis": 462,
+   "moy": 1.2597402597402598
+  },
+  {
+   "rank": 7,
+   "name": "MIKDAD ALI MOHAMMED",
+   "points": 26.01125,
+   "base": 26,
+   "decimal": 0.01125,
+   "faits": 785,
+   "subis": 732,
+   "moy": 1.0724043715846994
+  },
+  {
+   "rank": 8,
+   "name": "LANUSSE CHRISTOPHE",
+   "points": 26.01125,
+   "base": 26,
+   "decimal": 0.01125,
+   "faits": 850,
+   "subis": 800,
+   "moy": 1.0625
+  },
+  {
+   "rank": 9,
+   "name": "ANDRIA FABRIZIO",
+   "points": 25.017,
+   "base": 25,
+   "decimal": 0.017,
+   "faits": 1352,
+   "subis": 1074,
+   "moy": 1.2588454376163873
+  },
+  {
+   "rank": 10,
+   "name": "GUINGAND FLORIAN",
+   "points": 18.016666666666666,
+   "base": 18,
+   "decimal": 0.016666666666666666,
+   "faits": 431,
+   "subis": 378,
+   "moy": 1.1402116402116402
+  },
+  {
+   "rank": 11,
+   "name": "LAMBIASE GIUSEPPE",
+   "points": 18.013333333333332,
+   "base": 18,
+   "decimal": 0.013333333333333332,
+   "faits": 392,
+   "subis": 377,
+   "moy": 1.039787798408488
+  },
+  {
+   "rank": 12,
+   "name": "GUIBERT PHILIPPE",
+   "points": 18.01142857142857,
+   "base": 18,
+   "decimal": 0.011428571428571429,
+   "faits": 718,
+   "subis": 599,
+   "moy": 1.1986644407345577
+  },
+  {
+   "rank": 13,
+   "name": "BONGIOVANNI GIOVANNI",
+   "points": 18.01142857142857,
+   "base": 18,
+   "decimal": 0.011428571428571429,
+   "faits": 739,
+   "subis": 643,
+   "moy": 1.1493001555209954
+  },
+  {
+   "rank": 14,
+   "name": "DELORME RONAN",
+   "points": 17.013,
+   "base": 17,
+   "decimal": 0.013000000000000001,
+   "faits": 1327,
+   "subis": 1013,
+   "moy": 1.3099703849950641
+  },
+  {
+   "rank": 15,
+   "name": "ACUNZO RAFFAELE",
+   "points": 13.007142857142858,
+   "base": 13,
+   "decimal": 0.007142857142857143,
+   "faits": 693,
+   "subis": 714,
+   "moy": 0.9705882352941176
+  },
+  {
+   "rank": 16,
+   "name": "LORIN JIMMY",
+   "points": 13.007142857142858,
+   "base": 13,
+   "decimal": 0.007142857142857143,
+   "faits": 657,
+   "subis": 683,
+   "moy": 0.9619326500732065
+  },
+  {
+   "rank": 17,
+   "name": "BOUZEMANE KAMEL",
+   "points": 13.005714285714285,
+   "base": 13,
+   "decimal": 0.005714285714285714,
+   "faits": 627,
+   "subis": 568,
+   "moy": 1.1038732394366197
+  },
+  {
+   "rank": 18,
+   "name": "BONNEAU BENOIT",
+   "points": 13.005714285714285,
+   "base": 13,
+   "decimal": 0.005714285714285714,
+   "faits": 609,
+   "subis": 666,
+   "moy": 0.9144144144144144
+  },
+  {
+   "rank": 19,
+   "name": "HERVELIN GABRIEL",
+   "points": 11.012,
+   "base": 11,
+   "decimal": 0.012,
+   "faits": 1210,
+   "subis": 1114,
+   "moy": 1.0861759425493716
+  },
+  {
+   "rank": 20,
+   "name": "WALLART JEAN CHARLES",
+   "points": 11.011111111111111,
+   "base": 11,
+   "decimal": 0.011111111111111112,
+   "faits": 1179,
+   "subis": 1123,
+   "moy": 1.04986642920748
+  },
+  {
+   "rank": 21,
+   "name": "SACRE JEAN YVES",
+   "points": 9.01,
+   "base": 9,
+   "decimal": 0.01,
+   "faits": 967,
+   "subis": 818,
+   "moy": 1.1821515892420538
+  },
+  {
+   "rank": 22,
+   "name": "RAHMANI ALAE",
+   "points": 9.008888888888889,
+   "base": 9,
+   "decimal": 0.008888888888888889,
+   "faits": 984,
+   "subis": 880,
+   "moy": 1.1181818181818182
+  },
+  {
+   "rank": 23,
+   "name": "GEETS PATRICE",
+   "points": 9.00875,
+   "base": 9,
+   "decimal": 0.00875,
+   "faits": 853,
+   "subis": 704,
+   "moy": 1.2116477272727273
+  },
+  {
+   "rank": 24,
+   "name": "HILAIRE JIMMY",
+   "points": 9.0075,
+   "base": 9,
+   "decimal": 0.0075,
+   "faits": 823,
+   "subis": 819,
+   "moy": 1.0048840048840049
+  },
+  {
+   "rank": 25,
+   "name": "VICARI MARC",
+   "points": 7.007142857142857,
+   "base": 7,
+   "decimal": 0.007142857142857143,
+   "faits": 672,
+   "subis": 526,
+   "moy": 1.2775665399239544
+  },
+  {
+   "rank": 26,
+   "name": "GUILLEMANT DAVID",
+   "points": 7.007142857142857,
+   "base": 7,
+   "decimal": 0.007142857142857143,
+   "faits": 651,
+   "subis": 536,
+   "moy": 1.2145522388059702
+  },
+  {
+   "rank": 27,
+   "name": "GIRAUD JACQUES",
+   "points": 7.007142857142857,
+   "base": 7,
+   "decimal": 0.007142857142857143,
+   "faits": 623,
+   "subis": 620,
+   "moy": 1.0048387096774194
+  },
+  {
+   "rank": 28,
+   "name": "SAUVAGE DOMINIQUE",
+   "points": 7.005714285714285,
+   "base": 7,
+   "decimal": 0.005714285714285714,
+   "faits": 608,
+   "subis": 551,
+   "moy": 1.103448275862069
+  },
+  {
+   "rank": 29,
+   "name": "ROBIC DANIEL",
+   "points": 7.005714285714285,
+   "base": 7,
+   "decimal": 0.005714285714285714,
+   "faits": 596,
+   "subis": 617,
+   "moy": 0.965964343598055
+  },
+  {
+   "rank": 30,
+   "name": "GERONIMI THIERRY",
+   "points": 7.005714285714285,
+   "base": 7,
+   "decimal": 0.005714285714285714,
+   "faits": 578,
+   "subis": 601,
+   "moy": 0.961730449251248
+  },
+  {
+   "rank": 31,
+   "name": "IACONO GIUSEPPE",
+   "points": 7.0042857142857144,
+   "base": 7,
+   "decimal": 0.004285714285714285,
+   "faits": 647,
+   "subis": 569,
+   "moy": 1.1370826010544814
+  },
+  {
+   "rank": 32,
+   "name": "DI LEO FRANCOIS",
+   "points": 7.0042857142857144,
+   "base": 7,
+   "decimal": 0.004285714285714285,
+   "faits": 586,
+   "subis": 573,
+   "moy": 1.0226876090750436
+  },
+  {
+   "rank": 33,
+   "name": "VOI CARMELO",
+   "points": 5.005714285714285,
+   "base": 5,
+   "decimal": 0.005714285714285714,
+   "faits": 635,
+   "subis": 608,
+   "moy": 1.044407894736842
+  },
+  {
+   "rank": 34,
+   "name": "RUBLINE PASCAL",
+   "points": 5.005,
+   "base": 5,
+   "decimal": 0.005,
+   "faits": 491,
+   "subis": 567,
+   "moy": 0.8659611992945326
+  },
+  {
+   "rank": 35,
+   "name": "HINGRAND TONY",
+   "points": 5.0042857142857144,
+   "base": 5,
+   "decimal": 0.004285714285714285,
+   "faits": 625,
+   "subis": 666,
+   "moy": 0.9384384384384384
+  },
+  {
+   "rank": 36,
+   "name": "PAPIN JEAN CHRISTOPHE",
+   "points": 5.0042857142857144,
+   "base": 5,
+   "decimal": 0.004285714285714285,
+   "faits": 599,
+   "subis": 642,
+   "moy": 0.9330218068535826
+  },
+  {
+   "rank": 37,
+   "name": "PERRIN ERIC",
+   "points": 5.0042857142857144,
+   "base": 5,
+   "decimal": 0.004285714285714285,
+   "faits": 564,
+   "subis": 648,
+   "moy": 0.8703703703703703
+  },
+  {
+   "rank": 38,
+   "name": "BAILLY NICOLAS",
+   "points": 5.003333333333333,
+   "base": 5,
+   "decimal": 0.003333333333333333,
+   "faits": 538,
+   "subis": 494,
+   "moy": 1.0890688259109311
+  },
+  {
+   "rank": 39,
+   "name": "SAILLANT PHILIPPE",
+   "points": 5.003333333333333,
+   "base": 5,
+   "decimal": 0.003333333333333333,
+   "faits": 498,
+   "subis": 508,
+   "moy": 0.9803149606299213
+  },
+  {
+   "rank": 40,
+   "name": "BORNEQUE FABRICE",
+   "points": 5.003333333333333,
+   "base": 5,
+   "decimal": 0.003333333333333333,
+   "faits": 510,
+   "subis": 521,
+   "moy": 0.9788867562380038
+  },
+  {
+   "rank": 41,
+   "name": "GOLDMANN THIERRY",
+   "points": 4.005,
+   "base": 4,
+   "decimal": 0.005,
+   "faits": 511,
+   "subis": 555,
+   "moy": 0.9207207207207208
+  },
+  {
+   "rank": 42,
+   "name": "CUNIN MICKAEL",
+   "points": 4.0042857142857144,
+   "base": 4,
+   "decimal": 0.004285714285714285,
+   "faits": 584,
+   "subis": 635,
+   "moy": 0.9196850393700787
+  },
+  {
+   "rank": 43,
+   "name": "LEMENAGER PHILIPPE",
+   "points": 4.003333333333333,
+   "base": 4,
+   "decimal": 0.003333333333333333,
+   "faits": 489,
+   "subis": 491,
+   "moy": 0.9959266802443992
+  },
+  {
+   "rank": 44,
+   "name": "GODARD ALAIN",
+   "points": 4.003333333333333,
+   "base": 4,
+   "decimal": 0.003333333333333333,
+   "faits": 470,
+   "subis": 500,
+   "moy": 0.94
+  },
+  {
+   "rank": 45,
+   "name": "FLORENT JEAN FRANCOIS",
+   "points": 4.003333333333333,
+   "base": 4,
+   "decimal": 0.003333333333333333,
+   "faits": 504,
+   "subis": 551,
+   "moy": 0.9147005444646098
+  },
+  {
+   "rank": 46,
+   "name": "MONVILLE GUILLAUME",
+   "points": 4.003333333333333,
+   "base": 4,
+   "decimal": 0.003333333333333333,
+   "faits": 456,
+   "subis": 519,
+   "moy": 0.8786127167630058
+  },
+  {
+   "rank": 47,
+   "name": "SAINT GEORGES CLAUDE",
+   "points": 4.002857142857143,
+   "base": 4,
+   "decimal": 0.002857142857142857,
+   "faits": 580,
+   "subis": 594,
+   "moy": 0.9764309764309764
+  },
+  {
+   "rank": 48,
+   "name": "DUGAY CLEMENT",
+   "points": 4.001666666666667,
+   "base": 4,
+   "decimal": 0.0016666666666666666,
+   "faits": 503,
+   "subis": 556,
+   "moy": 0.9046762589928058
+  },
+  {
+   "rank": 49,
+   "name": "VASSEUR GERALD",
+   "points": 3.0033333333333334,
+   "base": 3,
+   "decimal": 0.003333333333333333,
+   "faits": 245,
+   "subis": 273,
+   "moy": 0.8974358974358975
+  },
+  {
+   "rank": 50,
+   "name": "DESMETTRE BRUNO",
+   "points": 2.0033333333333334,
+   "base": 2,
+   "decimal": 0.003333333333333333,
+   "faits": 271,
+   "subis": 289,
+   "moy": 0.9377162629757786
+  },
+  {
+   "rank": 51,
+   "name": "LALUC DIDIER",
+   "points": 2.0033333333333334,
+   "base": 2,
+   "decimal": 0.003333333333333333,
+   "faits": 261,
+   "subis": 290,
+   "moy": 0.9
+  },
+  {
+   "rank": 52,
+   "name": "BARDET CHRISTOPHE",
+   "points": 2.0033333333333334,
+   "base": 2,
+   "decimal": 0.003333333333333333,
+   "faits": 243,
+   "subis": 280,
+   "moy": 0.8678571428571429
+  },
+  {
+   "rank": 53,
+   "name": "NAHIRNYJ NICOLAS",
+   "points": 2.0033333333333334,
+   "base": 2,
+   "decimal": 0.003333333333333333,
+   "faits": 233,
+   "subis": 274,
+   "moy": 0.8503649635036497
+  },
+  {
+   "rank": 54,
+   "name": "MARECHAL DOMINGO",
+   "points": 2.0033333333333334,
+   "base": 2,
+   "decimal": 0.003333333333333333,
+   "faits": 236,
+   "subis": 289,
+   "moy": 0.8166089965397924
+  },
+  {
+   "rank": 55,
+   "name": "FRANCHITTI GIANNI",
+   "points": 2.0033333333333334,
+   "base": 2,
+   "decimal": 0.003333333333333333,
+   "faits": 230,
+   "subis": 290,
+   "moy": 0.7931034482758621
+  },
+  {
+   "rank": 56,
+   "name": "BUTTI EMILIE",
+   "points": 2.0033333333333334,
+   "base": 2,
+   "decimal": 0.003333333333333333,
+   "faits": 217,
+   "subis": 297,
+   "moy": 0.7306397306397306
+  },
+  {
+   "rank": 57,
+   "name": "ROJAN ALEXIS",
+   "points": 2.0033333333333334,
+   "base": 2,
+   "decimal": 0.003333333333333333,
+   "faits": 200,
+   "subis": 288,
+   "moy": 0.6944444444444444
+  },
+  {
+   "rank": 58,
+   "name": "JOASEM DANIEL",
+   "points": 2.0033333333333334,
+   "base": 2,
+   "decimal": 0.003333333333333333,
+   "faits": 180,
+   "subis": 290,
+   "moy": 0.6206896551724138
+  },
+  {
+   "rank": 59,
+   "name": "EVENOU MARIE ANTOINETTE",
+   "points": 2.0033333333333334,
+   "base": 2,
+   "decimal": 0.003333333333333333,
+   "faits": 183,
+   "subis": 299,
+   "moy": 0.6120401337792643
+  },
+  {
+   "rank": 60,
+   "name": "GOUTALOY SYLVAIN",
+   "points": 1.0033333333333334,
+   "base": 1,
+   "decimal": 0.003333333333333333,
+   "faits": 275,
+   "subis": 263,
+   "moy": 1.0456273764258555
+  },
+  {
+   "rank": 61,
+   "name": "VILLIERS BERNARD",
+   "points": 1.0033333333333334,
+   "base": 1,
+   "decimal": 0.003333333333333333,
+   "faits": 237,
+   "subis": 268,
+   "moy": 0.8843283582089553
+  },
+  {
+   "rank": 62,
+   "name": "FOURNEYRON RICHARD",
+   "points": 1.0033333333333334,
+   "base": 1,
+   "decimal": 0.003333333333333333,
+   "faits": 253,
+   "subis": 287,
+   "moy": 0.8815331010452961
+  },
+  {
+   "rank": 63,
+   "name": "ANSEL PHILIPPE",
+   "points": 1.0033333333333334,
+   "base": 1,
+   "decimal": 0.003333333333333333,
+   "faits": 225,
+   "subis": 283,
+   "moy": 0.7950530035335689
+  },
+  {
+   "rank": 64,
+   "name": "PARENT JEAN RENE",
+   "points": 1.0033333333333334,
+   "base": 1,
+   "decimal": 0.003333333333333333,
+   "faits": 225,
+   "subis": 289,
+   "moy": 0.7785467128027682
+  },
+  {
+   "rank": 65,
+   "name": "DELORME CHRISTOPHE",
+   "points": 1.0033333333333334,
+   "base": 1,
+   "decimal": 0.003333333333333333,
+   "faits": 178,
+   "subis": 260,
+   "moy": 0.6846153846153846
+  },
+  {
+   "rank": 66,
+   "name": "LEBOEUF SYLVAIN",
+   "points": 1,
+   "base": 1,
+   "decimal": 0,
+   "faits": 227,
+   "subis": 300,
+   "moy": 0.7566666666666667
+  },
+  {
+   "rank": 67,
+   "name": "BOLCAIN FRANCOIS XAVIER",
+   "points": 1,
+   "base": 1,
+   "decimal": 0,
+   "faits": 222,
+   "subis": 300,
+   "moy": 0.74
+  },
+  {
+   "rank": 68,
+   "name": "REYNAERT PIERRE",
+   "points": 1,
+   "base": 1,
+   "decimal": 0,
+   "faits": 220,
+   "subis": 300,
+   "moy": 0.7333333333333333
+  },
+  {
+   "rank": 69,
+   "name": "LABLANCHE GERARD",
+   "points": 1,
+   "base": 1,
+   "decimal": 0,
+   "faits": 216,
+   "subis": 300,
+   "moy": 0.72
+  },
+  {
+   "rank": 70,
+   "name": "DEREUDDRE DOMINIQUE",
+   "points": 1,
+   "base": 1,
+   "decimal": 0,
+   "faits": 211,
+   "subis": 300,
+   "moy": 0.7033333333333334
+  },
+  {
+   "rank": 71,
+   "name": "GRENINGER PATRICK",
+   "points": 1,
+   "base": 1,
+   "decimal": 0,
+   "faits": 209,
+   "subis": 300,
+   "moy": 0.6966666666666667
+  },
+  {
+   "rank": 72,
+   "name": "TIRITILLI ALBERTO",
+   "points": 1,
+   "base": 1,
+   "decimal": 0,
+   "faits": 171,
+   "subis": 300,
+   "moy": 0.57
+  },
+  {
+   "rank": 73,
+   "name": "BAUDRY ALAIN",
+   "points": 1,
+   "base": 1,
+   "decimal": 0,
+   "faits": 155,
+   "subis": 300,
+   "moy": 0.5166666666666667
+  },
+  {
+   "rank": 74,
+   "name": "DRUEZ EMILIE",
+   "points": 1,
+   "base": 1,
+   "decimal": 0,
+   "faits": 128,
+   "subis": 300,
+   "moy": 0.4266666666666667
+  },
+  {
+   "rank": 75,
+   "name": "KERCRET GENEVIEVE",
+   "points": 1,
+   "base": 1,
+   "decimal": 0,
+   "faits": 120,
+   "subis": 300,
+   "moy": 0.4
+  },
+  {
+   "rank": 76,
+   "name": "MICHELOTTI FRANCESCO",
+   "points": 0,
+   "base": 1,
+   "decimal": 0,
    "faits": 216,
    "subis": 300,
    "moy": 0.72

@@ -185,6 +185,7 @@ export function closeStage(
       name: a.name,
       club: a.club,
       junior: junior.has(a.licence),
+      scoreless: a.abandon && a.points === 0,
     })),
   );
   const closure: StageClosure = {

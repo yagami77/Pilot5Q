@@ -2,16 +2,16 @@
  * `RANKING.json` : le classement glissant tel que l'application mobile 5 Quilles le lit
  * (aujourd'hui via `getRANKING.php`, qui sert le fichier déposé par le responsable national).
  *
- * Format lu par l'application (`mobile/src/lib/rankingLive.ts`, types `ApiRanking`,
- * `ApiJoueur`, `ApiTn`) :
+ * Format du fichier réel transmis par le responsable national le 11 novembre 2026 (« après TN2
+ * 2026-2027 », copie dans `test/fixtures/RANKING-apres-tn2-2026-2027.json`) et lu par
+ * l'application (`mobile/src/lib/rankingLive.ts`, types `ApiRanking`, `ApiJoueur`, `ApiTn`) :
  * - `ranking` : libellé historique, « après TN2 2026-2027 » (l'application y lit le numéro du
  *   TN et la saison quand `saison` et `type` manquent) ;
- * - `saison` : « 2026-2027 » ; `type` : « Début », « Après TN2 » ou « Final » ;
+ * - `saison` : « 2026-2027 » ; `type` : « TN2 » (le numéro du dernier TN de la fenêtre) ;
  * - `joueurs` : dans l'ordre du classement (le rang est l'indice + 1), chacun avec `nom`
- *   (« NOM PRENOM » en majuscules : l'application retrouve club et licence par le nom),
- *   `points` (total avec la décimale de départage) et `TNs`, les 5 TN de la fenêtre du plus
+ *   (« NOM PRENOM » en majuscules), `licence`, `points` (total avec la décimale de départage) et `TNs`, les 5 TN de la fenêtre du plus
  *   ancien au plus récent : `nom` « TN 3 2025-2026 », `points` le résultat du joueur, ou la
- *   chaîne « - » s'il n'a pas joué ce TN.
+ *   chaîne « - » s'il n'a pas joué ce TN (un abandon vaut 0, pas « - »).
  *
  * Les nombres sont écrits avec 15 chiffres significatifs, comme dans les fichiers servis
  * aujourd'hui (« 320.082857142857 »), sans bruit de virgule flottante.
@@ -28,6 +28,7 @@ export interface AppRankingTn {
 
 export interface AppRankingPlayer {
   nom: string;
+  licence: string;
   points: number;
   TNs: AppRankingTn[];
 }
@@ -62,11 +63,12 @@ export function appRanking(rows: RankingRow[], last: StageRef): AppRanking {
   return {
     ranking: `après TN${last.tn} ${last.season}`,
     saison: last.season,
-    type: `Après TN${last.tn}`,
+    type: `TN${last.tn}`,
     joueurs: [...rows]
       .sort((a, b) => a.position - b.position)
       .map((r) => ({
         nom: r.name,
+        licence: r.licence,
         points: excelNumber(r.pts),
         TNs: stages.map((s) => {
           const cell = r.window.find((w) => w.season === s.season && w.tn === s.tn);

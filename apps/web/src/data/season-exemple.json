@@ -1,12 +1,12 @@
 {
- "_note": "Saison d'exemple (réforme 2026-2027) : calendrier réel (villes, dates, billards), base des clubs et base des joueurs réelles transmises par le responsable national (6 novembre 2026), classement glissant reconstitué avant le TN 2 et classement attendu après le TN 2 (source : classeur de référence du responsable national).",
+ "_note": "Saison d'exemple (réforme 2026-2027) : calendrier réel (villes, dates, billards), base des clubs (avec adresses) et base des joueurs réelles, remises d'équerre par le responsable national le 11 novembre 2026 (`posThis` = POS_ACTUELLE, place au classement en cours ; `posLast` = POS_PASSEE, place à l'issue du dernier TN joué ; licences alignées sur le classement), classement glissant reconstitué avant le TN 2 et classement attendu après le TN 2 (source : classeur de référence du responsable national, identique au RANKING.json publié).",
  "season": "2026-2027",
  "clubs": [
   {
    "id": "club-1002",
    "name": "B.C 1935 STRASBOURG-SCHILTIGHEIM",
    "ffbNumber": "01002",
-   "address": "",
+   "address": "CENTRE NAUTIQUE RUE DU TURENNE BP 80150",
    "postcode": "67300",
    "city": "Schiltigheim",
    "phone": "03 88 33 60 06",
@@ -20,7 +20,7 @@
    "id": "club-1004",
    "name": "B.C. BISCHHEIM",
    "ffbNumber": "01004",
-   "address": "",
+   "address": "11 rue du Héron",
    "postcode": "67300",
    "city": "Schiltigheim",
    "phone": "09 52 12 41 07",
@@ -34,7 +34,7 @@
    "id": "club-1006",
    "name": "AMICALE DE BILLARD ECKBOLSHEIM",
    "ffbNumber": "01006",
-   "address": "",
+   "address": "5 RUE DU GENERAL LECLERC",
    "postcode": "67201",
    "city": "Eckbolsheim",
    "phone": "03 88 78 83 06",
@@ -48,7 +48,7 @@
    "id": "club-1010",
    "name": "B.C. LINGOLSHEIM",
    "ffbNumber": "01010",
-   "address": "",
+   "address": "GYMNASE DES VOSGES 1 RUE DES TULIPES",
    "postcode": "67380",
    "city": "Lingolsheim",
    "phone": "03 88 77 00 07",
@@ -62,7 +62,7 @@
    "id": "club-1016",
    "name": "B.C. HAGUENAU",
    "ffbNumber": "01016",
-   "address": "",
+   "address": "CLUB HOUSE BELLEVUE 5 ROUTE DE WINTERSHOUSE",
    "postcode": "67500",
    "city": "Haguenau",
    "phone": "03 88 06 14 06",
@@ -76,7 +76,7 @@
    "id": "club-1035",
    "name": "B.C. 60 COCOBEN",
    "ffbNumber": "01035",
-   "address": "",
+   "address": "33 RUE DE LA DIGUE",
    "postcode": "67230",
    "city": "Benfeld",
    "phone": "03 88 74 05 03",
@@ -90,7 +90,7 @@
    "id": "club-1041",
    "name": "COLMAR BILLARD CLUB 71",
    "ffbNumber": "01041",
-   "address": "",
+   "address": "STADE DE L ORANGERIE 4 ALLEE DE L ORANGERIE",
    "postcode": "68000",
    "city": "Colmar",
    "phone": "03 89 41 69 02",
@@ -104,7 +104,7 @@
    "id": "club-2003",
    "name": "CEP BILLARD OMNISPORT LORIENT",
    "ffbNumber": "02003",
-   "address": "",
+   "address": "67 RUE DUGUAY TROUIN",
    "postcode": "56100",
    "city": "Lorient",
    "phone": "02 97 84 11 00",
@@ -118,7 +118,7 @@
    "id": "club-2007",
    "name": "ACADEMIE BRESTOISE DE BILLARD",
    "ffbNumber": "02007",
-   "address": "",
+   "address": "11 BOULEVARD LEON BLUM",
    "postcode": "29200",
    "city": "Brest",
    "phone": "09 81 12 99 01",
@@ -132,7 +132,7 @@
    "id": "club-2009",
    "name": "ASPTT LANNION",
    "ffbNumber": "02009",
-   "address": "",
+   "address": "SECTION BILLARD RUE DE BROGLIE",
    "postcode": "22300",
    "city": "Lannion",
    "phone": "07 66 71 28 00",
@@ -146,7 +146,7 @@
    "id": "club-2012",
    "name": "BILLARD CLUB DU CAP",
    "ffbNumber": "02012",
-   "address": "",
+   "address": "SALLE CLAUDE JEANNE 54 RUE BROSSELETTE",
    "postcode": "29770",
    "city": "Plogoff",
    "phone": "02 98 70 65 00",
@@ -160,7 +160,7 @@
    "id": "club-2070",
    "name": "DOUARNENEZ SPORT BILLARD",
    "ffbNumber": "02070",
-   "address": "",
+   "address": "SALLE JULES VERNE 2 RUE JULES VERNE",
    "postcode": "29100",
    "city": "Douarnenez",
    "phone": "02 98 92 91 04",
@@ -174,7 +174,7 @@
    "id": "club-3008",
    "name": "BILLARD CLUB VICHY",
    "ffbNumber": "03008",
-   "address": "",
+   "address": "LE CARLTON 28 RUE DU PDT WILSON",
    "postcode": "03200",
    "city": "Vichy",
    "phone": "04 70 97 47 02",
@@ -188,7 +188,7 @@
    "id": "club-4007",
    "name": "ACADEMIE BILLARD CESTAS",
    "ffbNumber": "04007",
-   "address": "",
+   "address": "11 PLACE DU SOUVENIR",
    "postcode": "33610",
    "city": "Cestas",
    "phone": "05 57 83 54 06",
@@ -202,7 +202,7 @@
    "id": "club-4008",
    "name": "BILLARD CLUB ANDERNOSIEN",
    "ffbNumber": "04008",
-   "address": "",
+   "address": "ESPLANADE DU BROUSTIC",
    "postcode": "33510",
    "city": "Andernos-les-Bains",
    "phone": "05 56 82 14 04",
@@ -216,7 +216,7 @@
    "id": "club-4013",
    "name": "BILLARD CLUB ARCACHONNAIS",
    "ffbNumber": "04013",
-   "address": "",
+   "address": "2 BIS ALLEE STORA",
    "postcode": "33120",
    "city": "Arcachon",
    "phone": "05 56 83 70 03",
@@ -230,7 +230,7 @@
    "id": "club-4018",
    "name": "BILLARD CLUB AGENAIS",
    "ffbNumber": "04018",
-   "address": "",
+   "address": "3, rue du Jourdain",
    "postcode": "47000",
    "city": "Agen",
    "phone": "05 53 47 55 03",
@@ -244,7 +244,7 @@
    "id": "club-4020",
    "name": "ACADEMIE BILLARD DE PAU",
    "ffbNumber": "04020",
-   "address": "",
+   "address": "PALAIS des CONGRÈS ALLEE PAUL VALERY",
    "postcode": "64000",
    "city": "Pau",
    "phone": "05 59 27 07 00",
@@ -258,7 +258,7 @@
    "id": "club-4038",
    "name": "BILLARD CLUB GRADIGNANAIS",
    "ffbNumber": "04038",
-   "address": "",
+   "address": "PARC DE LA TANNERIE 139 / 141 RUE CROIX DE MONJOUS",
    "postcode": "33170",
    "city": "Gradignan",
    "phone": "05 56 89 89 07",
@@ -272,7 +272,7 @@
    "id": "club-5032",
    "name": "ARCIS BILLARD CLUB",
    "ffbNumber": "05032",
-   "address": "",
+   "address": "ESPACE HENRI DUNANT",
    "postcode": "10700",
    "city": "Arcis-sur-Aube",
    "phone": "03 51 32 91 07",
@@ -286,7 +286,7 @@
    "id": "club-5042",
    "name": "ACAD.CHALONNAISE DE BILLARD",
    "ffbNumber": "05042",
-   "address": "",
+   "address": "COMPLEXE GERARD PHILIPPE 19 AVENUE DU GENERAL SARRAIL",
    "postcode": "51038",
    "city": "Chalons-en-Champagne",
    "phone": "03 26 64 28 00",
@@ -300,7 +300,7 @@
    "id": "club-5043",
    "name": "ACAD. TAPIS VERT DE REIMS",
    "ffbNumber": "05043",
-   "address": "",
+   "address": "25 RUE DU JARD",
    "postcode": "51100",
    "city": "Reims",
    "phone": "03 26 40 00 02",
@@ -314,7 +314,7 @@
    "id": "club-8001",
    "name": "BILLARD CLUB AUDINCOURTOIS",
    "ffbNumber": "08001",
-   "address": "",
+   "address": "4 RUE AIME CESAIRE",
    "postcode": "25400",
    "city": "Audincourt",
    "phone": "06 63 89 52 00",
@@ -328,7 +328,7 @@
    "id": "club-8007",
    "name": "BILLARD CLUB LEDONIEN",
    "ffbNumber": "08007",
-   "address": "",
+   "address": "25 rue Calmette Montmorot",
    "postcode": "39570",
    "city": "Montmorot",
    "phone": "03 84 24 41 06",
@@ -342,7 +342,7 @@
    "id": "club-9007",
    "name": "BILLARD BOIS COLOMBES",
    "ffbNumber": "09007",
-   "address": "",
+   "address": "26 RUE D ESTIENNE D ORVES",
    "postcode": "92270",
    "city": "Bois Colombes",
    "phone": "09 52 18 23 06",
@@ -356,7 +356,7 @@
    "id": "club-9009",
    "name": "CMO MORANGIS",
    "ffbNumber": "09009",
-   "address": "",
+   "address": "CMOM SECTION BILLARD 3 RUE COLETTE BESSON",
    "postcode": "91420",
    "city": "Morangis",
    "phone": "01 69 34 00 04",
@@ -370,7 +370,7 @@
    "id": "club-9010",
    "name": "ACADEMIE DE BILLARD D ARGENTEUIL",
    "ffbNumber": "09010",
-   "address": "",
+   "address": "SALLE ROMAIN ROLLAND 26BIS BOULEVARD DE LA RESISTANCE",
    "postcode": "95100",
    "city": "Argenteuil",
    "phone": "01 39 82 86 09",
@@ -384,7 +384,7 @@
    "id": "club-9017",
    "name": "A. DE BILLARD COURBEVOIE-LA DEFENSE",
    "ffbNumber": "09017",
-   "address": "",
+   "address": "4 ALLEE DE CHAMPAGNE",
    "postcode": "92400",
    "city": "Courbevoie",
    "phone": "01 47 88 83 05",
@@ -398,7 +398,7 @@
    "id": "club-9024",
    "name": "ASS. BILLARD AMATEUR DE SAINT MAUR",
    "ffbNumber": "09024",
-   "address": "",
+   "address": "34 AV DE LA REPUBLIQUE",
    "postcode": "94100",
    "city": "Saint-Maur-des-Fosses",
    "phone": "01 48 83 59 04",
@@ -412,7 +412,7 @@
    "id": "club-9025",
    "name": "ASS.SPORT CORBEIL ESSONNES",
    "ffbNumber": "09025",
-   "address": "",
+   "address": "SECTION BILLARD 111 RUE FERAY",
    "postcode": "91100",
    "city": "Corbeil Essonnes",
    "phone": "07 65 54 20 04",
@@ -426,7 +426,7 @@
    "id": "club-9028",
    "name": "M. J. C. PROVINS",
    "ffbNumber": "09028",
-   "address": "",
+   "address": "SECTION BILLARD GYMNASE RAYMOND VITTE",
    "postcode": "77160",
    "city": "Provins",
    "phone": "01 60 52 05 09",
@@ -440,7 +440,7 @@
    "id": "club-9030",
    "name": "BILLARD CLUB VICINOIS",
    "ffbNumber": "09030",
-   "address": "",
+   "address": "6 RUE CLAUDE DEBUSSY",
    "postcode": "78960",
    "city": "Voisins-le-Bretonneux",
    "phone": "09 52 38 37 00",
@@ -454,7 +454,7 @@
    "id": "club-9031",
    "name": "ACADEMIE DE BILLARD DE MAISONS ALFORT",
    "ffbNumber": "09031",
-   "address": "",
+   "address": "9 RUE DE MARNE",
    "postcode": "94700",
    "city": "Maisons Alfort",
    "phone": "01 42 07 45 04",
@@ -468,7 +468,7 @@
    "id": "club-9032",
    "name": "BILLARD CLUB LA GARENNE CLAMART",
    "ffbNumber": "09032",
-   "address": "",
+   "address": "CENTRE ANDRE CHARRE 10 ROUTE DE LA GARENNE",
    "postcode": "92140",
    "city": "Clamart",
    "phone": "01 46 32 43 08",
@@ -482,7 +482,7 @@
    "id": "club-9033",
    "name": "ACADEMIE BILLARD CLUB DE GARGES",
    "ffbNumber": "09033",
-   "address": "",
+   "address": "CENTRE SPORTIF JEAN JAURES 21 RUE RENE BLOUET",
    "postcode": "95140",
    "city": "Garges-les-Gonesse",
    "phone": "01 39 93 03 06",
@@ -496,7 +496,7 @@
    "id": "club-9040",
    "name": "BILLARD CLUB DE CHAMPAGNE",
    "ffbNumber": "09040",
-   "address": "",
+   "address": "SALLE ANGELO DI PALMA BATIMENT COMMUNAL PLACE ROLAND DORGELES",
    "postcode": "77430",
    "city": "Champagne-sur-Seine",
    "phone": "01 64 23 09 00",
@@ -510,7 +510,7 @@
    "id": "club-9045",
    "name": "BILLARD CLUB DU KREMLIN BCK",
    "ffbNumber": "09045",
-   "address": "",
+   "address": "C/O NEW BILLARD 23 25 AVENUE DE FONTAINEBLEAU",
    "postcode": "94270",
    "city": "Le Kremlin Bicetre",
    "phone": "01 46 72 51 01",
@@ -524,7 +524,7 @@
    "id": "club-9059",
    "name": "A. B. OZOIR LA FERRIERE",
    "ffbNumber": "09059",
-   "address": "",
+   "address": "2 RUE DE LA FERME DU PRESBYTERE",
    "postcode": "77330",
    "city": "Ozoir-la-Ferriere",
    "phone": "01 60 62 46 09",
@@ -538,7 +538,7 @@
    "id": "club-9060",
    "name": "BILLARD CLUB DE LIVRY GARGAN",
    "ffbNumber": "09060",
-   "address": "",
+   "address": "42 ALLEE JOSEPH NOIZE",
    "postcode": "93190",
    "city": "Livry Gargan",
    "phone": "01 43 32 89 09",
@@ -552,7 +552,7 @@
    "id": "club-9061",
    "name": "ACADEMIE DE BILLARD DE MARINES",
    "ffbNumber": "09061",
-   "address": "",
+   "address": "23 RUE DU BUISSON SAINT REMY",
    "postcode": "95640",
    "city": "Marines",
    "phone": "01 30 39 93 07",
@@ -566,7 +566,7 @@
    "id": "club-9068",
    "name": "S.C.M.C BILLARD CLUB",
    "ffbNumber": "09068",
-   "address": "",
+   "address": "2 AV SAINT-EXUPERY ESPACE MAISON BLANCHE",
    "postcode": "92320",
    "city": "Chatillon",
    "phone": "09 53 05 47 00",
@@ -580,7 +580,7 @@
    "id": "club-9069",
    "name": "BILLARD CLUB FRANCONVILLE",
    "ffbNumber": "09069",
-   "address": "",
+   "address": "SALLE ROGER BAUMEYEUR 25 Avenue des marais CSL",
    "postcode": "95130",
    "city": "Franconville",
    "phone": "01 30 72 90 07",
@@ -594,7 +594,7 @@
    "id": "club-9088",
    "name": "BILLARD CLUB CLICHOIS",
    "ffbNumber": "09088",
-   "address": "",
+   "address": "8 RUE BONNET",
    "postcode": "92110",
    "city": "Clichy-la-Garenne",
    "phone": "06 84 64 13 07",
@@ -608,7 +608,7 @@
    "id": "club-9095",
    "name": "A.M.B. ARPAJON",
    "ffbNumber": "09095",
-   "address": "",
+   "address": "ESPACE CONCORDE 18 BD ABEL CORNATON",
    "postcode": "91290",
    "city": "Arpajon",
    "phone": "06 13 16 82 09",
@@ -622,7 +622,7 @@
    "id": "club-9105",
    "name": "BILLARD CLUB DE NANDY",
    "ffbNumber": "09105",
-   "address": "",
+   "address": "MAISON DES ARTS DE LA DANSE DU BILLARD 195 ALLEE DES SORBIERS CHEMIN D ARVIGNY",
    "postcode": "77176",
    "city": "Nandy",
    "phone": "09 82 25 92 05",
@@ -636,7 +636,7 @@
    "id": "club-10001",
    "name": "BILLARD CLUB NIMOIS",
    "ffbNumber": "10001",
-   "address": "",
+   "address": "ESPACE CREATION RUE DES AMOUREUX",
    "postcode": "30000",
    "city": "Nimes",
    "phone": "04 66 29 92 05",
@@ -650,7 +650,7 @@
    "id": "club-10002",
    "name": "BILLARD CLUB LUNELLOIS",
    "ffbNumber": "10002",
-   "address": "",
+   "address": "CASERNE VAUBAN 207 AV DU GENERAL DE GAULLE",
    "postcode": "34400",
    "city": "Lunel",
    "phone": "04 34 22 60 06",
@@ -664,7 +664,7 @@
    "id": "club-10005",
    "name": "BILLARD CLUB PISCENOIS",
    "ffbNumber": "10005",
-   "address": "",
+   "address": "ESPACE ZEVORT RUE DE MASSILLON BP 73",
    "postcode": "34120",
    "city": "Pezenas",
    "phone": "04 67 98 34 01",
@@ -678,7 +678,7 @@
    "id": "club-10008",
    "name": "BILLARD CLUB CATALAN",
    "ffbNumber": "10008",
-   "address": "",
+   "address": "4 COUR DES FAUVETTES",
    "postcode": "66330",
    "city": "Cabestany",
    "phone": "04 68 51 03 04",
@@ -692,7 +692,7 @@
    "id": "club-10023",
    "name": "BEZIERS BILLARD CLUB",
    "ffbNumber": "10023",
-   "address": "",
+   "address": "Ecole Jean Jaures Entrée par Rue des Félibres",
    "postcode": "34500",
    "city": "Beziers",
    "phone": "04 67 76 10 03",
@@ -706,7 +706,7 @@
    "id": "club-11003",
    "name": "BILLARD CLUB BAN SAINT MARTIN",
    "ffbNumber": "11003",
-   "address": "",
+   "address": "CENTRE SOCIO CULTUREL 3 AVENUE HENRI II",
    "postcode": "57050",
    "city": "Le Ban St Martin",
    "phone": "",
@@ -720,7 +720,7 @@
    "id": "club-11005",
    "name": "E.S. HAGONDANGE",
    "ffbNumber": "11005",
-   "address": "",
+   "address": "PALAIS DES SPORTS Rue Hoffmann",
    "postcode": "57300",
    "city": "Hagondange",
    "phone": "",
@@ -734,7 +734,7 @@
    "id": "club-11022",
    "name": "ACADEMIE DE BILLARD SAINT-MAX / NANCY",
    "ffbNumber": "11022",
-   "address": "",
+   "address": "ESPACE DU HAUT RIVAGE",
    "postcode": "54130",
    "city": "Saint-Max",
    "phone": "",
@@ -748,7 +748,7 @@
    "id": "club-11023",
    "name": "BILLARD CLUB NEUVES MAISONS",
    "ffbNumber": "11023",
-   "address": "",
+   "address": "SALLE DES SOCIETES IMPASSE ARISTIDE BRIAND",
    "postcode": "54230",
    "city": "Neuves Maisons",
    "phone": "03 83 47 50 06",
@@ -762,7 +762,7 @@
    "id": "club-11027",
    "name": "ASS. SPORT. LAXOVIENNE DE BILLARD",
    "ffbNumber": "11027",
-   "address": "",
+   "address": "C I L M 23 RUE DE LA MEUSE",
    "postcode": "54520",
    "city": "Laxou",
    "phone": "03 83 98 64 01",
@@ -770,13 +770,13 @@
    "lat": 48.69999289,
    "lng": 6.13142681,
    "big": 4,
-   "small": 4
+   "small": 5
   },
   {
    "id": "club-11029",
    "name": "BILLARD CLUB MUSSIPONTAIN",
    "ffbNumber": "11029",
-   "address": "",
+   "address": "CENTRE DES SPORTS BERNARD GUY 10 AVENUE GEORGES GUYNEMER",
    "postcode": "54700",
    "city": "Pont-a-Mousson",
    "phone": "03 83 82 83 04",
@@ -790,7 +790,7 @@
    "id": "club-11032",
    "name": "BILLARD CLUB HOMECOURT",
    "ffbNumber": "11032",
-   "address": "",
+   "address": "GROUPE JEAN JAURES 66 RUE PASTEUR",
    "postcode": "54310",
    "city": "Homecourt",
    "phone": "03 82 22 97 08",
@@ -804,7 +804,7 @@
    "id": "club-11034",
    "name": "BILLARD CLUB EPINAL",
    "ffbNumber": "11034",
-   "address": "",
+   "address": "SPINAFOX 7 rue du Colonel Démange",
    "postcode": "88190",
    "city": "Golbey",
    "phone": "03 29 64 10 00",
@@ -818,7 +818,7 @@
    "id": "club-11035",
    "name": "C.B. SARREGUEMINES",
    "ffbNumber": "11035",
-   "address": "",
+   "address": "19 RUE POINCARE",
    "postcode": "57200",
    "city": "Sarreguemines",
    "phone": "03 87 98 34 09",
@@ -832,7 +832,7 @@
    "id": "club-11037",
    "name": "C.B. PETITE ROSSELLE",
    "ffbNumber": "11037",
-   "address": "",
+   "address": "RUE A",
    "postcode": "57540",
    "city": "Petite Rosselle",
    "phone": "07 71 15 91 03",
@@ -846,7 +846,7 @@
    "id": "club-11048",
    "name": "ACADEMIE DE BILLARD DE ST DIZIER",
    "ffbNumber": "11048",
-   "address": "",
+   "address": "14 BIS RUE DE VERGY",
    "postcode": "52100",
    "city": "Saint-Dizier",
    "phone": "03 25 56 40 07",
@@ -860,7 +860,7 @@
    "id": "club-11050",
    "name": "BILLARD CLUB SAINT MIHIEL",
    "ffbNumber": "11050",
-   "address": "",
+   "address": "1 RUE DU PALAIS DE JUSTICE",
    "postcode": "55300",
    "city": "Saint-Mihiel",
    "phone": "",
@@ -874,7 +874,7 @@
    "id": "club-11067",
    "name": "BILLARD CLUB FLORANGE",
    "ffbNumber": "11067",
-   "address": "",
+   "address": "COMPLEXE DE BETANGE 16 RUE DE L'ETOILE",
    "postcode": "57190",
    "city": "Florange",
    "phone": "03 55 18 12 05",
@@ -888,7 +888,7 @@
    "id": "club-12003",
    "name": "CERCLE DES CHEFS D ATELIER",
    "ffbNumber": "12003",
-   "address": "",
+   "address": "33 BIS COURS DU GENERAL GIRAUD",
    "postcode": "69001",
    "city": "Lyon",
    "phone": "04 78 28 17 05",
@@ -902,7 +902,7 @@
    "id": "club-12004",
    "name": "BILLARD CLUB DE VILLEFRANCHE",
    "ffbNumber": "12004",
-   "address": "",
+   "address": "535 AVENUE ST EXUPERY",
    "postcode": "69400",
    "city": "Villefranche-sur-Saone",
    "phone": "04 74 62 82 09",
@@ -916,7 +916,7 @@
    "id": "club-12010",
    "name": "BILLARD CLUB PONTOIS",
    "ffbNumber": "12010",
-   "address": "",
+   "address": "1 RUE DU 8 MAI 1945",
    "postcode": "38230",
    "city": "Pont-de-Cheruy",
    "phone": "04 78 32 05 01",
@@ -930,7 +930,7 @@
    "id": "club-12016",
    "name": "ACADEMIE ANNECIENNE DE BILLARD",
    "ffbNumber": "12016",
-   "address": "",
+   "address": "35 BOULEVARD DU FIER",
    "postcode": "74000",
    "city": "Annecy",
    "phone": "04 50 57 48 06",
@@ -944,7 +944,7 @@
    "id": "club-12018",
    "name": "VALENCE BILLARD CLUB",
    "ffbNumber": "12018",
-   "address": "",
+   "address": "77 RUE DE L ISLE",
    "postcode": "26000",
    "city": "Valence",
    "phone": "04 75 56 04 03",
@@ -958,7 +958,7 @@
    "id": "club-12020",
    "name": "BILLARD CLUB DE GAILLARD",
    "ffbNumber": "12020",
-   "address": "",
+   "address": "24 RUE DE LA PAIX",
    "postcode": "74240",
    "city": "Gaillard",
    "phone": "09 52 65 83 07",
@@ -972,7 +972,7 @@
    "id": "club-12022",
    "name": "ACAD. DE BILLARD DE SAINT-ETIENNE",
    "ffbNumber": "12022",
-   "address": "",
+   "address": "MAISON DES ASSOCIATIONS 4 RUE ANDRE MALRAUX",
    "postcode": "42000",
    "city": "Saint-Etienne",
    "phone": "04 77 37 89 08",
@@ -986,7 +986,7 @@
    "id": "club-12031",
    "name": "BILLARD CLUB ROMANAIS PEAGEOIS",
    "ffbNumber": "12031",
-   "address": "",
+   "address": "32 RUE DELAY",
    "postcode": "26100",
    "city": "Romans-sur-Isere",
    "phone": "04 75 02 74 04",
@@ -1000,7 +1000,7 @@
    "id": "club-12035",
    "name": "ACADEMIE BILLARD OUEST LYONNAIS",
    "ffbNumber": "12035",
-   "address": "",
+   "address": "IMMEUBLE LE SEPTENTRION 27 CHEMIN DE VILLENEUVE",
    "postcode": "69130",
    "city": "Ecully",
    "phone": "04 78 33 19 01",
@@ -1014,7 +1014,7 @@
    "id": "club-12042",
    "name": "CLUB DE BILLARD MONTBRISONNAIS",
    "ffbNumber": "12042",
-   "address": "",
+   "address": "Espace des Associations 20, avenue Thermale",
    "postcode": "42600",
    "city": "Montbrison",
    "phone": "06 33 97 98 03",
@@ -1028,7 +1028,7 @@
    "id": "club-13107",
    "name": "AMICALE BILLARD CLUB DOUAI",
    "ffbNumber": "13107",
-   "address": "",
+   "address": "RUE D ARRAS COMPLEXE SPORTIF DE LA PORTE D ARRAS",
    "postcode": "59500",
    "city": "Douai",
    "phone": "09 77 37 32 08",
@@ -1042,7 +1042,7 @@
    "id": "club-13110",
    "name": "SPORT BILLARD CLUB ANNOEULLINOIS",
    "ffbNumber": "13110",
-   "address": "",
+   "address": "RUE MAURICE WATTRELOT",
    "postcode": "59112",
    "city": "Annoeullin",
    "phone": "03 20 86 67 05",
@@ -1056,7 +1056,7 @@
    "id": "club-13236",
    "name": "BILLARD FRANCAIS VILLENEUVE D ASCQ",
    "ffbNumber": "13236",
-   "address": "",
+   "address": "3 RUE JEAN VILAR QUARTIER HOTEL VILLE - MEDIATHEQUE",
    "postcode": "59650",
    "city": "Villeneuve-D'Ascq",
    "phone": "07 44 40 02 09",
@@ -1070,7 +1070,7 @@
    "id": "club-13240",
    "name": "B.C. DU CANON D OR",
    "ffbNumber": "13240",
-   "address": "",
+   "address": "RUE PIERRE DUPONT STADE LEO LAGRANGE SALLE ELISABETH DUPONT",
    "postcode": "59790",
    "city": "Ronchin",
    "phone": "09 81 67 92 09",
@@ -1084,7 +1084,7 @@
    "id": "club-13355",
    "name": "U.S GRAVELINOISE",
    "ffbNumber": "13355",
-   "address": "",
+   "address": "17 rue de la gare",
    "postcode": "59820",
    "city": "Gravelines",
    "phone": "09 53 45 50 00",
@@ -1098,7 +1098,7 @@
    "id": "club-13364",
    "name": "ACADEMIE CALAISIENNE DE BILLARD",
    "ffbNumber": "13364",
-   "address": "",
+   "address": "COMPLEXE SPORTIF CALYPSO RUE ROGER MARTIN DU GARD",
    "postcode": "62100",
    "city": "Calais",
    "phone": "03 21 19 43 04",
@@ -1112,7 +1112,7 @@
    "id": "club-13618",
    "name": "PASSION BILLARD CAMBRAI",
    "ffbNumber": "13618",
-   "address": "",
+   "address": "BASE DE LOISIRS LA CITADELLE RUE DE LA PAIX DE NIMEGUE",
    "postcode": "59400",
    "city": "Cambrai",
    "phone": "06 79 59 18 03",
@@ -1126,7 +1126,7 @@
    "id": "club-14002",
    "name": "BILLARD CLUB CORMELLOIS",
    "ffbNumber": "14002",
-   "address": "",
+   "address": "HALLE DES SPORTS RUE DE LA PAGNOLEE",
    "postcode": "14123",
    "city": "Cormelles-le-Royal",
    "phone": "09 82 41 13 05",
@@ -1140,7 +1140,7 @@
    "id": "club-14018",
    "name": "BILLARD CLUB SOTTEVILLAIS",
    "ffbNumber": "14018",
-   "address": "",
+   "address": "123 RUE PIERRE JEAN DE BERANGER",
    "postcode": "76300",
    "city": "Sotteville-les-Rouen",
    "phone": "09 64 44 13 07",
@@ -1154,7 +1154,7 @@
    "id": "club-14023",
    "name": "BILLARD CLUB OSSELIEN",
    "ffbNumber": "14023",
-   "address": "",
+   "address": "8 RUE DU MANOIR",
    "postcode": "76350",
    "city": "Oissel",
    "phone": "02 35 66 85 02",
@@ -1168,7 +1168,7 @@
    "id": "club-14025",
    "name": "ROUEN BILLARD CLUB",
    "ffbNumber": "14025",
-   "address": "",
+   "address": "Centre sportif de la Petite Bouverie 20, allée Pierre de Coubertin",
    "postcode": "76000",
    "city": "Rouen",
    "phone": "07 61 36 12 03",
@@ -1182,7 +1182,7 @@
    "id": "club-14029",
    "name": "CLUB ECOLE HAVRAIS DE BILLARD",
    "ffbNumber": "14029",
-   "address": "",
+   "address": "76 RUE DES BRIQUETIERS",
    "postcode": "76600",
    "city": "Le Havre",
    "phone": "02 35 24 40 08",
@@ -1196,7 +1196,7 @@
    "id": "club-14047",
    "name": "PATRONAGE LAIQUE ARGENTAN",
    "ffbNumber": "14047",
-   "address": "",
+   "address": "ECOLE PIERRE CURIE ROUTE DE UROU MAISON DES ASSOCIATIONS",
    "postcode": "61200",
    "city": "Argentan",
    "phone": "02 33 67 39 03",
@@ -1210,7 +1210,7 @@
    "id": "club-15002",
    "name": "C' CHARTRES BILLARD",
    "ffbNumber": "15002",
-   "address": "",
+   "address": "52 RUE DU GRAND FAUBOURG",
    "postcode": "28000",
    "city": "Chartres",
    "phone": "09 52 62 30 08",
@@ -1224,7 +1224,7 @@
    "id": "club-15003",
    "name": "ACADEMIE DROUAISE DE BILLARD",
    "ffbNumber": "15003",
-   "address": "",
+   "address": "3 PLACE EVESHAM",
    "postcode": "28100",
    "city": "Dreux",
    "phone": "02 37 42 44 02",
@@ -1238,7 +1238,7 @@
    "id": "club-15009",
    "name": "BILLARD CLUB ORLEANS",
    "ffbNumber": "15009",
-   "address": "",
+   "address": "99 Avenue de la Marne",
    "postcode": "45000",
    "city": "Orleans",
    "phone": "06 59 54 80 02",
@@ -1252,7 +1252,7 @@
    "id": "club-15030",
    "name": "BILLARD CLUB CHATEAUROUX",
    "ffbNumber": "15030",
-   "address": "",
+   "address": "6 RUE PIERRE GAULTIER",
    "postcode": "36000",
    "city": "Chateauroux",
    "phone": "",
@@ -1266,7 +1266,7 @@
    "id": "club-15036",
    "name": "A.B.C. FOURCHAMBAULT",
    "ffbNumber": "15036",
-   "address": "",
+   "address": "35 RUE LEOPLOLD LUCAS CENTRE SOCIAL",
    "postcode": "58600",
    "city": "Fourchambault",
    "phone": "03 86 38 87 04",
@@ -1280,7 +1280,7 @@
    "id": "club-15041",
    "name": "BILLARD CLUB ROMORANTINAIS",
    "ffbNumber": "15041",
-   "address": "",
+   "address": "28 AVENUE DE PARIS",
    "postcode": "41200",
    "city": "Romorantin",
    "phone": "02 54 76 31 04",
@@ -1294,7 +1294,7 @@
    "id": "club-15047",
    "name": "ACADEMIE BLESOISE DE BILLARD",
    "ffbNumber": "15047",
-   "address": "",
+   "address": "16 RUE ROLAND DORGELES",
    "postcode": "41000",
    "city": "Blois",
    "phone": "09 51 92 58 06",
@@ -1308,7 +1308,7 @@
    "id": "club-15060",
    "name": "BILLARD CLUB VAL D'AMBOISE",
    "ffbNumber": "15060",
-   "address": "",
+   "address": "ancien restaurant de l 'aquarium les hauts boeufs",
    "postcode": "37400",
    "city": "Lussault-sur-Loire",
    "phone": "02 47 57 11 01",
@@ -1322,7 +1322,7 @@
    "id": "club-15066",
    "name": "B.C. COLBERT SAINT PIERRE",
    "ffbNumber": "15066",
-   "address": "",
+   "address": "37 RUE PIERRE CURIE",
    "postcode": "37700",
    "city": "Saint-Pierre-des-Corps",
    "phone": "02 47 63 09 09",
@@ -1336,7 +1336,7 @@
    "id": "club-15071",
    "name": "BILLARD CLUB MONTLOUISIEN",
    "ffbNumber": "15071",
-   "address": "",
+   "address": "6 PASSAGE RABELAIS",
    "postcode": "37270",
    "city": "Montlouis-sur-Loire",
    "phone": "02 47 56 94 09",
@@ -1350,7 +1350,7 @@
    "id": "club-16002",
    "name": "BILLARD CLUB BAULOIS",
    "ffbNumber": "16002",
-   "address": "",
+   "address": "SALLE OMNISPORTS DES SALINES PLACE DES SALINES",
    "postcode": "44500",
    "city": "La Baule",
    "phone": "02 40 24 63 05",
@@ -1364,7 +1364,7 @@
    "id": "club-16005",
    "name": "NANTES BILLARD CLUB",
    "ffbNumber": "16005",
-   "address": "",
+   "address": "11 RUE DE PRINQUIAU",
    "postcode": "44100",
    "city": "Nantes",
    "phone": "02 40 46 66 04",
@@ -1378,7 +1378,7 @@
    "id": "club-16006",
    "name": "DON BOSCO BILLARD NANTES",
    "ffbNumber": "16006",
-   "address": "",
+   "address": "AMICALE DON BOSCO 25 CHEMIN DE BONNEVILLE",
    "postcode": "44300",
    "city": "Nantes",
    "phone": "02 28 23 57 02",
@@ -1392,7 +1392,7 @@
    "id": "club-16026",
    "name": "BILLARD CLUB CASTELORIEN",
    "ffbNumber": "16026",
-   "address": "",
+   "address": "21 RUE DES VERTOLINES ESPACE SAINT CÉCILE",
    "postcode": "72500",
    "city": "Montval-sur-Loir",
    "phone": "02 43 46 45 05",
@@ -1406,7 +1406,7 @@
    "id": "club-16028",
    "name": "ACADEMIE J.S. COULAINES",
    "ffbNumber": "16028",
-   "address": "",
+   "address": "ADMNISTRATIF :12 RUE DE PARIS 72190 COULAINES SALLE DE JEU : PLACE DE LA GIRONDE",
    "postcode": "72190",
    "city": "Coulaines",
    "phone": "02 43 17 11 07",
@@ -1420,7 +1420,7 @@
    "id": "club-16034",
    "name": "ECOLE DE BILLARD DU MANS",
    "ffbNumber": "16034",
-   "address": "",
+   "address": "6 BOULEVARD WINSTON CHURCHILL",
    "postcode": "72100",
    "city": "Le Mans",
    "phone": "02 43 86 98 01",
@@ -1434,7 +1434,7 @@
    "id": "club-17010",
    "name": "ACADEMIE DE BILLARD SAINT QUENTIN",
    "ffbNumber": "17010",
-   "address": "",
+   "address": "ESPACE HENRI MATISSE 3 RUE THEOPHILE GAUTIER",
    "postcode": "02100",
    "city": "Saint-Quentin",
    "phone": "03 23 65 31 03",
@@ -1448,7 +1448,7 @@
    "id": "club-17011",
    "name": "SOISSONS BILLARD CLUB",
    "ffbNumber": "17011",
-   "address": "",
+   "address": "ESPACE CLAUDE PARISOT AVENUE DU MAIL",
    "postcode": "02200",
    "city": "Soissons",
    "phone": "03 23 59 22 06",
@@ -1462,7 +1462,7 @@
    "id": "club-17020",
    "name": "ACADEMIE DE BILLARD DE TERGNIER",
    "ffbNumber": "17020",
-   "address": "",
+   "address": "1, RUE ROBERT CADEAU",
    "postcode": "02700",
    "city": "Tergnier",
    "phone": "03 23 37 08 03",
@@ -1476,7 +1476,7 @@
    "id": "club-17026",
    "name": "A S BEAUVAIS",
    "ffbNumber": "17026",
-   "address": "",
+   "address": "17 RUE DU PRE MARTINET",
    "postcode": "60000",
    "city": "Beauvais",
    "phone": "09 61 48 99 05",
@@ -1490,7 +1490,7 @@
    "id": "club-17035",
    "name": "BILLARD CLUB SAINT JUST EN CHAUSSEE",
    "ffbNumber": "17035",
-   "address": "",
+   "address": "9, Rue Brunehaut ZI Nord",
    "postcode": "60130",
    "city": "Saint-Just-en-Chaussee",
    "phone": "03 44 19 31 08",
@@ -1504,7 +1504,7 @@
    "id": "club-17036",
    "name": "BC SENLIS",
    "ffbNumber": "17036",
-   "address": "",
+   "address": "28 RUE DU MARECHAL FOCH",
    "postcode": "60300",
    "city": "Senlis",
    "phone": "03 44 60 18 00",
@@ -1518,7 +1518,7 @@
    "id": "club-17051",
    "name": "BILLARD CLUB RETRO ALBERTIN",
    "ffbNumber": "17051",
-   "address": "",
+   "address": "27 RUE DE CORBIE",
    "postcode": "80300",
    "city": "Albert",
    "phone": "03 22 74 58 06",
@@ -1532,7 +1532,7 @@
    "id": "club-17063",
    "name": "BILLARD CLUB MOREUIL",
    "ffbNumber": "17063",
-   "address": "",
+   "address": "23 TER RUE LEON BLUM",
    "postcode": "80110",
    "city": "Moreuil",
    "phone": "03 60 24 69 08",
@@ -1546,7 +1546,7 @@
    "id": "club-17064",
    "name": "SPORTING CLUB BILLARD ABBEVILLOIS",
    "ffbNumber": "17064",
-   "address": "",
+   "address": "COMPLEXE SPORTIF 133 AVENUE DU RIVAGE",
    "postcode": "80100",
    "city": "Abbeville",
    "phone": "03 22 31 74 00",
@@ -1560,7 +1560,7 @@
    "id": "club-18022",
    "name": "BILLARD CLUB ROCHELAIS",
    "ffbNumber": "18022",
-   "address": "",
+   "address": "55 RUE AMIRAL DUPERRE",
    "postcode": "17000",
    "city": "La Rochelle",
    "phone": "05 46 67 80 00",
@@ -1574,7 +1574,7 @@
    "id": "club-18029",
    "name": "BILLARD CLUB PICTAVE",
    "ffbNumber": "18029",
-   "address": "",
+   "address": "39BIS ROUTE DE LA CASSETTE",
    "postcode": "86000",
    "city": "Poitiers",
    "phone": "05 49 58 65 04",
@@ -1588,7 +1588,7 @@
    "id": "club-18048",
    "name": "BILLARD CLUB ANGOUMOISIN",
    "ffbNumber": "18048",
-   "address": "",
+   "address": "84 RUE MONTAUZIER",
    "postcode": "16000",
    "city": "Angouleme",
    "phone": "05 45 91 31 06",
@@ -1602,7 +1602,7 @@
    "id": "club-18050",
    "name": "BILLARD CLUB BAIGNOIS",
    "ffbNumber": "18050",
-   "address": "",
+   "address": "RUE BAPTISTE ROUSSY",
    "postcode": "16360",
    "city": "Baignes",
    "phone": "05 45 78 89 06",
@@ -1616,7 +1616,7 @@
    "id": "club-19002",
    "name": "SPORT AMAT.DE BILLARD MARSEILLAIS",
    "ffbNumber": "19002",
-   "address": "",
+   "address": "26 RUE PAVILLON",
    "postcode": "13001",
    "city": "Marseille",
    "phone": "",
@@ -1630,7 +1630,7 @@
    "id": "club-19009",
    "name": "CLUB BILLARD ISTREEN",
    "ffbNumber": "19009",
-   "address": "",
+   "address": "HALLE POLYVALENTE ALLEE DES ECHOPPES - PLACE RAOUX GPS : RUE DE L'EQUERRE",
    "postcode": "13800",
    "city": "Istres",
    "phone": "09 81 12 42 07",
@@ -1644,7 +1644,7 @@
    "id": "club-19012",
    "name": "SALON BILLARD CLUB",
    "ffbNumber": "19012",
-   "address": "",
+   "address": "CERCLE DES ARTS RUE DES FILEUSES DE SOIE",
    "postcode": "13300",
    "city": "Salon-de-Provence",
    "phone": "04 90 56 48 05",
@@ -1658,7 +1658,7 @@
    "id": "club-19014",
    "name": "BILLARD CLUB AVIGNONNAIS",
    "ffbNumber": "19014",
-   "address": "",
+   "address": "12 RUE BONAPARTE MAISON DU COMBATTANT",
    "postcode": "84000",
    "city": "Avignon",
    "phone": "04 90 89 34 08",
@@ -1672,7 +1672,7 @@
    "id": "club-19017",
    "name": "BILLARD CLUB PHOCEEN",
    "ffbNumber": "19017",
-   "address": "",
+   "address": "18 rue du docteur ACQUAVIVA",
    "postcode": "13004",
    "city": "Marseille",
    "phone": "04 91 74 76 04",
@@ -1686,7 +1686,7 @@
    "id": "club-19019",
    "name": "BILLARD CLUB DE LA BAIE",
    "ffbNumber": "19019",
-   "address": "",
+   "address": "SALLE OTTAVI AVENUE DES ALLIES",
    "postcode": "83240",
    "city": "Cavalaire-sur-Mer",
    "phone": "04 94 64 40 02",
@@ -1700,7 +1700,7 @@
    "id": "club-19021",
    "name": "BILLARD CLUB CAVAILLONNAIS",
    "ffbNumber": "19021",
-   "address": "",
+   "address": "97 COURS VICTOR HUGO",
    "postcode": "84300",
    "city": "Cavaillon",
    "phone": "07 87 18 13 00",
@@ -1714,7 +1714,7 @@
    "id": "club-19023",
    "name": "BILLARD CLUB GARDEEN",
    "ffbNumber": "19023",
-   "address": "",
+   "address": "LE MAS QUARTIER SAINTE MARGUERITE 293 BOULEVARD PIERRE LOTI",
    "postcode": "83130",
    "city": "La Garde",
    "phone": "04 94 61 45 05",
@@ -1728,7 +1728,7 @@
    "id": "club-19025",
    "name": "BILLARD CLUB SISTERONNAIS",
    "ffbNumber": "19025",
-   "address": "",
+   "address": "73 AVENUE DE LA DURANCE SALLE OMNISPORT DANIEL MAFFREN",
    "postcode": "04200",
    "city": "Sisteron",
    "phone": "04 92 61 19 08",
@@ -1742,7 +1742,7 @@
    "id": "club-19027",
    "name": "ACADEMIE DE BILLARD DE BOLLENE",
    "ffbNumber": "19027",
-   "address": "",
+   "address": "GROUPE SCOLAIRE PIERRE MARIE CURIE",
    "postcode": "84500",
    "city": "Bollene",
    "phone": "04 90 30 14 03",
@@ -1756,7 +1756,7 @@
    "id": "club-19055",
    "name": "ACADEMIE DE BILLARD DE MENTON",
    "ffbNumber": "19055",
-   "address": "",
+   "address": "Académie municipale de billard Allée du Louvre Salon du Louvre",
    "postcode": "06500",
    "city": "Menton",
    "phone": "",
@@ -1770,7 +1770,7 @@
    "id": "club-19056",
    "name": "BILLARD CLUB DE NICE",
    "ffbNumber": "19056",
-   "address": "",
+   "address": "COMPLEXE MALATESTA 64 AVENUE CYRILLE BESSET",
    "postcode": "06100",
    "city": "Nice",
    "phone": "04 93 57 51 00",
@@ -1784,7 +1784,7 @@
    "id": "club-19061",
    "name": "ACAD.BILLARD ST RAPHAEL",
    "ffbNumber": "19061",
-   "address": "",
+   "address": "90 impasse Thomas Edison la palud",
    "postcode": "83600",
    "city": "Frejus",
    "phone": "04 94 95 52 00",
@@ -1798,7 +1798,7 @@
    "id": "club-19090",
    "name": "BILLARD CLUB ROGNAC",
    "ffbNumber": "19090",
-   "address": "",
+   "address": "60 BOULEVARD JEAN JAURES",
    "postcode": "13340",
    "city": "Rognac",
    "phone": "",
@@ -1812,7 +1812,7 @@
    "id": "club-19106",
    "name": "BILLARD CLUB VINONNAIS",
    "ffbNumber": "19106",
-   "address": "",
+   "address": "480 RUE DES ENTREPRENEURS ZA DU PAS DE MENC",
    "postcode": "83560",
    "city": "Vinon-sur-Verdon",
    "phone": "04 92 75 13 07",
@@ -1826,7 +1826,7 @@
    "id": "club-20001",
    "name": "BILLARD CLUB SAINT-GAUDINOIS",
    "ffbNumber": "20001",
-   "address": "",
+   "address": "226, RUE DE LA VIEILLE SERRE",
    "postcode": "31800",
    "city": "Saint-Gaudens",
    "phone": "05 61 94 97 07",
@@ -1840,7 +1840,7 @@
    "id": "club-20004",
    "name": "ACADEMIE TOULOUSAINE DE BILLARD",
    "ffbNumber": "20004",
-   "address": "",
+   "address": "5 RUE MICHEL ANGE MAISON DU QUARTIER LAPUJADE",
    "postcode": "31200",
    "city": "Toulouse",
    "phone": "05 34 44 98 07",
@@ -1854,7 +1854,7 @@
    "id": "club-20005",
    "name": "ACADEMIE BILLARD DE MONTAUBAN",
    "ffbNumber": "20005",
-   "address": "",
+   "address": "22 RUE D AURIOL",
    "postcode": "82000",
    "city": "Montauban",
    "phone": "05 63 63 74 00",
@@ -1868,7 +1868,7 @@
    "id": "club-20006",
    "name": "AC.MUNICIPALE DE BILLARD DE TARBES",
    "ffbNumber": "20006",
-   "address": "",
+   "address": "ECOLE JULES FERRY 7 RUE ANDRE BREYER",
    "postcode": "65000",
    "city": "Tarbes",
    "phone": "06 21 85 77 00",
@@ -1882,7 +1882,7 @@
    "id": "club-20007",
    "name": "BLAGNAC BILLARD CLUB",
    "ffbNumber": "20007",
-   "address": "",
+   "address": "14 RUE DU MOULIN",
    "postcode": "31700",
    "city": "Blagnac",
    "phone": "05 61 71 11 01",
@@ -1896,7 +1896,7 @@
    "id": "club-20009",
    "name": "ACADEMIE DE BILLARD DE CAHORS",
    "ffbNumber": "20009",
-   "address": "",
+   "address": "ESPACE ASSOCIATIF CLEMENT MAROT PLACE BESSIERES ( près du nouveau cinéma de la ville)",
    "postcode": "46000",
    "city": "Cahors",
    "phone": "",
@@ -1910,7 +1910,7 @@
    "id": "club-20060",
    "name": "BILLARD CLUB TOULOUSAIN",
    "ffbNumber": "20060",
-   "address": "",
+   "address": "11 RUE DES CHAMOIS",
    "postcode": "31200",
    "city": "Toulouse",
    "phone": "07 81 53 74 09",
@@ -1924,7 +1924,7 @@
    "id": "club-21001",
    "name": "ACADEMIE DE BILLARD DE LIMOGES",
    "ffbNumber": "21001",
-   "address": "",
+   "address": "40 RUE CHARLES SILVESTRE",
    "postcode": "87100",
    "city": "Limoges",
    "phone": "05 55 38 28 02",
@@ -1938,7 +1938,7 @@
    "id": "club-22052",
    "name": "BILLARD CLUB CHALONNAIS",
    "ffbNumber": "22052",
-   "address": "",
+   "address": "SALLE GAMBEY 9 IMPASSE DU CARLOUP",
    "postcode": "71100",
    "city": "Chalon-sur-Saone",
    "phone": "09 83 63 20 05",
@@ -1952,7 +1952,7 @@
    "id": "club-22053",
    "name": "ACADEMIE DE BILLARD DE MACON",
    "ffbNumber": "22053",
-   "address": "",
+   "address": "COMPLEXE SPORTIF DES SAUGERAIES AVENUE SIMONE VEIL",
    "postcode": "71000",
    "city": "Macon",
    "phone": "03 85 39 22 02",
@@ -1966,7 +1966,7 @@
    "id": "club-22076",
    "name": "STADE AUXERROIS SECTION BILLARD",
    "ffbNumber": "22076",
-   "address": "",
+   "address": "16 BD VAULABELLE SALLE VAULABELLE",
    "postcode": "89000",
    "city": "Auxerre",
    "phone": "03 86 52 42 08",
@@ -1980,7 +1980,7 @@
    "id": "club-22088",
    "name": "BILLARD CLUB DIJONNAIS",
    "ffbNumber": "22088",
-   "address": "",
+   "address": "5 RUE ERNEST CHAPUT",
    "postcode": "21000",
    "city": "Dijon",
    "phone": "09 51 11 12 05",
@@ -2072,7 +2072,7 @@
    "currentPlace": 34,
    "lastPlace": 34,
    "posThis": 34,
-   "posLast": 80
+   "posLast": 34
   },
   {
    "licence": "012396U",
@@ -2081,7 +2081,7 @@
    "lastSeason": "2021-2022",
    "currentPlace": null,
    "lastPlace": 34,
-   "posThis": 34,
+   "posThis": null,
    "posLast": 34
   },
   {
@@ -2111,7 +2111,7 @@
    "lastSeason": "2021-2022",
    "currentPlace": null,
    "lastPlace": 76,
-   "posThis": 76,
+   "posThis": null,
    "posLast": 76
   },
   {
@@ -2132,7 +2132,7 @@
    "currentPlace": 18,
    "lastPlace": 18,
    "posThis": 18,
-   "posLast": null
+   "posLast": 18
   },
   {
    "licence": "017131X",
@@ -2142,7 +2142,7 @@
    "currentPlace": 111,
    "lastPlace": 111,
    "posThis": 111,
-   "posLast": null
+   "posLast": 111
   },
   {
    "licence": "173463X",
@@ -2152,7 +2152,7 @@
    "currentPlace": 89,
    "lastPlace": 89,
    "posThis": 89,
-   "posLast": 108
+   "posLast": 89
   },
   {
    "licence": "165964W",
@@ -2191,8 +2191,8 @@
    "lastSeason": "2026-2027",
    "currentPlace": 124,
    "lastPlace": 124,
-   "posThis": 126,
-   "posLast": 86
+   "posThis": 124,
+   "posLast": 124
   },
   {
    "licence": "136978K",
@@ -2201,7 +2201,7 @@
    "lastSeason": "2019-2020",
    "currentPlace": null,
    "lastPlace": 98,
-   "posThis": 98,
+   "posThis": null,
    "posLast": 98
   },
   {
@@ -2211,8 +2211,8 @@
    "lastSeason": "2026-2027",
    "currentPlace": 99,
    "lastPlace": 99,
-   "posThis": 85,
-   "posLast": null
+   "posThis": 99,
+   "posLast": 99
   },
   {
    "licence": "109474O",
@@ -2221,7 +2221,7 @@
    "lastSeason": "2021-2022",
    "currentPlace": null,
    "lastPlace": 89,
-   "posThis": 89,
+   "posThis": null,
    "posLast": 89
   },
   {
@@ -2231,7 +2231,7 @@
    "lastSeason": "2021-2022",
    "currentPlace": null,
    "lastPlace": 26,
-   "posThis": 26,
+   "posThis": null,
    "posLast": 26
   },
   {
@@ -2242,7 +2242,7 @@
    "currentPlace": 47,
    "lastPlace": 47,
    "posThis": 47,
-   "posLast": 82
+   "posLast": 47
   },
   {
    "licence": "015869J",
@@ -2261,7 +2261,7 @@
    "lastSeason": "2021-2022",
    "currentPlace": null,
    "lastPlace": 68,
-   "posThis": 68,
+   "posThis": null,
    "posLast": 68
   },
   {
@@ -2272,7 +2272,7 @@
    "currentPlace": 46,
    "lastPlace": 46,
    "posThis": 46,
-   "posLast": null
+   "posLast": 46
   },
   {
    "licence": "017360S",
@@ -2291,7 +2291,7 @@
    "lastSeason": "2012-2013",
    "currentPlace": null,
    "lastPlace": 97,
-   "posThis": 98,
+   "posThis": null,
    "posLast": 97
   },
   {
@@ -2312,7 +2312,7 @@
    "currentPlace": 82,
    "lastPlace": 82,
    "posThis": 82,
-   "posLast": 66
+   "posLast": 82
   },
   {
    "licence": "012519N",
@@ -2361,8 +2361,8 @@
    "lastSeason": "2025-2026",
    "currentPlace": 71,
    "lastPlace": 71,
-   "posThis": 72,
-   "posLast": null
+   "posThis": 71,
+   "posLast": 71
   },
   {
    "licence": "153748S",
@@ -2372,7 +2372,7 @@
    "currentPlace": 113,
    "lastPlace": 113,
    "posThis": 113,
-   "posLast": null
+   "posLast": 113
   },
   {
    "licence": "154856X",
@@ -2382,7 +2382,7 @@
    "currentPlace": 10,
    "lastPlace": 10,
    "posThis": 10,
-   "posLast": 22
+   "posLast": 10
   },
   {
    "licence": "112124M",
@@ -2392,7 +2392,7 @@
    "currentPlace": 30,
    "lastPlace": 30,
    "posThis": 30,
-   "posLast": 100
+   "posLast": 30
   },
   {
    "licence": "011981V",
@@ -2401,8 +2401,8 @@
    "lastSeason": "2026-2027",
    "currentPlace": 87,
    "lastPlace": 87,
-   "posThis": 70,
-   "posLast": null
+   "posThis": 87,
+   "posLast": 87
   },
   {
    "licence": "123041J",
@@ -2412,7 +2412,7 @@
    "currentPlace": 40,
    "lastPlace": 40,
    "posThis": 40,
-   "posLast": 83
+   "posLast": 40
   },
   {
    "licence": "128208C",
@@ -2421,7 +2421,7 @@
    "lastSeason": "2016-2017",
    "currentPlace": null,
    "lastPlace": 100,
-   "posThis": 100,
+   "posThis": null,
    "posLast": 100
   },
   {
@@ -2431,7 +2431,7 @@
    "lastSeason": "2019-2020",
    "currentPlace": null,
    "lastPlace": 77,
-   "posThis": 78,
+   "posThis": null,
    "posLast": 77
   },
   {
@@ -2441,7 +2441,7 @@
    "lastSeason": "2019-2020",
    "currentPlace": null,
    "lastPlace": 87,
-   "posThis": 88,
+   "posThis": null,
    "posLast": 87
   },
   {
@@ -2452,7 +2452,7 @@
    "currentPlace": 31,
    "lastPlace": 31,
    "posThis": 31,
-   "posLast": 38
+   "posLast": 31
   },
   {
    "licence": "165891R",
@@ -2471,8 +2471,8 @@
    "lastSeason": "2025-2026",
    "currentPlace": 118,
    "lastPlace": 118,
-   "posThis": 116,
-   "posLast": null
+   "posThis": 118,
+   "posLast": 118
   },
   {
    "licence": "155687A",
@@ -2492,7 +2492,7 @@
    "currentPlace": 86,
    "lastPlace": 86,
    "posThis": 86,
-   "posLast": null
+   "posLast": 86
   },
   {
    "licence": "109702I",
@@ -2501,7 +2501,7 @@
    "lastSeason": "2017-2018",
    "currentPlace": null,
    "lastPlace": 56,
-   "posThis": 56,
+   "posThis": null,
    "posLast": 56
   },
   {
@@ -2512,7 +2512,7 @@
    "currentPlace": 8,
    "lastPlace": 8,
    "posThis": 8,
-   "posLast": 2
+   "posLast": 8
   },
   {
    "licence": "152311F",
@@ -2521,7 +2521,7 @@
    "lastSeason": "2017-2018",
    "currentPlace": null,
    "lastPlace": 89,
-   "posThis": 90,
+   "posThis": null,
    "posLast": 89
   },
   {
@@ -2531,7 +2531,7 @@
    "lastSeason": "2021-2022",
    "currentPlace": null,
    "lastPlace": 79,
-   "posThis": 79,
+   "posThis": null,
    "posLast": 79
   },
   {
@@ -2541,7 +2541,7 @@
    "lastSeason": "2017-2018",
    "currentPlace": null,
    "lastPlace": 79,
-   "posThis": 80,
+   "posThis": null,
    "posLast": 79
   },
   {
@@ -2551,7 +2551,7 @@
    "lastSeason": "2018-2019",
    "currentPlace": null,
    "lastPlace": 101,
-   "posThis": 102,
+   "posThis": null,
    "posLast": 101
   },
   {
@@ -2571,7 +2571,7 @@
    "lastSeason": "2016-2017",
    "currentPlace": null,
    "lastPlace": 103,
-   "posThis": 104,
+   "posThis": null,
    "posLast": 103
   },
   {
@@ -2581,8 +2581,8 @@
    "lastSeason": "2025-2026",
    "currentPlace": 85,
    "lastPlace": 85,
-   "posThis": 78,
-   "posLast": 93
+   "posThis": 85,
+   "posLast": 85
   },
   {
    "licence": "018946S",
@@ -2640,9 +2640,9 @@
    "club": "BILLARD CLUB ST DENIS EN VAL",
    "lastSeason": "2024-2025",
    "currentPlace": null,
-   "lastPlace": 34,
+   "lastPlace": 45,
    "posThis": null,
-   "posLast": 34
+   "posLast": 45
   },
   {
    "licence": "125938U",
@@ -2651,8 +2651,8 @@
    "lastSeason": "2026-2027",
    "currentPlace": 116,
    "lastPlace": 116,
-   "posThis": 118,
-   "posLast": 49
+   "posThis": 116,
+   "posLast": 116
   },
   {
    "licence": "166719R",
@@ -2671,7 +2671,7 @@
    "lastSeason": "2021-2022",
    "currentPlace": null,
    "lastPlace": 61,
-   "posThis": 61,
+   "posThis": null,
    "posLast": 61
   },
   {
@@ -2682,7 +2682,7 @@
    "currentPlace": 1,
    "lastPlace": 1,
    "posThis": 1,
-   "posLast": null
+   "posLast": 1
   },
   {
    "licence": "160031X",
@@ -2691,7 +2691,7 @@
    "lastSeason": "2019-2020",
    "currentPlace": null,
    "lastPlace": 110,
-   "posThis": 110,
+   "posThis": null,
    "posLast": 110
   },
   {
@@ -2702,7 +2702,7 @@
    "currentPlace": 51,
    "lastPlace": 51,
    "posThis": 51,
-   "posLast": null
+   "posLast": 51
   },
   {
    "licence": "011783F",
@@ -2711,8 +2711,8 @@
    "lastSeason": "2025-2026",
    "currentPlace": 101,
    "lastPlace": 101,
-   "posThis": 99,
-   "posLast": null
+   "posThis": 101,
+   "posLast": 101
   },
   {
    "licence": "144622K",
@@ -2721,7 +2721,7 @@
    "lastSeason": "2019-2020",
    "currentPlace": null,
    "lastPlace": 108,
-   "posThis": 108,
+   "posThis": null,
    "posLast": 108
   },
   {
@@ -2731,7 +2731,7 @@
    "lastSeason": "2019-2020",
    "currentPlace": null,
    "lastPlace": 68,
-   "posThis": 68,
+   "posThis": null,
    "posLast": 68
   },
   {
@@ -2742,7 +2742,7 @@
    "currentPlace": 6,
    "lastPlace": 6,
    "posThis": 6,
-   "posLast": 4
+   "posLast": 6
   },
   {
    "licence": "017482K",
@@ -2761,7 +2761,7 @@
    "lastSeason": "2017-2018",
    "currentPlace": null,
    "lastPlace": 93,
-   "posThis": 94,
+   "posThis": null,
    "posLast": 93
   },
   {
@@ -2780,9 +2780,9 @@
    "club": "BILLARD CLUB DE NANDY",
    "lastSeason": "2025-2026",
    "currentPlace": 42,
-   "lastPlace": 42,
-   "posThis": 33,
-   "posLast": 114
+   "lastPlace": 32,
+   "posThis": 42,
+   "posLast": 32
   },
   {
    "licence": "137684O",
@@ -2791,7 +2791,7 @@
    "lastSeason": "2017-2018",
    "currentPlace": null,
    "lastPlace": 107,
-   "posThis": 108,
+   "posThis": null,
    "posLast": 107
   },
   {
@@ -2801,7 +2801,7 @@
    "lastSeason": "2021-2022",
    "currentPlace": null,
    "lastPlace": 65,
-   "posThis": 65,
+   "posThis": null,
    "posLast": 65
   },
   {
@@ -2811,7 +2811,7 @@
    "lastSeason": "2019-2020",
    "currentPlace": null,
    "lastPlace": 96,
-   "posThis": 96,
+   "posThis": null,
    "posLast": 96
   },
   {
@@ -2822,7 +2822,7 @@
    "currentPlace": 90,
    "lastPlace": 90,
    "posThis": 90,
-   "posLast": null
+   "posLast": 90
   },
   {
    "licence": "165411V",
@@ -2831,8 +2831,8 @@
    "lastSeason": "2025-2026",
    "currentPlace": 103,
    "lastPlace": 103,
-   "posThis": 99,
-   "posLast": 61
+   "posThis": 103,
+   "posLast": 103
   },
   {
    "licence": "170735G",
@@ -2842,7 +2842,7 @@
    "currentPlace": 17,
    "lastPlace": 17,
    "posThis": 17,
-   "posLast": null
+   "posLast": 17
   },
   {
    "licence": "101151L",
@@ -2860,9 +2860,9 @@
    "club": "AS. BILLARD SEBASTIENNAISE",
    "lastSeason": "2025-2026",
    "currentPlace": 61,
-   "lastPlace": 61,
-   "posThis": 50,
-   "posLast": 64
+   "lastPlace": 50,
+   "posThis": 61,
+   "posLast": 50
   },
   {
    "licence": "142900E",
@@ -2882,7 +2882,7 @@
    "currentPlace": 112,
    "lastPlace": 112,
    "posThis": 112,
-   "posLast": null
+   "posLast": 112
   },
   {
    "licence": "101152M",
@@ -2901,7 +2901,7 @@
    "lastSeason": "2021-2022",
    "currentPlace": null,
    "lastPlace": 87,
-   "posThis": 87,
+   "posThis": null,
    "posLast": 87
   },
   {
@@ -2912,7 +2912,7 @@
    "currentPlace": 109,
    "lastPlace": 109,
    "posThis": 109,
-   "posLast": 89
+   "posLast": 109
   },
   {
    "licence": "121408O",
@@ -2932,7 +2932,7 @@
    "currentPlace": 38,
    "lastPlace": 38,
    "posThis": 38,
-   "posLast": 47
+   "posLast": 38
   },
   {
    "licence": "143987Z",
@@ -2941,7 +2941,7 @@
    "lastSeason": "2019-2020",
    "currentPlace": null,
    "lastPlace": 109,
-   "posThis": 110,
+   "posThis": null,
    "posLast": 109
   },
   {
@@ -2982,7 +2982,7 @@
    "currentPlace": 115,
    "lastPlace": 115,
    "posThis": 115,
-   "posLast": null
+   "posLast": 115
   },
   {
    "licence": "015837D",
@@ -3001,7 +3001,7 @@
    "lastSeason": "2021-2022",
    "currentPlace": null,
    "lastPlace": 105,
-   "posThis": 105,
+   "posThis": null,
    "posLast": 105
   },
   {
@@ -3012,7 +3012,7 @@
    "currentPlace": 33,
    "lastPlace": 33,
    "posThis": 33,
-   "posLast": 75
+   "posLast": 33
   },
   {
    "licence": "132197N",
@@ -3041,7 +3041,7 @@
    "lastSeason": "2019-2020",
    "currentPlace": null,
    "lastPlace": 103,
-   "posThis": 104,
+   "posThis": null,
    "posLast": 103
   },
   {
@@ -3061,7 +3061,7 @@
    "lastSeason": "2017-2018",
    "currentPlace": null,
    "lastPlace": 100,
-   "posThis": 100,
+   "posThis": null,
    "posLast": 100
   },
   {
@@ -3081,8 +3081,8 @@
    "lastSeason": "2025-2026",
    "currentPlace": 106,
    "lastPlace": 106,
-   "posThis": 96,
-   "posLast": 118
+   "posThis": 106,
+   "posLast": 106
   },
   {
    "licence": "013058G",
@@ -3092,7 +3092,7 @@
    "currentPlace": 7,
    "lastPlace": 7,
    "posThis": 7,
-   "posLast": 3
+   "posLast": 7
   },
   {
    "licence": "115877V",
@@ -3111,7 +3111,7 @@
    "lastSeason": "2021-2022",
    "currentPlace": null,
    "lastPlace": 81,
-   "posThis": 81,
+   "posThis": null,
    "posLast": 81
   },
   {
@@ -3122,7 +3122,7 @@
    "currentPlace": 96,
    "lastPlace": 96,
    "posThis": 96,
-   "posLast": 78
+   "posLast": 96
   },
   {
    "licence": "013085H",
@@ -3141,7 +3141,7 @@
    "lastSeason": "2017-2018",
    "currentPlace": null,
    "lastPlace": 104,
-   "posThis": 104,
+   "posThis": null,
    "posLast": 104
   },
   {
@@ -3152,7 +3152,7 @@
    "currentPlace": 60,
    "lastPlace": 60,
    "posThis": 60,
-   "posLast": 110
+   "posLast": 60
   },
   {
    "licence": "181294J",
@@ -3161,8 +3161,8 @@
    "lastSeason": "2025-2026",
    "currentPlace": 49,
    "lastPlace": 49,
-   "posThis": 34,
-   "posLast": null
+   "posThis": 49,
+   "posLast": 49
   },
   {
    "licence": "190873W",
@@ -3172,7 +3172,7 @@
    "currentPlace": 129,
    "lastPlace": 129,
    "posThis": 129,
-   "posLast": null
+   "posLast": 129
   },
   {
    "licence": "140114A",
@@ -3191,7 +3191,7 @@
    "lastSeason": "2017-2018",
    "currentPlace": null,
    "lastPlace": 81,
-   "posThis": 82,
+   "posThis": null,
    "posLast": 81
   },
   {
@@ -3200,9 +3200,9 @@
    "club": "BILLARD CLUB CREPY EN VALOIS",
    "lastSeason": "2025-2026",
    "currentPlace": null,
-   "lastPlace": 8,
+   "lastPlace": 9,
    "posThis": null,
-   "posLast": 8
+   "posLast": 9
   },
   {
    "licence": "129036Y",
@@ -3211,7 +3211,7 @@
    "lastSeason": "2019-2020",
    "currentPlace": null,
    "lastPlace": 90,
-   "posThis": 90,
+   "posThis": null,
    "posLast": 90
   },
   {
@@ -3231,7 +3231,7 @@
    "lastSeason": "2018-2019",
    "currentPlace": null,
    "lastPlace": 78,
-   "posThis": 78,
+   "posThis": null,
    "posLast": 78
   },
   {
@@ -3242,7 +3242,7 @@
    "currentPlace": 100,
    "lastPlace": 100,
    "posThis": 100,
-   "posLast": null
+   "posLast": 100
   },
   {
    "licence": "128379R",
@@ -3272,7 +3272,7 @@
    "currentPlace": 74,
    "lastPlace": 74,
    "posThis": 74,
-   "posLast": null
+   "posLast": 74
   },
   {
    "licence": "018977X",
@@ -3280,9 +3280,9 @@
    "club": "A.M.O. MER",
    "lastSeason": "2025-2026",
    "currentPlace": 14,
-   "lastPlace": 14,
-   "posThis": 13,
-   "posLast": 16
+   "lastPlace": 12,
+   "posThis": 14,
+   "posLast": 12
   },
   {
    "licence": "108126S",
@@ -3291,7 +3291,7 @@
    "lastSeason": "2017-2018",
    "currentPlace": null,
    "lastPlace": 99,
-   "posThis": 100,
+   "posThis": null,
    "posLast": 99
   },
   {
@@ -3302,7 +3302,7 @@
    "currentPlace": 48,
    "lastPlace": 48,
    "posThis": 48,
-   "posLast": null
+   "posLast": 48
   },
   {
    "licence": "175670W",
@@ -3311,8 +3311,8 @@
    "lastSeason": "2025-2026",
    "currentPlace": 104,
    "lastPlace": 104,
-   "posThis": 102,
-   "posLast": 97
+   "posThis": 104,
+   "posLast": 104
   },
   {
    "licence": "156122Y",
@@ -3331,7 +3331,7 @@
    "lastSeason": "2017-2018",
    "currentPlace": null,
    "lastPlace": 86,
-   "posThis": 86,
+   "posThis": null,
    "posLast": 86
   },
   {
@@ -3341,7 +3341,7 @@
    "lastSeason": "2017-2018",
    "currentPlace": null,
    "lastPlace": 91,
-   "posThis": 92,
+   "posThis": null,
    "posLast": 91
   },
   {
@@ -3360,9 +3360,9 @@
    "club": "CMO MORANGIS",
    "lastSeason": "2025-2026",
    "currentPlace": 79,
-   "lastPlace": 79,
-   "posThis": 67,
-   "posLast": 92
+   "lastPlace": 65,
+   "posThis": 79,
+   "posLast": 65
   },
   {
    "licence": "015050W",
@@ -3382,7 +3382,7 @@
    "currentPlace": 35,
    "lastPlace": 35,
    "posThis": 35,
-   "posLast": 29
+   "posLast": 35
   },
   {
    "licence": "104115L",
@@ -3392,7 +3392,7 @@
    "currentPlace": 55,
    "lastPlace": 55,
    "posThis": 55,
-   "posLast": null
+   "posLast": 55
   },
   {
    "licence": "124121X",
@@ -3402,7 +3402,7 @@
    "currentPlace": 62,
    "lastPlace": 62,
    "posThis": 62,
-   "posLast": null
+   "posLast": 62
   },
   {
    "licence": "152303X",
@@ -3412,7 +3412,7 @@
    "currentPlace": 98,
    "lastPlace": 98,
    "posThis": 98,
-   "posLast": 41
+   "posLast": 98
   },
   {
    "licence": "140424Y",
@@ -3422,7 +3422,7 @@
    "currentPlace": 92,
    "lastPlace": 92,
    "posThis": 92,
-   "posLast": 89
+   "posLast": 92
   },
   {
    "licence": "111337F",
@@ -3451,7 +3451,7 @@
    "lastSeason": "2017-2018",
    "currentPlace": null,
    "lastPlace": 96,
-   "posThis": 96,
+   "posThis": null,
    "posLast": 96
   },
   {
@@ -3461,7 +3461,7 @@
    "lastSeason": "2021-2022",
    "currentPlace": null,
    "lastPlace": 84,
-   "posThis": 84,
+   "posThis": null,
    "posLast": 84
   },
   {
@@ -3472,7 +3472,7 @@
    "currentPlace": 50,
    "lastPlace": 50,
    "posThis": 50,
-   "posLast": 37
+   "posLast": 50
   },
   {
    "licence": "139052E",
@@ -3481,7 +3481,7 @@
    "lastSeason": "2017-2018",
    "currentPlace": null,
    "lastPlace": 65,
-   "posThis": 66,
+   "posThis": null,
    "posLast": 65
   },
   {
@@ -3502,7 +3502,7 @@
    "currentPlace": 121,
    "lastPlace": 121,
    "posThis": 121,
-   "posLast": null
+   "posLast": 121
   },
   {
    "licence": "144620I",
@@ -3511,7 +3511,7 @@
    "lastSeason": "2021-2022",
    "currentPlace": null,
    "lastPlace": 88,
-   "posThis": 88,
+   "posThis": null,
    "posLast": 88
   },
   {
@@ -3532,7 +3532,7 @@
    "currentPlace": 3,
    "lastPlace": 3,
    "posThis": 3,
-   "posLast": 6
+   "posLast": 3
   },
   {
    "licence": "020068W",
@@ -3542,7 +3542,7 @@
    "currentPlace": 36,
    "lastPlace": 36,
    "posThis": 36,
-   "posLast": 1000
+   "posLast": 36
   },
   {
    "licence": "016874A",
@@ -3562,7 +3562,7 @@
    "currentPlace": 80,
    "lastPlace": 80,
    "posThis": 80,
-   "posLast": 41
+   "posLast": 80
   },
   {
    "licence": "016128I",
@@ -3582,7 +3582,7 @@
    "currentPlace": 5,
    "lastPlace": 5,
    "posThis": 5,
-   "posLast": 9
+   "posLast": 5
   },
   {
    "licence": "",
@@ -3591,7 +3591,7 @@
    "lastSeason": "2017-2018",
    "currentPlace": null,
    "lastPlace": 69,
-   "posThis": 70,
+   "posThis": null,
    "posLast": 69
   },
   {
@@ -3601,7 +3601,7 @@
    "lastSeason": "2016-2017",
    "currentPlace": null,
    "lastPlace": 102,
-   "posThis": 102,
+   "posThis": null,
    "posLast": 102
   },
   {
@@ -3621,8 +3621,8 @@
    "lastSeason": "2025-2026",
    "currentPlace": 108,
    "lastPlace": 108,
-   "posThis": 55,
-   "posLast": 94
+   "posThis": 108,
+   "posLast": 108
   },
   {
    "licence": "146733P",
@@ -3630,9 +3630,9 @@
    "club": "SPORT BILLARD CLUB ANNOEULLINOIS",
    "lastSeason": "2025-2026",
    "currentPlace": 28,
-   "lastPlace": 28,
-   "posThis": 17,
-   "posLast": 101
+   "lastPlace": 18,
+   "posThis": 28,
+   "posLast": 18
   },
   {
    "licence": "017224M",
@@ -3640,9 +3640,9 @@
    "club": "SPORT BILLARD CLUB ANNOEULLINOIS",
    "lastSeason": "2025-2026",
    "currentPlace": 27,
-   "lastPlace": 27,
-   "posThis": 16,
-   "posLast": 8
+   "lastPlace": 16,
+   "posThis": 27,
+   "posLast": 16
   },
   {
    "licence": "012329F",
@@ -3652,7 +3652,7 @@
    "currentPlace": 66,
    "lastPlace": 66,
    "posThis": 66,
-   "posLast": 24
+   "posLast": 66
   },
   {
    "licence": "137050E",
@@ -3662,7 +3662,7 @@
    "currentPlace": 69,
    "lastPlace": 69,
    "posThis": 69,
-   "posLast": null
+   "posLast": 69
   },
   {
    "licence": "013355R",
@@ -3670,9 +3670,9 @@
    "club": "BILLARD CLUB FUXEEN",
    "lastSeason": "2025-2026",
    "currentPlace": 13,
-   "lastPlace": 13,
-   "posThis": 9,
-   "posLast": 10
+   "lastPlace": 9,
+   "posThis": 13,
+   "posLast": 9
   },
   {
    "licence": "151434C",
@@ -3682,7 +3682,7 @@
    "currentPlace": 39,
    "lastPlace": 39,
    "posThis": 39,
-   "posLast": null
+   "posLast": 39
   },
   {
    "licence": "100556O",
@@ -3701,8 +3701,8 @@
    "lastSeason": "2025-2026",
    "currentPlace": 43,
    "lastPlace": 43,
-   "posThis": 37,
-   "posLast": 109
+   "posThis": 43,
+   "posLast": 43
   },
   {
    "licence": "156337G",
@@ -3712,7 +3712,7 @@
    "currentPlace": 37,
    "lastPlace": 37,
    "posThis": 37,
-   "posLast": null
+   "posLast": 37
   },
   {
    "licence": "120252C",
@@ -3721,7 +3721,7 @@
    "lastSeason": "2018-2019",
    "currentPlace": null,
    "lastPlace": 58,
-   "posThis": 58,
+   "posThis": null,
    "posLast": 58
   },
   {
@@ -3762,7 +3762,7 @@
    "currentPlace": 73,
    "lastPlace": 73,
    "posThis": 73,
-   "posLast": null
+   "posLast": 73
   },
   {
    "licence": "017978M",
@@ -3770,9 +3770,9 @@
    "club": "BILLARD CLUB SOTTEVILLAIS",
    "lastSeason": "2025-2026",
    "currentPlace": 97,
-   "lastPlace": 97,
-   "posThis": 94,
-   "posLast": 70
+   "lastPlace": 94,
+   "posThis": 97,
+   "posLast": 94
   },
   {
    "licence": "107058Q",
@@ -3792,7 +3792,7 @@
    "currentPlace": 78,
    "lastPlace": 78,
    "posThis": 78,
-   "posLast": 94
+   "posLast": 78
   },
   {
    "licence": "136114E",
@@ -3812,7 +3812,7 @@
    "currentPlace": 128,
    "lastPlace": 128,
    "posThis": 128,
-   "posLast": null
+   "posLast": 128
   },
   {
    "licence": "137035P",
@@ -3822,7 +3822,7 @@
    "currentPlace": 95,
    "lastPlace": 95,
    "posThis": 95,
-   "posLast": null
+   "posLast": 95
   },
   {
    "licence": "147366F",
@@ -3831,7 +3831,7 @@
    "lastSeason": "2021-2022",
    "currentPlace": null,
    "lastPlace": 91,
-   "posThis": 91,
+   "posThis": null,
    "posLast": 91
   },
   {
@@ -3862,7 +3862,7 @@
    "currentPlace": 65,
    "lastPlace": 65,
    "posThis": 65,
-   "posLast": null
+   "posLast": 65
   },
   {
    "licence": "158668Q",
@@ -3882,7 +3882,7 @@
    "currentPlace": 4,
    "lastPlace": 4,
    "posThis": 4,
-   "posLast": 15
+   "posLast": 4
   },
   {
    "licence": "125164A",
@@ -3892,7 +3892,7 @@
    "currentPlace": 12,
    "lastPlace": 12,
    "posThis": 12,
-   "posLast": 54
+   "posLast": 12
   },
   {
    "licence": "109482W",
@@ -3901,7 +3901,7 @@
    "lastSeason": "2018-2019",
    "currentPlace": null,
    "lastPlace": 106,
-   "posThis": 106,
+   "posThis": null,
    "posLast": 106
   },
   {
@@ -3921,7 +3921,7 @@
    "lastSeason": "2018-2019",
    "currentPlace": null,
    "lastPlace": 85,
-   "posThis": 86,
+   "posThis": null,
    "posLast": 85
   },
   {
@@ -3931,8 +3931,8 @@
    "lastSeason": "2025-2026",
    "currentPlace": 91,
    "lastPlace": 91,
-   "posThis": 90,
-   "posLast": null
+   "posThis": 91,
+   "posLast": 91
   },
   {
    "licence": "017576A",
@@ -3941,7 +3941,7 @@
    "lastSeason": "2018-2019",
    "currentPlace": null,
    "lastPlace": 107,
-   "posThis": 108,
+   "posThis": null,
    "posLast": 107
   },
   {
@@ -3952,7 +3952,7 @@
    "currentPlace": 56,
    "lastPlace": 56,
    "posThis": 56,
-   "posLast": 42
+   "posLast": 56
   },
   {
    "licence": "140433H",
@@ -3961,7 +3961,7 @@
    "lastSeason": "2021-2022",
    "currentPlace": null,
    "lastPlace": 77,
-   "posThis": 77,
+   "posThis": null,
    "posLast": 77
   },
   {
@@ -3971,7 +3971,7 @@
    "lastSeason": "2021-2022",
    "currentPlace": null,
    "lastPlace": 107,
-   "posThis": 107,
+   "posThis": null,
    "posLast": 107
   },
   {
@@ -3981,7 +3981,7 @@
    "lastSeason": "2021-2022",
    "currentPlace": null,
    "lastPlace": 95,
-   "posThis": 95,
+   "posThis": null,
    "posLast": 95
   },
   {
@@ -4011,8 +4011,8 @@
    "lastSeason": "2025-2026",
    "currentPlace": 81,
    "lastPlace": 81,
-   "posThis": 76,
-   "posLast": 109
+   "posThis": 81,
+   "posLast": 81
   },
   {
    "licence": "013550E",
@@ -4021,8 +4021,8 @@
    "lastSeason": "2026-2027",
    "currentPlace": 93,
    "lastPlace": 93,
-   "posThis": 94,
-   "posLast": 80
+   "posThis": 93,
+   "posLast": 93
   },
   {
    "licence": "013557L",
@@ -4041,7 +4041,7 @@
    "lastSeason": "2018-2019",
    "currentPlace": null,
    "lastPlace": 102,
-   "posThis": 102,
+   "posThis": null,
    "posLast": 102
   },
   {
@@ -4052,7 +4052,7 @@
    "currentPlace": 9,
    "lastPlace": 9,
    "posThis": 9,
-   "posLast": 10
+   "posLast": 9
   },
   {
    "licence": "126431T",
@@ -4062,7 +4062,7 @@
    "currentPlace": 76,
    "lastPlace": 76,
    "posThis": 76,
-   "posLast": null
+   "posLast": 76
   },
   {
    "licence": "141399L",
@@ -4071,7 +4071,7 @@
    "lastSeason": "2017-2018",
    "currentPlace": null,
    "lastPlace": 63,
-   "posThis": 76,
+   "posThis": null,
    "posLast": 63
   },
   {
@@ -4091,7 +4091,7 @@
    "lastSeason": "2016-2017",
    "currentPlace": null,
    "lastPlace": 50,
-   "posThis": 26,
+   "posThis": null,
    "posLast": 50
   },
   {
@@ -4102,7 +4102,7 @@
    "currentPlace": 114,
    "lastPlace": 114,
    "posThis": 114,
-   "posLast": null
+   "posLast": 114
   },
   {
    "licence": "163145G",
@@ -4111,8 +4111,8 @@
    "lastSeason": "2025-2026",
    "currentPlace": 126,
    "lastPlace": 126,
-   "posThis": 112,
-   "posLast": null
+   "posThis": 126,
+   "posLast": 126
   },
   {
    "licence": "013613P",
@@ -4121,8 +4121,8 @@
    "lastSeason": "2025-2026",
    "currentPlace": 122,
    "lastPlace": 122,
-   "posThis": 119,
-   "posLast": 16
+   "posThis": 122,
+   "posLast": 122
   },
   {
    "licence": "011876U",
@@ -4132,7 +4132,7 @@
    "currentPlace": 16,
    "lastPlace": 16,
    "posThis": 16,
-   "posLast": 102
+   "posLast": 16
   },
   {
    "licence": "129054Q",
@@ -4151,8 +4151,8 @@
    "lastSeason": "2026-2027",
    "currentPlace": 21,
    "lastPlace": 21,
-   "posThis": 23,
-   "posLast": null
+   "posThis": 21,
+   "posLast": 21
   },
   {
    "licence": "163159X",
@@ -4172,7 +4172,7 @@
    "currentPlace": 117,
    "lastPlace": 117,
    "posThis": 117,
-   "posLast": null
+   "posLast": 117
   },
   {
    "licence": "143593V",
@@ -4191,7 +4191,7 @@
    "lastSeason": "2018-2019",
    "currentPlace": null,
    "lastPlace": 32,
-   "posThis": 64,
+   "posThis": null,
    "posLast": 32
   },
   {
@@ -4221,7 +4221,7 @@
    "lastSeason": "2019-2020",
    "currentPlace": null,
    "lastPlace": 91,
-   "posThis": 58,
+   "posThis": null,
    "posLast": 91
   },
   {
@@ -4231,7 +4231,7 @@
    "lastSeason": "2021-2022",
    "currentPlace": null,
    "lastPlace": 35,
-   "posThis": 91,
+   "posThis": null,
    "posLast": 35
   },
   {
@@ -4252,7 +4252,7 @@
    "currentPlace": 68,
    "lastPlace": 68,
    "posThis": 68,
-   "posLast": 123
+   "posLast": 68
   },
   {
    "licence": "111359B",
@@ -4291,7 +4291,7 @@
    "lastSeason": "2021-2022",
    "currentPlace": null,
    "lastPlace": 112,
-   "posThis": 94,
+   "posThis": null,
    "posLast": 112
   },
   {
@@ -4330,9 +4330,9 @@
    "club": "JEANNE D ARC BILLARD SAINT MALO",
    "lastSeason": "2026-2027",
    "currentPlace": 26,
-   "lastPlace": 26,
+   "lastPlace": 20,
    "posThis": 26,
-   "posLast": null
+   "posLast": 20
   },
   {
    "licence": "016352Y",
@@ -4342,7 +4342,7 @@
    "currentPlace": 20,
    "lastPlace": 20,
    "posThis": 20,
-   "posLast": 90
+   "posLast": 20
   },
   {
    "licence": "013745R",
@@ -4382,7 +4382,7 @@
    "currentPlace": 54,
    "lastPlace": 54,
    "posThis": 54,
-   "posLast": null
+   "posLast": 54
   },
   {
    "licence": "020207F",
@@ -4391,7 +4391,7 @@
    "lastSeason": "2018-2019",
    "currentPlace": null,
    "lastPlace": 91,
-   "posThis": 50,
+   "posThis": null,
    "posLast": 91
   },
   {
@@ -4462,7 +4462,7 @@
    "currentPlace": 57,
    "lastPlace": 57,
    "posThis": 57,
-   "posLast": 85
+   "posLast": 57
   },
   {
    "licence": "014842W",
@@ -4481,8 +4481,8 @@
    "lastSeason": "2025-2026",
    "currentPlace": 77,
    "lastPlace": 77,
-   "posThis": 73,
-   "posLast": null
+   "posThis": 77,
+   "posLast": 77
   },
   {
    "licence": "151415G",
@@ -4501,7 +4501,7 @@
    "lastSeason": "2017-2018",
    "currentPlace": null,
    "lastPlace": 22,
-   "posThis": 54,
+   "posThis": null,
    "posLast": 22
   },
   {
@@ -4512,7 +4512,7 @@
    "currentPlace": 11,
    "lastPlace": 11,
    "posThis": 11,
-   "posLast": null
+   "posLast": 11
   },
   {
    "licence": "171980K",
@@ -4522,7 +4522,7 @@
    "currentPlace": 72,
    "lastPlace": 72,
    "posThis": 72,
-   "posLast": 87
+   "posLast": 72
   },
   {
    "licence": "110636G",
@@ -4531,7 +4531,7 @@
    "lastSeason": "2018-2019",
    "currentPlace": null,
    "lastPlace": 90,
-   "posThis": 88,
+   "posThis": null,
    "posLast": 90
   },
   {
@@ -4541,7 +4541,7 @@
    "lastSeason": "2016-2017",
    "currentPlace": null,
    "lastPlace": 102,
-   "posThis": 90,
+   "posThis": null,
    "posLast": 102
   },
   {
@@ -4561,8 +4561,8 @@
    "lastSeason": "2025-2026",
    "currentPlace": 123,
    "lastPlace": 123,
-   "posThis": 129,
-   "posLast": null
+   "posThis": 123,
+   "posLast": 123
   },
   {
    "licence": "013901R",
@@ -4571,18 +4571,18 @@
    "lastSeason": "2019-2020",
    "currentPlace": null,
    "lastPlace": 70,
-   "posThis": 106,
+   "posThis": null,
    "posLast": 70
   },
   {
-   "licence": "152644S",
+   "licence": "103513H",
    "name": "PERRIN ERIC",
    "club": "BILLARD CLUB DE CHAMPAGNE",
    "lastSeason": "2026-2027",
    "currentPlace": 32,
    "lastPlace": 32,
    "posThis": 32,
-   "posLast": 103
+   "posLast": 32
   },
   {
    "licence": "113739P",
@@ -4600,9 +4600,9 @@
    "club": "A.M.O. MER",
    "lastSeason": "2025-2026",
    "currentPlace": 23,
-   "lastPlace": 23,
-   "posThis": 21,
-   "posLast": 75
+   "lastPlace": 21,
+   "posThis": 23,
+   "posLast": 21
   },
   {
    "licence": "121159Z",
@@ -4611,7 +4611,7 @@
    "lastSeason": "2016-2017",
    "currentPlace": null,
    "lastPlace": 85,
-   "posThis": 76,
+   "posThis": null,
    "posLast": 85
   },
   {
@@ -4621,7 +4621,7 @@
    "lastSeason": "2017-2018",
    "currentPlace": null,
    "lastPlace": 76,
-   "posThis": 86,
+   "posThis": null,
    "posLast": 76
   },
   {
@@ -4631,8 +4631,8 @@
    "lastSeason": "2026-2027",
    "currentPlace": 105,
    "lastPlace": 105,
-   "posThis": 106,
-   "posLast": 95
+   "posThis": 105,
+   "posLast": 105
   },
   {
    "licence": "017730Y",
@@ -4641,7 +4641,7 @@
    "lastSeason": "2018-2019",
    "currentPlace": null,
    "lastPlace": 19,
-   "posThis": 96,
+   "posThis": null,
    "posLast": 19
   },
   {
@@ -4650,9 +4650,9 @@
    "club": "ACADEMIE DE BILLARD DE ST DIZIER",
    "lastSeason": "2021-2022",
    "currentPlace": null,
-   "lastPlace": 19,
-   "posThis": 19,
-   "posLast": null
+   "lastPlace": 0,
+   "posThis": null,
+   "posLast": 0
   },
   {
    "licence": "130986Y",
@@ -4681,7 +4681,7 @@
    "lastSeason": "2019-2020",
    "currentPlace": null,
    "lastPlace": 107,
-   "posThis": 62,
+   "posThis": null,
    "posLast": 107
   },
   {
@@ -4691,7 +4691,7 @@
    "lastSeason": "2021-2022",
    "currentPlace": null,
    "lastPlace": 11,
-   "posThis": 107,
+   "posThis": null,
    "posLast": 11
   },
   {
@@ -4712,7 +4712,7 @@
    "currentPlace": 29,
    "lastPlace": 29,
    "posThis": 29,
-   "posLast": 19
+   "posLast": 29
   },
   {
    "licence": "014030Q",
@@ -4721,7 +4721,7 @@
    "lastSeason": "2021-2022",
    "currentPlace": null,
    "lastPlace": 98,
-   "posThis": 19,
+   "posThis": null,
    "posLast": 98
   },
   {
@@ -4731,7 +4731,7 @@
    "lastSeason": "2012-2013",
    "currentPlace": null,
    "lastPlace": 68,
-   "posThis": 98,
+   "posThis": null,
    "posLast": 68
   },
   {
@@ -4741,7 +4741,7 @@
    "lastSeason": "2016-2017",
    "currentPlace": null,
    "lastPlace": 1000,
-   "posThis": 68,
+   "posThis": null,
    "posLast": 1000
   },
   {
@@ -4762,7 +4762,7 @@
    "currentPlace": 119,
    "lastPlace": 119,
    "posThis": 119,
-   "posLast": 100
+   "posLast": 119
   },
   {
    "licence": "010094G",
@@ -4771,7 +4771,7 @@
    "lastSeason": "2017-2018",
    "currentPlace": null,
    "lastPlace": 32,
-   "posThis": 106,
+   "posThis": null,
    "posLast": 32
   },
   {
@@ -4795,14 +4795,14 @@
    "posLast": 55
   },
   {
-   "licence": "120669D",
+   "licence": "136048Q",
    "name": "ROBIC DANIEL",
    "club": "AS. BILLARD SEBASTIENNAISE",
    "lastSeason": "2026-2027",
    "currentPlace": 25,
    "lastPlace": 25,
    "posThis": 25,
-   "posLast": 97
+   "posLast": 25
   },
   {
    "licence": "124617Z",
@@ -4811,7 +4811,7 @@
    "lastSeason": "2018-2019",
    "currentPlace": null,
    "lastPlace": 11,
-   "posThis": 98,
+   "posThis": null,
    "posLast": 11
   },
   {
@@ -4822,7 +4822,7 @@
    "currentPlace": 94,
    "lastPlace": 94,
    "posThis": 94,
-   "posLast": null
+   "posLast": 94
   },
   {
    "licence": "126073Z",
@@ -4832,7 +4832,7 @@
    "currentPlace": 2,
    "lastPlace": 2,
    "posThis": 2,
-   "posLast": 83
+   "posLast": 2
   },
   {
    "licence": "126072Y",
@@ -4851,7 +4851,7 @@
    "lastSeason": "2021-2022",
    "currentPlace": null,
    "lastPlace": 111,
-   "posThis": 71,
+   "posThis": null,
    "posLast": 111
   },
   {
@@ -4871,8 +4871,8 @@
    "lastSeason": "2025-2026",
    "currentPlace": 127,
    "lastPlace": 127,
-   "posThis": 132,
-   "posLast": null
+   "posThis": 127,
+   "posLast": 127
   },
   {
    "licence": "164986H",
@@ -4892,7 +4892,7 @@
    "currentPlace": 44,
    "lastPlace": 44,
    "posThis": 44,
-   "posLast": 78
+   "posLast": 44
   },
   {
    "licence": "165926E",
@@ -4901,8 +4901,8 @@
    "lastSeason": "2025-2026",
    "currentPlace": 88,
    "lastPlace": 88,
-   "posThis": 75,
-   "posLast": 33
+   "posThis": 88,
+   "posLast": 88
   },
   {
    "licence": "107548M",
@@ -4912,7 +4912,7 @@
    "currentPlace": 22,
    "lastPlace": 22,
    "posThis": 22,
-   "posLast": 35
+   "posLast": 22
   },
   {
    "licence": "186646B",
@@ -4932,7 +4932,7 @@
    "currentPlace": 63,
    "lastPlace": 63,
    "posThis": 63,
-   "posLast": 30
+   "posLast": 63
   },
   {
    "licence": "017052W",
@@ -4942,7 +4942,7 @@
    "currentPlace": 52,
    "lastPlace": 52,
    "posThis": 52,
-   "posLast": 28
+   "posLast": 52
   },
   {
    "licence": "181386J",
@@ -4952,7 +4952,7 @@
    "currentPlace": 102,
    "lastPlace": 102,
    "posThis": 102,
-   "posLast": 86
+   "posLast": 102
   },
   {
    "licence": "016967P",
@@ -4962,7 +4962,7 @@
    "currentPlace": 45,
    "lastPlace": 45,
    "posThis": 45,
-   "posLast": 104
+   "posLast": 45
   },
   {
    "licence": "140761X",
@@ -4981,8 +4981,8 @@
    "lastSeason": "2025-2026",
    "currentPlace": 120,
    "lastPlace": 120,
-   "posThis": 102,
-   "posLast": null
+   "posThis": 120,
+   "posLast": 120
   },
   {
    "licence": "017602A",
@@ -5001,7 +5001,7 @@
    "lastSeason": "2019-2020",
    "currentPlace": null,
    "lastPlace": 1000,
-   "posThis": 112,
+   "posThis": null,
    "posLast": 1000
   },
   {
@@ -5010,9 +5010,9 @@
    "club": "A S BEAUVAIS",
    "lastSeason": "2025-2026",
    "currentPlace": 53,
-   "lastPlace": 53,
-   "posThis": 51,
-   "posLast": 44
+   "lastPlace": 51,
+   "posThis": 53,
+   "posLast": 51
   },
   {
    "licence": "020790Q",
@@ -5020,9 +5020,9 @@
    "club": "ACAD.BILLARD ST RAPHAEL",
    "lastSeason": "2026-2027",
    "currentPlace": 84,
-   "lastPlace": 84,
-   "posThis": 83,
-   "posLast": 80
+   "lastPlace": 83,
+   "posThis": 84,
+   "posLast": 83
   },
   {
    "licence": "154538B",
@@ -5051,7 +5051,7 @@
    "lastSeason": "2017-2018",
    "currentPlace": null,
    "lastPlace": 1000,
-   "posThis": 102,
+   "posThis": null,
    "posLast": 1000
   },
   {
@@ -5070,9 +5070,9 @@
    "club": "B.C. DU CANON D OR",
    "lastSeason": "2016-2017",
    "currentPlace": null,
-   "lastPlace": 102,
-   "posThis": 102,
-   "posLast": null
+   "lastPlace": 0,
+   "posThis": null,
+   "posLast": 0
   },
   {
    "licence": "184363V",
@@ -5081,8 +5081,8 @@
    "lastSeason": "2026-2027",
    "currentPlace": 125,
    "lastPlace": 125,
-   "posThis": 116,
-   "posLast": null
+   "posThis": 125,
+   "posLast": 125
   },
   {
    "licence": "180302F",
@@ -5092,7 +5092,7 @@
    "currentPlace": 107,
    "lastPlace": 107,
    "posThis": 107,
-   "posLast": null
+   "posLast": 107
   },
   {
    "licence": "180348F",
@@ -5110,9 +5110,9 @@
    "club": "ACADEMIE BRESTOISE DE BILLARD",
    "lastSeason": "2025-2026",
    "currentPlace": 64,
-   "lastPlace": 64,
-   "posThis": 61,
-   "posLast": 21
+   "lastPlace": 61,
+   "posThis": 64,
+   "posLast": 61
   },
   {
    "licence": "010711Z",
@@ -5121,8 +5121,8 @@
    "lastSeason": "2025-2026",
    "currentPlace": 110,
    "lastPlace": 110,
-   "posThis": 108,
-   "posLast": 99
+   "posThis": 110,
+   "posLast": 110
   },
   {
    "licence": "",
@@ -5131,7 +5131,7 @@
    "lastSeason": "2016-2017",
    "currentPlace": null,
    "lastPlace": 54,
-   "posThis": 100,
+   "posThis": null,
    "posLast": 54
   },
   {
@@ -5140,9 +5140,9 @@
    "club": "SOISSONS BILLARD CLUB",
    "lastSeason": "2026-2027",
    "currentPlace": 41,
-   "lastPlace": 41,
-   "posThis": 35,
-   "posLast": 72
+   "lastPlace": 39,
+   "posThis": 41,
+   "posLast": 39
   },
   {
    "licence": "134771N",
@@ -5150,9 +5150,9 @@
    "club": "SOISSONS BILLARD CLUB",
    "lastSeason": "2026-2027",
    "currentPlace": 59,
-   "lastPlace": 59,
-   "posThis": 48,
-   "posLast": 93
+   "lastPlace": 48,
+   "posThis": 59,
+   "posLast": 48
   },
   {
    "licence": "132757B",
@@ -5172,7 +5172,7 @@
    "currentPlace": 75,
    "lastPlace": 75,
    "posThis": 75,
-   "posLast": 105
+   "posLast": 75
   },
   {
    "licence": "186705Q",
@@ -5220,9 +5220,9 @@
    "club": "U.S GRAVELINOISE",
    "lastSeason": "2025-2026",
    "currentPlace": 58,
-   "lastPlace": 58,
-   "posThis": 46,
-   "posLast": 12
+   "lastPlace": 46,
+   "posThis": 58,
+   "posLast": 46
   },
   {
    "licence": "014321V",
@@ -5232,7 +5232,7 @@
    "currentPlace": 15,
    "lastPlace": 15,
    "posThis": 15,
-   "posLast": 40
+   "posLast": 15
   },
   {
    "licence": "148051A",
@@ -5240,9 +5240,9 @@
    "club": "ACAD.BILLARD ST RAPHAEL",
    "lastSeason": "2026-2027",
    "currentPlace": 83,
-   "lastPlace": 83,
-   "posThis": 82,
-   "posLast": 74
+   "lastPlace": 82,
+   "posThis": 83,
+   "posLast": 82
   },
   {
    "licence": "014334I",
@@ -5252,7 +5252,7 @@
    "currentPlace": 70,
    "lastPlace": 70,
    "posThis": 70,
-   "posLast": null
+   "posLast": 70
   },
   {
    "licence": "173524N",
@@ -5262,7 +5262,7 @@
    "currentPlace": 19,
    "lastPlace": 19,
    "posThis": 19,
-   "posLast": 20
+   "posLast": 19
   },
   {
    "licence": "017219H",
@@ -5272,7 +5272,7 @@
    "currentPlace": 24,
    "lastPlace": 24,
    "posThis": 24,
-   "posLast": 102
+   "posLast": 24
   },
   {
    "licence": "014347V",
@@ -5281,7 +5281,7 @@
    "lastSeason": "2019-2020",
    "currentPlace": null,
    "lastPlace": 55,
-   "posThis": 102,
+   "posThis": null,
    "posLast": 55
   },
   {
@@ -5300,9 +5300,9 @@
    "club": "BILLARD CLUB DE GRAUVES",
    "lastSeason": "2021-2022",
    "currentPlace": null,
-   "lastPlace": 1000,
-   "posThis": 86,
-   "posLast": 1000
+   "lastPlace": 120,
+   "posThis": null,
+   "posLast": 120
   },
   {
    "licence": "016610W",
@@ -5311,7 +5311,7 @@
    "lastSeason": "2011-2012",
    "currentPlace": null,
    "lastPlace": 82,
-   "posThis": 1000,
+   "posThis": null,
    "posLast": 82
   },
   {
@@ -5321,7 +5321,7 @@
    "lastSeason": "2019-2020",
    "currentPlace": null,
    "lastPlace": 90,
-   "posThis": 82,
+   "posThis": null,
    "posLast": 90
   },
   {
@@ -5330,9 +5330,9 @@
    "club": "B.C. LINGOLSHEIM",
    "lastSeason": "2025-2026",
    "currentPlace": 67,
-   "lastPlace": 67,
-   "posThis": 57,
-   "posLast": 88
+   "lastPlace": 54,
+   "posThis": 67,
+   "posLast": 54
   }
  ],
  "windowBefore": [
