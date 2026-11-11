@@ -9,9 +9,23 @@ import { TournamentProvider, useTournament, type TournamentStore } from "@/store
 
 import { BillardAssignment } from "./BillardAssignment";
 
-/** Tournoi d'exemple : 17 poules de 4, 11 billards (1 à 4 en 3m10, 5 à 11 en 2m80). */
-function renderAssignment() {
-  const events = demoEvents().map((e) => ({ ...e, at: "2026-10-29T10:00:00Z" }));
+/**
+ * Tournoi d'exemple : 17 poules de 4, 11 billards (1 à 4 en 3m10, 5 à 11 en 2m80). Avec
+ * `players`, le tournoi est réduit à ce nombre d'inscrits, sans affectation de départ.
+ */
+function renderAssignment(players?: number) {
+  const events = demoEvents()
+    .map((e) => ({ ...e, at: "2026-10-29T10:00:00Z" }))
+    .map((e) =>
+      players === undefined
+        ? e
+        : e.type === "players.imported"
+          ? { ...e, payload: { players: e.payload.players.slice(0, players) } }
+          : e.type === "billards.assigned" && e.payload.phase === "PREQ"
+            ? { ...e, payload: { phase: "PREQ" as const, assignments: {} } }
+            : e,
+    );
+  const pouleCount = players === undefined ? 17 : (players - 8) / 4;
   const store: { current: TournamentStore | null } = { current: null };
   function Probe() {
     store.current = useTournament();
@@ -21,7 +35,7 @@ function renderAssignment() {
     <TournamentProvider persist={false} initialId="demo" initialEvents={events as never}>
       <ToastProvider>
         <Probe />
-        <BillardAssignment pouleCount={17} locked={false} />
+        <BillardAssignment pouleCount={pouleCount} locked={false} />
       </ToastProvider>
     </TournamentProvider>,
   );
@@ -71,6 +85,24 @@ describe("affectation des billards du vendredi", () => {
     // « Autre proposition » : une autre répartition, toujours complète
     fireEvent.click(screen.getByRole("button", { name: "Autre proposition" }));
     expect(new Set(Object.values(t.preq()).flat()).size).toBe(11);
+  });
+
+  it("moins de poules que de billards : la proposition annonce les billards laissés libres", () => {
+    // 40 inscrits : 8 têtes de série et 8 poules de 4 pour 11 billards
+    const t = renderAssignment(40);
+    expect(screen.getByText(/À placer \(8\)/)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Proposer" }));
+    const used = new Set(Object.values(t.preq()).flat());
+    expect(used.size).toBe(8);
+    expect(
+      screen.getByText(
+        /^8 poules pour 11 billards : une poule par billard, 3 billards restent libres \(B\d+, B\d+, B\d+\)\.$/,
+      ),
+    ).toBeInTheDocument();
+    expect(screen.getAllByText("Déposez une poule ici")).toHaveLength(3);
+    // La remarque disparaît dès que l'affectation n'est plus la proposition
+    fireEvent.click(screen.getByRole("button", { name: "Retirer la poule 1" }));
+    expect(screen.queryByText(/restent libres/)).toBeNull();
   });
 
   it("« Vider » puis annulation : l'affichage suit le journal", () => {

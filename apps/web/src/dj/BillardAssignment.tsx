@@ -88,6 +88,9 @@ export function BillardAssignment({
   const [seed, setSeed] = useState(1);
   const [proposed, setProposed] = useState(false);
   const [impossible, setImpossible] = useState<string | null>(null);
+  // Ce que la dernière proposition n'a pas pu respecter (billards libres, poules de 3) :
+  // affiché tant que cette proposition est celle du journal
+  const [remarks, setRemarks] = useState<{ key: string; notes: string[] } | null>(null);
   useEffect(() => {
     setPlan((p) =>
       assignmentsKey(planToAssignments(p)) === storedKey ? p : assignmentsToPlan(storedAssign),
@@ -143,7 +146,14 @@ export function BillardAssignment({
     setImpossible(null);
     setProposed(true);
     apply(res.plan);
-    toast(`Proposition ${next} · ${res.maxLoad} matchs au plus par billard`);
+    setRemarks({ key: assignmentsKey(planToAssignments(res.plan)), notes: res.notes });
+    toast(
+      `Proposition ${next} · ${res.maxLoad} matchs au plus par billard${
+        res.emptyBillards.length
+          ? ` · ${plural(res.emptyBillards.length, "billard libre", "billards libres")}`
+          : ""
+      }`,
+    );
   };
 
   const clear = () => {
@@ -455,7 +465,11 @@ export function BillardAssignment({
     >
       <LayoutGroup id="affectation">
         <div className="px-4 pb-4">
-          <LoadStrip loads={loads} impossible={impossible} />
+          <LoadStrip
+            loads={loads}
+            impossible={impossible}
+            notes={remarks?.key === storedKey ? remarks.notes : []}
+          />
           {!locked && (issues.unplaced.length > 0 || dragging !== null) ? (
             <div
               {...dropProps("tray")}
@@ -519,7 +533,16 @@ function PlayerDots({ count }: { count: 3 | 4 }) {
 }
 
 /** Critères de l'optimiseur et charge de chaque billard (barre fine, en matchs). */
-function LoadStrip({ loads, impossible }: { loads: BillardLoad[]; impossible: string | null }) {
+function LoadStrip({
+  loads,
+  impossible,
+  notes,
+}: {
+  loads: BillardLoad[];
+  impossible: string | null;
+  /** Ce que la proposition affichée n'a pas pu respecter. */
+  notes: string[];
+}) {
   const max = Math.max(12, ...loads.map((l) => l.matches));
   const top = Math.max(0, ...loads.map((l) => l.matches));
   return (
@@ -530,6 +553,11 @@ function LoadStrip({ loads, impossible }: { loads: BillardLoad[]; impossible: st
           <b className="text-ink-secondary font-semibold">Proposer</b> : {OPTIMIZER_CRITERIA}
         </span>
       </p>
+      {notes.map((note) => (
+        <p key={note} className="text-gold-ink mt-1.5 text-[12px] font-semibold">
+          {note}
+        </p>
+      ))}
       {impossible ? (
         <p className="text-alert-ink mt-1.5 text-[12px] font-semibold">{impossible}</p>
       ) : null}

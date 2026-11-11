@@ -18,18 +18,32 @@ export function shuffle<T>(items: T[], random: () => number = Math.random): T[] 
 /**
  * Poules du vendredi : en général deux poules par billard, sans priorité des poules
  * fortes sur les 3m10. Clés : numéro de poule.
+ *
+ * Les poules, prises dans un ordre tiré au sort, sont distribuées par tours complets de
+ * billards (chaque tour dans un ordre tiré au sort) : aucun billard ne reste vide dès qu'il y a
+ * au moins autant de poules que de billards, et l'écart entre deux billards est d'une poule au
+ * plus. (Tirer au hasard parmi « 2 places par billard » laissait un billard vide près d'une fois
+ * sur deux avec 17 poules et 11 billards.)
  */
 export function drawPreqBillards(
   pouleCount: number,
   billards: Billard[],
   random?: () => number,
 ): Record<string, number[]> {
-  const perTable = Math.max(1, Math.ceil(pouleCount / Math.max(1, billards.length)));
-  const slots: number[] = [];
-  for (let k = 0; k < perTable; k++) for (const b of billards) slots.push(b.num);
-  const shuffled = shuffle(slots, random);
+  const poules = shuffle(
+    Array.from({ length: pouleCount }, (_, i) => i + 1),
+    random,
+  );
   const out: Record<string, number[]> = {};
-  for (let i = 0; i < pouleCount; i++) out[String(i + 1)] = [shuffled[i] ?? billards[0]?.num ?? 1];
+  let round: number[] = [];
+  for (const poule of poules) {
+    if (round.length === 0)
+      round = shuffle(
+        billards.map((b) => b.num),
+        random,
+      );
+    out[String(poule)] = [round.pop() ?? 1];
+  }
   return out;
 }
 

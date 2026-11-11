@@ -2,7 +2,8 @@
  * Optimiseur « Proposer » de l'affectation des billards du vendredi (retours des 6 et 7 novembre).
  *
  * Critères, dans l'ordre :
- * 1. occuper tous les billards disponibles (ou un billard par poule s'il y a moins de poules) ;
+ * 1. occuper tous les billards disponibles (ou un billard par poule s'il y a moins de poules :
+ *    les billards qui restent libres sont alors annoncés dans le résultat) ;
  * 2. minimiser la charge maximale d'un billard, en nombre de matchs (poule de 4 = 6 matchs,
  *    poule de 3 = 3 matchs ; un groupe de 3 poules sur 2 billards liés partage sa charge) ;
  * 3. équilibrer les charges (somme des carrés minimale), puis le moins de billards liés possible ;
@@ -12,7 +13,8 @@
  *    - 3 poules de 3 : deux sur des 3m10 et une sur un 2m80 quand les deux formats sont en
  *      nombre comparable ; l'inverse s'il y a au moins 1,5 fois plus de 2m80 que de 3m10 ;
  *    les poules de 3 allègent les emplacements les plus chargés (elles rejoignent une poule de
- *    4 sur un billard partagé plutôt que d'occuper un billard seul) ;
+ *    4 sur un billard partagé plutôt que d'occuper un billard seul) ; quand la charge des
+ *    billards empêche cette répartition, le résultat le dit ;
  * 5. les groupes de 3 poules sur 2 billards liés du même format et voisins (numéros consécutifs) ;
  * 6. aucune priorité aux poules fortes sur les 3m10 (SPEC §3) : numéros de poule tirés au sort.
  *
@@ -116,6 +118,16 @@ export type Proposal =
       threesOnSmall: number;
       /** Répartition des poules de 3 visée par la règle (critère 4). */
       threesOnBigTarget: number;
+      /**
+       * Billards laissés libres : aucun dès qu'il y a au moins autant de poules que de
+       * billards ; sinon un billard par poule et les autres ici.
+       */
+      emptyBillards: number[];
+      /**
+       * Ce que la proposition n'a pas pu respecter, en clair : billards restés libres,
+       * répartition des poules de 3 différente de la règle. Vide quand tout est tenu.
+       */
+      notes: string[];
     }
   | { ok: false; reason: string };
 
@@ -140,51 +152,88 @@ interface Structure {
 const cap = (k: SlotKind) => (k === "single" ? 1 : k === "double" ? 2 : 3);
 const tablesNeeded = (k: SlotKind) => (k === "linked" ? 2 : 1);
 
-/**
- * Répartit les tailles de poules dans une structure : les poules de 3 allègent d'abord les
- * emplacements les plus chargés (billards à 3 poules, puis à 2, puis groupes liés, puis
- * billards seuls), les poules de 4 complètent.
- */
-function compose(s: Structure, fours: number, threes: number): Slot[] | null {
-  let n3 = threes;
-  let n4 = fours;
-  const slots: Slot[] = [
-    ...Array.from({ length: s.w }, () => ({ kind: "triple" as const, sizes: [] as number[] })),
-    ...Array.from({ length: s.y }, () => ({ kind: "double" as const, sizes: [] as number[] })),
-    ...Array.from({ length: s.x }, () => ({ kind: "linked" as const, sizes: [] as number[] })),
-    ...Array.from({ length: s.z }, () => ({ kind: "single" as const, sizes: [] as number[] })),
-  ];
-  let progress = true;
-  while (n3 > 0 && progress) {
-    progress = false;
-    for (const slot of slots) {
-      if (n3 > 0 && slot.sizes.length < cap(slot.kind)) {
-        slot.sizes.push(3);
-        n3--;
-        progress = true;
-      }
-    }
-  }
-  for (const slot of slots) {
-    while (slot.sizes.length < cap(slot.kind) && n4 > 0) {
-      slot.sizes.push(4);
-      n4--;
-    }
-  }
-  if (n3 || n4 || slots.some((o) => o.sizes.length !== cap(o.kind))) return null;
-  for (const slot of slots) slot.sizes.sort((a, b) => b - a);
-  return slots;
+/** Charge d'un billard d'un emplacement qui reçoit `threes` poules de 3 (le reste en poules de 4). */
+function slotLoad(kind: SlotKind, threes: number): number {
+  const total = (cap(kind) - threes) * pouleMatches(4) + threes * pouleMatches(3);
+  return total / tablesNeeded(kind);
 }
 
-/** Charges par billard d'une composition (pour comparer les structures). */
-function slotLoads(slots: Slot[]): number[] {
-  const out: number[] = [];
-  for (const s of slots) {
-    const total = s.sizes.reduce((n, size) => n + pouleMatches(size), 0);
-    if (s.kind === "linked") out.push(total / 2, total / 2);
-    else out.push(total);
-  }
-  return out;
+/**
+ * Répartitions des poules de 3 dans une structure qui donnent la charge maximale la plus basse,
+ * puis les charges les plus équilibrées (critères 2 et 3). Toutes les répartitions de chaque
+ * type d'emplacement sont essayées : avec deux poules de 3 et un seul billard à 2 poules, par
+ * exemple, il vaut mieux les réunir sur ce billard (6 matchs partout) que d'en isoler une sur un
+ * billard seul. Plusieurs répartitions peuvent être à égalité : le choix se fait ensuite sur la
+ * règle des formats (critère 4).
+ */
+function compose(
+  s: Structure,
+  fours: number,
+  threes: number,
+): { slots: Slot[]; maxLoad: number; squares: number }[] {
+  const kinds: [SlotKind, number][] = [
+    ["triple", s.w],
+    ["double", s.y],
+    ["linked", s.x],
+    ["single", s.z],
+  ];
+  const capacity = kinds.reduce((n, [kind, count]) => n + cap(kind) * count, 0);
+  if (capacity !== fours + threes) return [];
+  let best: { counts: number[][]; maxLoad: number; squares: number }[] = [];
+  // counts[k][j] : nombre d'emplacements du type k qui reçoivent j poules de 3
+  const counts: number[][] = kinds.map(([kind]) => Array<number>(cap(kind) + 1).fill(0));
+  /** Répartition complète : gardée si elle égale ou améliore la meilleure charge. */
+  const keep = () => {
+    let maxLoad = 0;
+    let squares = 0;
+    kinds.forEach(([kind], i) =>
+      counts[i]!.forEach((n, t) => {
+        if (n === 0) return;
+        const load = slotLoad(kind, t);
+        maxLoad = Math.max(maxLoad, load);
+        squares += n * tablesNeeded(kind) * load * load;
+      }),
+    );
+    const top = best[0];
+    const cmp = top ? compareScores([maxLoad, squares], [top.maxLoad, top.squares]) : -1;
+    if (cmp < 0) best = [];
+    if (cmp <= 0) best.push({ counts: counts.map((c) => [...c]), maxLoad, squares });
+  };
+  /** Choisit combien d'emplacements du type `k` reçoivent `j` poules de 3, puis la suite. */
+  const visit = (k: number, j: number, slotsLeft: number, threesLeft: number): void => {
+    const kind = kinds[k]?.[0];
+    if (kind === undefined) {
+      if (threesLeft === 0) keep();
+      return;
+    }
+    const row = counts[k]!;
+    if (j === cap(kind)) {
+      // dernière case du type : les emplacements restants reçoivent tous `j` poules de 3
+      if (slotsLeft * j <= threesLeft) {
+        row[j] = slotsLeft;
+        visit(k + 1, 0, kinds[k + 1]?.[1] ?? 0, threesLeft - slotsLeft * j);
+      }
+    } else {
+      for (let n = 0; n <= slotsLeft && n * j <= threesLeft; n++) {
+        row[j] = n;
+        visit(k, j + 1, slotsLeft - n, threesLeft - n * j);
+      }
+    }
+    row[j] = 0;
+  };
+  visit(0, 0, s.w, threes);
+  return best.map((b) => ({
+    maxLoad: b.maxLoad,
+    squares: b.squares,
+    slots: kinds.flatMap(([kind], i) =>
+      b.counts[i]!.flatMap((n, t) =>
+        Array.from({ length: n }, () => ({
+          kind,
+          sizes: [...Array<number>(cap(kind) - t).fill(4), ...Array<number>(t).fill(3)],
+        })),
+      ),
+    ),
+  }));
 }
 
 /** Paires de billards voisins (numéros consécutifs) du même format, sans chevauchement. */
@@ -216,7 +265,8 @@ function maxDisjointPairs(billards: Billard[]): number {
  * Choisit, pour chaque emplacement, le format de billard (3m10 ou 2m80) : les billards de
  * chaque format doivent suffire (en nombre et en paires voisines pour les groupes liés), et le
  * nombre de poules de 3 placées sur des 3m10 doit être le plus proche possible de la cible
- * (critère 4). Null si aucune répartition ne tient.
+ * (critère 4). Null si aucune répartition ne tient ; sinon le choix et son score (écart à la
+ * cible des poules de 3, puis 3m10 inoccupés).
  */
 function assignFormats(
   slots: Slot[],
@@ -224,7 +274,7 @@ function assignFormats(
   small: Billard[],
   target: number,
   used: number,
-): boolean[] | null {
+): { choice: boolean[]; score: number[] } | null {
   const nBig = big.length;
   const nSmall = small.length;
   const pairsBig = maxDisjointPairs(big);
@@ -261,7 +311,7 @@ function assignFormats(
     const score = [Math.abs(c - target), Math.abs(bt - Math.min(nBig, used))];
     if (!best || compareScores(score, best.score) < 0) best = { choice, score };
   }
-  return best?.choice ?? null;
+  return best;
 }
 
 /** Choisit `count` paires disjointes au hasard (repli : glouton de gauche à droite). */
@@ -301,6 +351,8 @@ export function optimizeBillards(poules: PouleSize[], billards: Billard[], seed 
       threesOnBig: 0,
       threesOnSmall: 0,
       threesOnBigTarget: 0,
+      emptyBillards: [],
+      notes: [],
     };
   if (B === 0) return { ok: false, reason: "Aucun billard n'est défini." };
   if (P > 3 * B) {
@@ -325,22 +377,20 @@ export function optimizeBillards(poules: PouleSize[], billards: Billard[], seed 
       const y = P - used - x - 2 * w;
       const z = used - 2 * x - y - w;
       if (y < 0 || z < 0) continue;
-      const slots = compose({ x, y, z, w }, fours, threes);
-      if (!slots) continue;
-      const loads = slotLoads(slots);
-      candidates.push({ slots, score: [Math.max(...loads), loads.reduce((n, l) => n + l * l, 0), x, w] });
+      for (const c of compose({ x, y, z, w }, fours, threes))
+        candidates.push({ slots: c.slots, score: [c.maxLoad, c.squares, x, w] });
     }
   }
   candidates.sort((a, b) => compareScores(a.score, b.score));
 
-  // Première structure dont les emplacements tiennent dans les deux formats
-  let chosen: { slots: Slot[]; onBig: boolean[] } | null = null;
+  // Meilleure structure dont les emplacements tiennent dans les deux formats ; à égalité sur
+  // les critères 1 à 3, celle qui répartit le mieux les poules de 3 entre les formats
+  let chosen: { slots: Slot[]; onBig: boolean[]; score: number[]; formats: number[] } | null = null;
   for (const c of candidates) {
-    const onBig = assignFormats(c.slots, big, small, target, used);
-    if (onBig) {
-      chosen = { slots: c.slots, onBig };
-      break;
-    }
+    if (chosen && compareScores(c.score, chosen.score) !== 0) break;
+    const formats = assignFormats(c.slots, big, small, target, used);
+    if (formats && (!chosen || compareScores(formats.score, chosen.formats) < 0))
+      chosen = { slots: c.slots, onBig: formats.choice, score: c.score, formats: formats.score };
   }
   if (!chosen) {
     return {
@@ -388,6 +438,25 @@ export function optimizeBillards(poules: PouleSize[], billards: Billard[], seed 
   }
 
   const loads = planLoads(plan, poules, billards);
+  const emptyBillards = loads.filter((l) => l.poules.length === 0).map((l) => l.billard);
+  const notes: string[] = [];
+  if (emptyBillards.length > 0) {
+    const names = `B${emptyBillards.join(", B")}`;
+    const rest =
+      emptyBillards.length > 1
+        ? `${emptyBillards.length} billards restent libres`
+        : "1 billard reste libre";
+    notes.push(
+      P < B
+        ? `${P} poules pour ${B} billards : une poule par billard, ${rest} (${names}).`
+        : `Occupation complète impossible : ${rest} (${names}).`,
+    );
+  }
+  if (threesOnBig !== target) {
+    notes.push(
+      `Poules de 3 : ${threesOnBig} sur 3m10 et ${threes - threesOnBig} sur 2m80 au lieu de ${target} et ${threes - target} : la charge des billards passe avant cette répartition.`,
+    );
+  }
   return {
     ok: true,
     plan,
@@ -397,6 +466,8 @@ export function optimizeBillards(poules: PouleSize[], billards: Billard[], seed 
     threesOnBig,
     threesOnSmall: threes - threesOnBig,
     threesOnBigTarget: target,
+    emptyBillards,
+    notes,
   };
 }
 
