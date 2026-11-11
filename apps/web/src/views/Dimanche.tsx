@@ -233,6 +233,8 @@ export function Dimanche() {
 function Summary({ sheet, onTables }: { sheet: PrimesSheet; onTables: () => void }) {
   const { state, closure } = useTournament();
   const consolante = bracketWinner(state, "CLS");
+  // Photo du joueur si l'application 5 Quilles en fournit une (sinon le nom seul)
+  const photoOf = (n: string) => state.players.find((p) => p.name === n)?.photoUrl ?? null;
 
   const block = (title: string, phase: "N" | "M") => {
     const { places } = podiumOf(state, phase);
@@ -256,7 +258,7 @@ function Summary({ sheet, onTables }: { sheet: PrimesSheet; onTables: () => void
           style={{ animationDelay: `${index * 90}ms` }}
           aria-label={`${rank} ${title} : ${name ? nice(name) : "à venir"}`}
         >
-          <Avatar name={name || "?"} size={big ? "xl" : "lg"} crown={big} />
+          <Avatar name={name || "?"} photoUrl={photoOf(name)} size={big ? "xl" : "lg"} />
           <div className="min-w-0 max-w-full">
             <div
               className={cx(
@@ -315,7 +317,7 @@ function Summary({ sheet, onTables }: { sheet: PrimesSheet; onTables: () => void
       </div>
       {consolante ? (
         <div className="card text-ink-secondary flex flex-wrap items-center gap-2.5 px-4 py-3 text-[13px]">
-          <Avatar name={consolante} size="sm" />
+          <Avatar name={consolante} photoUrl={photoOf(consolante)} size="sm" />
           <span>
             Consolante : vainqueur <b className="text-ink">{nice(consolante)}</b>
           </span>
