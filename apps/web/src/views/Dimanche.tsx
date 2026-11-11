@@ -140,7 +140,7 @@ export function Dimanche() {
         <PrimesPanel id="primes" open={primesOpen} onToggle={setPrimesOpen} />
 
         {ranked && !showTables ? (
-          <Summary sheet={sheet} onTables={() => setShowTables(true)} />
+          <Summary onTables={() => setShowTables(true)} />
         ) : (
           <>
             <Card
@@ -230,7 +230,7 @@ export function Dimanche() {
 
 /* ---------- Résumé de fin : podiums Masters et National ---------- */
 
-function Summary({ sheet, onTables }: { sheet: PrimesSheet; onTables: () => void }) {
+function Summary({ onTables }: { onTables: () => void }) {
   const { state, closure } = useTournament();
   const consolante = bracketWinner(state, "CLS");
   // Photo du joueur si l'application 5 Quilles en fournit une (sinon le nom seul)
@@ -238,13 +238,7 @@ function Summary({ sheet, onTables }: { sheet: PrimesSheet; onTables: () => void
 
   const block = (title: string, phase: "N" | "M") => {
     const { places } = podiumOf(state, phase);
-    // Les deux demi-finalistes battus touchent la même prime ; leur rang vient du classement final
-    const amounts = [
-      primeOf(sheet, phase, "1er"),
-      primeOf(sheet, phase, "2e"),
-      primeOf(sheet, phase, "Perdants demies"),
-      primeOf(sheet, phase, "Perdants demies"),
-    ];
+    // Pas de montant ici : les primes sont dans le volet du haut (le rang vient du classement final)
     const tile = (index: number, rank: string) => {
       const name = places[index] ?? "";
       const big = index === 0;
@@ -270,9 +264,6 @@ function Summary({ sheet, onTables }: { sheet: PrimesSheet; onTables: () => void
             </div>
             <div className={cx("truncate font-extrabold", big ? "text-[16px]" : "text-[13px]")}>
               {name ? nice(name) : "–"}
-            </div>
-            <div className="text-gold-ink font-mono text-[12px] font-bold">
-              {euro2(amounts[index] ?? 0)}
             </div>
           </div>
         </div>
