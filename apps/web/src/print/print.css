@@ -1,6 +1,6 @@
 /*
  * Documents imprimés Pilot5Q (docs/DESIGN.md, « Impression »).
- * Pages aux dimensions du papier (A4, A4 paysage, A3), marges portées par la page elle-même
+ * Pages aux dimensions du papier (A4 portrait ou paysage), marges portées par la page elle-même
  * pour un rendu identique à l'écran et sur papier. Bandeau plein bleu signature (gris foncé en
  * noir et blanc), zébrures gris très clair, filets fins, chiffres tabulaires.
  */
@@ -11,10 +11,6 @@
 }
 @page landscape {
   size: A4 landscape;
-  margin: 0;
-}
-@page a3 {
-  size: A3;
   margin: 0;
 }
 
@@ -52,23 +48,6 @@
 }
 .print-page.print-fixed.print-landscape {
   height: 210mm;
-}
-.print-a3 {
-  page: a3;
-  box-sizing: border-box;
-  width: 297mm;
-  height: 420mm;
-  margin: 0 auto 8mm;
-  overflow: hidden;
-  background: #fff;
-  box-shadow: var(--shadow-raised);
-  break-after: page;
-}
-.print-a3 .print-page {
-  zoom: 1.41421;
-  margin: 0;
-  box-shadow: none;
-  break-after: auto;
 }
 
 /* ---------- Bandeau d'en-tête ---------- */
@@ -318,8 +297,13 @@
 .pt tr.hl-blue td {
   background: #e9effc !important;
 }
+/*
+ * Filet de séparation (tours de la rotation Masters, passages de la consolante). Au moins
+ * 0,6 mm : le navigateur arrondit les filets au pixel inférieur, et un filet de 0,5 mm (1 px)
+ * perdait contre le filet clair de la ligne du dessus, de même largeur, dans le tableau fusionné.
+ */
 .pt tr.rule-top td {
-  border-top: 0.5mm solid #0f1b33;
+  border-top: 0.6mm solid #0f1b33;
 }
 .p-box {
   display: inline-block;
@@ -389,155 +373,229 @@
 
 /* ---------- Tableaux d'affichage au club ---------- */
 
+/*
+ * Grille des poules : les cartes se partagent la hauteur de la page (rangées égales). Tailles
+ * maximales par variante (`--board-*`) : grandes cartes sur deux colonnes (lg : 1 à 4 poules,
+ * md : 5 à 8), trois colonnes par défaut (9 à 18), quatre colonnes en `sm` (19 et plus).
+ */
 .board-grid {
+  --board-font: 12pt;
+  --board-dot: 5mm;
+  --board-dot-font: 7.8pt;
   display: grid;
   flex: 1;
   min-height: 0;
-  gap: 3mm;
+  gap: 2.6mm 3mm;
   margin-top: 3.5mm;
+}
+.board-grid-lg {
+  --board-font: 19pt;
+  --board-dot: 7.4mm;
+  --board-dot-font: 11pt;
+}
+.board-grid-md {
+  --board-font: 15pt;
+  --board-dot: 6.2mm;
+  --board-dot-font: 9.5pt;
+}
+.board-grid-sm {
+  --board-font: 10.5pt;
+  --board-dot: 4.4mm;
+  --board-dot-font: 7pt;
+  column-gap: 2.4mm;
 }
 .board-card {
   display: flex;
   min-width: 0;
+  min-height: 0;
   flex-direction: column;
   overflow: hidden;
   border: 0.35mm solid #c9ced8;
   border-radius: 3mm;
   break-inside: avoid;
 }
+/* En-tête sur une seule ligne : numéro de poule à gauche, pastille des billards à droite */
 .board-card-head {
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: space-between;
-  gap: 1mm 2mm;
-  padding: 1.4mm 3mm 1.3mm;
+  gap: 2mm;
+  padding: 1.1mm 2.6mm 1mm 3mm;
   border-bottom: 0.35mm solid #0f1b33;
+  white-space: nowrap;
 }
 .board-poule {
   display: flex;
+  flex-shrink: 0;
   align-items: baseline;
-  gap: 1.6mm;
+  gap: 1.5mm;
 }
 .board-poule .p-label {
   font-size: 7pt;
 }
 .board-num {
   font-family: var(--font-mono);
-  font-size: 24pt;
+  font-size: 23pt;
   font-weight: 700;
   line-height: 0.9;
   letter-spacing: -0.04em;
 }
+/* Pastille « B 5·6 » : libellé court, numéros en grand, format (2m80 / 3m10) en exposant */
 .board-pill {
   display: inline-flex;
   flex-shrink: 0;
   align-items: baseline;
-  gap: 1mm;
-  padding: 0.8mm 2.2mm 0.8mm 2mm;
+  gap: 0.9mm;
+  padding: 0.7mm 2mm 0.7mm 2.1mm;
   border: 0.4mm solid #0f1b33;
   border-radius: 999px;
-  font-size: 6.6pt;
-  font-weight: 800;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
   white-space: nowrap;
+}
+.board-pill-label {
+  font-size: 7pt;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 .board-pill b {
   font-family: var(--font-mono);
-  font-size: 11.5pt;
+  font-size: 13.5pt;
   font-weight: 700;
-  letter-spacing: -0.04em;
+  line-height: 1;
+  letter-spacing: -0.05em;
 }
-.board-grid-sm .board-card-head {
-  flex-wrap: wrap;
-  gap: 0.8mm 2mm;
+.board-pill-type {
+  align-self: flex-start;
+  margin-top: 0.1mm;
+  font-size: 5.6pt;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  opacity: 0.82;
 }
 .board-pill-full {
   background: #0f1b33;
   color: #fff;
 }
+/*
+ * Joueurs : quatre rangées égales dans la hauteur laissée par l'en-tête. La liste est un
+ * conteneur de taille : le texte et le cercle du numéro se règlent sur la hauteur d'une rangée
+ * (25cqh), plafonnés à la taille de la variante. Les quatre lignes restent donc entières quel
+ * que soit le nombre de poules ; une poule de 3 laisse la quatrième rangée vide.
+ */
 .board-players {
-  display: flex;
+  container-type: size;
+  display: grid;
   flex: 1;
   min-height: 0;
-  flex-direction: column;
-  justify-content: space-evenly;
-  padding: 0.8mm 3mm 1mm;
+  grid-template-rows: repeat(4, minmax(0, 1fr));
+  padding: 0.5mm 3mm 0.8mm;
 }
 .board-player {
   display: flex;
   min-width: 0;
+  min-height: 0;
   align-items: center;
   gap: 2mm;
-  font-size: 12pt;
+  font-size: min(var(--board-font), 19.5cqh);
   font-weight: 650;
   line-height: 1.1;
   letter-spacing: -0.01em;
 }
-.board-player span:last-child {
+/* Nom long : une seule ligne, points de suspension (interligne large : jambages entiers) */
+.board-name {
+  min-width: 0;
   overflow: hidden;
+  line-height: 1.25;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 .board-dot {
   display: inline-grid;
-  width: 5mm;
-  height: 5mm;
+  width: min(var(--board-dot), 22cqh);
+  height: min(var(--board-dot), 22cqh);
   flex-shrink: 0;
   place-items: center;
   border: 0.3mm solid #5b6680;
   border-radius: 999px;
   font-family: var(--font-mono);
-  font-size: 7.8pt;
+  font-size: min(var(--board-dot-font), 13.5cqh);
   font-weight: 700;
+  line-height: 1;
   color: #3c4a66;
 }
 .board-grid-lg .board-num {
   font-size: 40pt;
 }
-.board-grid-lg .board-player {
-  font-size: 15pt;
-}
-.board-grid-lg .board-dot {
-  width: 6.4mm;
-  height: 6.4mm;
-  font-size: 9.5pt;
-}
 .board-grid-lg .board-pill b {
   font-size: 16pt;
+}
+.board-grid-lg .board-pill-type {
+  font-size: 7pt;
 }
 .board-grid-md .board-num {
   font-size: 32pt;
 }
-.board-grid-md .board-player {
-  font-size: 13.5pt;
+.board-grid-md .board-pill b {
+  font-size: 14.5pt;
+}
+.board-grid-md .board-pill-type {
+  font-size: 6.4pt;
+}
+/* Quatre colonnes : en-tête resserré pour garder numéro et pastille sur une ligne */
+.board-grid-sm .board-card-head {
+  gap: 1.2mm;
+  padding: 1.1mm 1.8mm 1mm 2.2mm;
+}
+.board-grid-sm .board-poule {
+  gap: 1.1mm;
+}
+.board-grid-sm .board-poule .p-label {
+  font-size: 5.8pt;
+  letter-spacing: 0.1em;
+}
+.board-grid-sm .board-num {
+  font-size: 20pt;
+}
+.board-grid-sm .board-pill {
+  gap: 0.7mm;
+  padding: 0.6mm 1.5mm 0.6mm 1.6mm;
+}
+.board-grid-sm .board-pill-label {
+  font-size: 6pt;
+}
+.board-grid-sm .board-pill b {
+  font-size: 10pt;
+}
+.board-grid-sm .board-pill-type {
+  font-size: 5pt;
+}
+.board-grid-sm .board-players {
+  padding: 0.5mm 2.2mm 0.8mm;
 }
 .board-grid-sm .board-player {
-  font-size: 10.5pt;
-}
-.board-grid-sm .board-dot {
-  width: 4.4mm;
-  height: 4.4mm;
-  font-size: 7pt;
+  gap: 1.5mm;
 }
 
-/* Bande récapitulative « Billards » */
+/* Bande récapitulative « Billards » : jusqu'à six billards par rangée */
 .board-bills {
-  margin-top: 3.5mm;
-  padding-top: 2.4mm;
+  flex-shrink: 0;
+  margin-top: 3.2mm;
+  padding-top: 2.2mm;
   border-top: 0.45mm solid #0f1b33;
 }
 .board-bills-grid {
   display: grid;
-  gap: 1.6mm 3mm;
-  margin-top: 1.6mm;
+  gap: 1.5mm 2.2mm;
+  margin-top: 1.5mm;
 }
 .board-bill {
   display: flex;
   min-width: 0;
   align-items: center;
-  gap: 2mm;
-  padding: 1.2mm 2mm 1.2mm 1.4mm;
+  gap: 1.7mm;
+  padding: 1.1mm 1.4mm 1.1mm 1.3mm;
   border-radius: 2mm;
   background: #f4f6fa;
 }
@@ -563,9 +621,11 @@
 }
 .board-bill-text {
   min-width: 0;
+  overflow: hidden;
   font-size: 7.4pt;
-  white-space: nowrap;
   line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   color: #3c4a66;
 }
 .board-bill-text b {
@@ -700,9 +760,9 @@
 }
 .sheet-block {
   display: grid;
+  /* Hauteur égale, toute la demi-feuille : six blocs de 24 mm, ou trois de 49 mm (poule de 3) */
   flex: 1 1 0;
   min-height: 0;
-  max-height: 34mm;
   align-items: center;
   column-gap: 2.5mm;
   padding: 0.6mm 0;
@@ -984,14 +1044,15 @@
   margin-bottom: 0;
 }
 
-/* Pied de feuille : rappel et QR code */
+/* Pied de feuille : rappel des règles et marque (deux lignes au plus) */
 .sheet-foot {
   display: flex;
+  flex-shrink: 0;
   align-items: flex-end;
   justify-content: space-between;
-  gap: 4mm;
+  gap: 5mm;
   margin-top: 2.2mm;
-  padding-top: 2mm;
+  padding-top: 1.8mm;
   border-top: 0.25mm solid #d4dbe8;
 }
 .sheet-rule {
@@ -1004,33 +1065,12 @@
   color: #3c4a66;
   font-weight: 800;
 }
-.sheet-qr {
-  display: flex;
-  flex-shrink: 0;
-  align-items: center;
-  gap: 2mm;
-}
-.sheet-qr-text {
-  max-width: 24mm;
-  text-align: right;
-  font-size: 6pt;
-  font-weight: 700;
-  line-height: 1.25;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: #5b6680;
-}
-.sheet-qr svg {
-  width: 15mm;
-  height: 15mm;
-}
 
 /* ---------- Impression ---------- */
 
 @media print {
   .print-page,
-  .print-sheet,
-  .print-a3 {
+  .print-sheet {
     margin: 0 !important;
     box-shadow: none !important;
   }

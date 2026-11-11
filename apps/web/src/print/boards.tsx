@@ -23,19 +23,40 @@ const PHASE_DAY: Record<"PREQ" | "QN" | "QM", string> = {
   QM: "Qualification Masters",
 };
 
-/** Colonnes de la grille selon le nombre de poules (4 colonnes à partir de 13 poules). */
+/** Colonnes de la grille selon le nombre de poules (4 colonnes à partir de 19 poules). */
 export function boardColumns(count: number): number {
   return count <= 8 ? 2 : count <= 18 ? 3 : 4;
 }
 
-/** Pastille d'un billard : pleine pour un 3m10, contour pour un 2m80. */
-function BillardPill({ state, billards }: { state: TournamentState; billards: number[] }) {
+/**
+ * Pastille des billards d'une poule : pleine pour un 3m10, contour pour un 2m80, format en
+ * exposant. Libellé court (« B 5·6 ») dès que les cartes sont étroites (trois ou quatre
+ * colonnes), pour que la pastille tienne toujours sur la ligne du numéro de poule, même avec
+ * deux billards à deux chiffres ; libellé en toutes lettres sur les grandes cartes.
+ */
+function BillardPill({
+  state,
+  billards,
+  long,
+}: {
+  state: TournamentState;
+  billards: number[];
+  long: boolean;
+}) {
   const type = billardType(state, billards[0]);
-  const full = type === "3m10";
+  const many = billards.length > 1;
   return (
-    <span className={`board-pill ${full ? "board-pill-full" : ""}`}>
-      Billard{billards.length > 1 ? "s" : ""} <b>{billards.length ? billards.join(" & ") : "—"}</b>
-      <span>· {type}</span>
+    <span
+      className={`board-pill ${type === "3m10" ? "board-pill-full" : ""}`}
+      aria-label={
+        billards.length
+          ? `Billard${many ? "s" : ""} ${billards.join(" et ")}, ${type}`
+          : "Billard à préciser"
+      }
+    >
+      <span className="board-pill-label">{long ? `Billard${many ? "s" : ""}` : "B"}</span>
+      <b>{billards.length ? billards.join("·") : "—"}</b>
+      {billards.length ? <span className="board-pill-type">{type}</span> : null}
     </span>
   );
 }
@@ -44,10 +65,13 @@ function PouleCard({
   state,
   phase,
   poule,
+  long,
 }: {
   state: TournamentState;
   phase: "PREQ" | "QN" | "QM";
   poule: Poule;
+  /** Grande carte (deux colonnes) : libellé de billard en toutes lettres. */
+  long: boolean;
 }) {
   const bills = pouleBillards(state, phase, poule);
   return (
@@ -57,13 +81,13 @@ function PouleCard({
           <span className="p-label">Poule</span>
           <span className="board-num">{poule.num}</span>
         </span>
-        <BillardPill state={state} billards={bills} />
+        <BillardPill state={state} billards={bills} long={long} />
       </div>
       <ol className="board-players">
         {poule.players.map((n, i) => (
           <li key={n} className="board-player">
             <span className="board-dot">{i + 1}</span>
-            <span>{nice(n)}</span>
+            <span className="board-name">{nice(n)}</span>
           </li>
         ))}
       </ol>
@@ -86,14 +110,19 @@ export function billardPlan(
   }));
 }
 
+/** Colonnes de la bande des billards : deux rangées au plus jusqu'à 12 billards. */
+export function billardBandColumns(count: number): number {
+  return count <= 4 ? Math.max(1, count) : count <= 8 ? 4 : 6;
+}
+
 function BillardsBand({ state, phase }: { state: TournamentState; phase: "PREQ" | "QN" | "QM" }) {
   const plan = billardPlan(state, phase).filter((b) => b.poules.length > 0);
   if (plan.length === 0) return null;
-  const cols = plan.length <= 4 ? plan.length : 4;
+  const cols = billardBandColumns(plan.length);
   return (
     <div className="board-bills">
       <div className="flex items-baseline justify-between">
-        <span className="p-label">Billards · qui commence</span>
+        <span className="p-label">Billards · la poule qui commence, puis les suivantes</span>
         <span className="p-label">Pastille pleine : 3m10 · contour : 2m80</span>
       </div>
       <div
@@ -109,7 +138,7 @@ function BillardsBand({ state, phase }: { state: TournamentState; phase: "PREQ" 
             </span>
             <span className="board-bill-text">
               <b>Poule {b.poules[0]}</b>
-              {b.poules.length > 1 ? `commence · puis ${b.poules.slice(1).join(", ")}` : b.type}
+              {b.poules.length > 1 ? `puis ${b.poules.slice(1).join(", ")}` : b.type}
             </span>
           </div>
         ))}
@@ -118,7 +147,12 @@ function BillardsBand({ state, phase }: { state: TournamentState; phase: "PREQ" 
   );
 }
 
-/** Tableau des poules d'une phase sur une seule page A4 portrait (A3 par simple échelle). */
+/**
+ * Tableau des poules d'une phase sur une seule page A4 portrait. Les cartes se partagent la
+ * hauteur de la page ; dans chaque carte, les quatre lignes de joueurs se partagent la hauteur
+ * restante et la taille du texte suit cette hauteur (unités de conteneur, voir `print.css`) :
+ * les quatre joueurs restent entièrement visibles, de 1 à 24 poules et au-delà.
+ */
 export function PoulesBoard({
   state,
   phase,
@@ -161,7 +195,7 @@ export function PoulesBoard({
         }}
       >
         {poules.map((p) => (
-          <PouleCard key={p.num} state={state} phase={phase} poule={p} />
+          <PouleCard key={p.num} state={state} phase={phase} poule={p} long={cols === 2} />
         ))}
       </div>
       <BillardsBand state={state} phase={phase} />

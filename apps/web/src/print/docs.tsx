@@ -47,7 +47,6 @@ export type DocId =
   | "pointage"
   | "joueurs-poules"
   | "tableau-poules"
-  | "tableau-poules-a3"
   | "premiers-matchs"
   | "feuilles-preq"
   | "classement-preq"
@@ -67,7 +66,7 @@ export type DocId =
 export interface DocDef {
   id: DocId;
   label: string;
-  /** Page large (A4 paysage, ou A3 portrait). */
+  /** Page large (A4 paysage). */
   landscape?: boolean;
   pages: (state: TournamentState) => number;
   available: (state: TournamentState) => boolean;
@@ -811,23 +810,10 @@ export const DOCS: DocDef[] = [
   },
   {
     id: "tableau-poules",
-    label: "Tableau des poules du vendredi (affichage A4)",
+    label: "Tableau des poules du vendredi (affichage)",
     pages: () => 1,
     available: drawn,
     render: (s) => <PoulesBoard state={s} phase="PREQ" title="Poules du vendredi" day="vendredi" />,
-  },
-  {
-    id: "tableau-poules-a3",
-    label: "Tableau des poules du vendredi (affichage A3)",
-    // Page large (297 mm) : même mise en page que l'A4, à l'échelle √2
-    landscape: true,
-    pages: () => 1,
-    available: drawn,
-    render: (s) => (
-      <div className="print-a3">
-        <PoulesBoard state={s} phase="PREQ" title="Poules du vendredi" day="vendredi" />
-      </div>
-    ),
   },
   {
     id: "premiers-matchs",
@@ -963,14 +949,7 @@ export function docById(id: string): DocDef | undefined {
 export function docsFor(day: Day, state: TournamentState): DocDef[] {
   const ids: DocId[] =
     day === "jeudi"
-      ? [
-          "pointage",
-          "joueurs-poules",
-          "tableau-poules",
-          "tableau-poules-a3",
-          "premiers-matchs",
-          "feuilles-preq",
-        ]
+      ? ["pointage", "joueurs-poules", "tableau-poules", "premiers-matchs", "feuilles-preq"]
       : day === "vendredi"
         ? state.closed.B
           ? [

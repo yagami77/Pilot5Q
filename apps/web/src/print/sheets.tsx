@@ -3,9 +3,9 @@
  * un trait de coupe. Bandeau plein (tournoi, lieu, journée) avec un grand cartouche « POULE ·
  * BILLARD » lisible de loin ; six blocs de match de hauteur égale, zébrés, avec pour chaque
  * joueur une case GAGNANT, une boîte SCORE (ou une boîte par set et le total de sets) et un
- * PARAPHE ; rappel des règles et QR code vers la poule en ligne en pied. Barrages, quarts,
- * demies et finales : deux matchs par demi-feuille, arbitres et heure demandés le dimanche
- * (SPEC §6).
+ * PARAPHE ; rappel des règles en pied (pas de QR code : il n'était pas utilisé, la place revient
+ * aux blocs de match). Barrages, quarts, demies et finales : deux matchs par demi-feuille,
+ * arbitres et heure demandés le dimanche (SPEC §6).
  */
 import type { BracketMatch, Distance, Match, Poule, TournamentState } from "@pilot5q/domain";
 import type { ReactNode } from "react";
@@ -23,7 +23,7 @@ import {
   type Day,
 } from "@/lib/tournament";
 
-import { PrintBanner, PrintLogo, QrSvg, publicUrl, type BannerCell } from "./brand";
+import { PrintBanner, PrintLogo, type BannerCell } from "./brand";
 import { paginateHalves, pairs } from "./layout";
 
 /* ---------- Modèle ---------- */
@@ -75,7 +75,6 @@ export interface HalfSheetData {
   turn?: string;
   matches: SheetMatch[];
   rule: string;
-  qr?: { url: string; caption: string };
 }
 
 const PLACEHOLDERS_4: [string | null, string | null][] = [
@@ -178,7 +177,6 @@ export function pouleSheet(
     return { order: i + 1, label: labels[i] ?? "", a: known(pa), b: known(pb) };
   });
   const type = billardType(state, bills[0]);
-  const phaseParam = phase === "PREQ" ? "" : `phase=${phase}&`;
   return {
     key: `${phase}-${poule.num}`,
     kind: "poule",
@@ -197,10 +195,6 @@ export function pouleSheet(
     distance: d,
     matches,
     rule: ruleText(d, size),
-    qr: {
-      url: publicUrl(`tournoi/${day}?${phaseParam}poule=${poule.num}`),
-      caption: `Poule ${poule.num} en ligne`,
-    },
   };
 }
 
@@ -677,16 +671,9 @@ export function HalfSheet({ data }: { data: HalfSheetData }) {
 
       <div className="sheet-foot">
         <p className="sheet-rule">{data.rule}</p>
-        {data.qr ? (
-          <div className="sheet-qr">
-            <span className="sheet-qr-text">{data.qr.caption}</span>
-            <QrSvg text={data.qr.url} size={15} />
-          </div>
-        ) : (
-          <span className="p-foot-brand">
-            <PrintLogo size={3.6} /> Pilot5Q
-          </span>
-        )}
+        <span className="p-foot-brand">
+          <PrintLogo size={3.6} /> Pilot5Q
+        </span>
       </div>
     </article>
   );

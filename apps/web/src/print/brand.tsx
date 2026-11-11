@@ -1,14 +1,14 @@
 /**
  * Identité des documents imprimés : logo Pilot5Q vectoriel (net à l'impression), bandeau
  * d'en-tête plein (bleu signature, gris foncé en noir et blanc) avec un cartouche blanc pour
- * l'information principale, pied de page, scores colorés (gagnant / perdant) et QR code.
+ * l'information principale, pied de page, scores colorés (gagnant / perdant). Plus aucun QR
+ * code sur les documents ; le générateur `qr.ts` reste disponible pour la feuille de match en
+ * ligne.
  */
 import type { Distance, Match, TournamentState } from "@pilot5q/domain";
 import type { ReactNode } from "react";
 
 import { matchWinner } from "@/lib/engine";
-
-import { qrMatrix, qrPath } from "./qr";
 
 /** Pictogramme de la marque (même dessin que la barre haute), en traits fins. */
 export function PrintLogo({ size = 9, inverse = false }: { size?: number; inverse?: boolean }) {
@@ -208,37 +208,4 @@ export function winClass(m: Match, d: Distance, name: string): string {
   const w = matchWinner(m, d);
   if (!w) return "font-semibold";
   return w === name ? "font-extrabold" : "font-normal text-[#3c4a66]";
-}
-
-/* ---------- QR code ---------- */
-
-/** Adresse publique de l'application pour un chemin (« tournoi/vendredi?poule=3 »). */
-export function publicUrl(path: string): string {
-  const origin = typeof window === "undefined" ? "" : window.location.origin;
-  const base = (import.meta.env.BASE_URL || "/").replace(/\/?$/, "/");
-  return `${origin}${base}${path.replace(/^\//, "")}`;
-}
-
-/** QR code vectoriel, modules nets à l'impression, marge de deux modules. */
-export function QrSvg({ text, size = 15 }: { text: string; size?: number }) {
-  let grid: boolean[][];
-  try {
-    grid = qrMatrix(text);
-  } catch {
-    return null;
-  }
-  const n = grid.length;
-  return (
-    <svg
-      viewBox={`-2 -2 ${n + 4} ${n + 4}`}
-      width={`${size}mm`}
-      height={`${size}mm`}
-      shapeRendering="crispEdges"
-      role="img"
-      aria-label={text}
-    >
-      <rect x="-2" y="-2" width={n + 4} height={n + 4} fill="#fff" />
-      <path d={qrPath(grid)} fill="#0f1b33" />
-    </svg>
-  );
 }

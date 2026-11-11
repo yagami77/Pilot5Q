@@ -70,7 +70,8 @@ describe("feuille d'une poule", () => {
     expect(sheet.matches[4]?.b.hint).toBe("Son dernier adversaire");
     expect(sheet.cells[0]?.value).toBe("1");
     expect(sheet.cells[1]?.value).toBe(state.billardAssignments.PREQ?.["1"]?.join(" & "));
-    expect(sheet.qr?.url).toMatch(/\/tournoi\/vendredi\?poule=1$/);
+    // Plus de QR code sur les feuilles (non utilisé)
+    expect(sheet).not.toHaveProperty("qr");
   });
 
   it("regroupe les feuilles de la phase par billard et indique qui commence", () => {
