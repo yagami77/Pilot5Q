@@ -2,11 +2,13 @@ import type { Billard } from "@pilot5q/domain";
 import { describe, expect, it } from "vitest";
 
 import {
+  assignmentsKey,
   assignmentsToPlan,
   checkPlan,
   linkTables,
   placePoule,
   planToAssignments,
+  removePoule,
   unlinkTables,
 } from "./assign";
 
@@ -32,5 +34,16 @@ describe("affectation des billards par billard", () => {
     expect(assignmentsToPlan(planToAssignments(plan))).toEqual(plan);
     plan = unlinkTables(plan, 7);
     expect(planToAssignments(plan)).toEqual({ "1": [6], "2": [6], "3": [6] });
+  });
+
+  it("les poules non placées figurent sans billard dans l'événement ; l'empreinte les ignore", () => {
+    const plan = removePoule(assignmentsToPlan({ "1": [6], "2": [7, 8], "3": [5] }), 3);
+    const assignments = planToAssignments(plan, 4);
+    expect(assignments).toEqual({ "1": [6], "2": [7, 8], "3": [], "4": [] });
+    expect(assignmentsToPlan(assignments)).toEqual(plan);
+    expect(assignmentsKey(assignments)).toBe("1:6 2:7+8");
+    // même contenu, même empreinte : ordre des clés et des billards indifférent
+    expect(assignmentsKey({ "2": [8, 7], "1": [6] })).toBe(assignmentsKey(assignments));
+    expect(assignmentsKey(undefined)).toBe("");
   });
 });

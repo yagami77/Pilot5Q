@@ -4,8 +4,12 @@
  * du même format peuvent être liés pour accueillir 3 poules. « Proposer » lance l'optimiseur
  * (`lib/billardsOptimizer`, retours du 6 novembre) et affiche ses critères et la charge de chaque
  * billard ; « Vider » remet toutes les poules dans le bac pour une affectation manuelle. Un
- * contrôle signale les poules non placées, en double ou les billards de plus de 3 poules. Le
- * résultat alimente `billards.assigned` (phase PREQ).
+ * contrôle signale les poules non placées, en double ou les billards de plus de 3 poules.
+ *
+ * Chaque modification est écrite aussitôt dans le journal (`billards.assigned`, phase PREQ) : le
+ * journal est la seule source de vérité, il n'y a pas de brouillon à enregistrer. L'état local ne
+ * garde que ce que le journal ne sait pas dire (deux billards liés encore vides) et ne se
+ * resynchronise que si le contenu du journal change (annulation, nouvelle structure).
  */
 import type { Billard } from "@pilot5q/domain";
 import {
@@ -16,7 +20,6 @@ import {
   Shuffle,
   Sparkles,
   TriangleAlert,
-  Undo2,
   Unlink,
   X,
 } from "lucide-react";
@@ -28,6 +31,7 @@ import { Button, Card, Chip, cx } from "@/components/ui";
 import {
   MAX_POULES_PER_TABLE,
   anchorOf,
+  assignmentsKey,
   assignmentsToPlan,
   checkPlan,
   linkTables,
@@ -52,13 +56,6 @@ import { useTournament } from "@/store/tournament";
 
 const DRAG_TYPE = "application/x-pilot5q-poule";
 
-function samePlan(a: TablePlan, b: TablePlan): boolean {
-  return (
-    JSON.stringify(planToAssignments(a)) === JSON.stringify(planToAssignments(b)) &&
-    JSON.stringify(a.links) === JSON.stringify(b.links)
-  );
-}
-
 export function BillardAssignment({
   pouleCount,
   locked,
@@ -69,11 +66,12 @@ export function BillardAssignment({
 }) {
   const { state, dispatch } = useTournament();
   const toast = useToast();
-  const stored = useMemo(
-    () => assignmentsToPlan(state.billardAssignments.PREQ),
-    [state.billardAssignments.PREQ],
-  );
-  const [plan, setPlan] = useState<TablePlan>(stored);
+  // L'état est reconstruit à chaque événement du journal : on compare le contenu de
+  // l'affectation, pas l'identité de l'objet (sinon tout événement, même sur une autre phase,
+  // écraserait ce qui est affiché).
+  const storedAssign = state.billardAssignments.PREQ;
+  const storedKey = useMemo(() => assignmentsKey(storedAssign), [storedAssign]);
+  const [plan, setPlan] = useState<TablePlan>(() => assignmentsToPlan(storedAssign));
   const [dragging, setDragging] = useState<number | null>(null);
   const [over, setOver] = useState<number | "tray" | null>(null);
   const [linking, setLinking] = useState<number | null>(null);
@@ -81,7 +79,11 @@ export function BillardAssignment({
   const [seed, setSeed] = useState(1);
   const [proposed, setProposed] = useState(false);
   const [impossible, setImpossible] = useState<string | null>(null);
-  useEffect(() => setPlan(stored), [stored]);
+  useEffect(() => {
+    setPlan((p) =>
+      assignmentsKey(planToAssignments(p)) === storedKey ? p : assignmentsToPlan(storedAssign),
+    );
+  }, [storedKey, storedAssign]);
 
   // Taille des poules : réelle après le tirage, prévue (poules de 3 en dernier) avant
   const sizes = useMemo<PouleSize[]>(() => {
@@ -105,7 +107,6 @@ export function BillardAssignment({
     [plan, sizes, state.billards],
   );
 
-  const dirty = !samePlan(plan, stored);
   const issues = checkPlan(plan, pouleCount, state.billards);
   const billards = [...state.billards].sort((a, b) => a.num - b.num);
   // Emplacements : billards seuls et paires liées (une seule tuile)
@@ -113,16 +114,12 @@ export function BillardAssignment({
   const placedOn = new Map<number, number>();
   for (const [b, ps] of Object.entries(plan.place)) for (const p of ps) placedOn.set(p, Number(b));
 
-  const save = () => {
-    if (!issues.ok) {
-      toast("Corrigez d'abord l'affectation (poules non placées ou billard surchargé)");
-      return;
-    }
-    dispatch({
-      type: "billards.assigned",
-      payload: { phase: "PREQ", assignments: planToAssignments(plan) },
-    });
-    toast("Affectation des billards enregistrée");
+  /** Applique une modification : affichage immédiat et écriture dans le journal. */
+  const apply = (next: TablePlan) => {
+    setPlan(next);
+    const assignments = planToAssignments(next, pouleCount);
+    if (assignmentsKey(assignments) !== storedKey)
+      dispatch({ type: "billards.assigned", payload: { phase: "PREQ", assignments } });
   };
 
   const propose = (next: number) => {
@@ -136,14 +133,12 @@ export function BillardAssignment({
     }
     setImpossible(null);
     setProposed(true);
-    setPlan(res.plan);
-    toast(
-      `Proposition ${next} · ${res.maxLoad} matchs au plus par billard · ajustez puis enregistrez`,
-    );
+    apply(res.plan);
+    toast(`Proposition ${next} · ${res.maxLoad} matchs au plus par billard`);
   };
 
   const clear = () => {
-    setPlan(emptyPlan());
+    apply(emptyPlan());
     setLinking(null);
     toast("Billards vidés · glissez les poules du bac vers les billards");
   };
@@ -154,7 +149,7 @@ export function BillardAssignment({
     setOver(null);
     setDragging(null);
     if (!n) return;
-    setPlan((p) => (target === "tray" ? removePoule(p, n) : placePoule(p, n, target)));
+    apply(target === "tray" ? removePoule(plan, n) : placePoule(plan, n, target));
   };
   const dropProps = (target: number | "tray") =>
     locked
@@ -231,6 +226,8 @@ export function BillardAssignment({
       <motion.div
         layout
         key={b.num}
+        role="group"
+        aria-label={`${linked ? "Billards" : "Billard"} ${tables.join(" + ")}`}
         {...dropProps(b.num)}
         className={cx(
           "relative flex min-h-[112px] flex-col gap-2 rounded-[12px] border p-3 transition-[border-color,background-color,box-shadow] duration-200",
@@ -272,7 +269,7 @@ export function BillardAssignment({
         <div className="flex min-h-[28px] flex-wrap content-start gap-1.5">
           {poules.map((n) =>
             chip(n, {
-              onRemove: () => setPlan((p) => removePoule(p, n)),
+              onRemove: () => apply(removePoule(plan, n)),
             }),
           )}
           {poules.length === 0 ? (
@@ -292,7 +289,7 @@ export function BillardAssignment({
                 value=""
                 onChange={(e) => {
                   const n = Number(e.target.value);
-                  if (n) setPlan((p) => placePoule(p, n, b.num));
+                  if (n) apply(placePoule(plan, n, b.num));
                 }}
               >
                 <option value="">Ajouter une poule…</option>
@@ -312,7 +309,7 @@ export function BillardAssignment({
             {linked ? (
               <button
                 type="button"
-                onClick={() => setPlan((p) => unlinkTables(p, b.num))}
+                onClick={() => apply(unlinkTables(plan, b.num))}
                 className="text-ink-muted hover:text-ink inline-flex items-center gap-1 rounded-[8px] px-1.5 py-[3px] text-[11px] font-semibold"
               >
                 <Unlink className="size-3" aria-hidden="true" />
@@ -327,7 +324,7 @@ export function BillardAssignment({
                       key={c.num}
                       type="button"
                       onClick={() => {
-                        setPlan((p) => linkTables(p, b.num, c.num));
+                        apply(linkTables(plan, b.num, c.num));
                         setLinking(null);
                       }}
                       className="bg-brand-soft text-brand-ink hover:bg-brand-light rounded-[6px] px-1.5 py-[2px] font-mono text-[11px] font-bold hover:text-white"
@@ -414,22 +411,6 @@ export function BillardAssignment({
                   Proposer
                 </Button>
               )}
-              {dirty ? (
-                <>
-                  <Button size="sm" icon={Undo2} onClick={() => setPlan(stored)}>
-                    Rétablir
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="primary"
-                    icon={Check}
-                    onClick={save}
-                    disabled={!issues.ok}
-                  >
-                    Enregistrer
-                  </Button>
-                </>
-              ) : null}
             </>
           )}
         </>

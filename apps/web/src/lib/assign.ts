@@ -31,14 +31,32 @@ export function tablesOf(plan: TablePlan, anchor: number): number[] {
   return p === undefined ? [anchor] : [anchor, p].sort((a, b) => a - b);
 }
 
-/** Plan → événement `billards.assigned` (clé = numéro de poule). */
-export function planToAssignments(plan: TablePlan): Record<string, number[]> {
+/**
+ * Plan → événement `billards.assigned` (clé = numéro de poule). Avec `pouleCount`, les poules
+ * non placées figurent avec une liste vide : le journal dit alors explicitement qu'elles n'ont
+ * plus de billard (sinon la poule garderait l'ancien).
+ */
+export function planToAssignments(plan: TablePlan, pouleCount?: number): Record<string, number[]> {
   const out: Record<string, number[]> = {};
+  for (let n = 1; n <= (pouleCount ?? 0); n++) out[String(n)] = [];
   for (const [b, poules] of Object.entries(plan.place)) {
     const tables = tablesOf(plan, Number(b));
     for (const n of poules) out[String(n)] = tables;
   }
   return out;
+}
+
+/**
+ * Empreinte d'une affectation : même contenu, même empreinte, quel que soit l'ordre des clés
+ * (les poules sans billard ne comptent pas). Sert à comparer le journal à ce qui est affiché.
+ */
+export function assignmentsKey(assign: Record<string, number[]> | undefined): string {
+  return Object.entries(assign ?? {})
+    .filter(([, bs]) => bs.length > 0)
+    .map(([k, bs]) => [Number(k), [...bs].sort((a, b) => a - b)] as const)
+    .sort((a, b) => a[0] - b[0])
+    .map(([k, bs]) => `${k}:${bs.join("+")}`)
+    .join(" ");
 }
 
 /** Affectation mémorisée → plan (une poule sur deux billards = paire liée). */

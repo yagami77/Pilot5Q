@@ -45,4 +45,27 @@ describe("vue Jeudi", () => {
       expect.stringMatching(/Reste à faire : .*Documents imprimés/),
     );
   });
+
+  it("garde l'affectation modifiée des poules du vendredi quand on change un billard d'une phase suivante", () => {
+    renderJeudi();
+    const card = screen
+      .getByRole("heading", { name: "Billards et poules affectées" })
+      .closest("section")!;
+    const tile = () => within(card).getByRole("group", { name: "Billard 2" });
+    // Tournoi d'exemple : la poule 1 est sur le billard 11 ; le DJ la déplace sur le billard 2
+    expect(within(tile()).queryByTitle(/^Poule 1 ·/)).toBeNull();
+    fireEvent.change(within(card).getByLabelText("Ajouter une poule au billard 2"), {
+      target: { value: "1" },
+    });
+    expect(within(tile()).getByTitle(/^Poule 1 ·/)).toBeInTheDocument();
+    // … puis il modifie le billard d'un barrage (phases suivantes)
+    const later = screen
+      .getByRole("heading", { name: "Billards des phases suivantes" })
+      .closest("section")!;
+    fireEvent.click(within(later).getByRole("button", { name: "Modifier" }));
+    const select = within(later).getByLabelText("Barrages · B1") as HTMLSelectElement;
+    fireEvent.change(select, { target: { value: select.value === "3" ? "4" : "3" } });
+    // L'affectation des poules du vendredi n'est pas revenue à celle par défaut
+    expect(within(tile()).getByTitle(/^Poule 1 ·/)).toBeInTheDocument();
+  });
 });
