@@ -424,14 +424,105 @@ describe("base joueurs", () => {
   const awards = awardPoints(results, fx.consolanteHeld);
   const rows = rankingRows(applyTournament(fx.windowBefore, awards, { season: fx.season, tn: 2 }));
 
-  it("met à jour le classement en cours de chaque joueur comme l'onglet database de référence", () => {
+  it("applique l'algorithme du responsable : a joué, n'a pas joué mais a des points, est à 0", () => {
+    const record = (
+      licence: string,
+      currentPlace: number | null,
+      lastPlace: number | null,
+      lastSeason: string | null,
+    ): PlayerRecord => ({
+      licence,
+      name: `JOUEUR ${licence}`,
+      club: "",
+      lastSeason,
+      currentPlace,
+      lastPlace,
+    });
+    const result = (season: string, tn: number, pts: number): TnResult => ({
+      season,
+      tn,
+      pts,
+      faits: 100,
+      subis: 100,
+    });
+    const entry = (licence: string, res: TnResult[]): RankingEntry => ({
+      licence,
+      name: `JOUEUR ${licence}`,
+      club: "",
+      results: res,
+    });
+    // Fenêtre après le TN 2 2026-2027 : du TN 3 2025-2026 au TN 2 2026-2027.
+    const ranking = rankingRows(
+      [
+        // A et B ont joué le TN 2 ; C a encore les points du TN 1 ; D n'a plus que le TN 2
+        // 2025-2026, sorti de la fenêtre ; E n'a qu'un abandon (0 point) au TN 5 2025-2026.
+        entry("A", [result("2026-2027", 1, 26.01), result("2026-2027", 2, 80.02)]),
+        entry("B", [result("2026-2027", 2, 5.004)]),
+        entry("C", [result("2026-2027", 1, 38.01)]),
+        entry("D", [result("2025-2026", 2, 54.02)]),
+        entry("E", [result("2025-2026", 5, 0)]),
+      ],
+      { stage: { season: "2026-2027", tn: 2 } },
+    );
+    expect(ranking.map((r) => `${r.position}:${r.licence}`)).toEqual(["1:A", "2:C", "3:B", "4:E"]);
+    const updated = updatePlayerBase(
+      [
+        record("A", 3, 3, "2026-2027"),
+        record("C", 1, 1, "2026-2027"),
+        record("D", 2, 2, "2025-2026"),
+        record("E", 4, 60, "2025-2026"),
+        record("F", null, 17, "2019-2020"),
+      ],
+      ranking,
+      "2026-2027",
+      [
+        { licence: "A", name: "JOUEUR A", club: "CLUB A" },
+        { licence: "B", name: "JOUEUR B", club: "CLUB B", junior: true },
+      ],
+    );
+    const by = new Map(updated.map((p) => [p.licence, p]));
+    // A joué ce TN : « classement » et « dernier » = place actuelle, saison en cours.
+    expect(by.get("A")).toMatchObject({
+      currentPlace: 1,
+      lastPlace: 1,
+      lastSeason: "2026-2027",
+      club: "CLUB A",
+    });
+    // Inconnu de la base : ajouté, avec le drapeau U21 transmis.
+    expect(by.get("B")).toMatchObject({
+      currentPlace: 3,
+      lastPlace: 3,
+      lastSeason: "2026-2027",
+      junior: true,
+    });
+    // N'a pas joué mais a encore des points : « classement » mis à jour, « dernier » conservé.
+    expect(by.get("C")).toMatchObject({ currentPlace: 2, lastPlace: 1, lastSeason: "2026-2027" });
+    // Sorti de la fenêtre : « classement » effacé, « dernier » et saison conservés.
+    expect(by.get("D")).toMatchObject({
+      currentPlace: null,
+      lastPlace: 2,
+      lastSeason: "2025-2026",
+    });
+    // Encore dans la fenêtre mais à 0 point, absent de ce TN : traité comme « à 0 ».
+    expect(by.get("E")).toMatchObject({ currentPlace: null, lastPlace: 60 });
+    // Absent du classement comme du TN : rien ne bouge.
+    expect(by.get("F")).toMatchObject({
+      currentPlace: null,
+      lastPlace: 17,
+      lastSeason: "2019-2020",
+    });
+  });
+
+  it("appliqué à la base réelle après le TN 2 : 76 joueurs du TN, 53 classés absents, les autres effacés", () => {
+    // Base du responsable telle que transmise (champs « classement » et « dernier »), valeurs
+    // périmées comprises : l'algorithme doit la remettre d'aplomb.
     const before: PlayerRecord[] = fx.players.map((p) => ({
       licence: p.licence,
       name: p.name,
       club: p.club,
       lastSeason: p.lastSeason === fx.season ? "2025-2026" : p.lastSeason,
-      currentPlace: null,
-      lastPlace: p.lastPlace,
+      currentPlace: p.posThis,
+      lastPlace: p.posLast,
     }));
     const participants = results.map((r) => ({
       licence: r.licence ?? "",
@@ -439,20 +530,30 @@ describe("base joueurs", () => {
       club: r.club ?? "",
     }));
     const updated = updatePlayerBase(before, rows, fx.season, participants);
-    const byLicence = new Map(updated.map((p) => [p.licence, p]));
-    for (const p of fx.players) {
-      const u = byLicence.get(p.licence);
-      expect(u, p.name).toBeDefined();
-      expect(u?.currentPlace ?? null, `${p.name} classement en cours`).toBe(p.currentPlace);
-      if (p.currentPlace !== null) expect(u?.lastPlace).toBe(p.currentPlace);
-    }
-    const byName = new Map(updated.map((p) => [p.name, p]));
-    for (const r of results) {
-      const u = byLicence.get(r.licence ?? "") ?? byName.get(r.name);
-      expect(u?.lastSeason, r.name).toBe(fx.season);
-    }
-    const inactive = updated.find((p) => p.currentPlace === null && p.lastPlace !== null);
-    expect(inactive).toBeDefined();
+    expect(updated).toHaveLength(before.length);
+    const position = new Map(rows.map((r) => [r.name, r.position]));
+    const played = new Set(results.map((r) => r.name));
+    const count = { played: 0, rankedAbsent: 0, out: 0 };
+    updated.forEach((u, i) => {
+      const b = before[i];
+      const source = fx.players[i];
+      if (!b || !source) throw new Error("base incohérente");
+      const place = position.get(u.name) ?? null;
+      expect(u.currentPlace, `${u.name} classement`).toBe(place);
+      if (played.has(u.name)) {
+        count.played++;
+        expect(u.lastPlace, `${u.name} dernier`).toBe(place);
+        expect(u.lastSeason, `${u.name} saison`).toBe(fx.season);
+        // Seul point où la base transmise est à jour : le « classement » des joueurs du TN 2.
+        expect(source.posThis, `${u.name} classement de la base transmise`).toBe(place);
+      } else {
+        if (place === null) count.out++;
+        else count.rankedAbsent++;
+        expect(u.lastPlace, `${u.name} dernier`).toBe(b.lastPlace);
+        expect(u.lastSeason, `${u.name} saison`).toBe(b.lastSeason);
+      }
+    });
+    expect(count).toEqual({ played: 76, rankedAbsent: 53, out: 200 });
   });
 
   it("fournit les derniers classements connus pour la liste ordonnée", () => {

@@ -1,16 +1,23 @@
 /**
  * Base historique des joueurs (SPEC §2) et sa mise à jour à la clôture d'un TN.
  *
- * Règles (onglet `database` de l'outil Excel : DERNIERE_SAISON, POS_THIS_S, CLS GLIS) :
- * - La licence est la clé. Un joueur inconnu rencontré à un TN est ajouté.
- * - Après chaque clôture, chaque joueur présent au classement glissant reçoit `currentPlace` =
- *   sa place et `lastPlace` = cette même place ; un joueur sorti de la fenêtre garde son
- *   `lastPlace` (classement en cours au moment de son dernier TN dans la fenêtre) et perd son
- *   `currentPlace`.
- * - `lastSeason` = saison du dernier TN joué (les participants du TN clôturé).
+ * Algorithme donné par le responsable national (remarques du 11 novembre 2026) :
+ * - La licence est la clé (le nom en secours). Un joueur inconnu rencontré à un TN est ajouté.
+ * - À la clôture, le classement glissant est d'abord mis à jour (le TN le plus ancien sort, le
+ *   nouveau entre, tri), puis on le balaie. Pour chaque joueur :
+ *   - il a joué ce TN → « classement » (`currentPlace`) ET « dernier » (`lastPlace`) prennent sa
+ *     place actuelle, et `lastSeason` = saison en cours ;
+ *   - il n'a pas joué ce TN mais a encore des points → `currentPlace` = sa place actuelle,
+ *     `lastPlace` inchangé ;
+ *   - il est à 0 (sorti du classement) → `currentPlace` effacé, `lastPlace` inchangé.
+ * - `lastPlace` est donc la place au classement glissant à l'issue du dernier TN joué.
  * - Pour la liste ordonnée (`orderParticipants`), un joueur hors classement avec un dernier
  *   classement `P` prend la place 9 si `P ≤ 8`, sinon `P + 0,5` (SPEC §2). Point à confirmer :
  *   l'outil Excel place au contraire un ancien joueur Masters (`P < 8`) en tête de liste.
+ *
+ * Point à confirmer : un joueur encore dans la fenêtre avec 0 point (uniquement des abandons)
+ * et absent du TN clôturé est traité comme « à 0 » : son `currentPlace` est effacé, alors qu'il
+ * figure encore en queue du classement glissant.
  */
 import type { PlayerRecord, RankingRow, SeasonId } from "./types.js";
 
@@ -26,7 +33,10 @@ export function normalizeName(name: string): string {
   return name.trim().toUpperCase().replace(/\s+/g, " ");
 }
 
-/** Met à jour la base après la clôture d'un TN. */
+/**
+ * Met à jour la base après la clôture d'un TN. `ranking` est le classement glissant recalculé
+ * (TN clôturé inclus) ; `participants` sont les joueurs de ce TN.
+ */
 export function updatePlayerBase(
   base: PlayerRecord[],
   ranking: RankingRow[],
@@ -61,17 +71,31 @@ export function updatePlayerBase(
     if (club !== "") p.club = club;
     return p;
   };
+  // Joueurs du TN clôturé : saison en cours (et drapeau U21 s'il est fourni).
+  const played = new Set<PlayerRecord>();
   for (const pl of participants) {
     const p = ensure(pl.licence, pl.name, pl.club);
+    played.add(p);
     if (p.lastSeason === null || seasonStartYear(season) >= seasonStartYear(p.lastSeason))
       p.lastSeason = season;
     if (pl.junior !== undefined) p.junior = pl.junior;
   }
-  for (const p of out) p.currentPlace = null;
-  for (const r of ranking) {
-    const p = ensure(r.licence, r.name, r.club);
-    p.currentPlace = r.position;
-    p.lastPlace = r.position;
+  // Balayage du classement glissant : place actuelle de chaque joueur classé.
+  const ranked = new Map<PlayerRecord, RankingRow>();
+  for (const r of ranking) ranked.set(ensure(r.licence, r.name, r.club), r);
+  for (const p of out) {
+    const row = ranked.get(p);
+    if (row && played.has(p)) {
+      // A joué ce TN : « classement » et « dernier » prennent la place actuelle.
+      p.currentPlace = row.position;
+      p.lastPlace = row.position;
+    } else if (row && row.pts > 0) {
+      // N'a pas joué ce TN mais a encore des points : « classement » seul.
+      p.currentPlace = row.position;
+    } else {
+      // À 0 (sorti du classement) : « classement » effacé, « dernier » conservé.
+      p.currentPlace = null;
+    }
   }
   return out;
 }

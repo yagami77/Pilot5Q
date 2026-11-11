@@ -90,9 +90,9 @@ export interface PlayerRecord {
   club: string;
   /** Saison du dernier TN joué (null : jamais vu). */
   lastSeason: SeasonId | null;
-  /** Place au classement glissant en cours (null : absent des 5 derniers TN). */
+  /** Place au classement glissant en cours (null : sans point sur les 5 derniers TN). */
   currentPlace: number | null;
-  /** Dernier classement connu : le classement en cours si actif, sinon celui à l'issue du dernier TN joué. */
+  /** Dernier classement : place au classement glissant à l'issue du dernier TN joué (null : inconnu). */
   lastPlace: number | null;
   junior?: boolean;
   email?: string;
