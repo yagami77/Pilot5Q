@@ -5,7 +5,7 @@ import { describe, expect, it } from "vitest";
 import inscriptions from "@/data/tn-exemple-inscriptions.json";
 import { DEMO } from "@/lib/demo";
 
-import { SEASON_FIXTURE, demoSeason, type DemoInscription } from "./demo";
+import { DEMO_LEFT_STAGE, SEASON_FIXTURE, demoSeason, type DemoInscription } from "./demo";
 import { compareWithReference, isAfterReference } from "./reference";
 import { realWeekendEvents } from "./realWeekend";
 import {
@@ -29,6 +29,47 @@ describe("saison de démonstration", () => {
     expect(a.capacity).toBe(96);
     expect(a.waiting).toHaveLength(0);
     expect(a.accepted.map((p) => p.name)).toEqual(DEMO.players.map((p) => p.name));
+  });
+
+  it("le classement « avant TN 2 » rend à chaque inscrit sa place connue à l'inscription", () => {
+    const doc = demoSeason(order);
+    const rows = rankingRows(doc.ranking);
+    const position = new Map(rows.map((r) => [r.name, r.position]));
+    expect(order).toHaveLength(76);
+    expect(order.filter((i) => i.currentPlace !== null)).toHaveLength(68);
+    for (const i of order) {
+      // Un inscrit sans classement à l'inscription n'est pas classé.
+      expect(position.get(i.name) ?? null, i.name).toBe(i.currentPlace);
+    }
+    // La base joueurs porte les mêmes places que le classement affiché.
+    for (const p of doc.players) {
+      expect(p.currentPlace, p.name).toBe(position.get(p.name) ?? null);
+    }
+    // Un classement identique à chaque chargement (rien d'aléatoire, rien de résiduel).
+    expect(rankingRows(demoSeason(order).ranking).map((r) => [r.name, r.pts])).toEqual(
+      rows.map((r) => [r.name, r.pts]),
+    );
+  });
+
+  it("le TN simulé (TN 2 2025-2026) ressemble à un tournoi : barème respecté, 100 joueurs au plus", () => {
+    const doc = demoSeason(order);
+    const simulated = doc.ranking.flatMap((e) =>
+      e.results.filter((r) => r.season === DEMO_LEFT_STAGE.season && r.tn === DEMO_LEFT_STAGE.tn),
+    );
+    expect(simulated.length).toBeGreaterThan(60);
+    expect(simulated.length).toBeLessThanOrEqual(100);
+    const count = (base: number) => simulated.filter((r) => Math.floor(r.pts) === base).length;
+    // Un vainqueur et un finaliste Masters, deux demi-finalistes, quatre quarts au plus.
+    expect(count(80)).toBe(1);
+    expect(count(54)).toBe(1);
+    expect(count(38)).toBe(2);
+    expect(count(26)).toBeLessThanOrEqual(4);
+    expect(count(25)).toBeLessThanOrEqual(1);
+    // Le classeur ne contient que 4 TN par joueur : seuls ces points-là sont simulés.
+    const windowTotal = SEASON_FIXTURE.windowBefore.reduce((a, e) => a + e.results.length, 0);
+    expect(doc.ranking.reduce((a, e) => a + e.results.length, 0)).toBe(
+      windowTotal + simulated.length,
+    );
   });
 });
 

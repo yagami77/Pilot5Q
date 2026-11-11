@@ -8,13 +8,18 @@ import {
   type SeasonSettings,
 } from "@pilot5q/domain";
 import { RotateCcw, Trash2 } from "lucide-react";
+import { useState } from "react";
 import { useNavigate } from "react-router";
+
+import { useAuth } from "@/auth/context";
 
 import { useToast } from "@/components/Toast";
 import { Button, Card, PageHead } from "@/components/ui";
+import { useTournament } from "@/store/tournament";
 
 import { AccountsCard } from "./Accounts";
 import { hourText } from "./convocations";
+import { purgeSeasonData, seasonTournamentIds } from "./reset";
 import { useSeason, useSeasonDoc } from "./store";
 import { Field, Input, MailBody, Num, Row, Table, TextArea } from "./ui";
 
@@ -33,6 +38,9 @@ export function Settings() {
   const { update, destroy } = useSeason();
   const toast = useToast();
   const navigate = useNavigate();
+  const { provider } = useAuth();
+  const cockpit = useTournament();
+  const [purging, setPurging] = useState(false);
   const s = doc.settings;
   const set = (patch: Partial<SeasonSettings>) =>
     update((d) => ({ ...d, settings: { ...d.settings, ...patch } }));
@@ -324,18 +332,36 @@ export function Settings() {
         bodyClassName="flex flex-wrap items-center gap-3 px-4 pb-4"
       >
         <p className="text-ink-muted min-w-0 flex-1 text-[13px]">
-          Supprime la saison {doc.id} de ce navigateur (clubs, calendrier, joueurs, classement). Le
-          tournoi ouvert dans le cockpit n'est pas touché.
+          Supprime la saison {doc.id} de ce navigateur (clubs, calendrier, joueurs, classement) et
+          tout ce qui en dépend : tournois ouverts aux directeurs de jeu (journal du cockpit, codes
+          d'accès, notifications) et pièces jointes des étapes. Un tournoi sans lien avec cette
+          saison n'est pas touché.
         </p>
         <Button
           variant="danger"
           icon={Trash2}
+          disabled={purging}
           onClick={() => {
-            if (!window.confirm(`Supprimer définitivement la saison ${doc.id} de cet ordinateur ?`))
+            if (
+              !window.confirm(
+                `Supprimer définitivement la saison ${doc.id} de cet ordinateur, avec ses tournois ouverts aux directeurs de jeu et leurs codes d'accès ?`,
+              )
+            )
               return;
-            destroy();
-            toast("Saison supprimée");
-            void navigate("/responsable");
+            setPurging(true);
+            void (async () => {
+              // Le cockpit lâche d'abord le tournoi de la saison : il ne le réenregistrera pas.
+              const ids = await seasonTournamentIds(doc, provider);
+              if (cockpit.id && ids.includes(cockpit.id)) cockpit.close();
+              const purge = await purgeSeasonData(doc, provider);
+              destroy();
+              toast(
+                purge.tournaments.length > 0
+                  ? `Saison supprimée, avec ${purge.tournaments.length} tournoi(s) et ${purge.accesses} accès de directeur de jeu`
+                  : "Saison supprimée",
+              );
+              void navigate("/responsable");
+            })();
           }}
         >
           Supprimer la saison

@@ -182,60 +182,192 @@ function seeded(seed: number): () => number {
 /** TN qui sort de la fenêtre à la clôture du TN 2 2026-2027. */
 export const DEMO_LEFT_STAGE = { season: "2025-2026", tn: 2 } as const;
 
+/** Décimales possibles d'un résultat simulé (points de set / matchs / 100), au millième. */
+const DEMO_DECIMALS = Array.from({ length: 35 }, (_, i) => i / 1000);
+/** Écart minimal entre un score simulé et le score qu'il doit dépasser. */
+const DEMO_MARGIN = 1e-6;
+/** Nombre de joueurs absents de la fenêtre du classeur qui n'ont joué que le TN simulé. */
+const DEMO_EXTRA = 8;
+/** Plus petite décimale d'un joueur qui a marqué des points de set. */
+const DEMO_DECIMAL_MIN = 0.004;
+/** Paliers du bas du barème : leur nombre dépend de la taille du TN, ils ne sont pas plafonnés. */
+const DEMO_OPEN_VALUES = 5;
+/** Un TN accueille au plus 100 joueurs (SPEC §2). */
+const DEMO_MAX_FIELD = 100;
+
+/** Joueur placé dans l'ordre visé : son score et, s'il y a lieu, ses points simulés. */
+interface DemoSeat {
+  entry: RankingEntry;
+  score: number;
+  /** Points simulés du TN sorti (null : il ne l'a pas joué). */
+  simulated: number | null;
+  /** Palier du barème correspondant. */
+  value: number;
+}
+
 /**
  * Démonstration : résultats simulés du TN 2 2025-2026, le TN qui sort de la fenêtre à la
  * clôture du TN 2 2026-2027. Le classeur de référence ne le contient pas (sa fenêtre commence au
- * TN 3 2025-2026) ; ces points, tirés de façon déterministe du barème, servent seulement à
- * montrer la colonne « sorti » du classement : ils ne comptent plus après le TN 2.
+ * TN 3 2025-2026) : ses vrais points sont inconnus ici.
+ *
+ * La simulation est contrainte par ce qui est connu : la place de chaque inscrit du TN 2 au
+ * moment de son inscription (`inscriptions`, classeur de référence). Les points simulés, pris
+ * dans le barème d'un TN, sont les plus petits qui rendent exactement ces places au classement
+ * « avant TN 2 » ; les joueurs dont la place n'est pas connue occupent les places restantes
+ * dans l'ordre que donnent les quatre TN du classeur. Un inscrit sans classement à
+ * l'inscription ne reçoit aucun point. Ces points ne comptent plus après la clôture du TN 2.
  */
 export function withDemoLeftStage(
   ranking: RankingEntry[],
   players: PlayerRecord[],
   season: string,
+  inscriptions: DemoInscription[] = [],
 ): RankingEntry[] {
   const rnd = seeded(20252);
-  const strength = (e: RankingEntry): number => {
-    const s = windowScore(e.results);
-    return (s.count > 0 ? s.pts / s.count : 0) + (rnd() - 0.5) * 14;
-  };
-  const inWindow = new Set(ranking.map((e) => e.licence || e.name));
+  const keyOf = (e: { licence: string; name: string }): string => e.licence || e.name;
+  const inWindow = new Set(ranking.map(keyOf));
+  const registered = new Set(inscriptions.map((i) => i.name));
+  const knownPlace = new Map<string, number>();
+  for (const i of inscriptions) if (i.currentPlace !== null) knownPlace.set(i.name, i.currentPlace);
   const previous = `${seasonStartYear(season) - 1}-${seasonStartYear(season)}`;
-  // Quelques joueurs vus la saison passée mais absents de la fenêtre : ils n'ont joué que ce TN.
+  const maxPlace = Math.max(0, ...knownPlace.values());
+  // Quelques joueurs vus la saison passée mais absents de la fenêtre : ils n'ont joué que ce TN
+  // (il en faut assez pour que la dernière place connue existe). Jamais un inscrit du TN 2 : sans
+  // classement à l'inscription, il n'a pas joué ce TN.
   const extra: RankingEntry[] = players
-    .filter((p) => p.lastSeason === previous && !inWindow.has(p.licence || p.name))
+    .filter((p) => p.lastSeason === previous && !inWindow.has(keyOf(p)) && !registered.has(p.name))
     .sort((a, b) => a.name.localeCompare(b.name, "fr"))
-    .slice(0, 8)
+    .slice(0, Math.max(DEMO_EXTRA, maxPlace - ranking.length))
     .map((p) => ({ licence: p.licence, name: p.name, club: p.club, results: [] }));
-  const candidates = ranking
-    .map((e) => ({ e, s: strength(e), r: rnd() }))
-    .filter((c) => c.r < 0.62)
-    .sort((a, b) => b.s - a.s)
-    .map((c) => c.e)
-    .slice(0, DEMO_BAREME.length - extra.length);
-  const field = [...candidates, ...extra];
-  const out = ranking.map((e) => ({ ...e, results: [...e.results] }));
-  const byKey = new Map(out.map((e) => [e.licence || e.name, e]));
-  field.forEach((p, i) => {
-    const base = DEMO_BAREME[i] ?? 1;
-    const decimal = Math.round((0.004 + rnd() * 0.03) * 1000) / 1000;
-    const faits = Math.round(260 + base * 9 + rnd() * 220);
+  const out: RankingEntry[] = [
+    ...ranking.map((e) => ({ ...e, results: [...e.results] })),
+    ...extra,
+  ];
+
+  // Barème à distribuer (un TN de 76 joueurs).
+  const stock = new Map<number, number>();
+  for (const v of DEMO_BAREME) stock.set(v, (stock.get(v) ?? 0) + 1);
+  const ascending = [...stock.keys()].sort((a, b) => a - b);
+  const inStock = (v: number): boolean => v <= DEMO_OPEN_VALUES || (stock.get(v) ?? 0) > 0;
+  const scoreWith = (e: RankingEntry, pts: number): number =>
+    windowScore([
+      { season: DEMO_LEFT_STAGE.season, tn: DEMO_LEFT_STAGE.tn, pts, faits: 0, subis: 0 },
+      ...e.results,
+    ]).pts;
+  const natural = (e: RankingEntry): DemoSeat => ({
+    entry: e,
+    score: windowScore(e.results).pts,
+    simulated: null,
+    value: 0,
+  });
+  /** `seat` passe-t-il devant `lower` au classement (points, puis moyenne, puis nom) ? */
+  const ranksAbove = (seat: DemoSeat, lower: DemoSeat | null): boolean => {
+    if (!lower) return true;
+    if (seat.simulated !== null || lower.simulated !== null)
+      return seat.score > lower.score + DEMO_MARGIN;
+    if (seat.score !== lower.score) return seat.score > lower.score;
+    const a = windowScore(seat.entry.results).moy;
+    const b = windowScore(lower.entry.results).moy;
+    return a !== b ? a > b : seat.entry.name.localeCompare(lower.entry.name, "fr") < 0;
+  };
+  /** Place la moins chère de `e` au-dessus de `lower` : sans point simulé si possible. */
+  const cheapest = (e: RankingEntry, lower: DemoSeat | null): DemoSeat | null => {
+    const plain = natural(e);
+    if (e.results.length > 0 && ranksAbove(plain, lower)) return plain;
+    for (const available of [true, false]) {
+      for (const v of ascending) {
+        if (available && !inStock(v)) continue;
+        for (const d of DEMO_DECIMALS) {
+          // Une décimale nulle (aucun point de set) ne va qu'avec les tout derniers paliers.
+          if (d < DEMO_DECIMAL_MIN && v > 2) continue;
+          const seat: DemoSeat = {
+            entry: e,
+            score: scoreWith(e, v + d),
+            simulated: v + d,
+            value: v,
+          };
+          if (ranksAbove(seat, lower)) return seat;
+        }
+      }
+    }
+    return null;
+  };
+
+  // 1) Du dernier au premier. Une place connue à l'inscription est imposée : son joueur doit
+  //    dépasser celui qui le suit, au besoin avec le plus petit palier du barème qui suffit.
+  //    Une place libre va au joueur restant qui peut l'occuper avec le score le plus bas.
+  const fixed = new Map<number, RankingEntry>();
+  const pool: RankingEntry[] = [];
+  for (const e of out) {
+    const place = knownPlace.get(e.name);
+    if (place !== undefined && place <= out.length && !fixed.has(place)) fixed.set(place, e);
+    else pool.push(e);
+  }
+  const seats: DemoSeat[] = [];
+  let lower: DemoSeat | null = null;
+  for (let place = out.length; place >= 1; place--) {
+    const known = fixed.get(place);
+    let seat: DemoSeat | null = null;
+    if (known) seat = cheapest(known, lower) ?? natural(known);
+    else {
+      for (const e of pool) {
+        const c = cheapest(e, lower);
+        if (!c) continue;
+        const better =
+          !seat ||
+          c.score < seat.score ||
+          (c.score === seat.score && c.simulated === null && seat.simulated === null
+            ? ranksAbove(seat, c)
+            : c.score === seat.score && c.simulated === null);
+        if (better) seat = c;
+      }
+      if (!seat) break;
+      pool.splice(pool.indexOf(seat.entry), 1);
+    }
+    if (seat.simulated !== null) stock.set(seat.value, (stock.get(seat.value) ?? 0) - 1);
+    seats.unshift(seat);
+    lower = seat;
+  }
+
+  // 2) Du premier au dernier : les places de tableau restantes (vainqueur, finaliste, quarts…)
+  //    vont aux joueurs qui peuvent les recevoir sans changer l'ordre (résultat non compté d'un
+  //    joueur à 5 TN, ou écart suffisant avec le joueur qui précède), pour que le TN simulé ait
+  //    l'allure d'un tournoi complet.
+  const descending = [...ascending].reverse().filter((v) => v > DEMO_OPEN_VALUES);
+  let field = seats.filter((s) => s.simulated !== null).length;
+  seats.forEach((seat, i) => {
+    const above = seats[i - 1];
+    const below = seats[i + 1];
+    if (seat.simulated !== null || field >= DEMO_MAX_FIELD) return;
+    // Un ex æquo départagé à la moyenne ne reçoit rien : ses points faits et subis changeraient.
+    if (above?.score === seat.score || below?.score === seat.score) return;
+    const d = DEMO_DECIMALS[4 + Math.floor(rnd() * 30)] ?? DEMO_DECIMAL_MIN;
+    for (const v of descending) {
+      if ((stock.get(v) ?? 0) <= 0) continue;
+      const score = scoreWith(seat.entry, v + d);
+      if (above && score > above.score - DEMO_MARGIN) continue;
+      seat.score = score;
+      seat.simulated = v + d;
+      seat.value = v;
+      stock.set(v, (stock.get(v) ?? 0) - 1);
+      field++;
+      break;
+    }
+  });
+
+  for (const seat of seats) {
+    if (seat.simulated === null) continue;
+    const faits = Math.round(260 + seat.value * 9 + rnd() * 220);
     const subis = Math.round(faits / (0.85 + rnd() * 0.55));
     const result: TnResult = {
       season: DEMO_LEFT_STAGE.season,
       tn: DEMO_LEFT_STAGE.tn,
-      pts: base + decimal,
+      pts: seat.simulated,
       faits,
       subis,
     };
-    const key = p.licence || p.name;
-    let entry = byKey.get(key);
-    if (!entry) {
-      entry = { ...p, results: [] };
-      out.push(entry);
-      byKey.set(key, entry);
-    }
-    entry.results = [result, ...entry.results];
-  });
+    seat.entry.results = [result, ...seat.entry.results];
+  }
   return out;
 }
 
@@ -246,6 +378,7 @@ export function demoSeason(registrationOrder: DemoInscription[]): SeasonDocument
     SEASON_FIXTURE.windowBefore.map((e) => ({ ...e, results: [...e.results] })),
     SEASON_FIXTURE.players,
     season,
+    registrationOrder,
   );
   const stages = SEASON_FIXTURE.calendar.map((c) => demoStage(season, c));
   const now = new Date().toISOString();

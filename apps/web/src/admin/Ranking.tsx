@@ -755,10 +755,12 @@ export function Ranking() {
           {!lastClosure && doc.id === SEASON_FIXTURE.season && last.tn === 1 ? (
             <div className="bg-brand-soft text-brand-ink mb-4 rounded-[12px] px-4 py-3 text-[12.5px]">
               Démonstration : fenêtre reconstituée à partir du classeur de référence (TN 3 à 5
-              2025-2026 et TN 1 2026-2027), complétée par des résultats simulés pour le{" "}
-              {stageText(DEMO_LEFT_STAGE)} que le classeur ne contient pas. Clôturez le TN 2 pour
-              obtenir le classement « après TN 2 » du classeur : le {stageText(DEMO_LEFT_STAGE)}{" "}
-              sortira alors de la fenêtre.
+              2025-2026 et TN 1 2026-2027). Le classeur ne contient pas le{" "}
+              {stageText(DEMO_LEFT_STAGE)} : ses points sont <strong>simulés</strong>, choisis pour
+              que les inscrits du TN 2 retrouvent exactement la place qu'ils avaient à l'inscription
+              ; les places des autres joueurs sont indicatives. Clôturez le TN 2 pour obtenir le
+              classement « après TN 2 » du classeur : le {stageText(DEMO_LEFT_STAGE)} sortira alors
+              de la fenêtre.
             </div>
           ) : null}
           <Podium rows={rows} onSelect={(r) => setSelected(r.licence || r.name)} />
