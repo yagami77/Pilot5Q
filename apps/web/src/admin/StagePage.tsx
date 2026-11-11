@@ -180,6 +180,7 @@ function StageView({
   const juniors = useMemo(() => new Set(doc.juniors), [doc.juniors]);
   const acceptance = useMemo(() => stageAcceptance(doc, stage), [doc, stage]);
   const capacity = stageCapacity(doc, stage);
+  const u21 = useMemo(() => acceptance.accepted.filter((p) => p.junior), [acceptance]);
   const opened = Boolean(stage.openedAt);
 
   const closed = Boolean(stage.closedAt);
@@ -357,12 +358,7 @@ function StageView({
           value={acceptance.waiting.length}
           detail={`priorité aux ${doc.settings.waitlistPriority} premiers`}
         />
-        <Tile
-          label="U21"
-          value={acceptance.accepted.filter((p) => p.junior).length}
-          tone="gold"
-          detail="exemptés du droit"
-        />
+        <Tile label="U21" value={u21.length} tone="gold" detail={<JuniorNames players={u21} />} />
       </div>
       <div className="grid gap-4">
         <ImportStep
@@ -964,6 +960,37 @@ function RosterLog({ tournamentId }: { tournamentId: string }) {
         </ol>
       )}
     </div>
+  );
+}
+
+/**
+ * Détail de la tuile U21 : les noms des juniors acceptés, repliés sous le nombre, pour vérifier
+ * d'un coup d'œil qui est exempté du droit d'inscription (les noms sont aussi en infobulle).
+ */
+function JuniorNames({ players }: { players: Player[] }) {
+  if (players.length === 0) return <>exemptés du droit</>;
+  const sorted = [...players].sort((a, b) => a.name.localeCompare(b.name, "fr"));
+  return (
+    <details className="group">
+      <summary
+        className="marker:text-gold-ink cursor-pointer select-none"
+        title={sorted.map((p) => nice(p.name)).join(", ")}
+      >
+        exemptés du droit ·{" "}
+        <span className="text-ink-secondary font-semibold underline decoration-dotted underline-offset-2">
+          <span className="group-open:hidden">voir les noms</span>
+          <span className="hidden group-open:inline">masquer</span>
+        </span>
+      </summary>
+      <ul className="border-line mt-2 flex flex-col gap-0.5 border-t pt-2" aria-label="Juniors U21">
+        {sorted.map((p) => (
+          <li key={p.licence || p.name} className="min-w-0 leading-tight">
+            <div className="text-ink truncate font-semibold">{nice(p.name)}</div>
+            <div className="truncate text-[11.5px]">{clubShort(p.club)}</div>
+          </li>
+        ))}
+      </ul>
+    </details>
   );
 }
 
