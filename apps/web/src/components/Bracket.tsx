@@ -12,6 +12,7 @@ import { createPortal } from "react-dom";
 
 import { isValidScore, matchWinner } from "@/lib/engine";
 import { findByLicence, useKnownPeople, type KnownPerson } from "@/lib/arbitres";
+import { bracketLayout, waitingLabel } from "@/lib/bracketLayout";
 import { nice, shortName } from "@/lib/format";
 import { celebrate, prefersReducedMotion } from "@/lib/motion";
 import {
@@ -25,7 +26,14 @@ import { useEditLock, useTournament } from "@/store/tournament";
 
 import { ArbitreField } from "./ArbitreField";
 import { RollingNumber } from "./RollingNumber";
-import { ScoreCell, ScoreEditor, draftOf, scoreOf, type ScoreDraft } from "./ScoreEditor";
+import {
+  ScoreCell,
+  ScoreEditor,
+  draftMatch,
+  draftOf,
+  scoreOf,
+  type ScoreDraft,
+} from "./ScoreEditor";
 import { Avatar, Button, Chip, cx } from "./ui";
 
 const W = 300;
@@ -95,15 +103,14 @@ export function Bracket({
     const byRound = shown.map((r) =>
       all.filter((m) => m.round === r).sort((x, y) => x.slot - y.slot),
     );
-    const n0 = byRound[0]?.length ?? 0;
-    // Avec arbitres, une ligne sous chaque carte : un peu plus d'air entre les cartes
-    const rowH = (n0 > 8 ? 124 : 132) + (withArbitre ? 14 : 0);
-    const totalH = n0 * rowH;
-    const pos = new Map<string, { x: number; y: number }>();
-    byRound.forEach((ms, ri) => {
-      const x = ri * (W + GAP);
-      const slotH = totalH / Math.max(1, ms.length);
-      ms.forEach((m, i) => pos.set(m.id, { x, y: (i + 0.5) * slotH - H / 2 }));
+    // Chaque carte à sa place dans son tour ; un premier tour de matchs préliminaires
+    // (consolante) est posé en face des matchs qu'il alimente : voir `bracketLayout`.
+    const { pos, height: totalH } = bracketLayout(byRound, shown, {
+      w: W,
+      h: H,
+      gap: GAP,
+      // Avec arbitres, une ligne sous chaque carte : un peu plus d'air entre les cartes
+      rowH: (rows) => (rows > 8 ? 124 : 132) + (withArbitre ? 14 : 0),
     });
     const conns: { from: BracketMatch; to: BracketMatch; side: "a" | "b"; d: string }[] = [];
     byRound.forEach((ms, ri) => {
@@ -412,7 +419,11 @@ function MatchCard({
       const p = findByLicence(people, l);
       return p ? shortName(p.name) : l;
     });
-  const key = `${match.id}:${match.a}:${match.b}:${match.sa}:${match.sb}:${JSON.stringify(match.setsA ?? null)}`;
+  // Signature du score enregistré : quand elle change ailleurs que par notre propre saisie
+  // (annulation, autre joueur qualifié), le brouillon repart du match enregistré.
+  const keyOf = (s: Pick<BracketMatch, "sa" | "sb" | "setsA" | "setsB">) =>
+    `${match.id}:${match.a}:${match.b}:${s.sa}:${s.sb}:${JSON.stringify(s.setsA ?? null)}:${JSON.stringify(s.setsB ?? null)}`;
+  const key = keyOf(match);
   const last = useRef(key);
   useEffect(() => {
     if (key !== last.current) {
@@ -424,20 +435,24 @@ function MatchCard({
   const valid = ready && isValidScore(match, d);
   const w = valid ? matchWinner(match, d) : null;
   const live = ready && !valid && (matchTouched(match) || open);
+  // Match complet et valide dans le brouillon : condition du bouton « Valider »
+  const draftValid = isValidScore(draftMatch(match, draft, d), d);
   const commit = (nd: ScoreDraft) => {
     const s = scoreOf(nd, d);
-    if (
-      s.sa === match.sa &&
-      s.sb === match.sb &&
-      JSON.stringify(s.setsA ?? null) === JSON.stringify(match.setsA ?? null)
-    )
-      return;
+    if (keyOf(s) === key) return;
+    // Notre propre saisie : le brouillon (set en cours compris) est conservé tel quel
+    last.current = keyOf(s);
     dispatch({ type: "score.entered", payload: { phase, matchId: match.id, ...s } });
+  };
+  /** Ferme la fenêtre de saisie ; un match incomplet reste enregistré « en cours ». */
+  const closeEntry = () => {
+    commit(draft);
+    setOpen(false);
   };
 
   const slot = (who: "a" | "b") => {
     const name = who === "a" ? match.a : match.b;
-    const label = who === "a" ? match.labelA : match.labelB;
+    const label = waitingLabel(who === "a" ? match.labelA : match.labelB);
     const hiddenSlot = who === "a" ? hiddenA : hiddenB;
     const sets = who === "a" ? match.setsA : match.setsB;
     const score = who === "a" ? match.sa : match.sb;
@@ -487,11 +502,11 @@ function MatchCard({
                 {nice(name)}
               </div>
               <div className={cx("text-ink-muted truncate text-[10.5px]", isLose && "opacity-55")}>
-                {label ?? ""}
+                {label}
               </div>
             </>
           ) : (
-            <div className="text-ink-muted text-[12px] font-medium">{label ?? ""}</div>
+            <div className="text-ink-muted text-[12px] font-medium">{label}</div>
           )}
         </div>
         <div className="flex items-center gap-1.5">
@@ -521,7 +536,13 @@ function MatchCard({
                 value={name && (score !== null || match.forfait) ? (score ?? 0) : name ? "–" : ""}
                 className={cx(
                   "min-w-[26px] justify-end font-mono text-[20px] font-bold",
-                  isWin ? (champion ? "text-gold" : "text-ok") : isLose ? "text-alert" : "text-ink-secondary",
+                  isWin
+                    ? champion
+                      ? "text-gold"
+                      : "text-ok"
+                    : isLose
+                      ? "text-alert"
+                      : "text-ink-secondary",
                 )}
               />
             </>
@@ -571,7 +592,7 @@ function MatchCard({
         {multi && editable && ready && !match.forfait ? (
           <button
             type="button"
-            onClick={() => setOpen((v) => !v)}
+            onClick={() => (open ? closeEntry() : setOpen(true))}
             className="text-brand inline-flex items-center gap-1 font-sans text-[11px] font-bold tracking-normal normal-case"
             aria-expanded={open}
             aria-label={`Saisir ${roundLabel(match.round)} ${match.slot}`}
@@ -584,14 +605,14 @@ function MatchCard({
       {slot("a")}
       {slot("b")}
       {open ? (
-        <SaisiePopover anchor={rootRef} onClose={() => setOpen(false)}>
+        <SaisiePopover anchor={rootRef} onClose={closeEntry}>
           <div className="mb-2 flex items-center justify-between gap-2">
             <span className="text-[12.5px] font-bold">
               {matchLabel(match)} · {distanceLabel(d)}
             </span>
             <button
               type="button"
-              onClick={() => setOpen(false)}
+              onClick={closeEntry}
               aria-label="Fermer la saisie"
               className="bg-surface-2 border-line grid size-7 place-items-center rounded-[8px] border"
             >
@@ -610,6 +631,9 @@ function MatchCard({
           />
           {withArbitre ? (
             <div className="border-line mt-2.5 flex flex-col gap-1.5 border-t border-dashed pt-2.5">
+              <span className="text-ink-muted text-[10.5px] font-semibold">
+                Arbitres (facultatif)
+              </span>
               {([1, 2] as const).map((slot) => (
                 <ArbitreField
                   key={slot}
@@ -626,8 +650,28 @@ function MatchCard({
               ))}
             </div>
           ) : null}
-          <div className="mt-2.5 flex justify-end">
-            <Button size="sm" variant="primary" onClick={() => setOpen(false)}>
+          <div className="mt-2.5 flex items-center justify-between gap-3">
+            <span
+              className={cx(
+                "text-[11.5px] font-semibold",
+                draftValid ? "text-ok-ink" : "text-ink-muted",
+              )}
+              aria-live="polite"
+            >
+              {draftValid
+                ? "Match complet"
+                : scoreOf(draft, d).sa !== null
+                  ? "Match en cours : fermez pour le reprendre plus tard"
+                  : `${distanceLabel(d)} : saisissez les points de chaque set`}
+            </span>
+            {/* Actif seulement quand le match est complet et valide */}
+            <Button
+              size="sm"
+              variant="primary"
+              data-score-submit
+              disabled={!draftValid}
+              onClick={closeEntry}
+            >
               Valider
             </Button>
           </div>
@@ -709,7 +753,7 @@ function SaisiePopover({
         left: pos?.left ?? -9999,
         visibility: pos ? "visible" : "hidden",
       }}
-      className="bg-surface border-brand-light shadow-raised no-print z-[70] w-[400px] max-w-[calc(100vw-16px)] rounded-[14px] border p-3"
+      className="bg-surface border-brand-light shadow-raised no-print z-[70] w-[440px] max-w-[calc(100vw-16px)] rounded-[14px] border p-3"
     >
       {children}
     </motion.div>,

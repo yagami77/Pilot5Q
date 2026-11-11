@@ -27,6 +27,7 @@ import {
   draftMatch,
   draftOf,
   scoreOf,
+  scoreState,
   type ScoreDraft,
 } from "./ScoreEditor";
 import { useToast } from "./Toast";
@@ -215,8 +216,8 @@ function DrawerBody({
               const base = poule.matches.find((x) => x.id === m.id) ?? m;
               const draft = drafts[m.id] ?? draftOf(base, d);
               const valid = isValidScore(m, d);
-              const touched = m.sa !== null || m.sb !== null;
-              const bothSet = m.sa !== null && m.sb !== null;
+              // Incohérent, à ne pas confondre avec un match en plusieurs sets en cours
+              const invalid = scoreState(m, d) === "invalid";
               const ff = forfaits.has(m.a) || forfaits.has(m.b);
               const multi = d.setsGagnants > 1;
               const w = valid ? matchWinner(m, d) : null;
@@ -262,7 +263,7 @@ function DrawerBody({
                   className={cx(
                     "border-line bg-surface rounded-[11px] border transition-[border-color,box-shadow,background-color] duration-300",
                     valid && !ff && "border-[#bfe6d2] bg-[linear-gradient(180deg,#fff,#f3fbf6)]",
-                    touched && bothSet && !valid && "border-[#f5bfc9]",
+                    invalid && "border-[#f5bfc9]",
                     ff && "opacity-70",
                   )}
                   data-match-row={m.id}
