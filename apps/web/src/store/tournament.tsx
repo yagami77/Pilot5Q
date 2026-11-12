@@ -3,7 +3,9 @@
  *
  * - `events` est la source de vérité, persistée dans IndexedDB à chaque changement ;
  * - `state` est recalculé par `replay` (moteur du domaine ou secours) ;
- * - `undo` retire le dernier événement et rejoue le journal ;
+ * - `undo` / `undoTo` retirent des événements du journal et rejouent, mais rien n'est perdu :
+ *   les événements retirés vont dans la pile `redo` (un groupe par annulation, persistée) et
+ *   `redo()` les remet tels quels. Toute nouvelle action vide cette pile ;
  * - clôture du tournoi par le directeur de jeu (`closeTournament`), d'après `closureStatus` du
  *   domaine (réponse du responsable national, 11 novembre : « après la clôture du DJ seul le
  *   responsable peut modifier ») :
@@ -33,9 +35,11 @@ import { replay } from "@/lib/engine";
 import {
   loadCurrentId,
   loadEvents,
+  loadRedo,
   removeTournament,
   saveCurrentId,
   saveEvents,
+  saveRedo,
   upsertIndex,
 } from "./persistence";
 
@@ -58,6 +62,14 @@ export interface TournamentStore {
   /** Annule toutes les actions à partir de l'index `index` du journal (inclus). */
   undoTo: (index: number) => void;
   canUndo: boolean;
+  /**
+   * Actions annulées qu'on peut rétablir : un groupe par annulation, le plus récent en dernier.
+   * Vidé dès qu'une nouvelle action est saisie.
+   */
+  redoStack: TournamentEvent[][];
+  /** Rétablit la dernière annulation (`all` : toutes les annulations en attente). */
+  redo: (all?: boolean) => void;
+  canRedo: boolean;
   /** Ouvre (ou crée) un tournoi avec un journal initial. */
   open: (id: string, events: EventInput[]) => void;
   /** Ferme le tournoi courant (il reste en base). */
@@ -91,6 +103,12 @@ export interface TournamentStore {
   reopenTournament: (by?: string) => void;
 }
 
+/** Journal du tournoi et actions annulées, tenus ensemble. */
+interface Journal {
+  events: TournamentEvent[];
+  redo: TournamentEvent[][];
+}
+
 const Ctx = createContext<TournamentStore | null>(null);
 
 const stamp = (e: EventInput): TournamentEvent =>
@@ -115,7 +133,19 @@ export function TournamentProvider({
   persist?: boolean;
 }) {
   const [id, setId] = useState<string | null>(initialId);
-  const [events, setEvents] = useState<TournamentEvent[]>(initialEvents);
+  // Journal et pile « Rétablir » changent ensemble : un seul état, pour rester cohérents.
+  const [journal, setJournal] = useState<Journal>({ events: initialEvents, redo: [] });
+  const events = journal.events;
+  const redoStack = journal.redo;
+  /** Modifie le journal ; une nouvelle action vide la pile « Rétablir ». */
+  const setEvents = useCallback(
+    (next: TournamentEvent[] | ((prev: TournamentEvent[]) => TournamentEvent[])) =>
+      setJournal((prev) => {
+        const events = typeof next === "function" ? next(prev.events) : next;
+        return events === prev.events ? prev : { events, redo: [] };
+      }),
+    [],
+  );
   const [ready, setReady] = useState(!persist);
   const [savedAt, setSavedAt] = useState<Date | null>(null);
   const [saving, setSaving] = useState(false);
@@ -144,8 +174,10 @@ export function TournamentProvider({
         const evs = await loadEvents(current);
         if (cancelled) return;
         if (evs.length > 0) {
+          const redo = await loadRedo(current);
+          if (cancelled) return;
           setId(current);
-          setEvents(evs);
+          setJournal({ events: evs, redo });
         }
       }
       setReady(true);
@@ -161,6 +193,7 @@ export function TournamentProvider({
     let cancelled = false;
     setSaving(true);
     saveEvents(id, events)
+      .then(() => saveRedo(id, redoStack))
       .then(() => {
         if (cancelled) return;
         setSavedAt(new Date());
@@ -183,7 +216,7 @@ export function TournamentProvider({
     return () => {
       cancelled = true;
     };
-  }, [events, id, ready, persist]);
+  }, [events, redoStack, id, ready, persist]);
 
   const state = useMemo(() => replay(events), [events]);
 
@@ -206,7 +239,7 @@ export function TournamentProvider({
       dirty.current = true;
       setEvents((prev) => (frozen(prev) ? prev : [...prev, ...inputs.map(stamp)]));
     },
-    [frozen],
+    [frozen, setEvents],
   );
   const dispatch = useCallback((e: EventInput) => dispatchMany([e]), [dispatchMany]);
 
@@ -219,10 +252,10 @@ export function TournamentProvider({
   const undo = useCallback(() => {
     if (locked.current) return;
     dirty.current = true;
-    setEvents((prev) => {
-      const last = prev[prev.length - 1];
-      if (!last || PROTECTED.includes(last.type) || frozen(prev)) return prev;
-      return prev.slice(0, -1);
+    setJournal((prev) => {
+      const last = prev.events[prev.events.length - 1];
+      if (!last || PROTECTED.includes(last.type) || frozen(prev.events)) return prev;
+      return { events: prev.events.slice(0, -1), redo: [...prev.redo, [last]] };
     });
   }, [frozen]);
 
@@ -230,10 +263,30 @@ export function TournamentProvider({
     (index: number) => {
       if (locked.current) return;
       dirty.current = true;
-      setEvents((prev) => {
-        if (index < 0 || index >= prev.length || frozen(prev)) return prev;
-        if (prev.slice(index).some((e) => PROTECTED.includes(e.type))) return prev;
-        return prev.slice(0, index);
+      setJournal((prev) => {
+        if (index < 0 || index >= prev.events.length || frozen(prev.events)) return prev;
+        const removed = prev.events.slice(index);
+        if (removed.some((e) => PROTECTED.includes(e.type))) return prev;
+        return { events: prev.events.slice(0, index), redo: [...prev.redo, removed] };
+      });
+    },
+    [frozen],
+  );
+
+  const canRedo =
+    !readOnly && !closure && !(reopening && !canReopen) && redoStack.length > 0;
+  const redo = useCallback(
+    (all = false) => {
+      if (locked.current) return;
+      dirty.current = true;
+      setJournal((prev) => {
+        if (prev.redo.length === 0 || frozen(prev.events)) return prev;
+        // Les groupes se rétablissent du plus récent au plus ancien : l'ordre du journal revient.
+        const groups = all ? [...prev.redo].reverse() : [prev.redo[prev.redo.length - 1]!];
+        return {
+          events: [...prev.events, ...groups.flat()],
+          redo: all ? [] : prev.redo.slice(0, -1),
+        };
       });
     },
     [frozen],
@@ -249,7 +302,7 @@ export function TournamentProvider({
         return more.length > 0 ? [...prev, ...more.map(stamp)] : prev;
       });
     },
-    [frozen],
+    [frozen, setEvents],
   );
 
   const reopenTournament = useCallback((by?: string) => {
@@ -260,13 +313,13 @@ export function TournamentProvider({
         ? [...prev, stamp({ type: "tournament.reopened", payload: by ? { by } : {} })]
         : prev,
     );
-  }, []);
+  }, [setEvents]);
 
   const open = useCallback(
     (newId: string, inputs: EventInput[]) => {
       dirty.current = true;
       setId(newId);
-      setEvents(inputs.map(stamp));
+      setJournal({ events: inputs.map(stamp), redo: [] });
       if (persist) void saveCurrentId(newId);
     },
     [persist],
@@ -275,7 +328,7 @@ export function TournamentProvider({
   const close = useCallback(() => {
     dirty.current = false;
     setId(null);
-    setEvents([]);
+    setJournal({ events: [], redo: [] });
     setSavedAt(null);
     if (persist) void saveCurrentId(null);
   }, [persist]);
@@ -298,7 +351,7 @@ export function TournamentProvider({
             ),
       );
     },
-    [frozen],
+    [frozen, setEvents],
   );
 
   const value = useMemo<TournamentStore>(
@@ -314,6 +367,9 @@ export function TournamentProvider({
       undo,
       undoTo,
       canUndo,
+      redoStack,
+      redo,
+      canRedo,
       open,
       close,
       destroy,
@@ -339,6 +395,9 @@ export function TournamentProvider({
       undo,
       undoTo,
       canUndo,
+      redoStack,
+      redo,
+      canRedo,
       open,
       close,
       destroy,

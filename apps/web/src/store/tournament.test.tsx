@@ -55,6 +55,68 @@ describe("store du tournoi", () => {
     );
   });
 
+  it("une annulation ne perd rien : « Rétablir » remet les actions telles quelles", async () => {
+    const { result } = renderHook(() => useTournament(), { wrapper });
+    await waitFor(() => expect(result.current.ready).toBe(true));
+    act(() => result.current.open("redo-test", demoEvents()));
+    const assign = (b: number) =>
+      act(() =>
+        result.current.dispatch({
+          type: "billards.assigned",
+          payload: { phase: "B", assignments: { B1: [b] } },
+        }),
+      );
+    assign(9);
+    assign(10);
+    assign(11);
+    const full = result.current.events;
+    expect(result.current.canRedo).toBe(false);
+
+    // Retour deux actions en arrière, puis une de plus : deux groupes à rétablir
+    act(() => result.current.undoTo(full.length - 2));
+    act(() => result.current.undo());
+    expect(result.current.events).toHaveLength(full.length - 3);
+    expect(result.current.redoStack.map((g) => g.length)).toEqual([2, 1]);
+    expect(result.current.canRedo).toBe(true);
+    await waitFor(() => expect(store.get("pilot5q:redo:redo-test")).toHaveLength(2));
+
+    // Rétablir remet le dernier groupe, puis l'autre : journal identique, horodatages compris
+    act(() => result.current.redo());
+    expect(result.current.events).toHaveLength(full.length - 2);
+    act(() => result.current.redo());
+    expect(result.current.events).toEqual(full);
+    expect(result.current.state.billardAssignments.B?.B1).toEqual([11]);
+    expect(result.current.canRedo).toBe(false);
+    await waitFor(() => expect(store.get("pilot5q:redo:redo-test")).toBeUndefined());
+
+    // « Tout rétablir » d'un coup
+    act(() => result.current.undo());
+    act(() => result.current.undo());
+    act(() => result.current.redo(true));
+    expect(result.current.events).toEqual(full);
+
+    // Une nouvelle action après une annulation vide la pile
+    act(() => result.current.undo());
+    assign(12);
+    expect(result.current.canRedo).toBe(false);
+    expect(result.current.state.billardAssignments.B?.B1).toEqual([12]);
+  });
+
+  it("recharge les actions annulées avec le tournoi", async () => {
+    const at = "2026-10-29T10:00:00Z";
+    const evs = demoEvents().map((e) => ({ ...e, at }));
+    store.set("pilot5q:current", "ancien");
+    store.set("pilot5q:events:ancien", evs);
+    store.set("pilot5q:redo:ancien", [
+      [{ type: "billards.assigned", at, payload: { phase: "B", assignments: { B1: [9] } } }],
+    ]);
+    const { result } = renderHook(() => useTournament(), { wrapper });
+    await waitFor(() => expect(result.current.ready).toBe(true));
+    expect(result.current.canRedo).toBe(true);
+    act(() => result.current.redo());
+    expect(result.current.state.billardAssignments.B?.B1).toEqual([9]);
+  });
+
   it("ne permet pas d'annuler la création ni l'import", async () => {
     const { result } = renderHook(() => useTournament(), { wrapper });
     await waitFor(() => expect(result.current.ready).toBe(true));

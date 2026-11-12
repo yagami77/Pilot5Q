@@ -43,6 +43,26 @@ export async function saveEvents(id: string, events: TournamentEvent[]): Promise
   await set(eventsKey(id), events);
 }
 
+/** Actions annulées, par groupe (une annulation = un groupe), pour « Rétablir ». */
+export const redoKey = (tournamentId: string) => `pilot5q:redo:${tournamentId}`;
+
+export async function loadRedo(id: string): Promise<TournamentEvent[][]> {
+  try {
+    return (await get<TournamentEvent[][]>(redoKey(id))) ?? [];
+  } catch {
+    return [];
+  }
+}
+
+export async function saveRedo(id: string, redo: TournamentEvent[][]): Promise<void> {
+  try {
+    if (redo.length === 0) await del(redoKey(id));
+    else await set(redoKey(id), redo);
+  } catch {
+    /* ignoré : la pile reste en mémoire */
+  }
+}
+
 export async function loadIndex(): Promise<TournamentSummary[]> {
   try {
     return (await get<TournamentSummary[]>(INDEX_KEY)) ?? [];
@@ -63,6 +83,7 @@ export async function upsertIndex(summary: TournamentSummary): Promise<void> {
 export async function removeTournament(id: string): Promise<void> {
   try {
     await del(eventsKey(id));
+    await del(redoKey(id));
     const list = (await loadIndex()).filter((s) => s.id !== id);
     await set(INDEX_KEY, list);
   } catch {

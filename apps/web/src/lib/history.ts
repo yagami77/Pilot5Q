@@ -87,24 +87,137 @@ export function describeEvent(e: TournamentEvent): string {
   }
 }
 
+/** Nature d'une action, pour l'icône et le résumé d'une annulation. */
+export type EventKind =
+  | "score"
+  | "classement"
+  | "tirage"
+  | "billards"
+  | "forfait"
+  | "consolante"
+  | "arbitre"
+  | "cloture"
+  | "autre";
+
+export function eventKind(e: TournamentEvent): EventKind {
+  switch (e.type) {
+    case "score.entered":
+      return "score";
+    case "phase.closed":
+    case "phase.reopened":
+      return "classement";
+    case "poules.drawn":
+      return "tirage";
+    case "billards.assigned":
+      return "billards";
+    case "forfait.declared":
+      return "forfait";
+    case "consolante.created":
+      return "consolante";
+    case "arbitre.set":
+      return "arbitre";
+    case "tournament.closed":
+    case "tournament.reopened":
+      return "cloture";
+    default:
+      return "autre";
+  }
+}
+
+export type Journee = "Jeudi" | "Vendredi" | "Samedi" | "Dimanche";
+
+const PHASE_DAY: Record<PhaseId, Journee> = {
+  PREQ: "Vendredi",
+  B: "Vendredi",
+  QN: "Samedi",
+  QM: "Samedi",
+  CLS: "Samedi",
+  N: "Dimanche",
+  M: "Dimanche",
+};
+
+/** Journée à laquelle une action appartient par nature (null : celle de l'action précédente). */
+function naturalDay(e: TournamentEvent): Journee | null {
+  switch (e.type) {
+    case "score.entered":
+    case "phase.closed":
+    case "phase.reopened":
+    case "arbitre.set":
+      return PHASE_DAY[e.payload.phase];
+    case "poules.drawn":
+      return e.payload.phase === "PREQ" ? "Jeudi" : null;
+    case "tournament.closed":
+    case "tournament.reopened":
+      return "Dimanche";
+    default:
+      return null;
+  }
+}
+
 export interface HistoryEntry {
   /** Index dans le journal. */
   index: number;
   at: string;
   label: string;
+  kind: EventKind;
+  /** Journée du tournoi (les billards et la consolante suivent l'action qui les précède). */
+  day: Journee;
 }
 
-/** Dernières actions annulables, la plus récente en premier. */
+/** Actions annulables, la plus récente en premier (toutes par défaut). */
 export function undoableHistory(
   events: TournamentEvent[],
   protectedTypes: TournamentEvent["type"][],
-  limit = 12,
+  limit = Number.POSITIVE_INFINITY,
 ): HistoryEntry[] {
+  // Journée de chaque action, dans l'ordre du journal
+  const days: Journee[] = [];
+  let running: Journee = "Jeudi";
+  for (const e of events) {
+    running = naturalDay(e) ?? running;
+    days.push(running);
+  }
   const out: HistoryEntry[] = [];
   for (let i = events.length - 1; i >= 0 && out.length < limit; i--) {
     const e = events[i]!;
     if (protectedTypes.includes(e.type)) break;
-    out.push({ index: i, at: e.at, label: describeEvent(e) });
+    out.push({
+      index: i,
+      at: e.at,
+      label: describeEvent(e),
+      kind: eventKind(e),
+      day: days[i] ?? "Jeudi",
+    });
   }
   return out;
+}
+
+const KIND_WORDS: Record<EventKind, [string, string]> = {
+  score: ["score", "scores"],
+  classement: ["classement", "classements"],
+  tirage: ["tirage ou composition", "tirages ou compositions"],
+  billards: ["affectation de billards", "affectations de billards"],
+  forfait: ["forfait ou abandon", "forfaits ou abandons"],
+  consolante: ["création de consolante", "créations de consolante"],
+  arbitre: ["arbitre", "arbitres"],
+  cloture: ["réouverture du tournoi", "réouvertures du tournoi"],
+  autre: ["autre action", "autres actions"],
+};
+
+/** Actions dont l'annulation entraîne beaucoup de choses : citées une à une avant de confirmer. */
+const HEAVY: EventKind[] = ["tirage", "classement", "consolante", "forfait", "cloture"];
+
+/**
+ * Résumé d'une annulation : décompte par nature (« 12 scores », « 1 classement ») et libellés
+ * des actions lourdes de conséquences (tirage, classement, consolante, forfait).
+ */
+export function summarizeUndo(entries: HistoryEntry[]): { parts: string[]; heavy: string[] } {
+  const counts = new Map<EventKind, number>();
+  for (const e of entries) counts.set(e.kind, (counts.get(e.kind) ?? 0) + 1);
+  const parts = [...counts.entries()].map(([kind, n]) => {
+    const [one, many] = KIND_WORDS[kind];
+    return `${n} ${n > 1 ? many : one}`;
+  });
+  const heavy = entries.filter((e) => HEAVY.includes(e.kind)).map((e) => e.label);
+  return { parts, heavy };
 }
