@@ -112,7 +112,7 @@ describe("documents imprimés", () => {
     // Pied de feuille : rappel des règles et marque
     for (const foot of container.querySelectorAll(".sheet-foot")) {
       expect(foot.querySelector(".sheet-rule")?.textContent).toMatch(/Match valide/);
-      expect(foot.textContent).toMatch(/Pilot5Q/);
+      expect(foot.querySelector("img[alt='Pilot5Q']")).not.toBeNull();
     }
   });
 });

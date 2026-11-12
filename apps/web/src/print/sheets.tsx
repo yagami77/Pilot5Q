@@ -672,7 +672,7 @@ export function HalfSheet({ data }: { data: HalfSheetData }) {
       <div className="sheet-foot">
         <p className="sheet-rule">{data.rule}</p>
         <span className="p-foot-brand">
-          <PrintLogo size={3.6} /> Pilot5Q
+          <PrintLogo height={4.6} />
         </span>
       </div>
     </article>

@@ -24,7 +24,7 @@ import { Navigate, useNavigate, useSearchParams } from "react-router";
 import { useAuth } from "@/auth/context";
 import { LoginDialog, type LoginKind } from "@/auth/LoginDialog";
 import { useToast } from "@/components/Toast";
-import { BrandMark } from "@/components/TopBar";
+import { BrandLogo } from "@/components/Brand";
 import { Avatar, Button, cx } from "@/components/ui";
 import { demoEvents } from "@/lib/demo";
 import { useTournament } from "@/store/tournament";
@@ -66,19 +66,16 @@ export function Home() {
         className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[420px] bg-[radial-gradient(60%_60%_at_50%_0%,rgb(30_79_216/0.10),transparent_70%)]"
       />
       <header className="flex flex-col items-center gap-3 text-center">
-        <motion.div
-          initial={{ scale: 0.6, rotate: -20, opacity: 0 }}
-          animate={{ scale: 1, rotate: 0, opacity: 1 }}
-          transition={{ type: "spring", stiffness: 260, damping: 18 }}
+        <motion.h1
+          initial={{ scale: 0.82, y: 14, opacity: 0 }}
+          animate={{ scale: 1, y: 0, opacity: 1 }}
+          transition={{ type: "spring", stiffness: 220, damping: 18 }}
         >
-          <BrandMark className="size-14 rounded-[16px] [&>svg]:size-8" />
-        </motion.div>
+          <BrandLogo className="h-[96px] drop-shadow-[0_18px_22px_rgb(14_55_168/0.18)] md:h-[132px]" />
+        </motion.h1>
         <p className="text-ink-muted animate-fade-up text-xs font-semibold tracking-[0.2em] uppercase">
           Billard 5-Quilles · FFB
         </p>
-        <h1 className="text-brand animate-fade-up text-[44px] leading-none [animation-delay:60ms] md:text-[56px]">
-          Pilot5Q
-        </h1>
         <p className="text-ink-secondary animate-fade-up max-w-xl text-base font-medium [animation-delay:120ms]">
           Les Tournois Nationaux, de l'inscription au podium : le responsable national prépare la
           saison, le directeur de jeu pilote son tournoi.

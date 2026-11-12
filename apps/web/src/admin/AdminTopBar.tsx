@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router";
 
 import { useAuth } from "@/auth/context";
 
-import { BrandMark } from "@/components/TopBar";
+import { BrandLogo, BrandMark } from "@/components/Brand";
 import { Avatar, cx } from "@/components/ui";
 import { clock } from "@/lib/format";
 
@@ -24,8 +24,8 @@ export function AdminTopBar() {
           className="flex items-center gap-2.5 text-[17px] font-extrabold tracking-[-0.02em]"
           aria-label="Pilot5Q, accueil"
         >
-          <BrandMark />
-          <span className="hidden sm:inline">Pilot5Q</span>
+          <BrandMark className="sm:hidden" />
+          <BrandLogo className="hidden h-[40px] sm:block" />
         </Link>
         <div className="min-w-0 flex-1">
           <h1 className="truncate text-[15px] font-bold tracking-normal">

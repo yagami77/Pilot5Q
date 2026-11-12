@@ -62,7 +62,10 @@ export async function whenPrintReady(root: ParentNode = document, timeout = 4000
     }
     await Promise.all(
       [...root.querySelectorAll("img")].map((img) =>
-        img.complete ? undefined : img.decode().catch(() => undefined),
+        // `decode` manque dans certains environnements : on n'attend alors pas l'image
+        img.complete || typeof img.decode !== "function"
+          ? undefined
+          : img.decode().catch(() => undefined),
       ),
     );
     await nextFrame();

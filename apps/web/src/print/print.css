@@ -71,6 +71,16 @@
   align-items: center;
   gap: 3.2mm;
 }
+.pb-logo {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  padding: 1.6mm 2.4mm;
+  border-radius: 2.2mm;
+  background: #fff;
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
 .pb-eyebrow {
   font-size: 6.8pt;
   font-weight: 700;

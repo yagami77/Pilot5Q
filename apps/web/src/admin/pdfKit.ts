@@ -1,8 +1,13 @@
 /**
  * Briques communes des PDF de l'espace du responsable (jsPDF) : couleurs de la charte, bande
- * tricolore et logo Pilot5Q vectoriel en haut de chaque page, pied de page paginé.
+ * tricolore et logo Pilot5Q en haut de chaque page, pied de page paginé.
  */
 import type { jsPDF } from "jspdf";
+
+import logoJpeg from "@/assets/pilot5q-logo-pdf.jpg?inline";
+
+/** Proportions du logo des PDF (largeur / hauteur). */
+const LOGO_PDF_RATIO = 1948 / 605;
 
 export type Rgb = [number, number, number];
 
@@ -37,37 +42,14 @@ export function drawBrand(pdf: jsPDF, subtitle = "Tournois Nationaux 5-Quilles")
   pdf.rect(third, 0, third, 1.4, "F");
   pdf.setFillColor(...RED);
   pdf.rect(2 * third, 0, third, 1.4, "F");
-  // Logo : carré arrondi et pictogramme (même dessin que la barre haute).
-  const x = M;
-  const y = 6;
-  const s = 8;
-  pdf.setDrawColor(...BLUE);
-  pdf.setLineWidth(0.4);
-  pdf.setFillColor(...WHITE);
-  pdf.roundedRect(x, y, s, s, 2.1, 2.1, "FD");
-  const cx = x + s / 2;
-  const cy = y + s / 2;
-  pdf.setLineWidth(0.45);
-  pdf.circle(cx, cy, 0.85, "S");
-  const ray = (a: number) => {
-    const r1 = 1.75;
-    const r2 = 2.75;
-    pdf.line(
-      cx + r1 * Math.cos(a),
-      cy + r1 * Math.sin(a),
-      cx + r2 * Math.cos(a),
-      cy + r2 * Math.sin(a),
-    );
-  };
-  for (let k = 0; k < 8; k++) ray((k * Math.PI) / 4);
-  pdf.setFont("helvetica", "bold");
-  pdf.setFontSize(12);
-  pdf.setTextColor(...INK);
-  pdf.text("Pilot5Q", x + s + 2.2, y + 5.6);
+  // Logo Pilot5Q (image du client, sur fond blanc), 9 mm de haut.
+  const y = 5.4;
+  const h = 9;
+  pdf.addImage(logoJpeg, "JPEG", M, y, h * LOGO_PDF_RATIO, h, "pilot5q-logo", "FAST");
   pdf.setFont("helvetica", "normal");
   pdf.setFontSize(8);
   pdf.setTextColor(...MUTED);
-  pdf.text(subtitle, W - M, y + 5.6, { align: "right" });
+  pdf.text(subtitle, W - M, y + 6.2, { align: "right" });
 }
 
 /** Pied de page sur toutes les pages : trait, texte à gauche, « page x/y » à droite. */

@@ -1,5 +1,5 @@
 /**
- * Identité des documents imprimés : logo Pilot5Q vectoriel (net à l'impression), bandeau
+ * Identité des documents imprimés : logo Pilot5Q (image fournie par le client), bandeau
  * d'en-tête plein (bleu signature, gris foncé en noir et blanc) avec un cartouche blanc pour
  * l'information principale, pied de page, scores colorés (gagnant / perdant). Plus aucun QR
  * code sur les documents ; le générateur `qr.ts` reste disponible pour la feuille de match en
@@ -8,42 +8,23 @@
 import type { Distance, Match, TournamentState } from "@pilot5q/domain";
 import type { ReactNode } from "react";
 
+import { LOGO_RATIO, logoUrl } from "@/components/Brand";
 import { matchWinner } from "@/lib/engine";
 
-/** Pictogramme de la marque (même dessin que la barre haute), en traits fins. */
-export function PrintLogo({ size = 9, inverse = false }: { size?: number; inverse?: boolean }) {
-  const stroke = inverse ? "#fff" : "#0e37a8";
-  return (
-    <svg
-      viewBox="0 0 30 30"
-      width={`${size}mm`}
-      height={`${size}mm`}
-      aria-hidden="true"
-      className="shrink-0"
-    >
-      <rect
-        x="1"
-        y="1"
-        width="28"
-        height="28"
-        rx="8"
-        fill={inverse ? "rgba(255,255,255,0.12)" : "#fff"}
-        stroke={stroke}
-        strokeWidth="1.6"
-      />
-      <g
-        transform="translate(3 3)"
-        fill="none"
-        stroke={stroke}
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <circle cx="12" cy="12" r="3.2" />
-        <path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1" />
-      </g>
-    </svg>
+/**
+ * Logo Pilot5Q des documents. `height` en millimètres ; `boxed` le pose sur un cartouche blanc
+ * (pour le bandeau bleu, où le lettrage bleu du logo ne se lirait pas).
+ */
+export function PrintLogo({ height = 9, boxed = false }: { height?: number; boxed?: boolean }) {
+  const img = (
+    <img
+      src={logoUrl}
+      alt="Pilot5Q"
+      style={{ height: `${height}mm`, width: `${height * LOGO_RATIO}mm` }}
+      className="block shrink-0"
+    />
   );
+  return boxed ? <span className="pb-logo">{img}</span> : img;
 }
 
 /** Fine bande tricolore (bleu, blanc, rouge), discrète en noir et blanc. */
@@ -95,7 +76,7 @@ export function PrintBanner({
   return (
     <header className="pb">
       <div className="pb-brand">
-        <PrintLogo size={small ? 9 : 10.5} inverse />
+        <PrintLogo height={small ? 8.5 : 10} boxed />
         <div className="min-w-0">
           {eyebrow ? <div className="pb-eyebrow">{eyebrow}</div> : null}
           <div className={`pb-title ${small ? "pb-title-sm" : ""}`}>{title}</div>
@@ -151,7 +132,7 @@ export function PrintFoot({ children, page }: { children?: ReactNode; page?: str
   return (
     <footer className="p-foot">
       <span className="p-foot-brand">
-        <PrintLogo size={3.6} /> Pilot5Q
+        <PrintLogo height={4.6} />
         {page ? <span className="ml-[2mm] font-mono font-semibold">{page}</span> : null}
       </span>
       <span className="text-right">{children}</span>

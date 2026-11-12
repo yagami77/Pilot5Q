@@ -8,33 +8,9 @@ import { useTournament } from "@/store/tournament";
 
 import { NotificationBell } from "./NotificationBell";
 
+import { BrandLogo, BrandMark } from "./Brand";
 import { cx } from "./ui";
 import { UndoMenu } from "./UndoMenu";
-
-export function BrandMark({ className }: { className?: string }) {
-  return (
-    <span
-      className={cx(
-        "grid size-[30px] place-items-center rounded-[9px] bg-[linear-gradient(135deg,#0e37a8,#1e4fd8)] text-white shadow-[0_6px_14px_-6px_rgb(14_55_168/0.6)]",
-        className,
-      )}
-      aria-hidden="true"
-    >
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2.2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="size-[18px]"
-      >
-        <circle cx="12" cy="12" r="3.2" />
-        <path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1" />
-      </svg>
-    </span>
-  );
-}
 
 export function TopBar() {
   const { state, savedAt, saving, events } = useTournament();
@@ -62,8 +38,8 @@ export function TopBar() {
           className="flex items-center gap-2.5 text-[17px] font-extrabold tracking-[-0.02em]"
           aria-label="Pilot5Q, accueil"
         >
-          <BrandMark />
-          <span className="hidden sm:inline">Pilot5Q</span>
+          <BrandMark className="sm:hidden" />
+          <BrandLogo className="hidden h-[40px] sm:block" />
         </Link>
         {info ? (
           <div className="flex min-w-0 flex-1 items-center gap-3">
