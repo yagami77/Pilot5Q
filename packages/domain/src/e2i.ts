@@ -26,16 +26,22 @@
  *   position des joueurs dans la poule : 2–3, 1–4, 3–4, 2–1, 2–4, 3–1 (poule de 3 : 2–3, 1–3,
  *   1–2). L'ordre et le sens d'un match ne changent rien pour e2i ; ils sont repris pour que
  *   les fichiers se comparent facilement à ceux de l'outil Excel ;
- * - `format` : « 3m10 » pour tout le Masters et pour la finale du National, « 2m80 » partout
- *   ailleurs. C'est la valeur de l'outil Excel, fixe par phase : elle ne suit pas le billard
- *   réellement utilisé (une poule du vendredi jouée sur un 3m10 y est notée « 2m80 »).
- *
- * Points à confirmer avec le responsable national (les fichiers de référence n'en contiennent
- * aucun exemple) :
- * - match gagné par forfait ou abandon de l'adversaire : le joueur absent est noté `abandon:
- *   "oui"` s'il a abandonné, `"forfait excusé": "oui"` s'il a déclaré forfait ;
- * - nom du tour de seizièmes de la consolante : « SEIZIEMES » ;
  * - un match sans score n'est pas exporté ; une phase sans match non plus.
+ *
+ * Réponses du responsable national (17 novembre 2026), qui s'écartent des fichiers de l'outil
+ * Excel :
+ * - `format` : le format réel du billard où le match s'est joué (« on peut mettre le vrai
+ *   format »). L'outil Excel écrivait une valeur fixe par phase (« 3m10 » pour le Masters et la
+ *   finale du National, « 2m80 » ailleurs, même pour une poule du vendredi jouée sur un 3m10) ;
+ *   cette valeur ne sert plus que de repli quand le billard d'un match est inconnu (consolante,
+ *   pour laquelle aucun billard n'est enregistré) ;
+ * - `abandon`, `forfait excusé`, `forfait non excusé` : toujours « non », e2i ne gère pas ces
+ *   cas (« aucun car e2i ne gère pas ça ») ;
+ * - arbitres : la licence complète, telle que saisie (les fichiers Excel perdaient parfois le
+ *   zéro initial).
+ *
+ * Point resté ouvert : le nom du tour de seizièmes d'une consolante de 25 joueurs et plus,
+ * « SEIZIEMES » ici, sans exemple dans les fichiers de référence.
  */
 import type {
   BracketMatch,
@@ -114,50 +120,51 @@ function dayOf(start: string, offset: number): string {
 
 /** Ville en majuscules sans accents, comme dans les fichiers fédéraux. */
 function place(city: string): string {
-  return city
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
-    .trim()
-    .toUpperCase();
+  return city.normalize("NFD").replace(/[̀-ͯ]/g, "").trim().toUpperCase();
 }
 
 const played = (m: Match): boolean => m.sa !== null && m.sb !== null;
 
+type Format = E2iMatch["format"];
+
 interface Context {
   licence: (name: string) => string;
-  /** Joueurs ayant abandonné (les autres absents ont déclaré forfait). */
-  abandons: Set<string>;
+  /** Format du premier billard connu de la liste, sinon le repli. */
+  format: (billards: (number | null | undefined)[], fallback: Format) => Format;
   club: number;
   lieu: string;
 }
 
+/**
+ * Un match au format e2i. `billards` : billards de la poule (un match de tableau porte le
+ * sien) ; `fallback` : format de la phase quand aucun billard n'est connu.
+ */
 function matchOf(
   m: Match,
   date: string,
-  format: E2iMatch["format"],
+  billards: number[],
+  fallback: Format,
   ctx: Context,
 ): E2iMatch {
-  const side = (name: string, score: number | null, sets: number[] | undefined, out: boolean) => {
-    const player: E2iPlayer = {
-      licence: ctx.licence(name),
-      abandon: out && ctx.abandons.has(name) ? "oui" : "non",
-      "forfait excusé": out && !ctx.abandons.has(name) ? "oui" : "non",
-      "forfait non excusé": "non",
-      // Match en plusieurs sets : les points de chaque set ; sinon le score est celui du set.
-      sets: sets && sets.length > 0 ? [...sets] : [score ?? 0],
-    };
-    return player;
-  };
+  const side = (name: string, score: number | null, sets: number[] | undefined): E2iPlayer => ({
+    licence: ctx.licence(name),
+    // e2i ne gère ni abandon ni forfait : toujours « non »
+    abandon: "non",
+    "forfait excusé": "non",
+    "forfait non excusé": "non",
+    // Match en plusieurs sets : les points de chaque set ; sinon le score est celui du set.
+    sets: sets && sets.length > 0 ? [...sets] : [score ?? 0],
+  });
   return {
     date,
     "directeur de jeu": "",
     arbitre1: m.arbitre ?? "",
     arbitre2: m.arbitre2 ?? "",
-    format,
+    format: ctx.format([m.billard, ...billards], fallback),
     prolongation: "non",
     commentaires: "",
-    joueur1: side(m.a, m.sa, m.setsA, m.forfait === "a"),
-    joueur2: side(m.b, m.sb, m.setsB, m.forfait === "b"),
+    joueur1: side(m.a, m.sa, m.setsA),
+    joueur2: side(m.b, m.sb, m.setsB),
   };
 }
 
@@ -167,10 +174,11 @@ function pouleOf(
   matches: Match[],
   date: string,
   distance: Distance,
-  format: E2iMatch["format"],
+  fallback: Format,
   ctx: Context,
+  billards: number[] = [],
 ): E2iPoule | null {
-  const matchs = matches.filter(played).map((m) => matchOf(m, date, format, ctx));
+  const matchs = matches.filter(played).map((m) => matchOf(m, date, billards, fallback, ctx));
   if (matchs.length === 0) return null;
   return {
     nom,
@@ -283,18 +291,22 @@ export function e2iExports(
   const saturday = dayOf(start, 1);
   const sunday = dayOf(start, 2);
   const licences = new Map(state.players.map((p) => [p.name, p.licence]));
+  const types = new Map(state.billards.map((b) => [b.num, b.type]));
   const ctx: Context = {
     licence: (name) => licences.get(name) ?? "",
-    abandons: new Set(state.forfaits.filter((f) => f.kind === "abandon").map((f) => f.player)),
+    format: (billards, fallback) => {
+      for (const b of billards) {
+        const type = b === null || b === undefined ? undefined : types.get(b);
+        if (type === "3m10" || type === "2m80") return type;
+      }
+      return fallback;
+    },
     club: Number(options.clubNumber) || 0,
     lieu: place(state.info?.city ?? ""),
   };
   const d = state.rules.distances;
 
-  const koPhases = (
-    matches: BracketMatch[],
-    format: (round: BracketRound) => E2iMatch["format"],
-  ) =>
+  const koPhases = (matches: BracketMatch[], format: (round: BracketRound) => E2iMatch["format"]) =>
     KO_PHASES.map(({ round, phase, poule }) => {
       const date = round === "R16" ? saturday : sunday;
       const distance = round === "R16" ? d.huitiemes : d.final;
@@ -312,7 +324,7 @@ export function e2iExports(
       nom: "POULES",
       date: friday,
       poules: state.poules.PREQ.map((p) =>
-        pouleOf(`POULE ${p.num}`, pouleLayout(p), friday, d.preq, "2m80", ctx),
+        pouleOf(`POULE ${p.num}`, pouleLayout(p), friday, d.preq, "2m80", ctx, p.billards),
       ),
     },
     {
@@ -329,7 +341,7 @@ export function e2iExports(
       nom: "POULES",
       date: saturday,
       poules: state.poules.QN.map((p) =>
-        pouleOf(`POULE ${p.num}`, pouleLayout(p), saturday, d.qn, "2m80", ctx),
+        pouleOf(`POULE ${p.num}`, pouleLayout(p), saturday, d.qn, "2m80", ctx, p.billards),
       ),
     },
     ...koPhases(state.brackets.N, (round) => (round === "F" ? "3m10" : "2m80")),
@@ -340,7 +352,7 @@ export function e2iExports(
       nom: "POULES",
       date: saturday,
       poules: state.poules.QM.map((p) =>
-        pouleOf(`POULE ${p.num}`, pouleLayout(p), saturday, d.qm, "3m10", ctx),
+        pouleOf(`POULE ${p.num}`, pouleLayout(p), saturday, d.qm, "3m10", ctx, p.billards),
       ),
     },
     ...koPhases(state.brackets.M, () => "3m10"),

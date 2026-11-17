@@ -208,7 +208,7 @@ export function ClosureChecklist({
         <>
           {e2i.length} fichiers JSON à importer dans le système fédéral e2i, un par compétition :{" "}
           {e2i.map((f) => `${E2I_LABELS[f.kind].toLowerCase()} (${f.matches} matchs)`).join(", ")}.
-          Mêmes contenus que les fichiers de l'outil Excel.
+          Chaque match porte le format réel de son billard et la licence complète des arbitres.
         </>
       ),
       action: (

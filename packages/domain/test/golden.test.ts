@@ -848,15 +848,27 @@ describe("fixture tn-exemple : rejeu complet par le réducteur", () => {
     expect(groups(p.national)).toEqual(groups(fixture.primes.national));
   });
 
-  it("fichiers e2i : identiques aux quatre fichiers réels du TN 2 (qualifications, National, Masters, consolante)", () => {
+  it("fichiers e2i : mêmes matchs que les quatre fichiers réels du TN 2, avec le format réel du billard", () => {
     const read = (kind: E2iKind): E2iFile =>
-      JSON.parse(
-        readFileSync(join(here, "fixtures", "e2i", e2iFileName(kind)), "utf8"),
-      ) as E2iFile;
+      JSON.parse(readFileSync(join(here, "fixtures", "e2i", e2iFileName(kind)), "utf8")) as E2iFile;
     const reference = Object.fromEntries(E2I_KINDS.map((k) => [k, read(k)])) as Record<
       E2iKind,
       E2iFile
     >;
+    // Format : le responsable a demandé le billard réellement utilisé, là où l'outil Excel
+    // écrivait une valeur fixe par phase. On l'écarte de la comparaison aux fichiers Excel et
+    // on le vérifie à part, plus bas.
+    const formats = (f: E2iFile) =>
+      f.phases.map((p) => p.poules.map((x) => [...new Set(x.matchs.map((m) => m.format))]));
+    const sameFormat = (f: E2iFile): E2iFile => ({
+      phases: f.phases.map((p) => ({
+        ...p,
+        poules: p.poules.map((x) => ({
+          ...x,
+          matchs: x.matchs.map((m) => ({ ...m, format: "2m80" as const })),
+        })),
+      })),
+    });
     // Les arbitres ne sont pas dans la fixture du tournoi : on les saisit comme le ferait le
     // directeur de jeu, d'après les fichiers de référence (quarts, demies et finales).
     const nameOf = new Map(state.players.map((p) => [p.licence, p.name]));
@@ -887,9 +899,61 @@ describe("fixture tn-exemple : rejeu complet par le réducteur", () => {
         }
       }
     }
-    const withArbitres = replay([...log, ...arbitres]);
-    const files = e2iExports(withArbitres, { clubNumber: "13240" });
-    expect(Object.keys(files)).toEqual([...E2I_KINDS]);
+    // Billards des barrages, tels que tirés à Ronchin (B1 à B4 sur des 3m10)
+    const { barrageBillards } = fixture as unknown as { barrageBillards: Record<string, number> };
+    const barrageTables: TournamentEvent = {
+      type: "billards.assigned",
+      at,
+      payload: {
+        phase: "B",
+        assignments: Object.fromEntries(
+          Object.entries(barrageBillards).map(([id, b]) => [id, [b]]),
+        ),
+      },
+    };
+    const withArbitres = replay([...log, barrageTables, ...arbitres]);
+    const real = e2iExports(withArbitres, { clubNumber: "13240" });
+    expect(Object.keys(real)).toEqual([...E2I_KINDS]);
+    const files = Object.fromEntries(
+      E2I_KINDS.map((k) => [k, real[k] ? sameFormat(real[k]) : undefined]),
+    ) as Partial<Record<E2iKind, E2iFile>>;
+    for (const k of E2I_KINDS) reference[k] = sameFormat(read(k));
+    // Format réel : celui du billard de la poule ou du match
+    const typeOf = new Map(fixture.billards.map((b) => [b.num, b.type]));
+    const [preq, barrages] = real.qualif ? formats(real.qualif) : [];
+    expect(preq).toEqual(fixture.poules.map((p) => [typeOf.get(p.billards[0] ?? 0)]));
+    expect(preq?.filter((x) => x[0] === "3m10")).toHaveLength(6);
+    expect(barrages).toEqual(
+      withArbitres.barrages.map((m) => [typeOf.get(barrageBillards[m.id] ?? 0)]),
+    );
+    expect(barrages?.map((x) => x[0])).toEqual([
+      "3m10",
+      "3m10",
+      "3m10",
+      "3m10",
+      "2m80",
+      "2m80",
+      "2m80",
+      "2m80",
+    ]);
+    // Masters sur des 3m10 ; consolante sans billard enregistré : repli sur le 2m80
+    expect(real.masters ? formats(real.masters).flat(2) : []).toEqual(Array(11).fill("3m10"));
+    expect(real.consolante ? formats(real.consolante).flat(2) : []).toEqual(Array(5).fill("2m80"));
+    // Ni abandon ni forfait : e2i ne gère pas ces cas
+    for (const k of E2I_KINDS) {
+      const flags = (real[k]?.phases ?? []).flatMap((p) =>
+        p.poules.flatMap((x) =>
+          x.matchs.flatMap((m) =>
+            [m.joueur1, m.joueur2].flatMap((j) => [
+              j.abandon,
+              j["forfait excusé"],
+              j["forfait non excusé"],
+            ]),
+          ),
+        ),
+      );
+      expect(new Set(flags), k).toEqual(new Set(["non"]));
+    }
     type RefMatch = E2iFile["phases"][number]["poules"][number]["matchs"][number];
     // Un match indépendamment de son sens : le joueur à la plus petite licence d'abord
     const canon = (m: RefMatch): string => {
@@ -911,7 +975,7 @@ describe("fixture tn-exemple : rejeu complet par le réducteur", () => {
           poules: p.poules.map((x) => ({ ...x, matchs: x.matchs.length })),
         }));
       expect(head(got), kind).toEqual(head(ref));
-      expect(JSON.parse(e2iJson(got)), kind).toEqual(got);
+      expect(JSON.parse(e2iJson(real[kind] ?? got)), kind).toEqual(real[kind]);
       got.phases.forEach((p, i) => {
         const rp = ref.phases[i];
         if (!rp) return;
