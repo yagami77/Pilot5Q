@@ -48,6 +48,26 @@ describe("parseInscritsCsv", () => {
     expect(fixMojibake("ChloÃ«")).toBe("Chloë");
   });
 
+  it("lit la catégorie de licence (U21), la date de naissance et garde les inscriptions en attente", () => {
+    // Entête de l'export fédéral de novembre 2026 : deux colonnes en plus, « ; » final,
+    // dates ISO, licences parfois en minuscules, champs entre guillemets.
+    const text = [
+      "id;date;licence;email;id_evenement;forfait;cle;paye;actif;prenom_licencie;nom_licencie;date_naissance_licencie;categorie_licencie;nom_club;num_club;nom_ligue;date_debut_evenement;date_fin_evenement;saison;etat;",
+      '"3";"2026-10-08 16:37:53";"111111a";"a@example.test";"1";"";"k";"non";"oui";"ANN";"JUNIOR";"";"-21 ans";"BC Exemple";"10";"L";"2026-10-30 00:00:00";"2026-11-01 00:00:00";"2026-2027";"Enregistrée"',
+      '"2";"2026-10-07 09:00:00";"222222B";"b@example.test";"1";"";"k";"non";"non";"BOB";"ATTENTE";"14/03/1980";"+21 ans";"BC Exemple";"10";"L";"2026-10-30 00:00:00";"2026-11-01 00:00:00";"2026-2027";"En attente"',
+      '"1";"2026-10-06 09:00:00";"333333C";"c@example.test";"1";"";"k";"non";"oui";"CAT";"ANNULEE";"";"+21 ans";"BC Exemple";"10";"L";"2026-10-30 00:00:00";"2026-11-01 00:00:00";"2026-2027";"Annulée"',
+    ].join("\n");
+    const list = parseInscritsCsv(text);
+    expect(list.map((p) => [p.licence, p.name, p.seed])).toEqual([
+      ["222222B", "ATTENTE BOB", 1],
+      ["111111A", "JUNIOR ANN", 2],
+    ]);
+    expect(list[0]).toMatchObject({ junior: false, pending: true, birthDate: "1980-03-14" });
+    expect(list[1]).toMatchObject({ junior: true });
+    expect(list[1]?.pending).toBeUndefined();
+    expect(list[1]?.birthDate).toBeUndefined();
+  });
+
   it("accepte un ordre de colonnes différent et un fichier vide", () => {
     const text =
       "licence;nom_licencie;prenom_licencie;etat;date;nom_club\nx1;Zed;Ann;Enregistrée;01/01/2026 10:00;C\n";

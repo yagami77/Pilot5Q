@@ -6,7 +6,13 @@ import { useToast } from "@/components/Toast";
 import { Button, Card, Chip, PageHead } from "@/components/ui";
 import inscriptions from "@/data/tn-exemple-inscriptions.json";
 
-import { SEASON_FIXTURE, demoSeason, emptySeason, type DemoInscription } from "./demo";
+import {
+  SEASON_FIXTURE,
+  demoSeason,
+  emptySeason,
+  type DemoForfait,
+  type DemoInscription,
+} from "./demo";
 import { useSeason } from "./store";
 import { Field, Input } from "./ui";
 
@@ -14,7 +20,10 @@ export function Welcome() {
   const { open } = useSeason();
   const toast = useToast();
   const [season, setSeason] = useState("2026-2027");
-  const order = (inscriptions as { registrations: DemoInscription[] }).registrations;
+  const { registrations: order, forfaits = [] } = inscriptions as {
+    registrations: DemoInscription[];
+    forfaits?: DemoForfait[];
+  };
   return (
     <>
       <PageHead
@@ -35,8 +44,9 @@ export function Welcome() {
             <p className="text-ink-muted mt-1">
               Saison {SEASON_FIXTURE.season} : calendrier réel des 5 TN, base réelle de{" "}
               {SEASON_FIXTURE.clubs.length} clubs et de {SEASON_FIXTURE.players.length} joueurs,
-              classement glissant reconstitué avant le TN 2 et les {order.length} inscrits du
-              tournoi d'exemple.
+              classement glissant reconstitué avant le TN 2 et les{" "}
+              {order.length + forfaits.length} inscrits du TN 2 de Ronchin, dont{" "}
+              {forfaits.length} forfaits avant le tirage.
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -50,7 +60,7 @@ export function Welcome() {
             iconRight={ArrowRight}
             className="mt-auto self-start"
             onClick={() => {
-              open(demoSeason(order));
+              open(demoSeason(order, forfaits));
               toast("Saison de démonstration chargée");
             }}
           >

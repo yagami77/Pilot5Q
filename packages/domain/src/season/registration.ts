@@ -10,7 +10,8 @@
  *   responsable choisit qui intégrer depuis la liste d'attente (drapeau `integrated`) ; le
  *   prioritaire selon la règle ci-dessus lui est suggéré. La liste ordonnée des acceptés est
  *   ensuite recalculée (`orderParticipants`).
- * - Le statut U21 ne figure pas dans le CSV : il est saisi à la main (drapeau `junior`).
+ * - Le statut U21 vient de la colonne `categorie_licencie` du CSV (« -21 ans ») quand elle est
+ *   présente ; il reste corrigeable à la main (drapeau `junior`).
  */
 import { orderParticipants } from "../csv.js";
 import type { Player } from "../types.js";
@@ -31,6 +32,7 @@ export function toPlayer(r: Registration): Player {
     place: null,
   };
   if (r.junior) p.junior = true;
+  if (r.pending) p.pending = true;
   if (r.email !== "") p.email = r.email;
   return p;
 }

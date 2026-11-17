@@ -27,6 +27,10 @@ export interface Player {
   lastSeason?: number | null;
   junior?: boolean;
   email?: string;
+  /** Date de naissance (AAAA-MM-JJ), quand le CSV fédéral la renseigne. */
+  birthDate?: string;
+  /** Inscription encore « En attente » sur le site fédéral au moment de l'export. */
+  pending?: boolean;
   /** Photo du joueur, fournie par l'application 5 Quilles (reliée par la licence). */
   photoUrl?: string;
 }

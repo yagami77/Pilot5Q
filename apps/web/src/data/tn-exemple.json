@@ -1,5 +1,5 @@
 {
- "_note": "Tournoi d'exemple : structure, billards et scores réels d'un TN complet (76 inscrits, 11 billards dont 4 de 3m10, 17 poules de 4), noms, clubs et licences réels (bases du responsable national) ; les deux drapeaux `junior` sont choisis arbitrairement (le classeur de référence ne stocke que le nombre de juniors, 2). Vendredi : `poules` (PREQ, 1 set à 100), `barrages` (B1..B8), `expectedPhaseRanking` (classement du vendredi produit par l'outil Excel ; la place 68 est un joueur ayant abandonné), `expectedBarrageRanking` (classement cumulé poules + barrage). `abandons` : joueurs déclarés forfait/abandon par phase (phase CLS = non volontaire pour la consolante). Samedi : `saturday.QN` et `saturday.QM` (poules réelles avec billards, scores par match ou par set, `excelRanking` de chaque poule et `expectedRanking` de la phase ; `arriveeQN` = ordre d'entrée dans le National). Dimanche : `brackets.N` (H1..H8 en 1 set à 100 puis Q1..Q4, D1, D2, F en 3 sets gagnants à 60, `labels` = croisements réels), `brackets.M` (Q1..Q4, D1, D2, F ; l'Excel numérote Q3 = 1er P2–2e P3 et Q4 = 1er P4–2e P1, à l'inverse de SPEC §5), `brackets.CLS` (consolante : `candidates` = places 41+, `players` = 19 volontaires dans l'ordre du classement, `seeds` des joueurs de barrage, B1..B3 puis H1..H8, Q1..Q4, D1, D2, F en 1 set à 100) et leurs `expectedRanking` (classements des phases finales de l'Excel : tour atteint, Pm, Ps, points et moyenne cumulés qualification + tableau). `expectedTournamentRanking` : classement final de l'Excel (points du barème + décimale Ps/matchs/100, faits, subis, moyenne) ; attention, l'onglet Q N de l'Excel compte 3, 4, 5 et 6 matchs aux quatre joueurs des poules 2 à 8 (série recopiée), ce qui fausse sa décimale pour ces joueurs. `primes` : onglet PRIMES (cagnotte et bénéficiaires). `correctedTournamentRanking` : points du TN recalculés par le responsable national après correction de ce comptage (fichier « points TN2 » du 11 novembre 2026 : rang, points du barème, décimale, faits, subis, moyenne) ; c'est la référence exacte de l'application.",
+ "_note": "Tournoi d'exemple : structure, billards et scores réels d'un TN complet (76 inscrits, 11 billards dont 4 de 3m10, 17 poules de 4), noms, clubs et licences réels (bases du responsable national) ; les deux drapeaux `junior` sont les deux licences « -21 ans » de l'export fédéral des inscrits (17 novembre 2026). Vendredi : `poules` (PREQ, 1 set à 100), `barrages` (B1..B8), `expectedPhaseRanking` (classement du vendredi produit par l'outil Excel ; la place 68 est un joueur ayant abandonné), `expectedBarrageRanking` (classement cumulé poules + barrage). `abandons` : joueurs déclarés forfait/abandon par phase (phase CLS = non volontaire pour la consolante). Samedi : `saturday.QN` et `saturday.QM` (poules réelles avec billards, scores par match ou par set, `excelRanking` de chaque poule et `expectedRanking` de la phase ; `arriveeQN` = ordre d'entrée dans le National). Dimanche : `brackets.N` (H1..H8 en 1 set à 100 puis Q1..Q4, D1, D2, F en 3 sets gagnants à 60, `labels` = croisements réels), `brackets.M` (Q1..Q4, D1, D2, F ; l'Excel numérote Q3 = 1er P2–2e P3 et Q4 = 1er P4–2e P1, à l'inverse de SPEC §5), `brackets.CLS` (consolante : `candidates` = places 41+, `players` = 19 volontaires dans l'ordre du classement, `seeds` des joueurs de barrage, B1..B3 puis H1..H8, Q1..Q4, D1, D2, F en 1 set à 100) et leurs `expectedRanking` (classements des phases finales de l'Excel : tour atteint, Pm, Ps, points et moyenne cumulés qualification + tableau). `expectedTournamentRanking` : classement final de l'Excel (points du barème + décimale Ps/matchs/100, faits, subis, moyenne) ; attention, l'onglet Q N de l'Excel compte 3, 4, 5 et 6 matchs aux quatre joueurs des poules 2 à 8 (série recopiée), ce qui fausse sa décimale pour ces joueurs. `primes` : onglet PRIMES (cagnotte et bénéficiaires). `correctedTournamentRanking` : points du TN recalculés par le responsable national après correction de ce comptage (fichier « points TN2 » du 11 novembre 2026 : rang, points du barème, décimale, faits, subis, moyenne) ; c'est la référence exacte de l'application.",
  "tournament": {
   "name": "TN 2",
   "season": "2026-2027",
@@ -156,7 +156,8 @@
    "name": "DELORME RONAN",
    "club": "ARCIS BILLARD CLUB",
    "place": 16,
-   "lastSeason": 2026
+   "lastSeason": 2026,
+   "junior": true
   },
   {
    "seed": 13,
@@ -644,7 +645,8 @@
    "name": "DRUEZ EMILIE",
    "club": "BILLARD CLUB RETRO ALBERTIN",
    "place": 129,
-   "lastSeason": 2025
+   "lastSeason": 2025,
+   "junior": true
   },
   {
    "seed": 74,
@@ -660,8 +662,7 @@
    "name": "HILAIRE JIMMY",
    "club": "ACADEMIE LA CARAMBOLE",
    "place": 500,
-   "lastSeason": null,
-   "junior": true
+   "lastSeason": null
   },
   {
    "seed": 76,
@@ -669,8 +670,7 @@
    "name": "FLORENT JEAN FRANCOIS",
    "club": "B.C. DU CANON D OR",
    "place": 500,
-   "lastSeason": null,
-   "junior": true
+   "lastSeason": null
   }
  ],
  "poules": [

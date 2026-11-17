@@ -1,537 +1,655 @@
 {
- "_note": "Ordre d'inscription (site fédéral) des 76 inscrits du tournoi d'exemple, noms réels, avec le classement en cours et le dernier classement connus à l'inscription (classeur de référence, onglet TOURNOI).",
+ "_note": "Inscrits du TN 2 2026-2027 (Ronchin) : 81 inscrits d'après l'export complet du site fédéral transmis par le responsable national le 17 novembre 2026, dont 76 ont joué (`registrations`) et 5 ont déclaré forfait avant le tirage (`forfaits`). Pour les 76 : `order` = ordre de l'onglet TOURNOI du classeur de référence, celui qui a servi au tirage réel (il départage les nouveaux joueurs ; ce n'est pas l'ordre chronologique : point à confirmer avec le responsable), classement en cours et dernier classement connus à l'inscription ; `registeredAt` = date réelle d'inscription ; `junior` = catégorie de licence « -21 ans » ; `pending` = inscription encore « En attente » dans l'export. Aucun email.",
  "registrations": [
   {
    "order": 1,
    "name": "VASSEUR GERALD",
    "currentPlace": 90,
    "lastPlace": 90,
-   "lastSeason": "2026-2027"
+   "lastSeason": "2026-2027",
+   "registeredAt": "2026-10-01T08:06:13"
   },
   {
    "order": 2,
    "name": "GRENINGER PATRICK",
    "currentPlace": null,
    "lastPlace": null,
-   "lastSeason": null
+   "lastSeason": null,
+   "registeredAt": "2026-10-01T10:34:17"
   },
   {
    "order": 3,
    "name": "KERCRET GENEVIEVE",
    "currentPlace": 75,
    "lastPlace": 75,
-   "lastSeason": "2026-2027"
+   "lastSeason": "2026-2027",
+   "registeredAt": "2026-10-02T18:14:08"
   },
   {
    "order": 4,
    "name": "GUERIN XAVIER",
    "currentPlace": 2,
    "lastPlace": 2,
-   "lastSeason": "2026-2027"
+   "lastSeason": "2026-2027",
+   "registeredAt": "2026-10-04T21:57:20"
   },
   {
    "order": 5,
    "name": "DUVERNOY CHRISTOPHE",
    "currentPlace": 7,
    "lastPlace": 7,
-   "lastSeason": "2026-2027"
+   "lastSeason": "2026-2027",
+   "registeredAt": "2026-10-05T10:07:27"
   },
   {
    "order": 6,
    "name": "LAMBIASE GIUSEPPE",
    "currentPlace": 3,
    "lastPlace": 3,
-   "lastSeason": "2026-2027"
+   "lastSeason": "2026-2027",
+   "registeredAt": "2026-10-05T10:30:38"
   },
   {
    "order": 7,
    "name": "DAVID NICOLAS",
    "currentPlace": 8,
    "lastPlace": 8,
-   "lastSeason": "2026-2027"
+   "lastSeason": "2026-2027",
+   "registeredAt": "2026-10-05T14:59:58"
   },
   {
    "order": 8,
    "name": "GEETS PATRICE",
    "currentPlace": 22,
    "lastPlace": 22,
-   "lastSeason": "2025-2026"
+   "lastSeason": "2025-2026",
+   "registeredAt": "2026-10-05T21:55:42"
   },
   {
    "order": 9,
    "name": "GUILLEMANT DAVID",
    "currentPlace": null,
    "lastPlace": 41.0,
-   "lastSeason": "2025-2026"
+   "lastSeason": "2025-2026",
+   "registeredAt": "2026-10-05T23:25:44"
   },
   {
    "order": 10,
    "name": "NAHIRNYJ NICOLAS",
    "currentPlace": 56,
    "lastPlace": 56,
-   "lastSeason": "2025-2026"
+   "lastSeason": "2025-2026",
+   "registeredAt": "2026-10-06T13:28:30",
+   "pending": true
   },
   {
    "order": 11,
    "name": "LEMENAGER PHILIPPE",
    "currentPlace": 99,
    "lastPlace": 99,
-   "lastSeason": "2026-2027"
+   "lastSeason": "2026-2027",
+   "registeredAt": "2026-10-06T15:05:51"
   },
   {
    "order": 12,
    "name": "BOLCAIN FRANCOIS XAVIER",
    "currentPlace": 127,
    "lastPlace": 127,
-   "lastSeason": "2026-2027"
+   "lastSeason": "2026-2027",
+   "registeredAt": "2026-10-07T13:55:30"
   },
   {
    "order": 13,
    "name": "DESMETTRE BRUNO",
    "currentPlace": null,
    "lastPlace": 89.0,
-   "lastSeason": "2025-2026"
+   "lastSeason": "2025-2026",
+   "registeredAt": "2026-10-07T17:38:04"
   },
   {
    "order": 14,
    "name": "VILLIERS BERNARD",
    "currentPlace": 77,
    "lastPlace": 77,
-   "lastSeason": "2025-2026"
+   "lastSeason": "2025-2026",
+   "registeredAt": "2026-10-07T19:50:13"
   },
   {
    "order": 15,
    "name": "ROBIC DANIEL",
    "currentPlace": 19,
    "lastPlace": 19,
-   "lastSeason": "2026-2027"
+   "lastSeason": "2026-2027",
+   "registeredAt": "2026-09-17T18:03:34",
+   "pending": true
   },
   {
    "order": 16,
    "name": "BONNEAU BENOIT",
    "currentPlace": 42,
    "lastPlace": 42,
-   "lastSeason": "2025-2026"
+   "lastSeason": "2025-2026",
+   "registeredAt": "2026-09-17T18:18:44"
   },
   {
    "order": 17,
    "name": "ROUBY GUILLAUME",
    "currentPlace": 4,
    "lastPlace": 4,
-   "lastSeason": "2026-2027"
+   "lastSeason": "2026-2027",
+   "registeredAt": "2026-09-17T18:18:42"
   },
   {
    "order": 18,
    "name": "GUIBERT PHILIPPE",
    "currentPlace": 45,
    "lastPlace": 45,
-   "lastSeason": "2025-2026"
+   "lastSeason": "2025-2026",
+   "registeredAt": "2026-09-17T18:23:22"
   },
   {
    "order": 19,
    "name": "ANDRIA FABRIZIO",
    "currentPlace": 30,
    "lastPlace": 30,
-   "lastSeason": "2026-2027"
+   "lastSeason": "2026-2027",
+   "registeredAt": "2026-09-17T18:39:44"
   },
   {
    "order": 20,
    "name": "PERRIN ERIC",
    "currentPlace": 27,
    "lastPlace": 27,
-   "lastSeason": "2026-2027"
+   "lastSeason": "2026-2027",
+   "registeredAt": "2026-09-17T18:40:03"
   },
   {
    "order": 21,
    "name": "ANSEL PHILIPPE",
    "currentPlace": 86,
    "lastPlace": 86,
-   "lastSeason": "2025-2026"
+   "lastSeason": "2025-2026",
+   "registeredAt": "2026-09-17T18:44:45"
   },
   {
    "order": 22,
    "name": "LEBOEUF SYLVAIN",
    "currentPlace": 55,
    "lastPlace": 55,
-   "lastSeason": "2026-2027"
+   "lastSeason": "2026-2027",
+   "registeredAt": "2026-09-17T18:44:26"
   },
   {
    "order": 23,
    "name": "GOUTALOY SYLVAIN",
    "currentPlace": 54,
    "lastPlace": 54,
-   "lastSeason": "2026-2027"
+   "lastSeason": "2026-2027",
+   "registeredAt": "2026-09-17T18:49:21"
   },
   {
    "order": 24,
    "name": "LORIN JIMMY",
    "currentPlace": 17,
    "lastPlace": 17,
-   "lastSeason": "2026-2027"
+   "lastSeason": "2026-2027",
+   "registeredAt": "2026-09-17T18:55:07"
   },
   {
    "order": 25,
    "name": "DEREUDDRE DOMINIQUE",
    "currentPlace": 119,
    "lastPlace": 119,
-   "lastSeason": "2025-2026"
+   "lastSeason": "2025-2026",
+   "registeredAt": "2026-09-17T19:00:56"
   },
   {
    "order": 26,
    "name": "SAINT GEORGES CLAUDE",
    "currentPlace": 41,
    "lastPlace": 41,
-   "lastSeason": "2026-2027"
+   "lastSeason": "2026-2027",
+   "registeredAt": "2026-09-17T19:06:29"
   },
   {
    "order": 27,
    "name": "DELORME CHRISTOPHE",
    "currentPlace": 87,
    "lastPlace": 87,
-   "lastSeason": "2026-2027"
+   "lastSeason": "2026-2027",
+   "registeredAt": "2026-09-17T19:10:16"
   },
   {
    "order": 28,
    "name": "DELORME RONAN",
    "currentPlace": 16,
    "lastPlace": 16,
-   "lastSeason": "2026-2027"
+   "lastSeason": "2026-2027",
+   "registeredAt": "2026-09-17T19:11:42",
+   "junior": true
   },
   {
    "order": 29,
    "name": "DUGAY CLEMENT",
    "currentPlace": 31,
    "lastPlace": 31,
-   "lastSeason": "2025-2026"
+   "lastSeason": "2025-2026",
+   "registeredAt": "2026-09-17T19:25:52"
   },
   {
    "order": 30,
    "name": "BARDET CHRISTOPHE",
    "currentPlace": 47,
    "lastPlace": 47,
-   "lastSeason": "2026-2027"
+   "lastSeason": "2026-2027",
+   "registeredAt": "2026-09-17T19:34:34"
   },
   {
    "order": 31,
    "name": "FRANCHITTI GIANNI",
    "currentPlace": 52,
    "lastPlace": 52,
-   "lastSeason": "2026-2027"
+   "lastSeason": "2026-2027",
+   "registeredAt": "2026-09-17T20:04:05"
   },
   {
    "order": 32,
    "name": "DI LEO FRANCOIS",
    "currentPlace": 39,
    "lastPlace": 39,
-   "lastSeason": "2026-2027"
+   "lastSeason": "2026-2027",
+   "registeredAt": "2026-09-17T20:11:15"
   },
   {
    "order": 33,
    "name": "VOI CARMELO",
    "currentPlace": 24,
    "lastPlace": 24,
-   "lastSeason": "2025-2026"
+   "lastSeason": "2025-2026",
+   "registeredAt": "2026-09-17T20:23:58"
   },
   {
    "order": 34,
    "name": "BORNEQUE FABRICE",
    "currentPlace": 38,
    "lastPlace": 38,
-   "lastSeason": "2025-2026"
+   "lastSeason": "2025-2026",
+   "registeredAt": "2026-09-17T20:29:20"
   },
   {
    "order": 35,
    "name": "MIKDAD ALI MOHAMMED",
    "currentPlace": 32,
    "lastPlace": 32,
-   "lastSeason": "2026-2027"
+   "lastSeason": "2026-2027",
+   "registeredAt": "2026-09-17T20:29:01"
   },
   {
    "order": 36,
    "name": "WALLART JEAN CHARLES",
    "currentPlace": 26,
    "lastPlace": 26,
-   "lastSeason": "2026-2027"
+   "lastSeason": "2026-2027",
+   "registeredAt": "2026-09-17T20:31:12"
   },
   {
    "order": 37,
    "name": "SAUVAGE DOMINIQUE",
    "currentPlace": 43,
    "lastPlace": 43,
-   "lastSeason": "2025-2026"
+   "lastSeason": "2025-2026",
+   "registeredAt": "2026-09-17T20:35:56"
   },
   {
    "order": 38,
    "name": "PAPIN JEAN CHRISTOPHE",
    "currentPlace": 12,
    "lastPlace": 12,
-   "lastSeason": "2026-2027"
+   "lastSeason": "2026-2027",
+   "registeredAt": "2026-09-17T20:41:00"
   },
   {
    "order": 39,
    "name": "BAUDRY ALAIN",
    "currentPlace": 72,
    "lastPlace": 72,
-   "lastSeason": "2026-2027"
+   "lastSeason": "2026-2027",
+   "registeredAt": "2026-09-17T21:26:31"
   },
   {
    "order": 40,
    "name": "SACRE JEAN YVES",
    "currentPlace": 28,
    "lastPlace": 28,
-   "lastSeason": "2026-2027"
+   "lastSeason": "2026-2027",
+   "registeredAt": "2026-09-17T21:34:04"
   },
   {
    "order": 41,
    "name": "JOASEM DANIEL",
    "currentPlace": 73,
    "lastPlace": 73,
-   "lastSeason": "2026-2027"
+   "lastSeason": "2026-2027",
+   "registeredAt": "2026-09-17T21:36:47"
   },
   {
    "order": 42,
    "name": "GIRAUD JACQUES",
    "currentPlace": 95,
    "lastPlace": 95,
-   "lastSeason": "2026-2027"
+   "lastSeason": "2026-2027",
+   "registeredAt": "2026-09-17T22:08:20"
   },
   {
    "order": 43,
    "name": "BAILLY NICOLAS",
    "currentPlace": 58,
    "lastPlace": 58,
-   "lastSeason": "2026-2027"
+   "lastSeason": "2026-2027",
+   "registeredAt": "2026-09-18T08:59:50"
   },
   {
    "order": 44,
    "name": "RAHMANI ALAE",
    "currentPlace": 29,
    "lastPlace": 29,
-   "lastSeason": "2026-2027"
+   "lastSeason": "2026-2027",
+   "registeredAt": "2026-09-18T09:26:08"
   },
   {
    "order": 45,
    "name": "VICARI MARC",
    "currentPlace": 14,
    "lastPlace": 14,
-   "lastSeason": "2026-2027"
+   "lastSeason": "2026-2027",
+   "registeredAt": "2026-09-18T09:39:17"
   },
   {
    "order": 46,
    "name": "SAILLANT PHILIPPE",
    "currentPlace": 68,
    "lastPlace": 68,
-   "lastSeason": "2026-2027"
+   "lastSeason": "2026-2027",
+   "registeredAt": "2026-09-18T10:55:58"
   },
   {
    "order": 47,
    "name": "RUBLINE PASCAL",
    "currentPlace": 51,
    "lastPlace": 51,
-   "lastSeason": "2026-2027"
+   "lastSeason": "2026-2027",
+   "registeredAt": "2026-09-18T12:39:45"
   },
   {
    "order": 48,
    "name": "REYNAERT PIERRE",
    "currentPlace": null,
    "lastPlace": 100.0,
-   "lastSeason": "2024-2025"
+   "lastSeason": "2024-2025",
+   "registeredAt": "2026-09-18T13:56:00"
   },
   {
    "order": 49,
    "name": "PARENT JEAN RENE",
    "currentPlace": 78,
    "lastPlace": 78,
-   "lastSeason": "2025-2026"
+   "lastSeason": "2025-2026",
+   "registeredAt": "2026-09-18T15:51:52"
   },
   {
    "order": 50,
    "name": "EVENOU MARIE ANTOINETTE",
    "currentPlace": 110,
    "lastPlace": 110,
-   "lastSeason": "2026-2027"
+   "lastSeason": "2026-2027",
+   "registeredAt": "2026-09-18T19:52:09"
   },
   {
    "order": 51,
    "name": "LANUSSE CHRISTOPHE",
    "currentPlace": 21,
    "lastPlace": 21,
-   "lastSeason": "2026-2027"
+   "lastSeason": "2026-2027",
+   "registeredAt": "2026-09-18T20:13:13"
   },
   {
    "order": 52,
    "name": "LALUC DIDIER",
    "currentPlace": 63,
    "lastPlace": 63,
-   "lastSeason": "2026-2027"
+   "lastSeason": "2026-2027",
+   "registeredAt": "2026-09-18T23:35:43"
   },
   {
    "order": 53,
    "name": "IACONO GIUSEPPE",
    "currentPlace": 36,
    "lastPlace": 36,
-   "lastSeason": "2026-2027"
+   "lastSeason": "2026-2027",
+   "registeredAt": "2026-09-18T23:35:14"
   },
   {
    "order": 54,
    "name": "FOURNEYRON RICHARD",
    "currentPlace": 76,
    "lastPlace": 76,
-   "lastSeason": "2026-2027"
+   "lastSeason": "2026-2027",
+   "registeredAt": "2026-09-18T23:36:05"
   },
   {
    "order": 55,
    "name": "MONVILLE GUILLAUME",
    "currentPlace": 59,
    "lastPlace": 59,
-   "lastSeason": "2026-2027"
+   "lastSeason": "2026-2027",
+   "registeredAt": "2026-09-19T10:14:22"
   },
   {
    "order": 56,
    "name": "ROJAN ALEXIS",
    "currentPlace": 96,
    "lastPlace": 96,
-   "lastSeason": "2025-2026"
+   "lastSeason": "2025-2026",
+   "registeredAt": "2026-09-20T19:36:07"
   },
   {
    "order": 57,
    "name": "CUNIN MICKAEL",
    "currentPlace": 50,
    "lastPlace": 50,
-   "lastSeason": "2025-2026"
+   "lastSeason": "2025-2026",
+   "registeredAt": "2026-09-21T04:33:08"
   },
   {
    "order": 58,
    "name": "GERONIMI THIERRY",
    "currentPlace": 66,
    "lastPlace": 66,
-   "lastSeason": "2025-2026"
+   "lastSeason": "2025-2026",
+   "registeredAt": "2026-09-21T09:17:47"
   },
   {
    "order": 59,
    "name": "CARREAU MICHAEL",
    "currentPlace": 6,
    "lastPlace": 6,
-   "lastSeason": "2026-2027"
+   "lastSeason": "2026-2027",
+   "registeredAt": "2026-09-22T08:46:33"
   },
   {
    "order": 60,
    "name": "HERVELIN GABRIEL",
    "currentPlace": null,
    "lastPlace": 24.0,
-   "lastSeason": "2022-2023"
+   "lastSeason": "2022-2023",
+   "registeredAt": "2026-09-22T17:47:22"
   },
   {
    "order": 61,
    "name": "GUINGAND FLORIAN",
    "currentPlace": 5,
    "lastPlace": 5,
-   "lastSeason": "2026-2027"
+   "lastSeason": "2026-2027",
+   "registeredAt": "2026-09-22T20:15:53"
   },
   {
    "order": 62,
    "name": "GODARD ALAIN",
    "currentPlace": null,
    "lastPlace": 41.0,
-   "lastSeason": "2024-2025"
+   "lastSeason": "2024-2025",
+   "registeredAt": "2026-09-23T09:50:36",
+   "pending": true
   },
   {
    "order": 63,
    "name": "HINGRAND TONY",
    "currentPlace": 34,
    "lastPlace": 34,
-   "lastSeason": "2025-2026"
+   "lastSeason": "2025-2026",
+   "registeredAt": "2026-09-24T01:27:22"
   },
   {
    "order": 64,
    "name": "BUTTI EMILIE",
    "currentPlace": 88,
    "lastPlace": 88,
-   "lastSeason": "2025-2026"
+   "lastSeason": "2025-2026",
+   "registeredAt": "2026-09-24T06:56:04"
   },
   {
    "order": 65,
    "name": "ACUNZO RAFFAELE",
    "currentPlace": 49,
    "lastPlace": 49,
-   "lastSeason": "2026-2027"
+   "lastSeason": "2026-2027",
+   "registeredAt": "2026-09-24T21:55:56"
   },
   {
    "order": 66,
    "name": "MICHELOTTI FRANCESCO",
    "currentPlace": 20,
    "lastPlace": 20,
-   "lastSeason": "2026-2027"
+   "lastSeason": "2026-2027",
+   "registeredAt": "2026-09-25T12:35:45"
   },
   {
    "order": 67,
    "name": "BONGIOVANNI GIOVANNI",
    "currentPlace": 13,
    "lastPlace": 13,
-   "lastSeason": "2026-2027"
+   "lastSeason": "2026-2027",
+   "registeredAt": "2026-09-25T21:03:25"
   },
   {
    "order": 68,
    "name": "LABLANCHE GERARD",
    "currentPlace": 108,
    "lastPlace": 108,
-   "lastSeason": "2026-2027"
+   "lastSeason": "2026-2027",
+   "registeredAt": "2026-09-26T08:46:09"
   },
   {
    "order": 69,
    "name": "TIRITILLI ALBERTO",
    "currentPlace": 109,
    "lastPlace": 109,
-   "lastSeason": "2025-2026"
+   "lastSeason": "2025-2026",
+   "registeredAt": "2026-09-26T12:37:59"
   },
   {
    "order": 70,
    "name": "HILAIRE JIMMY",
    "currentPlace": null,
    "lastPlace": null,
-   "lastSeason": null
+   "lastSeason": null,
+   "registeredAt": "2026-09-26T20:32:04"
   },
   {
    "order": 71,
    "name": "COUPADE JULES",
    "currentPlace": 1,
    "lastPlace": 1,
-   "lastSeason": "2026-2027"
+   "lastSeason": "2026-2027",
+   "registeredAt": "2026-09-28T01:59:14"
   },
   {
    "order": 72,
    "name": "GOLDMANN THIERRY",
    "currentPlace": 107,
    "lastPlace": 107,
-   "lastSeason": "2025-2026"
+   "lastSeason": "2025-2026",
+   "registeredAt": "2026-09-28T09:09:44"
   },
   {
    "order": 73,
    "name": "FLORENT JEAN FRANCOIS",
    "currentPlace": null,
    "lastPlace": null,
-   "lastSeason": null
+   "lastSeason": null,
+   "registeredAt": "2026-09-29T11:55:17"
   },
   {
    "order": 74,
    "name": "BOUZEMANE KAMEL",
    "currentPlace": 44,
    "lastPlace": 44,
-   "lastSeason": "2025-2026"
+   "lastSeason": "2025-2026",
+   "registeredAt": "2026-09-30T08:44:23"
   },
   {
    "order": 75,
    "name": "DRUEZ EMILIE",
    "currentPlace": 129,
    "lastPlace": 129,
-   "lastSeason": "2025-2026"
+   "lastSeason": "2025-2026",
+   "registeredAt": "2026-09-30T15:33:29",
+   "junior": true
   },
   {
    "order": 76,
    "name": "MARECHAL DOMINGO",
    "currentPlace": 71,
    "lastPlace": 71,
-   "lastSeason": "2025-2026"
+   "lastSeason": "2025-2026",
+   "registeredAt": "2026-09-30T15:33:16"
+  }
+ ],
+ "forfaits": [
+  {
+   "order": 77,
+   "name": "BONVILLE ALEXANDRE",
+   "licence": "011981V",
+   "club": "BILLARD CLUB DE GRAUVES",
+   "registeredAt": "2026-09-17T18:54:49"
+  },
+  {
+   "order": 78,
+   "name": "JUBLOT DENIS",
+   "licence": "017978M",
+   "club": "BILLARD CLUB SOTTEVILLAIS",
+   "registeredAt": "2026-09-19T17:13:39"
+  },
+  {
+   "order": 79,
+   "name": "LUCQUIN JEAN MICHEL",
+   "licence": "011873R",
+   "club": "ARCIS BILLARD CLUB",
+   "registeredAt": "2026-09-22T09:15:50"
+  },
+  {
+   "order": 80,
+   "name": "LEMATRE ALEXIS",
+   "licence": "133123D",
+   "club": "U.S GRAVELINOISE",
+   "registeredAt": "2026-10-05T22:08:36"
+  },
+  {
+   "order": 81,
+   "name": "LEGRAND GUY",
+   "licence": "013550E",
+   "club": "BILLARD CLUB DE CHAMPAGNE",
+   "registeredAt": "2026-10-08T16:37:53"
   }
  ]
 }

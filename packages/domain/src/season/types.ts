@@ -236,6 +236,8 @@ export interface Registration {
   junior: boolean;
   /** Forfait déclaré avant le tirage. */
   forfait: boolean;
+  /** Inscription encore « En attente » sur le site fédéral lors du dernier import. */
+  pending?: boolean;
   /** Intégré par le responsable depuis la liste d'attente (place libérée par un forfait). */
   integrated?: boolean;
   /** Suivi en liste d'attente (absent : « à contacter »). */

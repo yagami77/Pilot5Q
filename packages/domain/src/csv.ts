@@ -4,7 +4,8 @@
  * Règles implémentées :
  * - CSV séparateur `;`, entête `id;date;licence;email;id_evenement;forfait;cle;paye;actif;
  *   prenom_licencie;nom_licencie;nom_club;num_club;nom_ligue;date_debut_evenement;
- *   date_fin_evenement;saison;etat`. Les colonnes sont repérées par leur nom (ordre libre,
+ *   date_fin_evenement;saison;etat`, plus, depuis novembre 2026, `date_naissance_licencie` et
+ *   `categorie_licencie`. Les colonnes sont repérées par leur nom (ordre libre,
  *   casse et accents ignorés). Tolérant aux guillemets (champs entre `"`, `""` échappé), au BOM,
  *   aux fins de ligne `\r\n` et aux accents mal encodés (UTF-8 lu en Latin-1 : `EnregistrÃ©e`).
  * - Dates d'inscription `JJ/MM/AAAA HH:MM` (secondes facultatives) ; les formats ISO sont aussi
@@ -17,13 +18,17 @@
  *   place dérivée, puis ordre d'inscription.
  *
  * Choix sur les points laissés ouverts :
- * - Lignes ignorées : `etat` différent de « Enregistrée » (inscription annulée, en attente…)
- *   ou `forfait` non vide (le joueur s'est désisté sur le site fédéral). Une licence en double
- *   ne produit qu'un joueur (première inscription conservée). Une ligne sans licence est
- *   ignorée.
+ * - Lignes gardées : `etat` « Enregistrée » ou « En attente ». Une inscription en attente est
+ *   conservée et signalée (`pending`) : dans l'export réel du TN 2 2026-2027, trois joueurs qui
+ *   ont bien joué le tournoi y figuraient encore « En attente ». Les autres états (annulée…)
+ *   sont ignorés, de même qu'une ligne au `forfait` non vide (désistement sur le site fédéral).
+ *   Une licence en double ne produit qu'un joueur (première inscription conservée). Une ligne
+ *   sans licence est ignorée.
  * - `ranking` et `lastKnown` sont indexés par licence (identifiant fédéral unique) ; à défaut,
  *   le nom « NOM PRENOM » est accepté comme clé de secours.
- * - Le statut junior (U21) n'est pas déductible du CSV : `junior` reste indéfini.
+ * - U21 : `categorie_licencie` vaut « -21 ans » pour un junior (`junior: true`), autre chose
+ *   sinon (`junior: false`) ; colonne absente ou vide : `junior` reste indéfini et se saisit à
+ *   la main. `date_naissance_licencie`, quand elle est renseignée, est conservée (`birthDate`).
  */
 import type { Player } from "./types.js";
 
@@ -147,7 +152,8 @@ export function parseInscritsCsv(text: string): Player[] {
   const entries: { player: Player; date: number; index: number }[] = [];
   rows.slice(1).forEach((row, index) => {
     const etat = normalizeLabel(get(row, "etat"));
-    if (etat !== "enregistree") return;
+    const pending = etat === "en attente";
+    if (etat !== "enregistree" && !pending) return;
     if (get(row, "forfait") !== "") return;
     const licence = get(row, "licence").toUpperCase();
     if (licence === "" || seen.has(licence)) return;
@@ -163,6 +169,11 @@ export function parseInscritsCsv(text: string): Player[] {
     };
     const email = get(row, "email");
     if (email !== "") player.email = email;
+    const category = normalizeLabel(get(row, "categorie_licencie"));
+    if (category !== "") player.junior = /^-\s*21\b/.test(category);
+    const birth = parseFrenchDate(get(row, "date_naissance_licencie"));
+    if (!Number.isNaN(birth)) player.birthDate = new Date(birth).toISOString().slice(0, 10);
+    if (pending) player.pending = true;
     entries.push({ player, date: parseFrenchDate(get(row, "date")), index });
   });
   entries.sort((x, y) => {

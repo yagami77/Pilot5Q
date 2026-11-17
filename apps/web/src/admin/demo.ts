@@ -87,6 +87,21 @@ export interface DemoInscription {
   currentPlace: number | null;
   lastPlace: number | null;
   lastSeason: string | null;
+  /** Date réelle d'inscription sur le site fédéral. */
+  registeredAt?: string;
+  /** Catégorie de licence « -21 ans » dans l'export fédéral. */
+  junior?: boolean;
+  /** Inscription encore « En attente » dans l'export fédéral. */
+  pending?: boolean;
+}
+
+/** Inscrit ayant déclaré forfait avant le tirage (il n'est pas dans le tournoi d'exemple). */
+export interface DemoForfait {
+  name: string;
+  order: number;
+  licence: string;
+  club: string;
+  registeredAt: string;
 }
 
 /**
@@ -136,7 +151,10 @@ function demoPlayers(
 }
 
 /** Inscrits du tournoi d'exemple, dans l'ordre d'inscription du site fédéral. */
-export function demoRegistrations(order: DemoInscription[]): Registration[] {
+export function demoRegistrations(
+  order: DemoInscription[],
+  forfaits: DemoForfait[] = [],
+): Registration[] {
   const byName = new Map(DEMO.players.map((p) => [p.name, p]));
   const start = DEMO.tournament.dates[0];
   const out: Registration[] = [];
@@ -146,15 +164,30 @@ export function demoRegistrations(order: DemoInscription[]): Registration[] {
     const day = addDays(start, -40 + Math.floor(o.order / 3));
     const hh = String(8 + (o.order % 12)).padStart(2, "0");
     const mm = String((o.order * 7) % 60).padStart(2, "0");
-    out.push({
+    const r: Registration = {
       licence: p.licence,
       name: p.name,
       club: p.club,
       email: "",
       order: o.order,
-      registeredAt: `${day}T${hh}:${mm}`,
+      registeredAt: o.registeredAt ?? `${day}T${hh}:${mm}`,
       junior: false,
       forfait: false,
+    };
+    if (o.pending) r.pending = true;
+    out.push(r);
+  }
+  // Les forfaits d'avant tirage : inscrits, mais sortis de la liste (leur place reste libre).
+  for (const f of forfaits) {
+    out.push({
+      licence: f.licence,
+      name: f.name,
+      club: f.club,
+      email: "",
+      order: f.order,
+      registeredAt: f.registeredAt,
+      junior: false,
+      forfait: true,
     });
   }
   return out;
@@ -372,7 +405,10 @@ export function withDemoLeftStage(
 }
 
 /** Document de démonstration complet. */
-export function demoSeason(registrationOrder: DemoInscription[]): SeasonDocument {
+export function demoSeason(
+  registrationOrder: DemoInscription[],
+  forfaits: DemoForfait[] = [],
+): SeasonDocument {
   const season = SEASON_FIXTURE.season;
   const ranking = withDemoLeftStage(
     SEASON_FIXTURE.windowBefore.map((e) => ({ ...e, results: [...e.results] })),
@@ -386,7 +422,7 @@ export function demoSeason(registrationOrder: DemoInscription[]): SeasonDocument
   const tn1 = stages.find((s) => s.number === 1);
   if (tn1) tn1.closedAt = `${tn1.end}T20:00`;
   const tn2 = stages.find((s) => s.number === 2);
-  const registrations = demoRegistrations(registrationOrder);
+  const registrations = demoRegistrations(registrationOrder, forfaits);
   return {
     id: season,
     settings: { ...DEFAULT_SEASON_SETTINGS },

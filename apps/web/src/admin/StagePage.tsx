@@ -456,9 +456,11 @@ function ImportStep({
             email: p.email ?? "",
             order: p.seed,
             registeredAt: prev?.registeredAt ?? "",
-            junior: prev?.junior ?? false,
+            // Le U21 vit dans `juniors` (liste de la saison), mis à jour plus bas depuis le CSV
+            junior: false,
             forfait: prev?.forfait ?? false,
           };
+          if (p.pending) r.pending = true;
           if (prev?.integrated) r.integrated = true;
           if (prev?.waitStatus) r.waitStatus = prev.waitStatus;
           return r;
@@ -472,8 +474,20 @@ function ImportStep({
             registrations.push({ ...r, forfait: true });
           }
         }
+        // U21 : la colonne « categorie_licencie » du CSV fait foi pour les joueurs du fichier
+        // (« -21 ans ») ; sans elle, les cases cochées à la main sont conservées.
+        const known = players.filter((p) => p.junior !== undefined);
+        const fromFile = new Set(known.map((p) => p.licence));
+        const juniors =
+          known.length > 0
+            ? [
+                ...d.juniors.filter((l) => !fromFile.has(l)),
+                ...known.filter((p) => p.junior).map((p) => p.licence),
+              ]
+            : d.juniors;
         return {
           ...d,
+          juniors,
           registrations: {
             ...d.registrations,
             [stage.id]: {
@@ -486,7 +500,17 @@ function ImportStep({
           },
         };
       });
-      toast(`${plural(players.length, "inscrit")} importés`);
+      const u21 = players.filter((p) => p.junior).length;
+      const pending = players.filter((p) => p.pending).length;
+      toast(
+        [
+          `${plural(players.length, "inscrit")} importés`,
+          players.some((p) => p.junior !== undefined) ? `${u21} U21` : null,
+          pending > 0 ? `${pending} en attente sur le site fédéral` : null,
+        ]
+          .filter(Boolean)
+          .join(" · "),
+      );
     } catch (e) {
       toast(e instanceof Error ? e.message : "Fichier illisible");
     }
@@ -605,7 +629,7 @@ function OrderedStep({
       n={2}
       title="Liste ordonnée des acceptés"
       done={accepted.length > 0}
-      help="Place au classement glissant en cours ; sinon dernier classement connu (9 si ≤ 8, sinon P + 0,5) ; sinon nouveau joueur, dans l'ordre d'inscription (SPEC §2). Les 8 premiers sont préqualifiés Masters. Cocher U21 pour les juniors (le CSV ne le donne pas). Un forfait sort le joueur aussitôt et libère sa place : vous choisissez qui intégrer depuis la liste d'attente."
+      help="Place au classement glissant en cours ; sinon dernier classement connu (9 si ≤ 8, sinon P + 0,5) ; sinon nouveau joueur, dans l'ordre d'inscription (SPEC §2). Les 8 premiers sont préqualifiés Masters. Les U21 sont repérés par la colonne « categorie_licencie » du CSV (« -21 ans ») ; la case reste modifiable à la main. Un forfait sort le joueur aussitôt et libère sa place : vous choisissez qui intégrer depuis la liste d'attente."
       aside={
         accepted.length > 0 ? (
           <>
@@ -1039,6 +1063,11 @@ function PlayerRow({
             <Chip tone="blue" icon={UserPlus}>
               intégré
             </Chip>
+          ) : null}
+          {p.pending ? (
+            <span title="Inscription encore « En attente » sur le site fédéral lors du dernier import">
+              <Chip tone="grey">en attente</Chip>
+            </span>
           ) : null}
         </span>
       </td>
