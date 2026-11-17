@@ -11,7 +11,10 @@
  * - `results.ts` : classements des phases finales, classement final du tournoi, primes (§6, §7).
  * - `reducer.ts` : réducteur pur du journal d'événements et sélecteurs dérivés.
  * - `live.ts`    : export JSON pour l'application 5 Quilles (§9).
+ * - `e2i.ts`     : fichiers JSON d'un tournoi pour l'import dans le système fédéral e2i.
  */
+export { E2I_KINDS, e2iExports, e2iFileName, e2iJson } from "./e2i.js";
+export type { E2iFile, E2iKind, E2iMatch, E2iPhase, E2iPlayer, E2iPoule } from "./e2i.js";
 export { DEFAULT_RULES, cloneRules } from "./rules.js";
 export {
   parseInscritsCsv,

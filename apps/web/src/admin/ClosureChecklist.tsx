@@ -1,13 +1,15 @@
 /**
- * Liste de contrôle de la clôture (4 étapes, dans l'ordre du travail du responsable) :
+ * Liste de contrôle de la clôture (5 étapes, dans l'ordre du travail du responsable) :
  * classement glissant finalisé et son PDF, `RANKING.json` pour l'application 5 Quilles, PDF
- * récapitulatif du tournoi, envoi des deux PDF au secrétariat. Chaque étape faite est cochée
+ * récapitulatif du tournoi, fichiers JSON à importer dans e2i, envoi des deux PDF au
+ * secrétariat. Chaque étape faite est cochée
  * et datée ; l'état est enregistré avec la clôture.
  */
 import { rankingRows, type Stage, type TournamentState } from "@pilot5q/domain";
 import {
   Check,
   Copy,
+  DatabaseZap,
   FileBraces,
   FileDown,
   FileText,
@@ -23,11 +25,14 @@ import { Link, useNavigate } from "react-router";
 import { useToast } from "@/components/Toast";
 import { Button, Chip, cx } from "@/components/ui";
 
-import { downloadBlob } from "./attachments";
+import { downloadBlob, zipBlob } from "./attachments";
 import {
   CLOSURE_STEPS,
+  E2I_LABELS,
   SECRETARIAT_EMAIL,
   closureDone,
+  e2iFiles,
+  e2iZipName,
   rankingJsonFile,
   secretariatMail,
   type ClosureStep,
@@ -63,6 +68,12 @@ export function ClosureChecklist({
   const done = closureDone(checklist);
   const files = [rankingFileName(last), tournamentFileName(stage)];
   const mail = secretariatMail(stage, closure.awards, rows.length, files);
+  // Fichiers e2i : il faut le journal du tournoi et le numéro fédéral du club hôte
+  const clubNumber = doc.clubs.find((c) => c.id === stage.clubId)?.ffbNumber ?? "";
+  const e2i = useMemo(
+    () => (state && clubNumber ? e2iFiles(state, clubNumber) : []),
+    [state, clubNumber],
+  );
 
   const mark = (step: ClosureStep) => {
     const now = new Date().toISOString();
@@ -178,6 +189,55 @@ export function ClosureChecklist({
         >
           {busy === "recapPdf" ? "Préparation…" : "Récapitulatif du tournoi (PDF)"}
         </Button>
+      ),
+    },
+    e2i: {
+      icon: DatabaseZap,
+      title: "Fichiers pour e2i",
+      text: !state ? (
+        <>
+          Le journal du tournoi n'est pas dans ce navigateur : les fichiers e2i se génèrent depuis
+          l'ordinateur où le tournoi a été joué.
+        </>
+      ) : !clubNumber ? (
+        <>
+          Le club hôte n'a pas de numéro fédéral : renseignez-le dans « Clubs hôtes », il figure
+          dans chaque fichier.
+        </>
+      ) : (
+        <>
+          {e2i.length} fichiers JSON à importer dans le système fédéral e2i, un par compétition :{" "}
+          {e2i.map((f) => `${E2I_LABELS[f.kind].toLowerCase()} (${f.matches} matchs)`).join(", ")}.
+          Mêmes contenus que les fichiers de l'outil Excel.
+        </>
+      ),
+      action: (
+        <>
+          <Button
+            variant={checklist?.e2i ? "default" : "primary"}
+            icon={FileDown}
+            disabled={e2i.length === 0 || busy === "e2i"}
+            onClick={() =>
+              run("e2i", async () => downloadBlob(e2iZipName(stage), await zipBlob(e2i)))
+            }
+          >
+            {busy === "e2i" ? "Préparation…" : `Télécharger les ${e2i.length} fichiers (.zip)`}
+          </Button>
+          {e2i.map((f) => (
+            <Button
+              key={f.kind}
+              variant="ghost"
+              size="sm"
+              icon={FileBraces}
+              onClick={() => {
+                downloadBlob(f.name, f.blob);
+                mark("e2i");
+              }}
+            >
+              {E2I_LABELS[f.kind]}
+            </Button>
+          ))}
+        </>
       ),
     },
     secretariat: {

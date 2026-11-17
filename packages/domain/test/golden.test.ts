@@ -11,6 +11,10 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
 import {
+  E2I_KINDS,
+  e2iExports,
+  e2iFileName,
+  e2iJson,
   DEFAULT_RULES,
   advanceBracket,
   barragePairs,
@@ -39,6 +43,8 @@ import {
   walkoverPoints,
 } from "../src/index.js";
 import type {
+  E2iFile,
+  E2iKind,
   Billard,
   BracketMatch,
   BracketRound,
@@ -840,6 +846,99 @@ describe("fixture tn-exemple : rejeu complet par le réducteur", () => {
     };
     expect(groups(p.masters)).toEqual(groups(fixture.primes.masters));
     expect(groups(p.national)).toEqual(groups(fixture.primes.national));
+  });
+
+  it("fichiers e2i : identiques aux quatre fichiers réels du TN 2 (qualifications, National, Masters, consolante)", () => {
+    const read = (kind: E2iKind): E2iFile =>
+      JSON.parse(
+        readFileSync(join(here, "fixtures", "e2i", e2iFileName(kind)), "utf8"),
+      ) as E2iFile;
+    const reference = Object.fromEntries(E2I_KINDS.map((k) => [k, read(k)])) as Record<
+      E2iKind,
+      E2iFile
+    >;
+    // Les arbitres ne sont pas dans la fixture du tournoi : on les saisit comme le ferait le
+    // directeur de jeu, d'après les fichiers de référence (quarts, demies et finales).
+    const nameOf = new Map(state.players.map((p) => [p.licence, p.name]));
+    const arbitres: TournamentEvent[] = [];
+    for (const [kind, phase] of [
+      ["national", "N"],
+      ["masters", "M"],
+    ] as const) {
+      for (const m of reference[kind].phases.flatMap((p) => p.poules.flatMap((x) => x.matchs))) {
+        if (m.arbitre1 === "" && m.arbitre2 === "") continue;
+        const a = nameOf.get(m.joueur1.licence);
+        const b = nameOf.get(m.joueur2.licence);
+        const found = state.brackets[phase].find(
+          (x) => (x.a === a && x.b === b) || (x.a === b && x.b === a),
+        );
+        expect(found, `${kind} ${a} – ${b}`).toBeDefined();
+        if (!found) continue;
+        for (const [slot, licence] of [
+          [1, m.arbitre1],
+          [2, m.arbitre2],
+        ] as const) {
+          if (licence === "") continue;
+          arbitres.push({
+            type: "arbitre.set",
+            at,
+            payload: { phase, matchId: found.id, licence, slot },
+          });
+        }
+      }
+    }
+    const withArbitres = replay([...log, ...arbitres]);
+    const files = e2iExports(withArbitres, { clubNumber: "13240" });
+    expect(Object.keys(files)).toEqual([...E2I_KINDS]);
+    type RefMatch = E2iFile["phases"][number]["poules"][number]["matchs"][number];
+    // Un match indépendamment de son sens : le joueur à la plus petite licence d'abord
+    const canon = (m: RefMatch): string => {
+      const [x, y] = [m.joueur1, m.joueur2].sort((p, q) => p.licence.localeCompare(q.licence));
+      return JSON.stringify({ ...m, joueur1: x, joueur2: y });
+    };
+    const canonAll = (ms: RefMatch[]): string[] => ms.map(canon).sort();
+    let exact = 0;
+    let total = 0;
+    for (const kind of E2I_KINDS) {
+      const got = files[kind];
+      const ref = reference[kind];
+      expect(got, kind).toBeDefined();
+      if (!got) continue;
+      // En-têtes des phases et des « poules » : strictement identiques
+      const head = (f: E2iFile) =>
+        f.phases.map((p) => ({
+          ...p,
+          poules: p.poules.map((x) => ({ ...x, matchs: x.matchs.length })),
+        }));
+      expect(head(got), kind).toEqual(head(ref));
+      expect(JSON.parse(e2iJson(got)), kind).toEqual(got);
+      got.phases.forEach((p, i) => {
+        const rp = ref.phases[i];
+        if (!rp) return;
+        // Tous les matchs de la phase : mêmes joueurs, mêmes sets, mêmes arbitres, même format
+        expect(canonAll(p.poules.flatMap((x) => x.matchs)), `${kind} ${p.nom}`).toEqual(
+          canonAll(rp.poules.flatMap((x) => x.matchs)),
+        );
+        p.poules.forEach((x, k) => {
+          // SPEC §5 numérote les quarts Masters 3 et 4 à l'inverse de l'outil Excel
+          const swapped = kind === "masters" && p.nom === "QUARTS DE FINALE" && k >= 2;
+          const rx = rp.poules[swapped ? 5 - k : k];
+          expect(canonAll(x.matchs), `${kind} ${p.nom} ${x.nom}`).toEqual(
+            canonAll(rx?.matchs ?? []),
+          );
+          total++;
+          if (JSON.stringify(x.matchs) === JSON.stringify(rp.poules[k]?.matchs)) exact++;
+        });
+      });
+    }
+    // Fichiers ou phases identiques jusqu'à l'ordre et au sens des matchs
+    expect(files.consolante).toEqual(reference.consolante);
+    expect(files.qualif?.phases[1]).toEqual(reference.qualif.phases[1]);
+    expect(files.national?.phases.slice(1)).toEqual(reference.national.phases.slice(1));
+    expect(files.masters?.phases[3]).toEqual(reference.masters.phases[3]);
+    // Ailleurs seuls l'ordre ou le sens de quelques matchs diffèrent (lignes de la feuille de
+    // poule de l'outil Excel rangées autrement, quarts Masters 3 et 4)
+    expect([exact, total]).toEqual([56, 64]);
   });
 
   it("forfait avant une poule du samedi : poule de 3 compensée, points subis moyens crédités aux adversaires", () => {

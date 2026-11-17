@@ -8,6 +8,8 @@ import inscriptions from "@/data/tn-exemple-inscriptions.json";
 import { blobBytes } from "./attachments";
 import {
   CLOSURE_STEPS,
+  e2iFiles,
+  e2iZipName,
   SECRETARIAT_EMAIL,
   closureDone,
   rankingJsonFile,
@@ -113,8 +115,40 @@ describe("suites de la clôture d'un TN", () => {
     expect(mail.href.length).toBeLessThan(2000);
   });
 
+  it("produit les quatre fichiers e2i du tournoi (club hôte, lieu, phases, matchs)", async () => {
+    const club = demo.doc.clubs.find((c) => c.id === demo.stage.clubId);
+    const files = e2iFiles(demo.state, club?.ffbNumber ?? "");
+    expect(files.map((f) => [f.name, f.matches])).toEqual([
+      ["e2i_qualif.json", 110],
+      ["e2i_national.json", 63],
+      ["e2i_masters.json", 31],
+      ["e2i_consolante.json", 18],
+    ]);
+    expect(e2iZipName(demo.stage)).toBe("e2i TN 2 2026-2027.zip");
+    const first = files[0];
+    if (!first) throw new Error("fichier absent");
+    const json = JSON.parse(new TextDecoder().decode(await blobBytes(first.blob))) as {
+      phases: {
+        nom: string;
+        début: string;
+        poules: { nom: string; club: number; lieu: string; NS: number; DS: number }[];
+      }[];
+    };
+    expect(json.phases.map((p) => [p.nom, p.début, p.poules.length])).toEqual([
+      ["POULES", "30/10/2026", 17],
+      ["BARRAGES", "30/10/2026", 8],
+    ]);
+    expect(json.phases[0]?.poules[0]).toMatchObject({
+      nom: "POULE 1",
+      club: 13240,
+      lieu: "RONCHIN",
+      NS: 1,
+      DS: 100,
+    });
+  });
+
   it("compte les étapes faites de la liste de contrôle", () => {
-    expect(CLOSURE_STEPS).toEqual(["rankingPdf", "rankingJson", "recapPdf", "secretariat"]);
+    expect(CLOSURE_STEPS).toEqual(["rankingPdf", "rankingJson", "recapPdf", "e2i", "secretariat"]);
     expect(closureDone(undefined)).toBe(0);
     expect(
       closureDone({ rankingPdf: "2026-11-01T19:10:00Z", recapPdf: "2026-11-01T19:12:00Z" }),

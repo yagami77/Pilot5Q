@@ -1,13 +1,28 @@
 /**
  * Suites de la clôture d'un TN par le responsable national (remarques du 11 novembre 2026) :
  * classement glissant finalisé et son PDF, `RANKING.json` pour l'application 5 Quilles, PDF
- * récapitulatif du tournoi, puis envoi des deux PDF au secrétariat fédéral.
+ * récapitulatif du tournoi, fichiers JSON à importer dans le système fédéral e2i (demande du
+ * 17 novembre 2026), puis envoi des deux PDF au secrétariat fédéral.
  *
  * Sans serveur, l'application ne peut ni déposer un fichier sur le FTP ni joindre une pièce à
  * un message : elle produit les fichiers et prépare le message, le responsable fait le reste.
  */
-import type { RankingRow, Stage, StageRef, TournamentAward } from "@pilot5q/domain";
-import { APP_RANKING_FILE, appRankingJson } from "@pilot5q/domain";
+import type {
+  E2iKind,
+  RankingRow,
+  Stage,
+  StageRef,
+  TournamentAward,
+  TournamentState,
+} from "@pilot5q/domain";
+import {
+  APP_RANKING_FILE,
+  E2I_KINDS,
+  appRankingJson,
+  e2iExports,
+  e2iFileName,
+  e2iJson,
+} from "@pilot5q/domain";
 
 import { dateRange, nice } from "@/lib/format";
 
@@ -17,7 +32,13 @@ import type { ClosureChecklist } from "./persistence";
 export const SECRETARIAT_EMAIL = "secretariat@ffbillard.com";
 
 /** Étapes de la liste de contrôle, dans l'ordre. */
-export const CLOSURE_STEPS = ["rankingPdf", "rankingJson", "recapPdf", "secretariat"] as const;
+export const CLOSURE_STEPS = [
+  "rankingPdf",
+  "rankingJson",
+  "recapPdf",
+  "e2i",
+  "secretariat",
+] as const;
 export type ClosureStep = (typeof CLOSURE_STEPS)[number];
 
 /** Nombre d'étapes faites. */
@@ -31,6 +52,51 @@ export function rankingJsonFile(rows: RankingRow[], last: StageRef): { name: str
     name: APP_RANKING_FILE,
     blob: new Blob([appRankingJson(rows, last)], { type: "application/json;charset=utf-8" }),
   };
+}
+
+/** Libellé de chaque fichier e2i dans l'interface. */
+export const E2I_LABELS: Record<E2iKind, string> = {
+  qualif: "Qualifications",
+  national: "National",
+  masters: "Masters",
+  consolante: "Consolante",
+};
+
+export interface E2iDownload {
+  kind: E2iKind;
+  name: string;
+  blob: Blob;
+  /** Nombre de matchs du fichier. */
+  matches: number;
+}
+
+/**
+ * Fichiers JSON du tournoi pour l'import dans e2i (`e2i_qualif.json`, `e2i_national.json`,
+ * `e2i_masters.json`, `e2i_consolante.json`) ; une compétition sans match n'a pas de fichier.
+ * `clubNumber` est le numéro fédéral du club hôte.
+ */
+export function e2iFiles(state: TournamentState, clubNumber: string): E2iDownload[] {
+  const files = e2iExports(state, { clubNumber });
+  return E2I_KINDS.flatMap((kind) => {
+    const file = files[kind];
+    if (!file) return [];
+    return [
+      {
+        kind,
+        name: e2iFileName(kind),
+        blob: new Blob([e2iJson(file)], { type: "application/json;charset=utf-8" }),
+        matches: file.phases.reduce(
+          (n, p) => n + p.poules.reduce((k, x) => k + x.matchs.length, 0),
+          0,
+        ),
+      },
+    ];
+  });
+}
+
+/** Nom de l'archive qui regroupe les fichiers e2i d'une étape. */
+export function e2iZipName(stage: Stage): string {
+  return `e2i ${stage.name} ${stage.season}.zip`;
 }
 
 export interface SecretariatMail {

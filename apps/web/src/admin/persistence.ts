@@ -26,6 +26,7 @@ export interface ClosureChecklist {
   rankingPdf?: string;
   rankingJson?: string;
   recapPdf?: string;
+  e2i?: string;
   secretariat?: string;
 }
 
